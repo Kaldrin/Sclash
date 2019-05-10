@@ -5,8 +5,9 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
     Camera cam;
-
+    [SerializeField]
     float maxLeft = -4f;
+    [SerializeField]
     float maxRight = 5f;
 
     GameObject[] players;
