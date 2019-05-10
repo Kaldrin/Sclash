@@ -241,8 +241,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 505733669}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.21, y: 0, z: 1}
+  m_LocalScale: {x: 1.05, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1620713568}
   m_RootOrder: 3
@@ -480,7 +480,7 @@ Transform:
   m_GameObject: {fileID: 968928568}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.05, y: 1.05, z: 1.05}
   m_Children: []
   m_Father: {fileID: 1620713568}
   m_RootOrder: 4
@@ -521,7 +521,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: cac5b3416455abe44be7ea8a016c73e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -546,7 +546,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -6.564067}
+  m_Offset: {x: 0, y: -6.60618}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -557,7 +557,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 38.4, y: 8.471867}
+  m_Size: {x: 38.4, y: 8.38764}
   m_EdgeRadius: 0
 --- !u!1 &1122354796
 GameObject:
@@ -721,7 +721,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4285f8b82e1c9409c8b616775d4ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayer2: 0
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
   jumpHeight: 0
@@ -816,6 +815,7 @@ GameObject:
   - component: {fileID: 1580691863}
   - component: {fileID: 1580691865}
   - component: {fileID: 1580691864}
+  - component: {fileID: 1580691866}
   m_Layer: 8
   m_Name: P1
   m_TagString: Player
@@ -897,10 +897,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4285f8b82e1c9409c8b616775d4ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayer2: 0
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
   jumpHeight: 10
+--- !u!114 &1580691866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580691861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef55c2dc5af1cb24c8df41c4b1076324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashSpeed: 7
+  dashDistance: 7
+  isDashing: 0
 --- !u!1 &1620713567
 GameObject:
   m_ObjectHideFlags: 0

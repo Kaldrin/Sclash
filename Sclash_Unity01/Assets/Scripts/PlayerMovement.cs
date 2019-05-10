@@ -41,18 +41,20 @@ public class PlayerMovement : MonoBehaviour
             jumpRequest = false;
         }
 
-
-        if (rb.velocity.y < 0)
+        if (!GetComponent<PlayerAttack>().isDashing)
         {
-            rb.gravityScale = fallMultiplier;
-        }
-        else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
-        {
-            rb.gravityScale = lowJumpMultiplier;
-        }
-        else
-        {
-            rb.gravityScale = 1f;
+            if (rb.velocity.y < 0)
+            {
+                rb.gravityScale = fallMultiplier;
+            }
+            else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
+            {
+                rb.gravityScale = lowJumpMultiplier;
+            }
+            else
+            {
+                rb.gravityScale = 1f;
+            }
         }
     }
 
