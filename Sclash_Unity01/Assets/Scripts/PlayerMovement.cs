@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+
+    [SerializeField]
+    [Range(0.1f, 2f)]
+    float movementsMultiplier = 1f;
+
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
 
@@ -23,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-        transform.position += new Vector3(Input.GetAxis("Horizontal") / 3, 0, 0);
+        rb.velocity += new Vector2(Input.GetAxis("Horizontal") * movementsMultiplier, 0);
 
         if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.1f)
         {
