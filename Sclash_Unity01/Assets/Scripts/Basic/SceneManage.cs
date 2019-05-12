@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class SceneManage : MonoBehaviour {
 
     //Scene changement
+    [SerializeField]
     Animator sceneSwitchAnimator;
     public bool proceedToLoadScene = false;
     Scene sceneToLoad;
@@ -20,7 +21,7 @@ public class SceneManage : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        sceneSwitchAnimator = GetComponent<Animator>();
+        //sceneSwitchAnimator = GetComponent<Animator>();
     }
 	
 	// Update is called once per frame

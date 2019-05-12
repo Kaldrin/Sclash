@@ -15,19 +15,39 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
+        FindPlayers();
+    }
+
+    public GameObject[] FindPlayers()
+    {
         players = GameObject.FindGameObjectsWithTag("Player");
 
+        return players;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 tempPos = cam.transform.position;
-        if (players.Length == 1)
+        if (players.Length > 1)
+        {
+            tempPos.x = 0;
+
+            for (int i = 0; i < players.Length; i++)
+            {
+                tempPos.x += players[i].transform.position.x;
+            }
+
+            tempPos.x = tempPos.x / players.Length;
+        }
+        else if (players.Length == 1)
         {
             tempPos.x = players[0].transform.position.x;
         }
 
+        
+
+        
         if (tempPos.x > maxRight)
         {
             tempPos.x = maxRight;
@@ -36,7 +56,7 @@ public class CameraManager : MonoBehaviour
         {
             tempPos.x = maxLeft;
         }
-
+        
         cam.transform.position = tempPos;
 
     }

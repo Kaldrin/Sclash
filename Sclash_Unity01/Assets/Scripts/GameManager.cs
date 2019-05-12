@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
+    GameObject player;
+    List<GameObject> playersList = new List<GameObject>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,17 +20,20 @@ public class GameManager : MonoBehaviour
         
     }
 
-
     IEnumerator StartGame()
     {
         SpawnPlayers();
-        yield return new WaitForSeconds(0);
+        yield return new WaitForSeconds(0.5f);
+        Debug.Log(Camera.main.GetComponent<CameraManager>().FindPlayers());
     }
 
     void SpawnPlayers()
     {
         GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
-
+        for (int i = 0; i < playerSpawns.Length; i++)
+        {
+            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+        }
     }
 }
