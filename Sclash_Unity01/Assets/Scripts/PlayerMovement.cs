@@ -78,7 +78,6 @@ public class PlayerMovement : MonoBehaviour
         
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        Debug.Log(players.Length);
         //Sets itself inactive in order not to find itself but the other one
 
         for (int i = 0; i < players.Length; i++)
@@ -91,8 +90,6 @@ public class PlayerMovement : MonoBehaviour
 
         float sign = transform.position.x - player.transform.position.x;
         sign = Mathf.Sign(sign);
-        Debug.Log(gameObject);
-        Debug.Log(sign);
 
         if (player.transform.position.x > transform.position.x)
         {

@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     GameObject player;
+    [SerializeField]
+    CameraManager cameraManager;
     List<GameObject> playersList = new List<GameObject>();
 
     // Start is called before the first frame update
@@ -24,7 +26,7 @@ public class GameManager : MonoBehaviour
     {
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
-        Debug.Log(Camera.main.GetComponent<CameraManager>().FindPlayers());
+        cameraManager.FindPlayers();
     }
 
     void SpawnPlayers()

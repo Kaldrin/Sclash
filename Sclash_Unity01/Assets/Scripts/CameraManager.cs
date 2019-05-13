@@ -4,17 +4,29 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+    //Zoom
+    [SerializeField]
+    float zoomMultiplier = 0.5f;
+    float distanceBetweenPlayers = 0;
+    float baseCameraZ;
+
     Camera cam;
+
+    //Camera movements
     [SerializeField]
-    float maxLeft = -4f;
+    public float maxLeft = -4f;
     [SerializeField]
-    float maxRight = 5f;
+    public float maxRight = 5f;
 
     GameObject[] players;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         cam = Camera.main;
+        baseCameraZ = cam.transform.localPosition.z;
         FindPlayers();
     }
 
@@ -28,7 +40,13 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 tempPos = cam.transform.position;
+        MoveCameraWithPlayers();
+        ZoomCameraWithPlayers();
+    }
+
+    void MoveCameraWithPlayers()
+    {
+        Vector3 tempPos = transform.position;
         if (players.Length > 1)
         {
             tempPos.x = 0;
@@ -45,19 +63,34 @@ public class CameraManager : MonoBehaviour
             tempPos.x = players[0].transform.position.x;
         }
 
-        
 
-        
-        if (tempPos.x > maxRight)
+        if (tempPos.x > maxRight - distanceBetweenPlayers * zoomMultiplier)
         {
-            tempPos.x = maxRight;
+            tempPos.x = maxRight - distanceBetweenPlayers * zoomMultiplier;
         }
-        else if (tempPos.x < maxLeft)
+        else if (tempPos.x < maxLeft + distanceBetweenPlayers * zoomMultiplier)
         {
-            tempPos.x = maxLeft;
+            tempPos.x = maxLeft + distanceBetweenPlayers * zoomMultiplier;
         }
-        
-        cam.transform.position = tempPos;
+        Debug.Log(maxRight - distanceBetweenPlayers * zoomMultiplier);
+        //Debug.Log(maxLeft + distanceBetweenPlayers);
+        transform.position = tempPos;
+    }
 
+
+    void ZoomCameraWithPlayers()
+    {
+        Vector3 tempPos = cam.transform.localPosition;
+        distanceBetweenPlayers = 0;
+
+        if (players.Length > 1)
+        {
+            distanceBetweenPlayers = Mathf.Abs(Vector3.Distance(players[0].transform.position, players[1].transform.position));
+        }
+        else if (players.Length == 1)
+        {
+        }
+
+        cam.transform.localPosition = new Vector3(tempPos.x, tempPos.y, baseCameraZ - distanceBetweenPlayers * zoomMultiplier);
     }
 }
