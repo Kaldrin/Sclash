@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    float currentHealth;
+    [SerializeField]
+    float maxHealth;
+
+    public int playerNum;
+
     // Start is called before the first frame update
     void Start()
     {

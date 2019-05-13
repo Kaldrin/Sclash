@@ -72,8 +72,7 @@ public class CameraManager : MonoBehaviour
         {
             tempPos.x = maxLeft + distanceBetweenPlayers * zoomMultiplier;
         }
-        Debug.Log(maxRight - distanceBetweenPlayers * zoomMultiplier);
-        //Debug.Log(maxLeft + distanceBetweenPlayers);
+
         transform.position = tempPos;
     }
 

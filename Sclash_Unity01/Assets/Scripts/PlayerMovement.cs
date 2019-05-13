@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    //Stats
+    PlayerStats playerStats;
+
     //Orientation
     float initialXScale;
 
@@ -24,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        playerStats = GetComponent<PlayerStats>();
         initialXScale = transform.localScale.x;
         rb = GetComponent<Rigidbody2D>();
 
@@ -34,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-        rb.velocity = new Vector2(Input.GetAxis("Horizontal") * movementsMultiplier, rb.velocity.y);
+        rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
 
         if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.1f)
         {

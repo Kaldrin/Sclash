@@ -35,7 +35,12 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < playerSpawns.Length; i++)
         {
-            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            PlayerStats playerStats;
+
+            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation))
+                ;
+            playerStats = playersList[i].GetComponent<PlayerStats>();
+            playerStats.playerNum = i + 1;
         }
     }
 }
