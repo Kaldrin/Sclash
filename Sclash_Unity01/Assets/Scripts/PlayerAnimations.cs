@@ -6,6 +6,8 @@ public class PlayerAnimations : MonoBehaviour
 {
     [SerializeField]
     Rigidbody2D rigid;
+    [SerializeField]
+    GameObject colliderChild;
 
 
     [SerializeField]
@@ -37,6 +39,9 @@ public class PlayerAnimations : MonoBehaviour
         {
             animator.SetBool(walkBool, false);
         }
+
+        Destroy(colliderChild.GetComponent<PolygonCollider2D>());
+        colliderChild.AddComponent<PolygonCollider2D>();
     }
 
 
