@@ -205,7 +205,7 @@ GameObject:
   - component: {fileID: 1250708261086219519}
   - component: {fileID: 7003620522291499887}
   - component: {fileID: 6065618468900711097}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -243,7 +243,7 @@ MonoBehaviour:
   movementsMultiplier: 5
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
-  jumpHeight: 1
+  jumpHeight: 10
 --- !u!114 &7003620522291499873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,8 +256,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef55c2dc5af1cb24c8df41c4b1076324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashSpeed: 0
-  dashDistance: 0
+  dashSpeed: 7
+  dashDistance: 7
   isDashing: 0
 --- !u!114 &7566831144946873117
 MonoBehaviour:
