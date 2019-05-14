@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     public float lowJumpMultiplier = 2f;
 
     [Range(1f, 10f)]
-    public float jumpHeight;
+    public float jumpHeight = 10f;
 
     bool jumpRequest;
     Rigidbody2D rb;
@@ -37,20 +37,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
 
         if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.1f)
         {
             jumpRequest = true;
         }
+
+        OrientTowardsEnemy();
     }
 
     void FixedUpdate()
     {
         if (jumpRequest)
         {
-            rb.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpHeight * 50, ForceMode2D.Impulse);
             jumpRequest = false;
         }
 
@@ -79,25 +80,46 @@ public class PlayerMovement : MonoBehaviour
 
     void OrientTowardsEnemy()
     {
-        
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        //Sets itself inactive in order not to find itself but the other one
+        GameObject p1 = null, p2 = null, self = null, other = null;
+        PlayerStats[] stats = FindObjectsOfType<PlayerStats>();
 
-        for (int i = 0; i < players.Length; i++)
+        foreach (PlayerStats stat in stats)
         {
-            if (players[i] != gameObject)
+            switch (stat.playerNum)
             {
-                player = players[i];
+                case 1:
+                    p1 = stat.gameObject;
+                    break;
+
+                case 2:
+                    p2 = stat.gameObject;
+                    break;
+
+                default:
+                    break;
             }
         }
 
-        float sign = transform.position.x - player.transform.position.x;
-        sign = Mathf.Sign(sign);
-
-        if (player.transform.position.x > transform.position.x)
+        if (p1 == gameObject)
         {
-            transform.localScale = new Vector3(initialXScale * sign, transform.localScale.y, transform.localScale.z);
+            self = p1;
+            other = p2;
+        }
+        else if (p2 == gameObject)
+        {
+            self = p2;
+            other = p1;
+        }
+
+        float sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
+
+        if (sign > 0)
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = true;
         }
     }
 }

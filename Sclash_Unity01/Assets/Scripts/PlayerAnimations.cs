@@ -4,47 +4,40 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
 {
-    [SerializeField]
-    Rigidbody2D rigid;
-    [SerializeField]
-    GameObject colliderChild;
+	[SerializeField]
+	Rigidbody2D rigid;
+	[SerializeField]
+	GameObject colliderChild;
 
 
-    [SerializeField]
-    Animator animator;
-    [SerializeField]
-    string walkBool = "Walk";
-    [SerializeField]
-    float speedForWalking = 0.5f;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
+	[SerializeField]
+	Animator animator;
+	[SerializeField]
+	string walkBool = "Walk";
+	[SerializeField]
+	float speedForWalking = 0.5f;
 
     // Update is called once per frame
-    void Update()
-    {
-        UpdateAnims();
-    }
+	void Update()
+	{
+		UpdateAnims();
+	}
 
 
-    void UpdateAnims()
-    {
-        if (Mathf.Abs(rigid.velocity.x) > speedForWalking)
-        {
-            animator.SetBool(walkBool, true);
-        }
-        else
-        {
-            animator.SetBool(walkBool, false);
-        }
+	void UpdateAnims()
+	{
+		if (Mathf.Abs(rigid.velocity.x) > speedForWalking)
+		{
+			animator.SetBool(walkBool, true);
+		}
+		else
+		{
+			animator.SetBool(walkBool, false);
+		}
 
-        Destroy(colliderChild.GetComponent<PolygonCollider2D>());
-        colliderChild.AddComponent<PolygonCollider2D>();
-    }
+		Destroy(colliderChild.GetComponent<PolygonCollider2D>());
+		colliderChild.AddComponent<PolygonCollider2D>();
+	}
 
 
 }
