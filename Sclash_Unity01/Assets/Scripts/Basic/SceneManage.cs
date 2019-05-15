@@ -72,7 +72,7 @@ public class SceneManage : MonoBehaviour {
         sceneSwitchAnimator.SetTrigger("CloseScene");
     }
 
-    void Quit()
+    public void Quit()
     {
         sceneSwitchAnimator.SetTrigger("CloseScene");
         quit = true;

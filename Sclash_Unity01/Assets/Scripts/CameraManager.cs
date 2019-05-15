@@ -12,6 +12,10 @@ public class CameraManager : MonoBehaviour
     //Zoom
     [SerializeField]
     float zoomMultiplier = 0.5f;
+    [SerializeField]
+    Vector2 cameraZLimits = new Vector2(-9, -19);
+    [SerializeField]
+    Vector2 playersDistanceForCameraZoomedUnzoomedLimits = new Vector2(5, 25);
     float distanceBetweenPlayers = 0;
     [SerializeField]
     float baseCameraZ;
@@ -24,6 +28,9 @@ public class CameraManager : MonoBehaviour
     [SerializeField]
     public float maxRight = 5f;
 
+    [SerializeField]
+    Vector2 maxSidesZoomedUnzoomed = new Vector2(-10, -5);
+
     GameObject[] players;
 
 
@@ -33,7 +40,6 @@ public class CameraManager : MonoBehaviour
     {
         cam = Camera.main;
         //baseCameraZ = cam.transform.localPosition.z;
-        FindPlayers();
     }
 
     public GameObject[] FindPlayers()
@@ -60,7 +66,6 @@ public class CameraManager : MonoBehaviour
             MoveCameraWithPlayers();
             ZoomCameraWithPlayers();
         }
-
     }
 
     void MoveCameraWithPlayers()
@@ -82,23 +87,49 @@ public class CameraManager : MonoBehaviour
             tempPos.x = players[0].transform.position.x;
         }
 
+        Debug.Log(tempPos.x);
 
-        if (tempPos.x > maxRight - distanceBetweenPlayers * zoomMultiplier)
+
+        //Calculates the x limit of the camera depending on the level of zoom
+        float cameraLimitsDifference = Mathf.Abs(cameraZLimits.y) - Mathf.Abs(cameraZLimits.x);
+        float maxSidesZoomUnzoomeDifference = maxSidesZoomedUnzoomed.y - maxSidesZoomedUnzoomed.x;
+        float maxSide = 0;
+
+        /*
+        if (cam.transform.localPosition.z >= cameraZLimits.x)
+            maxSide = maxSidesZoomUnzoomed.x;
+        else if (cam.transform.localPosition.z <= cameraZLimits.y)
+            maxSide = maxSidesZoomUnzoomed.y;
+            */
+       
+        maxSide = maxSidesZoomedUnzoomed.x - maxSidesZoomUnzoomeDifference * ((cam.transform.localPosition.z - cameraZLimits.y) / cameraLimitsDifference);
+
+
+
+
+        
+        if (tempPos.x > maxSide)
         {
-            tempPos.x = maxRight - distanceBetweenPlayers * zoomMultiplier;
+            tempPos.x = maxSide;
         }
-        else if (tempPos.x < maxLeft + distanceBetweenPlayers * zoomMultiplier)
+        else if (tempPos.x < -maxSide)
         {
-            tempPos.x = maxLeft + distanceBetweenPlayers * zoomMultiplier;
+            tempPos.x = -maxSide;
         }
+
+        
+
 
         transform.position = tempPos;
+        
+        
     }
 
 
     void ZoomCameraWithPlayers()
     {
         Vector3 tempPos = cam.transform.localPosition;
+        float newCamZ = 0;
         distanceBetweenPlayers = 0;
 
         if (players.Length > 1)
@@ -109,6 +140,21 @@ public class CameraManager : MonoBehaviour
         {
         }
 
-        cam.transform.localPosition = new Vector3(tempPos.x, tempPos.y, baseCameraZ - distanceBetweenPlayers * zoomMultiplier);
+        //cam.transform.localPosition = new Vector3(tempPos.x, tempPos.y, baseCameraZ - distanceBetweenPlayers * zoomMultiplier);
+
+        float cameraZLimitsDifference = Mathf.Abs(cameraZLimits.y) - Mathf.Abs(cameraZLimits.x);
+        float playersDistanceForCameraZoomLimitsDifference = Mathf.Abs(playersDistanceForCameraZoomedUnzoomedLimits.y) - Mathf.Abs(playersDistanceForCameraZoomedUnzoomedLimits.x);
+
+        if (distanceBetweenPlayers <= playersDistanceForCameraZoomedUnzoomedLimits.x)
+            newCamZ = cameraZLimits.x;
+        else if (distanceBetweenPlayers >= playersDistanceForCameraZoomedUnzoomedLimits.y)
+            newCamZ = cameraZLimits.y;
+        else
+            newCamZ = cameraZLimits.x - cameraZLimitsDifference * ((distanceBetweenPlayers - playersDistanceForCameraZoomedUnzoomedLimits.x) / playersDistanceForCameraZoomLimitsDifference);
+
+        
+
+
+        cam.transform.localPosition = new Vector3(tempPos.x, tempPos.y, newCamZ);
     }
 }
