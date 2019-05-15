@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+    //State
+    [HideInInspector]
+    public string cameraState = "Inactive";
+
+
     //Zoom
     [SerializeField]
     float zoomMultiplier = 0.5f;
     float distanceBetweenPlayers = 0;
+    [SerializeField]
     float baseCameraZ;
 
     Camera cam;
@@ -26,7 +32,7 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-        baseCameraZ = cam.transform.localPosition.z;
+        //baseCameraZ = cam.transform.localPosition.z;
         FindPlayers();
     }
 
@@ -40,8 +46,21 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MoveCameraWithPlayers();
-        ZoomCameraWithPlayers();
+        BehaviourDependingOnState();
+    }
+
+    void BehaviourDependingOnState()
+    {
+        if (cameraState == "Inactive")
+        {
+
+        }
+        else if (cameraState == "Battle")
+        {
+            MoveCameraWithPlayers();
+            ZoomCameraWithPlayers();
+        }
+
     }
 
     void MoveCameraWithPlayers()

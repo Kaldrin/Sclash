@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    //Menu
+    [SerializeField]
+    GameObject mainMenu;
+
+
     [SerializeField]
     GameObject player;
     [SerializeField]
@@ -13,18 +18,30 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(StartGame());
+        StartCoroutine(SetupGame());
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+    }
+
+    IEnumerator SetupGame()
+    {
+        SpawnPlayers();
+        yield return new WaitForSeconds(0.5f);
+        cameraManager.FindPlayers();
+    }
+
+    public void Play()
+    {
+        StartCoroutine(StartGame());
     }
 
     IEnumerator StartGame()
     {
-        SpawnPlayers();
+        mainMenu.SetActive(false);
+        cameraManager.cameraState = "Battle";
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
     }
