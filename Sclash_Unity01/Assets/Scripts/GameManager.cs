@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour
     //Menu
     [SerializeField]
     GameObject mainMenu;
+    [SerializeField]
+    GameObject blurPanel;
+    Shader blurPanelMaterial;
 
 
     [SerializeField]
@@ -15,15 +18,20 @@ public class GameManager : MonoBehaviour
     CameraManager cameraManager;
     List<GameObject> playersList = new List<GameObject>();
 
+    float menuPanelBlur = 1.7f;
+
     // Start is called before the first frame update
     void Start()
     {
+        /*menuPanelBlur = */
         StartCoroutine(SetupGame());
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.anyKey);
+        //Play();
     }
 
     IEnumerator SetupGame()
@@ -59,5 +67,10 @@ public class GameManager : MonoBehaviour
             playerStats = playersList[i].GetComponent<PlayerStats>();
             playerStats.playerNum = i + 1;
         }
+    }
+
+    IEnumerator UpdateBlurPanel()
+    {
+        yield return new WaitForSeconds(0);
     }
 }

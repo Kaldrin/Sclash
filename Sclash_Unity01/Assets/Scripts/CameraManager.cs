@@ -24,9 +24,7 @@ public class CameraManager : MonoBehaviour
 
     //Camera movements
     [SerializeField]
-    public float maxLeft = -4f;
-    [SerializeField]
-    public float maxRight = 5f;
+    float smoothMovementsMultiplier = 0.01f;
 
     [SerializeField]
     Vector2 maxSidesZoomedUnzoomed = new Vector2(-10, -5);
@@ -120,7 +118,7 @@ public class CameraManager : MonoBehaviour
         
 
 
-        transform.position = tempPos;
+        transform.position = transform.position + (tempPos - transform.position) * smoothMovementsMultiplier;
         
         
     }
@@ -152,9 +150,9 @@ public class CameraManager : MonoBehaviour
         else
             newCamZ = cameraZLimits.x - cameraZLimitsDifference * ((distanceBetweenPlayers - playersDistanceForCameraZoomedUnzoomedLimits.x) / playersDistanceForCameraZoomLimitsDifference);
 
-        
 
+        Vector3 newPos = new Vector3(tempPos.x, tempPos.y, newCamZ);
 
-        cam.transform.localPosition = new Vector3(tempPos.x, tempPos.y, newCamZ);
+        cam.transform.localPosition = cam.transform.localPosition + (newPos - cam.transform.localPosition) * smoothMovementsMultiplier;
     }
 }
