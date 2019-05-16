@@ -17,10 +17,18 @@ public class PlayerAttack : MonoBehaviour
     float time;
 
     Rigidbody2D rb;
+    PlayerStats stats;
+
+    bool tapping;
+    float lastTap;
+    float tapTime = 0.25f;
+    float dashDirection;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        stats = GetComponent<PlayerStats>();
     }
 
     void Update()
@@ -29,14 +37,44 @@ public class PlayerAttack : MonoBehaviour
         // ATTACK
         if (Input.GetButtonDown("Fire1"))
         {
-            triggerAttack = true;
             Debug.Log("Slash");
+            GetComponent<PlayerAnimations>().TriggerAttack();
         }
 
         // DEFENSE
         if (Input.GetButtonDown("Fire2"))
         {
             Debug.Log("Clang");
+        }
+
+        //DASH
+        if (Input.GetButtonDown("Left" + stats.playerNum) || Input.GetButtonDown("Right" + stats.playerNum))
+        {
+            dashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + stats.playerNum));
+
+            if (!tapping)
+            {
+                tapping = true;
+                StartCoroutine(SingleTap());
+            }
+
+            if ((Time.time - lastTap) < tapTime)
+            {
+                Debug.Log("Double tap");
+                tapping = false;
+                triggerAttack = true;
+            }
+            lastTap = Time.time;
+        }
+    }
+
+    IEnumerator SingleTap()
+    {
+        yield return new WaitForSeconds(tapTime);
+        if (tapping)
+        {
+            Debug.Log("Single Tap");
+            tapping = false;
         }
     }
 
@@ -45,12 +83,13 @@ public class PlayerAttack : MonoBehaviour
 
         if (triggerAttack)
         {
-            Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-            dir = Vector3.Normalize(dir) * dashDistance;
-            dir.z = 0.0f;
+            Vector3 dir = new Vector3(dashDirection, 0, 0);
+            dir *= dashDistance;
 
             initPos = transform.position;
             targetPos = transform.position + dir;
+            targetPos.y = transform.position.y;
+
             time = 0.0f;
             rb.velocity = Vector3.zero;
 
