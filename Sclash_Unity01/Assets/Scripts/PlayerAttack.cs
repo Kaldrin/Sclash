@@ -91,13 +91,22 @@ public class PlayerAttack : MonoBehaviour
 
     void ApplyDamage()
     {
-        Collider2D[] hits = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -1), transform.position.y), new Vector2(1, 1), 0);
-        foreach (Collider2D c in hits)
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -1), transform.position.y), new Vector2(1, 1), 0);
+        List<GameObject> hits = new List<GameObject>();
+        foreach (Collider2D c in hitsCol)
         {
+            Debug.Log(c);
             if (c.CompareTag("Player"))
             {
-                c.transform.parent.GetComponent<PlayerStats>().TakeDamage();
+                if (!hits.Contains(c.transform.parent.gameObject))
+                {
+                    hits.Add(c.transform.parent.gameObject);
+                }
             }
+        }
+        foreach (GameObject g in hits)
+        {
+            g.GetComponent<PlayerStats>().TakeDamage();
         }
     }
 
