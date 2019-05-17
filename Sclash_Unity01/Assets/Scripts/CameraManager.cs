@@ -44,7 +44,13 @@ public class CameraManager : MonoBehaviour
 
     public GameObject[] FindPlayers()
     {
-        players = GameObject.FindGameObjectsWithTag("Player");
+        PlayerStats[] stats = FindObjectsOfType<PlayerStats>();
+        players = new GameObject[stats.Length];
+
+        for (int i = 0; i < stats.Length; i++)
+        {
+            players[i] = stats[i].gameObject;
+        }
 
         return players;
     }
@@ -87,7 +93,7 @@ public class CameraManager : MonoBehaviour
             tempPos.x = players[0].transform.position.x;
         }
 
-        Debug.Log(tempPos.x);
+        //Debug.Log(tempPos.x);
 
 
         //Calculates the x limit of the camera depending on the level of zoom
@@ -101,13 +107,13 @@ public class CameraManager : MonoBehaviour
         else if (cam.transform.localPosition.z <= cameraZLimits.y)
             maxSide = maxSidesZoomUnzoomed.y;
             */
-       
+
         maxSide = maxSidesZoomedUnzoomed.x - maxSidesZoomUnzoomeDifference * ((cam.transform.localPosition.z - cameraZLimits.y) / cameraLimitsDifference);
 
 
 
 
-        
+
         if (tempPos.x > maxSide)
         {
             tempPos.x = maxSide;
@@ -117,12 +123,12 @@ public class CameraManager : MonoBehaviour
             tempPos.x = -maxSide;
         }
 
-        
+
 
 
         transform.position = tempPos;
-        
-        
+
+
     }
 
 
@@ -152,7 +158,7 @@ public class CameraManager : MonoBehaviour
         else
             newCamZ = cameraZLimits.x - cameraZLimitsDifference * ((distanceBetweenPlayers - playersDistanceForCameraZoomedUnzoomedLimits.x) / playersDistanceForCameraZoomLimitsDifference);
 
-        
+
 
 
         cam.transform.localPosition = new Vector3(tempPos.x, tempPos.y, newCamZ);

@@ -9,4 +9,9 @@ public class PlayerStats : MonoBehaviour
     float maxHealth;
 
     public int playerNum;
+
+    public void TakeDamage()
+    {
+        Debug.Log("Player " + playerNum + " : Ouch");
+    }
 }

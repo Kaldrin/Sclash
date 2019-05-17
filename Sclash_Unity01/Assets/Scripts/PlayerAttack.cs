@@ -38,7 +38,10 @@ public class PlayerAttack : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             Debug.Log("Slash");
+            dashDistance = 3.0f;
+            //triggerAttack = true;
             GetComponent<PlayerAnimations>().TriggerAttack();
+            ApplyDamage();
         }
 
         // DEFENSE
@@ -50,21 +53,28 @@ public class PlayerAttack : MonoBehaviour
         //DASH
         if (Input.GetButtonDown("Left" + stats.playerNum) || Input.GetButtonDown("Right" + stats.playerNum))
         {
-            dashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + stats.playerNum));
-
-            if (!tapping)
+            float tempDashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + stats.playerNum));
+            if (tempDashDirection == dashDirection)
             {
-                tapping = true;
-                StartCoroutine(SingleTap());
+                dashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + stats.playerNum));
+
+                if (!tapping)
+                {
+                    tapping = true;
+                    StartCoroutine(SingleTap());
+                }
+
+                if ((Time.time - lastTap) < tapTime)
+                {
+                    Debug.Log("Double tap");
+                    tapping = false;
+                    dashDistance = 5.0f;
+                    triggerAttack = true;
+                }
+                lastTap = Time.time;
             }
 
-            if ((Time.time - lastTap) < tapTime)
-            {
-                Debug.Log("Double tap");
-                tapping = false;
-                triggerAttack = true;
-            }
-            lastTap = Time.time;
+            dashDirection = tempDashDirection;
         }
     }
 
@@ -75,12 +85,29 @@ public class PlayerAttack : MonoBehaviour
         {
             Debug.Log("Single Tap");
             tapping = false;
+            dashDirection = 0;
         }
+    }
+
+    void ApplyDamage()
+    {
+        Collider2D[] hits = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -1), transform.position.y), new Vector2(1, 1), 0);
+        foreach (Collider2D c in hits)
+        {
+            if (c.CompareTag("Player"))
+            {
+                c.transform.parent.GetComponent<PlayerStats>().TakeDamage();
+            }
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -1), transform.position.y, transform.position.z), new Vector3(1, 1, 1));
     }
 
     void FixedUpdate()
     {
-
         if (triggerAttack)
         {
             Vector3 dir = new Vector3(dashDirection, 0, 0);
@@ -112,4 +139,6 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+
+
 }
