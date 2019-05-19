@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.anyKey);
-        //Play();
+        if (Input.anyKey)
+            Play();
     }
 
     IEnumerator SetupGame()
@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
         cameraManager.cameraState = "Battle";
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
+        yield return new WaitForSeconds(1);
+        cameraManager.smoothMovementsMultiplier = 0.5f;
     }
 
     void SpawnPlayers()

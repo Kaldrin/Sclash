@@ -11,20 +11,16 @@ public class CameraManager : MonoBehaviour
 
     //Zoom
     [SerializeField]
-    float zoomMultiplier = 0.5f;
-    [SerializeField]
     Vector2 cameraZLimits = new Vector2(-9, -19);
     [SerializeField]
     Vector2 playersDistanceForCameraZoomedUnzoomedLimits = new Vector2(5, 25);
     float distanceBetweenPlayers = 0;
-    [SerializeField]
-    float baseCameraZ;
 
     Camera cam;
 
     //Camera movements
     [SerializeField]
-    float smoothMovementsMultiplier = 0.01f;
+    public float smoothMovementsMultiplier = 0.01f;
 
     [SerializeField]
     Vector2 maxSidesZoomedUnzoomed = new Vector2(-10, -5);
