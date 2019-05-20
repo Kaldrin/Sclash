@@ -81,8 +81,6 @@ public class CameraManager : MonoBehaviour
             tempPos.x = players[0].transform.position.x;
         }
 
-        Debug.Log(tempPos.x);
-
 
         //Calculates the x limit of the camera depending on the level of zoom
         float cameraLimitsDifference = Mathf.Abs(cameraZLimits.y) - Mathf.Abs(cameraZLimits.x);
