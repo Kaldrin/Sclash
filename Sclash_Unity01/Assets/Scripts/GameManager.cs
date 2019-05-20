@@ -8,8 +8,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject mainMenu;
     [SerializeField]
-    GameObject blurPanel;
-    Shader blurPanelMaterial;
+    Material blur;
+    [SerializeField]
+    Material unblur;
 
 
     [SerializeField]
@@ -52,6 +53,7 @@ public class GameManager : MonoBehaviour
     {
         mainMenu.SetActive(false);
         cameraManager.cameraState = "Battle";
+        StartCoroutine(UpdateBlurPanel());
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
         yield return new WaitForSeconds(1);
@@ -76,5 +78,6 @@ public class GameManager : MonoBehaviour
     IEnumerator UpdateBlurPanel()
     {
         yield return new WaitForSeconds(0);
+        blur.Lerp(blur, unblur, 1);
     }
 }
