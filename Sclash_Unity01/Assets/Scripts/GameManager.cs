@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,12 +18,17 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     CameraManager cameraManager;
     List<GameObject> playersList = new List<GameObject>();
+    [SerializeField]
+    Text scoreText;
+
+    public Vector2 score;
 
     float menuPanelBlur = 1.7f;
 
     // Start is called before the first frame update
     void Start()
     {
+        score = new Vector2(0, 0);
         /*menuPanelBlur = */
         StartCoroutine(SetupGame());
     }
@@ -30,10 +36,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        if (Input.anyKey)
-            Play();
-            */
+
     }
 
     IEnumerator SetupGame()
@@ -48,9 +51,38 @@ public class GameManager : MonoBehaviour
         StartCoroutine(StartGame());
     }
 
+    string ScoreBuilder()
+    {
+        string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
+        return scoreString;
+    }
+
+    public void NextRound()
+    {
+        StartCoroutine(ShowScore());
+        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            GameObject p = playersList[i];
+
+            p.transform.position = playerSpawns[i].transform.position;
+            p.transform.rotation = playerSpawns[i].transform.rotation;
+            p.GetComponent<PlayerStats>().ResetHealth();
+        }
+    }
+
+    public void Score(int playerNum)
+    {
+        score[playerNum - 1] += 1;
+        Debug.Log(score);
+        scoreText.text = ScoreBuilder();
+        NextRound();
+    }
+
     IEnumerator StartGame()
     {
         mainMenu.SetActive(false);
+        blurPanel.SetActive(false);
         cameraManager.cameraState = "Battle";
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
@@ -70,7 +102,16 @@ public class GameManager : MonoBehaviour
                 ;
             playerStats = playersList[i].GetComponent<PlayerStats>();
             playerStats.playerNum = i + 1;
+            playerStats.ResetHealth();
         }
+    }
+
+    IEnumerator ShowScore()
+    {
+        Debug.Log("Show score");
+        scoreText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2.5f);
+        scoreText.gameObject.SetActive(false);
     }
 
     IEnumerator UpdateBlurPanel()

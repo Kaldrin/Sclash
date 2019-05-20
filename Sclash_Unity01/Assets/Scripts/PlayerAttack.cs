@@ -44,12 +44,6 @@ public class PlayerAttack : MonoBehaviour
             ApplyDamage();
         }
 
-        // DEFENSE
-        if (Input.GetButtonDown("Fire2"))
-        {
-            Debug.Log("Clang");
-        }
-
         //DASH
         if (Input.GetButtonDown("Left" + stats.playerNum) || Input.GetButtonDown("Right" + stats.playerNum))
         {
@@ -106,7 +100,10 @@ public class PlayerAttack : MonoBehaviour
         }
         foreach (GameObject g in hits)
         {
-            g.GetComponent<PlayerStats>().TakeDamage();
+            if (g.GetComponent<PlayerStats>().TakeDamage(gameObject))
+            {
+
+            }
         }
     }
 
