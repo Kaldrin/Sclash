@@ -115,11 +115,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (sign > 0)
         {
-            transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = false;
+            transform.localScale = new Vector3(1, 1, 1);
         }
         else
         {
-            transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = true;
+            transform.localScale = new Vector3(-1, 1, 1);
         }
     }
 }

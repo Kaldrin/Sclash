@@ -10,15 +10,36 @@ public class PlayerStats : MonoBehaviour
 
     public int playerNum;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        ResetHealth();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ResetHealth()
     {
-        
+        currentHealth = maxHealth;
+    }
+
+    public bool TakeDamage(GameObject instigator)
+    {
+        bool hit;
+        if (!Input.GetButton("Fire2"))
+        {
+            currentHealth -= 1;
+            hit = true;
+        }
+        else
+        {
+            Debug.Log("Player " + playerNum + " : Clang");
+            hit = false;
+        }
+
+        if (currentHealth <= 0)
+        {
+            Debug.Log("Player" + playerNum + " : Dead");
+            FindObjectOfType<GameManager>().Score(instigator.GetComponent<PlayerStats>().playerNum);
+        }
+
+        return hit;
     }
 }

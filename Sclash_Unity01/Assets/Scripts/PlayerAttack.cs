@@ -17,10 +17,18 @@ public class PlayerAttack : MonoBehaviour
     float time;
 
     Rigidbody2D rb;
+    PlayerStats stats;
+
+    bool tapping;
+    float lastTap;
+    float tapTime = 0.25f;
+    float dashDirection;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        stats = GetComponent<PlayerStats>();
     }
 
     void Update()
@@ -29,28 +37,92 @@ public class PlayerAttack : MonoBehaviour
         // ATTACK
         if (Input.GetButtonDown("Fire1"))
         {
-            triggerAttack = true;
             Debug.Log("Slash");
+            dashDistance = 3.0f;
+            //triggerAttack = true;
+            GetComponent<PlayerAnimations>().TriggerAttack();
+            ApplyDamage();
         }
 
-        // DEFENSE
-        if (Input.GetButtonDown("Fire2"))
+        //DASH
+        if (Input.GetButtonDown("Left" + stats.playerNum) || Input.GetButtonDown("Right" + stats.playerNum))
         {
-            Debug.Log("Clang");
+            float tempDashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + stats.playerNum));
+            if (tempDashDirection == dashDirection)
+            {
+                dashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + stats.playerNum));
+
+                if (!tapping)
+                {
+                    tapping = true;
+                    StartCoroutine(SingleTap());
+                }
+
+                if ((Time.time - lastTap) < tapTime)
+                {
+                    Debug.Log("Double tap");
+                    tapping = false;
+                    dashDistance = 5.0f;
+                    triggerAttack = true;
+                }
+                lastTap = Time.time;
+            }
+
+            dashDirection = tempDashDirection;
         }
+    }
+
+    IEnumerator SingleTap()
+    {
+        yield return new WaitForSeconds(tapTime);
+        if (tapping)
+        {
+            Debug.Log("Single Tap");
+            tapping = false;
+            dashDirection = 0;
+        }
+    }
+
+    void ApplyDamage()
+    {
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -1), transform.position.y), new Vector2(1, 1), 0);
+        List<GameObject> hits = new List<GameObject>();
+        foreach (Collider2D c in hitsCol)
+        {
+            Debug.Log(c);
+            if (c.CompareTag("Player"))
+            {
+                if (!hits.Contains(c.transform.parent.gameObject))
+                {
+                    hits.Add(c.transform.parent.gameObject);
+                }
+            }
+        }
+        foreach (GameObject g in hits)
+        {
+            if (g.GetComponent<PlayerStats>().TakeDamage(gameObject))
+            {
+
+            }
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -1), transform.position.y, transform.position.z), new Vector3(1, 1, 1));
     }
 
     void FixedUpdate()
     {
-
         if (triggerAttack)
         {
-            Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-            dir = Vector3.Normalize(dir) * dashDistance;
-            dir.z = 0.0f;
+            Vector3 dir = new Vector3(dashDirection, 0, 0);
+            dir *= dashDistance;
 
             initPos = transform.position;
             targetPos = transform.position + dir;
+            targetPos.y = transform.position.y;
+
             time = 0.0f;
             rb.velocity = Vector3.zero;
 
@@ -73,4 +145,6 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+
+
 }
