@@ -179,8 +179,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: QUIT
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e539f5bef2c44264e94df356c11e6267, type: 2}
-  m_sharedMaterial: {fileID: -8824402950867651446, guid: e539f5bef2c44264e94df356c11e6267,
+  m_fontAsset: {fileID: 11400000, guid: 5fbbfa1c6446e3447a9168f3d9f4340e, type: 2}
+  m_sharedMaterial: {fileID: 8389367759953294954, guid: 5fbbfa1c6446e3447a9168f3d9f4340e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -7432,7 +7432,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 69.1}
+  m_AnchoredPosition: {x: 0, y: 44.3}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1090192643
@@ -12741,9 +12741,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenu: {fileID: 818367646}
-  blurPanel: {fileID: 0}
+  blur: {fileID: 2100000, guid: 3124d2be854b9fc4e920bd577d5574c5, type: 2}
+  blurPanel: {fileID: 335762532}
+  unblur: {fileID: 2100000, guid: 2005d7c47e747f048b6f734e81c7f860, type: 2}
   player: {fileID: 7003620522291499883, guid: a404c61637450ce4b8f3a963b51d0fe6, type: 3}
   cameraManager: {fileID: 255681585}
+  scoreText: {fileID: 0}
+  score: {x: 0, y: 0}
 --- !u!4 &1310120936
 Transform:
   m_ObjectHideFlags: 0
@@ -22776,8 +22780,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: OPTIONS
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e539f5bef2c44264e94df356c11e6267, type: 2}
-  m_sharedMaterial: {fileID: -8824402950867651446, guid: e539f5bef2c44264e94df356c11e6267,
+  m_fontAsset: {fileID: 11400000, guid: 5fbbfa1c6446e3447a9168f3d9f4340e, type: 2}
+  m_sharedMaterial: {fileID: 8389367759953294954, guid: 5fbbfa1c6446e3447a9168f3d9f4340e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -23200,7 +23204,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -310.2, y: 37}
+  m_AnchoredPosition: {x: -310.2, y: 53.9}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1682119032

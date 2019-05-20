@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Material blur;
     [SerializeField]
+    GameObject blurPanel;
+    [SerializeField]
     Material unblur;
 
 
@@ -45,11 +47,8 @@ public class GameManager : MonoBehaviour
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
-    }
-
-    public void Play()
-    {
-        StartCoroutine(StartGame());
+        yield return new WaitForSeconds(2);
+        Play();
     }
 
     string ScoreBuilder()
@@ -80,10 +79,15 @@ public class GameManager : MonoBehaviour
         NextRound();
     }
 
+    public void Play()
+    {
+        StartCoroutine(StartGame());
+    }
+
     IEnumerator StartGame()
     {
         mainMenu.SetActive(false);
-        blurPanel.SetActive(false);
+        //blurPanel.SetActive(false);
         cameraManager.cameraState = "Battle";
         StartCoroutine(UpdateBlurPanel());
         yield return new WaitForSeconds(0.5f);
@@ -119,6 +123,6 @@ public class GameManager : MonoBehaviour
     IEnumerator UpdateBlurPanel()
     {
         yield return new WaitForSeconds(0);
-        blur.Lerp(blur, unblur, 1);
+        blur.Lerp(blur, unblur, 3);
     }
 }
