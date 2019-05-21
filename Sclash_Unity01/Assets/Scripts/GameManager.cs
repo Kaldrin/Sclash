@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         score = new Vector2(0, 0);
-        /*menuPanelBlur = */
         StartCoroutine(SetupGame());
     }
 
@@ -47,8 +46,10 @@ public class GameManager : MonoBehaviour
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
+        /*
         yield return new WaitForSeconds(2);
         Play();
+        */
     }
 
     string ScoreBuilder()
@@ -87,9 +88,9 @@ public class GameManager : MonoBehaviour
     IEnumerator StartGame()
     {
         mainMenu.SetActive(false);
-        //blurPanel.SetActive(false);
+        blurPanel.SetActive(false);
         cameraManager.cameraState = "Battle";
-        StartCoroutine(UpdateBlurPanel());
+        //StartCoroutine(UpdateBlurPanel());
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
         yield return new WaitForSeconds(1);
