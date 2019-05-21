@@ -629,7 +629,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4285f8b82e1c9409c8b616775d4ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementsMultiplier: 5
+  baseMovementsSpeed: 5.5
+  chargeMovementsSpeed: 2
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
   jumpHeight: 10
@@ -645,8 +646,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef55c2dc5af1cb24c8df41c4b1076324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dashAllowanceDuration: 0.4
   dashSpeed: 7
-  dashDistance: 7
+  dashDistance: 3
+  attackDashDistance: 3
   isDashing: 0
 --- !u!114 &7566831144946873117
 MonoBehaviour:

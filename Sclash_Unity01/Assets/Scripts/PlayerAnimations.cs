@@ -60,8 +60,19 @@ public class PlayerAnimations : MonoBehaviour
         {
             canAttack = false;
             animator.SetBool("Attack", true);
+            animator.SetBool("Charging", false);
             StartCoroutine(AttackTime());
         }
+    }
+
+    public void TriggerCharge()
+    {
+        animator.SetBool("Charging", true);
+    }
+
+    public void ChargeChange(float chargeLevel)
+    {
+        animator.SetFloat("Level", chargeLevel);
     }
 
     IEnumerator AttackTime()

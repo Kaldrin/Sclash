@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
     {
         score[playerNum - 1] += 1;
         Debug.Log(score);
-        scoreText.text = ScoreBuilder();
+        //scoreText.text = ScoreBuilder();
         NextRound();
     }
 
@@ -116,7 +116,7 @@ public class GameManager : MonoBehaviour
     IEnumerator ShowScore()
     {
         Debug.Log("Show score");
-        scoreText.gameObject.SetActive(true);
+        //scoreText.gameObject.SetActive(true);
         yield return new WaitForSeconds(2.5f);
         scoreText.gameObject.SetActive(false);
     }

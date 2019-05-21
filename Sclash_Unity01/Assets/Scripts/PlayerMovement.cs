@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     //Stats
     PlayerStats playerStats;
+    PlayerAttack playerAttack;
 
     //Orientation
     float initialXScale;
@@ -13,7 +14,11 @@ public class PlayerMovement : MonoBehaviour
     //Movements
     [SerializeField]
     [Range(1f, 20f)]
-    float movementsMultiplier = 10f;
+    float baseMovementsSpeed = 10f;
+    [SerializeField]
+    [Range(1f, 20f)]
+    float chargeMovementsSpeed = 5f;
+    float movementsMultiplier;
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
@@ -27,9 +32,13 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        playerAttack = GetComponent<PlayerAttack>();
         playerStats = GetComponent<PlayerStats>();
+
+        movementsMultiplier = baseMovementsSpeed;
         initialXScale = transform.localScale.x;
         rb = GetComponent<Rigidbody2D>();
+
 
         StartCoroutine(ExecOnAwake());
     }
@@ -37,11 +46,9 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
-
         if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.1f)
         {
-            jumpRequest = true;
+            //jumpRequest = true;
         }
 
         OrientTowardsEnemy();
@@ -49,13 +56,21 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
+
+
+
+
+
         if (jumpRequest)
         {
             rb.AddForce(Vector2.up * jumpHeight * 50, ForceMode2D.Impulse);
             jumpRequest = false;
         }
 
-        if (!GetComponent<PlayerAttack>().isDashing)
+
+
+        if (!playerAttack.isDashing)
         {
             if (rb.velocity.y < 0)
             {
@@ -70,6 +85,15 @@ public class PlayerMovement : MonoBehaviour
                 rb.gravityScale = 1f;
             }
         }
+    }
+
+
+    public void Charging(bool on)
+    {
+        if (on)
+            movementsMultiplier = chargeMovementsSpeed;
+        else
+            movementsMultiplier = baseMovementsSpeed;
     }
 
     IEnumerator ExecOnAwake()

@@ -87,17 +87,9 @@ public class CameraManager : MonoBehaviour
 			tempPos.x = players[0].transform.position.x;
 		}
 
-        //Calculates the x limit of the camera depending on the level of zoom
 		float cameraLimitsDifference = Mathf.Abs(cameraZLimits.y) - Mathf.Abs(cameraZLimits.x);
 		float maxSidesZoomUnzoomeDifference = maxSidesZoomedUnzoomed.y - maxSidesZoomedUnzoomed.x;
 		float maxSide = 0;
-
-        /*
-        if (cam.transform.localPosition.z >= cameraZLimits.x)
-            maxSide = maxSidesZoomUnzoomed.x;
-        else if (cam.transform.localPosition.z <= cameraZLimits.y)
-            maxSide = maxSidesZoomUnzoomed.y;
-            */
 
             maxSide = maxSidesZoomedUnzoomed.x - maxSidesZoomUnzoomeDifference * ((cam.transform.localPosition.z - cameraZLimits.y) / cameraLimitsDifference);
 
@@ -132,8 +124,6 @@ public class CameraManager : MonoBehaviour
         	else if (players.Length == 1)
         	{
         	}
-
-        //cam.transform.localPosition = new Vector3(tempPos.x, tempPos.y, baseCameraZ - distanceBetweenPlayers * zoomMultiplier);
 
         	float cameraZLimitsDifference = Mathf.Abs(cameraZLimits.y) - Mathf.Abs(cameraZLimits.x);
         	float playersDistanceForCameraZoomLimitsDifference = Mathf.Abs(playersDistanceForCameraZoomedUnzoomedLimits.y) - Mathf.Abs(playersDistanceForCameraZoomedUnzoomedLimits.x);

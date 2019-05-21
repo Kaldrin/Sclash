@@ -4,71 +4,207 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
+
+    
+  
+    Rigidbody2D rb;
+    PlayerStats platerStats;
+    PlayerAnimations playerAnimations;
+    PlayerMovement playerMovement;
+
+    
+    float lastTap;
+    float tapTime = 0.25f;
+    bool tapping;
+
+
+
+    // Attack
+    [SerializeField]
+    float lightRecoveryDuration;
+    [SerializeField]
+    float heavyRecoveryDuration;
+    [SerializeField]
+    float durationToNextChargeLevel = 1.5f;
+    [SerializeField]
+    float maxHoldDurationAtMaxCharge = 3;
+    float maxChargeLevelStartTime;
+    bool maxChargeLevelReached = false;
+    float chargeStartTime;
+    int chargeLevel = 1;
+    [SerializeField]
+    int maxChargeLevel = 2;
+
+    bool charging = false;
+    bool triggerAttack = false;
+
+
+
+
+
+    //Dash
+    int dashStep = 0;
+    //The current step to the dash
+    // 0 = Nothing done
+    // 1 = Player pressed the direction 1 time
+    // 2 = Player released the direction after pressing it
+    // 3 = Player pressed again the same direction after releasing it, dash
+
+    float dashDirection;
+    float tempDashDirection;
+    float dashInitStartTime = 0;
+    [SerializeField]
+    float dashAllowanceDuration = 0.4f;
+
     [Range(1.0f, 10.0f)]
     public float dashSpeed;
+
     [Range(1.0f, 10.0f)]
     public float dashDistance;
+    [SerializeField]
+    float attackDashDistance = 3;
+    float actualDashDistance;
 
-    bool triggerAttack = false;
+    [HideInInspector]
     public bool isDashing;
 
     Vector3 initPos;
     Vector3 targetPos;
     float time;
 
-    Rigidbody2D rb;
-    PlayerStats stats;
-
-    bool tapping;
-    float lastTap;
-    float tapTime = 0.25f;
-    float dashDirection;
-
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        stats = GetComponent<PlayerStats>();
+        platerStats = GetComponent<PlayerStats>();
+        playerAnimations = GetComponent<PlayerAnimations>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     void Update()
     {
 
         // ATTACK
-        if (Input.GetButtonDown("Fire1"))
+        ManageCharge();
+
+        // DASH
+        ManageDash();
+    }
+
+    void ManageCharge()
+    {
+        if (Input.GetButtonDown("Fire" + platerStats.playerNum))
         {
-            Debug.Log("Slash");
-            dashDistance = 3.0f;
-            //triggerAttack = true;
-            GetComponent<PlayerAnimations>().TriggerAttack();
-            ApplyDamage();
+            charging = true;
+            chargeStartTime = Time.time;
+            playerAnimations.TriggerCharge();
+            playerMovement.Charging(true);
         }
 
-        //DASH
-        if (Input.GetButtonDown("Left" + stats.playerNum) || Input.GetButtonDown("Right" + stats.playerNum))
+        if (Input.GetButtonUp("Fire" + platerStats.playerNum) && charging)
         {
-            float tempDashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + stats.playerNum));
-            if (tempDashDirection == dashDirection)
+            ReleaseAttack();
+        }
+
+        if (charging)
+        {
+            if (maxChargeLevelReached)
             {
-                dashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + stats.playerNum));
-
-                if (!tapping)
+                if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
                 {
-                    tapping = true;
-                    StartCoroutine(SingleTap());
-                }
 
-                if ((Time.time - lastTap) < tapTime)
-                {
-                    Debug.Log("Double tap");
-                    tapping = false;
-                    dashDistance = 5.0f;
-                    triggerAttack = true;
                 }
-                lastTap = Time.time;
+            }
+            else if (Time.time - chargeStartTime >= durationToNextChargeLevel)
+            {
+                chargeStartTime = Time.time;
+
+                if (chargeLevel < maxChargeLevel)
+                {
+                    chargeLevel++;
+                    playerAnimations.ChargeChange(chargeLevel);
+                    Debug.Log(chargeLevel);
+
+                }
+                else if (chargeLevel >= maxChargeLevel)
+                {
+                    chargeLevel = maxChargeLevel;
+                    maxChargeLevelStartTime = Time.time;
+                    maxChargeLevelReached = true;
+                }
+            }  
+        }
+    }
+
+    void ReleaseAttack()
+    {
+        playerMovement.Charging(false);
+        charging = false;
+        chargeLevel = 1;
+        maxChargeLevelReached = false;
+        playerAnimations.TriggerCharge();
+
+        actualDashDistance = attackDashDistance;
+        triggerAttack = true;
+        playerAnimations.TriggerAttack();
+        ApplyDamage();
+    }
+
+
+    //DASH
+    void ManageDash()
+    {
+
+        
+        if (dashStep == 1 || dashStep == 2)
+        {
+            if (Time.time - dashInitStartTime > dashAllowanceDuration)
+            {
+                dashStep = 0;
+            }
+        }
+
+        //The player needs to let go the input before pressing it again to dash
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + platerStats.playerNum)) < 0.2)
+        {
+            if (dashStep == 1)
+            {
+                dashStep = 2;
             }
 
-            dashDirection = tempDashDirection;
+            if (dashStep == 3)
+            {
+                dashStep = 0;
+            }
+
+        }
+
+        //When the player presses the directiosn
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + platerStats.playerNum)) > 0.2)
+        {
+            tempDashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + platerStats.playerNum));
+
+            if (tempDashDirection != dashDirection)
+            {
+                dashStep = 0;
+            }
+
+
+            if (dashStep == 0)
+            {
+                dashStep = 1;
+                dashDirection = tempDashDirection;
+                dashInitStartTime = Time.time;
+
+            }
+            else if (dashStep == 2 && dashDirection == tempDashDirection)
+            {
+                dashStep = 3;
+                actualDashDistance = dashDistance;
+                isDashing = true;
+                initPos = transform.position;
+                targetPos = transform.position + new Vector3(dashDistance * tempDashDirection, 0, 0);
+            }
         }
     }
 
@@ -87,6 +223,8 @@ public class PlayerAttack : MonoBehaviour
     {
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -1), transform.position.y), new Vector2(1, 1), 0);
         List<GameObject> hits = new List<GameObject>();
+
+
         foreach (Collider2D c in hitsCol)
         {
             Debug.Log(c);
@@ -116,7 +254,10 @@ public class PlayerAttack : MonoBehaviour
     {
         if (triggerAttack)
         {
-            Vector3 dir = new Vector3(dashDirection, 0, 0);
+            Vector3 dir = new Vector3(0, 0, 0);
+            if (Mathf.Abs(Input.GetAxis("Horizontal" + platerStats.playerNum)) > 0.2)
+                dir = new Vector3(dashDirection, 0, 0);
+
             dir *= dashDistance;
 
             initPos = transform.position;
@@ -140,11 +281,13 @@ public class PlayerAttack : MonoBehaviour
             transform.position = Vector3.Lerp(initPos, targetPos, time);
             if (time >= 1.0f)
             {
-                time = 1.0f;
+                time = 0;
                 isDashing = false;
             }
         }
+
+
+
+
     }
-
-
 }
