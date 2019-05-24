@@ -23,7 +23,7 @@ public class PlayerStats : MonoBehaviour
     public bool TakeDamage(GameObject instigator)
     {
         bool hit;
-        if (!Input.GetButton("Fire2"))
+        if (!Input.GetButton("Parry" + playerNum))
         {
             currentHealth -= 1;
             hit = true;

@@ -36,6 +36,9 @@ public class PlayerAnimations : MonoBehaviour
     void UpdateAnims()
     {
         animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + stats.playerNum)));
+        animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum));
+
+
 
         /* if (Mathf.Abs(rigid.velocity.x) > speedForWalking)
 		{
@@ -72,7 +75,7 @@ public class PlayerAnimations : MonoBehaviour
 
     public void ChargeChange(float chargeLevel)
     {
-        animator.SetFloat("Level", chargeLevel);
+        animator.SetFloat("Level", chargeLevel - 1);
     }
 
     IEnumerator AttackTime()

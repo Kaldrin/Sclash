@@ -5,14 +5,14 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
 
-    
-  
+
+
     Rigidbody2D rb;
-    PlayerStats platerStats;
+    PlayerStats playerStats;
     PlayerAnimations playerAnimations;
     PlayerMovement playerMovement;
 
-    
+
     float lastTap;
     float tapTime = 0.25f;
     bool tapping;
@@ -76,7 +76,7 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        platerStats = GetComponent<PlayerStats>();
+        playerStats = GetComponent<PlayerStats>();
         playerAnimations = GetComponent<PlayerAnimations>();
         playerMovement = GetComponent<PlayerMovement>();
     }
@@ -93,15 +93,16 @@ public class PlayerAttack : MonoBehaviour
 
     void ManageCharge()
     {
-        if (Input.GetButtonDown("Fire" + platerStats.playerNum))
+        if (Input.GetButtonDown("Fire" + playerStats.playerNum))
         {
+            playerAnimations.ChargeChange(chargeLevel);
             charging = true;
             chargeStartTime = Time.time;
             playerAnimations.TriggerCharge();
             playerMovement.Charging(true);
         }
 
-        if (Input.GetButtonUp("Fire" + platerStats.playerNum) && charging)
+        if (Input.GetButtonUp("Fire" + playerStats.playerNum) && charging)
         {
             ReleaseAttack();
         }
@@ -123,7 +124,6 @@ public class PlayerAttack : MonoBehaviour
                 {
                     chargeLevel++;
                     playerAnimations.ChargeChange(chargeLevel);
-                    Debug.Log(chargeLevel);
 
                 }
                 else if (chargeLevel >= maxChargeLevel)
@@ -132,12 +132,13 @@ public class PlayerAttack : MonoBehaviour
                     maxChargeLevelStartTime = Time.time;
                     maxChargeLevelReached = true;
                 }
-            }  
+            }
         }
     }
 
     void ReleaseAttack()
     {
+        Debug.Log("Attack released");
         playerMovement.Charging(false);
         charging = false;
         chargeLevel = 1;
@@ -155,7 +156,7 @@ public class PlayerAttack : MonoBehaviour
     void ManageDash()
     {
 
-        
+
         if (dashStep == 1 || dashStep == 2)
         {
             if (Time.time - dashInitStartTime > dashAllowanceDuration)
@@ -165,7 +166,7 @@ public class PlayerAttack : MonoBehaviour
         }
 
         //The player needs to let go the input before pressing it again to dash
-        if (Mathf.Abs(Input.GetAxis("Horizontal" + platerStats.playerNum)) < 0.2)
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) < 0.2)
         {
             if (dashStep == 1)
             {
@@ -180,9 +181,9 @@ public class PlayerAttack : MonoBehaviour
         }
 
         //When the player presses the directiosn
-        if (Mathf.Abs(Input.GetAxis("Horizontal" + platerStats.playerNum)) > 0.2)
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
         {
-            tempDashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + platerStats.playerNum));
+            tempDashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum));
 
             if (tempDashDirection != dashDirection)
             {
@@ -255,7 +256,7 @@ public class PlayerAttack : MonoBehaviour
         if (triggerAttack)
         {
             Vector3 dir = new Vector3(0, 0, 0);
-            if (Mathf.Abs(Input.GetAxis("Horizontal" + platerStats.playerNum)) > 0.2)
+            if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
                 dir = new Vector3(dashDirection, 0, 0);
 
             dir *= dashDistance;
