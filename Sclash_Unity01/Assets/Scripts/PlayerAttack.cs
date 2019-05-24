@@ -93,6 +93,15 @@ public class PlayerAttack : MonoBehaviour
 
     void ManageCharge()
     {
+        if (Input.GetButtonDown("Parry" + playerStats.playerNum) && charging)
+        {
+            playerMovement.Charging(false);
+            charging = false;
+            chargeLevel = 1;
+            maxChargeLevelReached = false;
+            playerAnimations.CancelCharge();
+        }
+
         if (Input.GetButtonDown("Fire" + playerStats.playerNum))
         {
             playerAnimations.ChargeChange(chargeLevel);

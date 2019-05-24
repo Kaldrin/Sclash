@@ -73,6 +73,11 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetBool("Charging", true);
     }
 
+    public void CancelCharge()
+    {
+        animator.SetBool("Charging", false);
+    }
+
     public void ChargeChange(float chargeLevel)
     {
         animator.SetFloat("Level", chargeLevel - 1);
