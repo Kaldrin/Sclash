@@ -84,11 +84,15 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
 
-        // ATTACK
-        ManageCharge();
+        if (playerStats.stamina > 0)
+        {
+            // ATTACK
+            ManageCharge();
 
-        // DASH
-        ManageDash();
+            // DASH
+            ManageDash();
+        }
+
     }
 
     void ManageCharge()
@@ -248,10 +252,7 @@ public class PlayerAttack : MonoBehaviour
         }
         foreach (GameObject g in hits)
         {
-            if (g.GetComponent<PlayerStats>().TakeDamage(gameObject))
-            {
-
-            }
+            g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
         }
     }
 
