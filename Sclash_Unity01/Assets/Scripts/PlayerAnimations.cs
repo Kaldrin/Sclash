@@ -36,26 +36,20 @@ public class PlayerAnimations : MonoBehaviour
     void UpdateAnims()
     {
         animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + stats.playerNum)));
+        //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
+    }
 
-        animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
-
-
-
-        /* if (Mathf.Abs(rigid.velocity.x) > speedForWalking)
-		{
-			animator.SetBool(walkBool, true);
-		}
-		else
-		{
-			animator.SetBool(walkBool, false);
-		}
-		
-		if (colliderUpdate)
+    // Triggers or deactivates parry
+    public void Parry(bool state)
+    {
+        if (state)
         {
-            Destroy(colliderChild.GetComponent<PolygonCollider2D>());
-            colliderChild.AddComponent<PolygonCollider2D>();
-		}*/
-
+            animator.SetBool("Parry", true);
+        }
+        else
+        {
+            animator.SetBool("Parry", false);
+        }
     }
 
     public void TriggerAttack()

@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
             p.transform.position = playerSpawns[i].transform.position;
             p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerStats>().ResetHealth();
+            p.GetComponent<PlayerStats>().ResetValues();
         }
     }
 
@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
                 ;
             playerStats = playersList[i].GetComponent<PlayerStats>();
             playerStats.playerNum = i + 1;
-            playerStats.ResetHealth();
+            playerStats.ResetValues();
         }
     }
 

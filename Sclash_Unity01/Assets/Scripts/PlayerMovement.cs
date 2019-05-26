@@ -12,19 +12,14 @@ public class PlayerMovement : MonoBehaviour
     float initialXScale;
 
     //Movements
-    [SerializeField]
-    [Range(1f, 20f)]
-    float baseMovementsSpeed = 10f;
-    [SerializeField]
-    [Range(1f, 20f)]
-    float chargeMovementsSpeed = 5f;
+    [SerializeField] [Range(1f, 20f)] float baseMovementsSpeed = 10f;
+    [SerializeField] [Range(1f, 20f)] float chargeMovementsSpeed = 5f;
     float movementsMultiplier;
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
 
-    [Range(1f, 10f)]
-    public float jumpHeight = 10f;
+    [Range(1f, 10f)] public float jumpHeight = 10f;
 
     bool jumpRequest;
     Rigidbody2D rb;
@@ -102,6 +97,7 @@ public class PlayerMovement : MonoBehaviour
         OrientTowardsEnemy();
     }
 
+    // Orients the player towars the other player
     void OrientTowardsEnemy()
     {
         GameObject p1 = null, p2 = null, self = null, other = null;

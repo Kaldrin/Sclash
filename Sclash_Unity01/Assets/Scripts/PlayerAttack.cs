@@ -6,68 +6,65 @@ public class PlayerAttack : MonoBehaviour
 {
 
 
-
+    // COMPONENTS
     Rigidbody2D rb;
     PlayerStats playerStats;
     PlayerAnimations playerAnimations;
     PlayerMovement playerMovement;
 
 
+
+    // TAP
     float lastTap;
     float tapTime = 0.25f;
     bool tapping;
 
 
 
-    // Attack
-    [SerializeField]
-    float lightRecoveryDuration;
-    [SerializeField]
-    float heavyRecoveryDuration;
-    [SerializeField]
-    float durationToNextChargeLevel = 1.5f;
-    [SerializeField]
-    float maxHoldDurationAtMaxCharge = 3;
+    // AATTACK RECOVERY
+    [SerializeField] float minRecoveryDuration = 0.4f;
+    [SerializeField] float maxRecoveryDuration = 1;
+    bool attackRecovery = false;
+    float attackRecoveryStartTime;
+    float attackRecoveryDuration;
+
+
+
+    // CHARGE & ATTACK
+    [SerializeField] float durationToNextChargeLevel = 1.5f;
+    [SerializeField] float maxHoldDurationAtMaxCharge = 3;
     float maxChargeLevelStartTime;
     bool maxChargeLevelReached = false;
     float chargeStartTime;
     int chargeLevel = 1;
-    [SerializeField]
-    int maxChargeLevel = 2;
+    [SerializeField] int maxChargeLevel = 2;
 
     bool charging = false;
     bool triggerAttack = false;
 
+    
+
+    // PARRY
+    [HideInInspector] public bool parrying;
 
 
 
-
-    //Dash
+    // DASH
     int dashStep = 0;
     //The current step to the dash
     // 0 = Nothing done
     // 1 = Player pressed the direction 1 time
     // 2 = Player released the direction after pressing it
     // 3 = Player pressed again the same direction after releasing it, dash
-
     float dashDirection;
     float tempDashDirection;
     float dashInitStartTime = 0;
-    [SerializeField]
-    float dashAllowanceDuration = 0.4f;
-
-    [Range(1.0f, 10.0f)]
-    public float dashSpeed;
-
-    [Range(1.0f, 10.0f)]
-    public float dashDistance;
-    [SerializeField]
-    float attackDashDistance = 3;
+    [SerializeField] float dashAllowanceDuration = 0.3f;
+    [Range(1.0f, 10.0f)] public float dashSpeed;
+    [Range(1.0f, 10.0f)] public float dashDistance;
+    [SerializeField] float attackDashDistance = 3;
     float actualDashDistance;
-
-    [HideInInspector]
-    public bool isDashing;
-
+    [HideInInspector] public bool isDashing;
     Vector3 initPos;
     Vector3 targetPos;
     float time;
@@ -75,6 +72,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
+        //Get components
         rb = GetComponent<Rigidbody2D>();
         playerStats = GetComponent<PlayerStats>();
         playerAnimations = GetComponent<PlayerAnimations>();
@@ -83,7 +81,6 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-
         if (playerStats.stamina > 0)
         {
             // ATTACK
@@ -93,20 +90,32 @@ public class PlayerAttack : MonoBehaviour
             ManageDash();
         }
 
+        ManageRecoveries();
+    }
+
+    void ManageRecoveries()
+    {
+        if (attackRecovery)
+        {
+            if (Time.time - attackRecoveryStartTime >= attackRecoveryDuration)
+            {
+                attackRecovery = false;
+            }
+        }
     }
 
     void ManageCharge()
     {
+
+        //Player presses parry button while charging
         if (Input.GetButtonDown("Parry" + playerStats.playerNum) && charging)
         {
-            playerMovement.Charging(false);
-            charging = false;
-            chargeLevel = 1;
-            maxChargeLevelReached = false;
-            playerAnimations.CancelCharge();
+            Parry();
         }
 
-        if (Input.GetButtonDown("Fire" + playerStats.playerNum))
+
+        //Player presses attack button
+        if (Input.GetButtonDown("Fire" + playerStats.playerNum) && !attackRecovery)
         {
             playerAnimations.ChargeChange(chargeLevel);
             charging = true;
@@ -115,18 +124,22 @@ public class PlayerAttack : MonoBehaviour
             playerMovement.Charging(true);
         }
 
+
+        //Player releases attack button
         if (Input.GetButtonUp("Fire" + playerStats.playerNum) && charging)
         {
             ReleaseAttack();
         }
 
+
+        //When the player is charging the attack
         if (charging)
         {
             if (maxChargeLevelReached)
             {
                 if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
                 {
-
+                    ReleaseAttack();
                 }
             }
             else if (Time.time - chargeStartTime >= durationToNextChargeLevel)
@@ -137,7 +150,7 @@ public class PlayerAttack : MonoBehaviour
                 {
                     chargeLevel++;
                     playerAnimations.ChargeChange(chargeLevel);
-
+                    Debug.Log(chargeLevel);
                 }
                 else if (chargeLevel >= maxChargeLevel)
                 {
@@ -151,7 +164,7 @@ public class PlayerAttack : MonoBehaviour
 
     void ReleaseAttack()
     {
-        Debug.Log("Attack released");
+        // Charge
         playerMovement.Charging(false);
         charging = false;
         chargeLevel = 1;
@@ -162,6 +175,33 @@ public class PlayerAttack : MonoBehaviour
         triggerAttack = true;
         playerAnimations.TriggerAttack();
         ApplyDamage();
+
+
+        // Activate recovery
+        attackRecovery = true;
+        attackRecoveryStartTime = Time.time;
+        attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * (chargeLevel - 1) / maxChargeLevel;
+        Debug.Log(maxChargeLevel);
+    }
+
+    public void Parry()
+    {
+        StartCoroutine(ParryC());
+    }
+
+    IEnumerator ParryC()
+    {
+        parrying = true;
+        playerMovement.Charging(false);
+        charging = false;
+        chargeLevel = 1;
+        maxChargeLevelReached = false;
+        playerAnimations.Parry(true);
+        playerAnimations.CancelCharge();
+
+        actualDashDistance = attackDashDistance;
+
+        yield return new WaitForSeconds(0.5f);
     }
 
 
@@ -296,9 +336,5 @@ public class PlayerAttack : MonoBehaviour
                 isDashing = false;
             }
         }
-
-
-
-
     }
 }

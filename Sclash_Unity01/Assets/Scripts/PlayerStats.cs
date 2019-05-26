@@ -5,35 +5,45 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
-    float currentHealth;
-    [SerializeField]
-    float maxHealth;
+    //Components
+    PlayerAttack playerAttack;
 
-    float maxStamina = 10f;
+    // Health
+    float currentHealth;
+    [SerializeField] float maxHealth;
+
+    //Stamina
+    float maxStamina = 3f;
     public float stamina;
-    [SerializeField]
-    Slider staminaSlider;
+    [SerializeField] Slider staminaSlider;
 
     public int playerNum;
 
     public bool parryBroke = false;
 
-
     void Awake()
     {
-        stamina = maxStamina;
-        ResetHealth();
+        playerAttack = GetComponent<PlayerAttack>();
+
+        // Set the stamina slider's max value to the stamina max value
+        staminaSlider.maxValue = maxStamina;
+
+
+        ResetValues();
     }
 
     void FixedUpdate()
     {
+        // If the player is parrying
         if (Input.GetButton("Parry" + playerNum) && !parryBroke)
         {
             if (stamina > 0)
             {
-                stamina -= Time.deltaTime * 2;
+                //stamina -= Time.deltaTime * 2;
+                playerAttack.Parry();
             }
         }
+        // If the player is not parrying
         else
         {
             if (stamina < maxStamina)
@@ -41,7 +51,8 @@ public class PlayerStats : MonoBehaviour
                 stamina += Time.deltaTime;
             }
 
-            if (stamina >= 5)
+            // If the player recovered at least half of his stamina he can parry again
+            if (stamina >= maxStamina / 2)
             {
                 parryBroke = false;
             }
@@ -53,7 +64,7 @@ public class PlayerStats : MonoBehaviour
         staminaSlider.value = stamina;
     }
 
-    public void ResetHealth()
+    public void ResetValues()
     {
         currentHealth = maxHealth;
         stamina = maxStamina;
@@ -62,14 +73,22 @@ public class PlayerStats : MonoBehaviour
     public bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
         bool hit;
+        /*
         if (!Input.GetButton("Parry" + playerNum) || parryBroke)
+        {
+            currentHealth -= 1;
+            hit = true;
+        }
+        */
+        if (!playerAttack.parrying)
         {
             currentHealth -= 1;
             hit = true;
         }
         else
         {
-            stamina -= hitStrength;
+            //stamina -= hitStrength;
+            stamina++;
             if (stamina > 0)
             {
                 Debug.Log("Player " + playerNum + " : Clang");
