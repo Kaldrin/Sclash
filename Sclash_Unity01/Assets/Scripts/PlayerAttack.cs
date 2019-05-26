@@ -46,6 +46,7 @@ public class PlayerAttack : MonoBehaviour
 
     // PARRY
     [HideInInspector] public bool parrying;
+    [SerializeField] float parryDuration = 0.4f;
 
 
 
@@ -90,9 +91,12 @@ public class PlayerAttack : MonoBehaviour
             ManageDash();
         }
 
+        // RECOVERY
         ManageRecoveries();
     }
 
+
+    // RECOVERIES
     void ManageRecoveries()
     {
         if (attackRecovery)
@@ -104,6 +108,9 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+
+
+    //CHARGE & ATTACK
     void ManageCharge()
     {
 
@@ -135,6 +142,14 @@ public class PlayerAttack : MonoBehaviour
         //When the player is charging the attack
         if (charging)
         {
+            // If the player runs out of stamina while charging
+            if (playerStats.stamina < playerStats.staminaCostForMoves)
+            {
+                ReleaseAttack();
+            }
+
+
+            // If the player has wiated too long charging
             if (maxChargeLevelReached)
             {
                 if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
@@ -169,13 +184,24 @@ public class PlayerAttack : MonoBehaviour
         charging = false;
         chargeLevel = 1;
         maxChargeLevelReached = false;
-        playerAnimations.TriggerCharge();
+        //playerAnimations.TriggerCharge();
 
-        actualDashDistance = attackDashDistance;
-        triggerAttack = true;
-        playerAnimations.TriggerAttack();
-        ApplyDamage();
 
+        // Check if player has enough remaining stamina
+        if (playerStats.stamina >= playerStats.staminaCostForMoves)
+        {
+            actualDashDistance = attackDashDistance;
+            triggerAttack = true;
+            playerAnimations.TriggerAttack();
+            ApplyDamage();
+
+            playerStats.stamina -= playerStats.staminaCostForMoves;
+        }
+        else
+        {
+            playerAnimations.CancelCharge();
+        }
+        
 
         // Activate recovery
         attackRecovery = true;
@@ -184,6 +210,11 @@ public class PlayerAttack : MonoBehaviour
         Debug.Log(maxChargeLevel);
     }
 
+
+
+
+    // PARRY
+    // Starts the parry coroutine
     public void Parry()
     {
         StartCoroutine(ParryC());
@@ -196,20 +227,23 @@ public class PlayerAttack : MonoBehaviour
         charging = false;
         chargeLevel = 1;
         maxChargeLevelReached = false;
-        playerAnimations.Parry(true);
         playerAnimations.CancelCharge();
+        //playerAnimations.Parry(true);
+
 
         actualDashDistance = attackDashDistance;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(parryDuration);
+
+        parrying = false;
+        //playerAnimations.Parry(parrying);
     }
 
 
     //DASH
     void ManageDash()
     {
-
-
+        // Resets the dash input if too much time has passed
         if (dashStep == 1 || dashStep == 2)
         {
             if (Time.time - dashInitStartTime > dashAllowanceDuration)
@@ -251,17 +285,24 @@ public class PlayerAttack : MonoBehaviour
                 dashInitStartTime = Time.time;
 
             }
+            // Dash is validated, the player is gonna dash
             else if (dashStep == 2 && dashDirection == tempDashDirection)
             {
                 dashStep = 3;
                 actualDashDistance = dashDistance;
                 isDashing = true;
+
+                playerStats.stamina -= playerStats.staminaCostForMoves;
+
+                
+
                 initPos = transform.position;
                 targetPos = transform.position + new Vector3(dashDistance * tempDashDirection, 0, 0);
             }
         }
     }
 
+    /*
     IEnumerator SingleTap()
     {
         yield return new WaitForSeconds(tapTime);
@@ -272,6 +313,7 @@ public class PlayerAttack : MonoBehaviour
             dashDirection = 0;
         }
     }
+    */
 
     void ApplyDamage()
     {

@@ -4,25 +4,28 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
 {
-    [SerializeField]
-    Rigidbody2D rigid;
-    [SerializeField]
-    GameObject colliderChild;
+    // COMPONENTS
+    [SerializeField] Rigidbody2D rigid;
+    [SerializeField] Animator animator;
+    PlayerAttack playerAttack;
+    PlayerStats playerStats;
+
+    [SerializeField] GameObject colliderChild;
 
 
-    [SerializeField]
-    Animator animator;
-    [SerializeField]
-    string walkBool = "Walk";
-    [SerializeField]
-    float speedForWalking = 0.5f;
+    
+    [SerializeField] string walkBool = "Walk";
+    [SerializeField] float speedForWalking = 0.5f;
 
-    PlayerStats stats;
+    
     bool canAttack;
 
     void Awake()
     {
-        stats = GetComponent<PlayerStats>();
+        playerAttack = GetComponent<PlayerAttack>();
+        playerStats = GetComponent<PlayerStats>();
+
+
         canAttack = true;
     }
 
@@ -35,11 +38,13 @@ public class PlayerAnimations : MonoBehaviour
 
     void UpdateAnims()
     {
-        animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + stats.playerNum)));
+        animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)));
+        animator.SetBool("Parry", playerAttack.parrying);
         //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
     }
 
     // Triggers or deactivates parry
+    /*
     public void Parry(bool state)
     {
         if (state)
@@ -51,6 +56,7 @@ public class PlayerAnimations : MonoBehaviour
             animator.SetBool("Parry", false);
         }
     }
+    */
 
     public void TriggerAttack()
     {

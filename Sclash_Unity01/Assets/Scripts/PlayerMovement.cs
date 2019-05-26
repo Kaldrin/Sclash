@@ -97,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
         OrientTowardsEnemy();
     }
 
-    // Orients the player towars the other player
+    // Orients the player towards the other player
     void OrientTowardsEnemy()
     {
         GameObject p1 = null, p2 = null, self = null, other = null;

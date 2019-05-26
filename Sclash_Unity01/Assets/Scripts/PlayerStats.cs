@@ -13,9 +13,11 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] float maxHealth;
 
     //Stamina
-    float maxStamina = 3f;
-    public float stamina;
+    [SerializeField] float maxStamina = 3f;
+    [HideInInspector] public float stamina;
     [SerializeField] Slider staminaSlider;
+    [SerializeField] float staminaGainOverTimeMultiplier = 0.5f;
+    [SerializeField] public float staminaCostForMoves = 1;
 
     public int playerNum;
 
@@ -35,12 +37,13 @@ public class PlayerStats : MonoBehaviour
     void FixedUpdate()
     {
         // If the player is parrying
-        if (Input.GetButton("Parry" + playerNum) && !parryBroke)
+        if (Input.GetButtonDown("Parry" + playerNum) && !parryBroke && !playerAttack.parrying)
         {
-            if (stamina > 0)
+            if (stamina >= staminaCostForMoves)
             {
                 //stamina -= Time.deltaTime * 2;
                 playerAttack.Parry();
+                stamina -= staminaCostForMoves;
             }
         }
         // If the player is not parrying
@@ -48,7 +51,7 @@ public class PlayerStats : MonoBehaviour
         {
             if (stamina < maxStamina)
             {
-                stamina += Time.deltaTime;
+                stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
             }
 
             // If the player recovered at least half of his stamina he can parry again
@@ -88,7 +91,7 @@ public class PlayerStats : MonoBehaviour
         else
         {
             //stamina -= hitStrength;
-            stamina++;
+            stamina += staminaCostForMoves;
             if (stamina > 0)
             {
                 Debug.Log("Player " + playerNum + " : Clang");
