@@ -54,15 +54,11 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
 
 
-
-
-
         if (jumpRequest)
         {
             rb.AddForce(Vector2.up * jumpHeight * 50, ForceMode2D.Impulse);
             jumpRequest = false;
         }
-
 
 
         if (!playerAttack.isDashing)

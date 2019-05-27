@@ -121,4 +121,9 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0);
         blur.Lerp(blur, unblur, 3);
     }
+
+    void ResetPlayers()
+    {
+
+    }
 }

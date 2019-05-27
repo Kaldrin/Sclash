@@ -1105,7 +1105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4285f8b82e1c9409c8b616775d4ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMovementsSpeed: 5.5
+  baseMovementsSpeed: 4
   chargeMovementsSpeed: 2
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
@@ -1126,13 +1126,14 @@ MonoBehaviour:
   maxRecoveryDuration: 1
   durationToNextChargeLevel: 1.5
   maxHoldDurationAtMaxCharge: 3
+  chargeLevel: 1
   maxChargeLevel: 3
   parrying: 0
   parryDuration: 0.4
   dashAllowanceDuration: 0.4
-  dashSpeed: 7
+  dashSpeed: 5
   dashDistance: 3
-  attackDashDistance: 3
+  attackDashDistance: 2
   isDashing: 0
 --- !u!114 &7566831144946873117
 MonoBehaviour:
@@ -1150,7 +1151,8 @@ MonoBehaviour:
   maxStamina: 3
   stamina: 3
   staminaSlider: {fileID: 994018448512127870}
-  staminaGainOverTimeMultiplier: 0.5
+  staminaGainOverTimeMultiplier: 0.1
+  staminaCostForMoves: 1
   playerNum: 0
   parryBroke: 0
 --- !u!114 &1250708261086219519

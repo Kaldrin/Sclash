@@ -7,6 +7,7 @@ public class PlayerStats : MonoBehaviour
 {
     //Components
     PlayerAttack playerAttack;
+    Rigidbody2D rigidbody;
 
     // Health
     float currentHealth;
@@ -16,7 +17,8 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] float maxStamina = 3f;
     [HideInInspector] public float stamina;
     [SerializeField] Slider staminaSlider;
-    [SerializeField] float staminaGainOverTimeMultiplier = 0.5f;
+    [SerializeField] float staminaGainOverTimeMultiplier = 0.1f;
+    [SerializeField] float idleStaminaGainOverTimeMultiplier = 0.5f;
     [SerializeField] public float staminaCostForMoves = 1;
 
     public int playerNum;
@@ -25,6 +27,8 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
+        // Getting components
+        rigidbody = GetComponent<Rigidbody2D>();
         playerAttack = GetComponent<PlayerAttack>();
 
         // Set the stamina slider's max value to the stamina max value
@@ -51,7 +55,10 @@ public class PlayerStats : MonoBehaviour
         {
             if (stamina < maxStamina)
             {
-                stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
+                if (idleStaminaGainOverTimeMultiplier >= 0.5f)
+                    stamina += Time.deltaTime * idleStaminaGainOverTimeMultiplier;
+                else
+                    stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
             }
 
             // If the player recovered at least half of his stamina he can parry again
@@ -92,6 +99,8 @@ public class PlayerStats : MonoBehaviour
         {
             //stamina -= hitStrength;
             stamina += staminaCostForMoves;
+            instigator.GetComponent<PlayerAttack>().Clash();
+
             if (stamina > 0)
             {
                 Debug.Log("Player " + playerNum + " : Clang");

@@ -40,6 +40,7 @@ public class PlayerAnimations : MonoBehaviour
     {
         animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)));
         animator.SetBool("Parry", playerAttack.parrying);
+        animator.SetFloat("Level", playerAttack.chargeLevel - 1);
         //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
     }
 

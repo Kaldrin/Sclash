@@ -21,7 +21,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-    // AATTACK RECOVERY
+    // ATTACK RECOVERY
     [SerializeField] float minRecoveryDuration = 0.4f;
     [SerializeField] float maxRecoveryDuration = 1;
     bool attackRecovery = false;
@@ -36,7 +36,7 @@ public class PlayerAttack : MonoBehaviour
     float maxChargeLevelStartTime;
     bool maxChargeLevelReached = false;
     float chargeStartTime;
-    int chargeLevel = 1;
+    [HideInInspector] public int chargeLevel = 1;
     [SerializeField] int maxChargeLevel = 2;
 
     bool charging = false;
@@ -47,6 +47,10 @@ public class PlayerAttack : MonoBehaviour
     // PARRY
     [HideInInspector] public bool parrying;
     [SerializeField] float parryDuration = 0.4f;
+
+
+    // CLASH
+    bool clashed = true;
 
 
 
@@ -286,7 +290,7 @@ public class PlayerAttack : MonoBehaviour
 
             }
             // Dash is validated, the player is gonna dash
-            else if (dashStep == 2 && dashDirection == tempDashDirection)
+            else if (dashStep == 2 && dashDirection == tempDashDirection && playerStats.stamina >= playerStats.staminaCostForMoves)
             {
                 dashStep = 3;
                 actualDashDistance = dashDistance;
@@ -314,6 +318,20 @@ public class PlayerAttack : MonoBehaviour
         }
     }
     */
+
+    public void Clash()
+    {
+        charging = false;
+        chargeLevel = 1;
+        playerAnimations.CancelCharge();
+
+        attackRecovery = false;
+        triggerAttack = false;
+        parrying = false;
+        tempDashDirection = -transform.localScale.x;
+        
+        clashed = true;
+    }
 
     void ApplyDamage()
     {
