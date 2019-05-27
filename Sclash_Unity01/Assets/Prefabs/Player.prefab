@@ -1130,8 +1130,9 @@ MonoBehaviour:
   maxChargeLevel: 3
   parrying: 0
   parryDuration: 0.4
+  clashKnockback: 1
   dashAllowanceDuration: 0.4
-  dashSpeed: 5
+  dashSpeed: 4
   dashDistance: 3
   attackDashDistance: 2
   isDashing: 0
@@ -1152,6 +1153,7 @@ MonoBehaviour:
   stamina: 3
   staminaSlider: {fileID: 994018448512127870}
   staminaGainOverTimeMultiplier: 0.1
+  idleStaminaGainOverTimeMultiplier: 1
   staminaCostForMoves: 1
   playerNum: 0
   parryBroke: 0

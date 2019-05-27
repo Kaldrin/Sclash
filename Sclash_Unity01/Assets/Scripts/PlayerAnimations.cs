@@ -80,10 +80,18 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetBool("Charging", false);
     }
 
+    /*
     public void ChargeChange(float chargeLevel)
     {
         animator.SetFloat("Level", chargeLevel - 1);
     }
+    */
+
+    public void Clashed(bool state)
+    {
+        animator.SetBool("Clash", state);
+    }
+
 
     IEnumerator AttackTime()
     {

@@ -7,7 +7,7 @@ public class PlayerStats : MonoBehaviour
 {
     //Components
     PlayerAttack playerAttack;
-    Rigidbody2D rigidbody;
+    Rigidbody2D rigid;
 
     // Health
     float currentHealth;
@@ -28,7 +28,7 @@ public class PlayerStats : MonoBehaviour
     void Awake()
     {
         // Getting components
-        rigidbody = GetComponent<Rigidbody2D>();
+        rigid = GetComponent<Rigidbody2D>();
         playerAttack = GetComponent<PlayerAttack>();
 
         // Set the stamina slider's max value to the stamina max value
@@ -55,10 +55,18 @@ public class PlayerStats : MonoBehaviour
         {
             if (stamina < maxStamina)
             {
-                if (idleStaminaGainOverTimeMultiplier >= 0.5f)
+                Debug.Log(Mathf.Abs(rigid.velocity.x));
+                if (Mathf.Abs(rigid.velocity.x) <= 0.5f)
+                {
                     stamina += Time.deltaTime * idleStaminaGainOverTimeMultiplier;
+                    Debug.Log("Idle");
+                }     
                 else
+                {
                     stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
+                    Debug.Log("Moving");
+                }
+                    
             }
 
             // If the player recovered at least half of his stamina he can parry again
@@ -90,7 +98,18 @@ public class PlayerStats : MonoBehaviour
             hit = true;
         }
         */
-        if (!playerAttack.parrying)
+
+
+
+        // CLASH
+        if (playerAttack.activeFrame)
+        {
+            instigator.GetComponent<PlayerAttack>().Clash();
+            playerAttack.Clash();
+            hit = false;
+        }
+        // PARRY
+        else if (!playerAttack.parrying)
         {
             currentHealth -= 1;
             hit = true;
@@ -113,6 +132,9 @@ public class PlayerStats : MonoBehaviour
             hit = false;
         }
 
+
+
+        // IS DEAD ?
         if (currentHealth <= 0)
         {
             Debug.Log("Player" + playerNum + " : Dead");

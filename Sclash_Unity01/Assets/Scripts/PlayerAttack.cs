@@ -41,6 +41,7 @@ public class PlayerAttack : MonoBehaviour
 
     bool charging = false;
     bool triggerAttack = false;
+    [SerializeField] public bool activeFrame;
 
     
 
@@ -51,6 +52,7 @@ public class PlayerAttack : MonoBehaviour
 
     // CLASH
     bool clashed = true;
+    [SerializeField] float clashKnockback = 2;
 
 
 
@@ -128,7 +130,6 @@ public class PlayerAttack : MonoBehaviour
         //Player presses attack button
         if (Input.GetButtonDown("Fire" + playerStats.playerNum) && !attackRecovery)
         {
-            playerAnimations.ChargeChange(chargeLevel);
             charging = true;
             chargeStartTime = Time.time;
             playerAnimations.TriggerCharge();
@@ -168,7 +169,7 @@ public class PlayerAttack : MonoBehaviour
                 if (chargeLevel < maxChargeLevel)
                 {
                     chargeLevel++;
-                    playerAnimations.ChargeChange(chargeLevel);
+                    //playerAnimations.ChargeChange(chargeLevel);
                     Debug.Log(chargeLevel);
                 }
                 else if (chargeLevel >= maxChargeLevel)
@@ -197,7 +198,7 @@ public class PlayerAttack : MonoBehaviour
             actualDashDistance = attackDashDistance;
             triggerAttack = true;
             playerAnimations.TriggerAttack();
-            ApplyDamage();
+            //ApplyDamage();
 
             playerStats.stamina -= playerStats.staminaCostForMoves;
         }
@@ -327,11 +328,25 @@ public class PlayerAttack : MonoBehaviour
 
         attackRecovery = false;
         triggerAttack = false;
+        activeFrame = false;
+
         parrying = false;
-        tempDashDirection = -transform.localScale.x;
-        
+
+        tempDashDirection = transform.localScale.x;
+        actualDashDistance = clashKnockback;
+        isDashing = true;
+        initPos = transform.position;
+        targetPos = transform.position + new Vector3(dashDistance * tempDashDirection, 0, 0);
+
+
         clashed = true;
+        playerAnimations.CancelCharge();
+        playerAnimations.Clashed(clashed);
     }
+
+
+
+
 
     void ApplyDamage()
     {
@@ -363,6 +378,12 @@ public class PlayerAttack : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (activeFrame)
+        {
+            ApplyDamage();
+        }
+
+
         if (triggerAttack)
         {
             Vector3 dir = new Vector3(0, 0, 0);
@@ -386,6 +407,9 @@ public class PlayerAttack : MonoBehaviour
             triggerAttack = false;
         }
 
+
+
+
         if (isDashing)
         {
             time += Time.deltaTime * dashSpeed;
@@ -394,6 +418,14 @@ public class PlayerAttack : MonoBehaviour
             {
                 time = 0;
                 isDashing = false;
+
+
+                // If the player was clashed / countered and has finished their knockback
+                if (clashed)
+                {
+                    clashed = false;
+                    playerAnimations.Clashed(clashed);
+                }
             }
         }
     }
