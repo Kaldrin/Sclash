@@ -347,7 +347,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
+    // Hits with a phantom collider
     void ApplyDamage()
     {
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -1), transform.position.y), new Vector2(1, 1), 0);
@@ -374,6 +374,12 @@ public class PlayerAttack : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -1), transform.position.y, transform.position.z), new Vector3(1, 1, 1));
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (activeFrame)
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -1), transform.position.y, transform.position.z), new Vector3(1, 1, 1));
     }
 
     void FixedUpdate()
