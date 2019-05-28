@@ -59,12 +59,10 @@ public class PlayerStats : MonoBehaviour
                 if (Mathf.Abs(rigid.velocity.x) <= 0.5f)
                 {
                     stamina += Time.deltaTime * idleStaminaGainOverTimeMultiplier;
-                    Debug.Log("Idle");
                 }     
                 else
                 {
                     stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
-                    Debug.Log("Moving");
                 }
                     
             }

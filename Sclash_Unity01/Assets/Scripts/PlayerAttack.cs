@@ -187,7 +187,7 @@ public class PlayerAttack : MonoBehaviour
         // Charge
         playerMovement.Charging(false);
         charging = false;
-        chargeLevel = 1;
+        
         maxChargeLevelReached = false;
         //playerAnimations.TriggerCharge();
 
@@ -211,8 +211,10 @@ public class PlayerAttack : MonoBehaviour
         // Activate recovery
         attackRecovery = true;
         attackRecoveryStartTime = Time.time;
-        attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * (chargeLevel - 1) / maxChargeLevel;
-        Debug.Log(maxChargeLevel);
+        attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
+
+
+        chargeLevel = 1;
     }
 
 

@@ -65,6 +65,7 @@ public class PlayerAnimations : MonoBehaviour
         {
             canAttack = false;
             animator.SetBool("Attack", true);
+            animator.SetTrigger("Attacking");
             animator.SetBool("Charging", false);
             StartCoroutine(AttackTime());
         }
@@ -90,6 +91,9 @@ public class PlayerAnimations : MonoBehaviour
     public void Clashed(bool state)
     {
         animator.SetBool("Clash", state);
+
+        if (state)
+            animator.SetTrigger("Clashed");
     }
 
 
