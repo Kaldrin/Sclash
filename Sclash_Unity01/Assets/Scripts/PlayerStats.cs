@@ -7,6 +7,7 @@ public class PlayerStats : MonoBehaviour
 {
     //Components
     PlayerAttack playerAttack;
+    PlayerAnimations playerAnimation;
     Rigidbody2D rigid;
 
     // Health
@@ -30,6 +31,7 @@ public class PlayerStats : MonoBehaviour
         // Getting components
         rigid = GetComponent<Rigidbody2D>();
         playerAttack = GetComponent<PlayerAttack>();
+        playerAnimation = GetComponent<PlayerAnimations>();
 
         // Set the stamina slider's max value to the stamina max value
         staminaSlider.maxValue = maxStamina;
@@ -55,7 +57,6 @@ public class PlayerStats : MonoBehaviour
         {
             if (stamina < maxStamina)
             {
-                Debug.Log(Mathf.Abs(rigid.velocity.x));
                 if (Mathf.Abs(rigid.velocity.x) <= 0.5f)
                 {
                     stamina += Time.deltaTime * idleStaminaGainOverTimeMultiplier;
@@ -112,6 +113,7 @@ public class PlayerStats : MonoBehaviour
             currentHealth -= 1;
             hit = true;
         }
+        //HURT
         else
         {
             //stamina -= hitStrength;
@@ -136,7 +138,8 @@ public class PlayerStats : MonoBehaviour
         if (currentHealth <= 0)
         {
             Debug.Log("Player" + playerNum + " : Dead");
-            FindObjectOfType<GameManager>().Score(instigator.GetComponent<PlayerStats>().playerNum);
+            FindObjectOfType<GameManager>().Death(instigator.GetComponent<PlayerStats>().playerNum);
+            playerAnimation.Dead();
         }
 
         return hit;

@@ -5,24 +5,21 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    //Menu
-    [SerializeField]
-    GameObject mainMenu;
-    [SerializeField]
-    Material blur;
-    [SerializeField]
-    GameObject blurPanel;
-    [SerializeField]
-    Material unblur;
+    // MENU
+    [SerializeField] GameObject mainMenu;
+    [SerializeField] Material blur;
+    [SerializeField] GameObject blurPanel;
+    [SerializeField] Material unblur;
 
 
-    [SerializeField]
-    GameObject player;
-    [SerializeField]
-    CameraManager cameraManager;
+    // ROUND
+    [SerializeField] float timeBeforeNextRound = 3;
+
+    
+    [SerializeField] GameObject player;
+    [SerializeField] CameraManager cameraManager;
     List<GameObject> playersList = new List<GameObject>();
-    [SerializeField]
-    Text scoreText;
+    [SerializeField] Text scoreText;
 
     public Vector2 score;
 
@@ -56,22 +53,22 @@ public class GameManager : MonoBehaviour
     public void NextRound()
     {
         StartCoroutine(ShowScore());
-        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            GameObject p = playersList[i];
-
-            p.transform.position = playerSpawns[i].transform.position;
-            p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerStats>().ResetValues();
-        }
+        ResetPlayers();
     }
 
-    public void Score(int playerNum)
+    public void Death(int playerNum)
+    {
+        StartCoroutine(Score(playerNum));
+    }
+
+    IEnumerator Score(int playerNum)
     {
         score[playerNum - 1] += 1;
         Debug.Log(score);
-        scoreText.text = ScoreBuilder();
+
+        yield return new WaitForSeconds(timeBeforeNextRound);
+
+        scoreText.text = ScoreBuilder(); 
         NextRound();
     }
 
@@ -100,8 +97,7 @@ public class GameManager : MonoBehaviour
         {
             PlayerStats playerStats;
 
-            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation))
-                ;
+            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
             playerStats = playersList[i].GetComponent<PlayerStats>();
             playerStats.playerNum = i + 1;
             playerStats.ResetValues();
@@ -124,6 +120,16 @@ public class GameManager : MonoBehaviour
 
     void ResetPlayers()
     {
+        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            GameObject p = playersList[i];
+
+            p.transform.position = playerSpawns[i].transform.position;
+            p.transform.rotation = playerSpawns[i].transform.rotation;
+            p.GetComponent<PlayerStats>().ResetValues();
+            p.GetComponent<PlayerAnimations>().ResetAnims();
+        }
     }
 }

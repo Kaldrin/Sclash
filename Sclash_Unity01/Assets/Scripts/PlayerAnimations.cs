@@ -96,6 +96,12 @@ public class PlayerAnimations : MonoBehaviour
             animator.SetTrigger("Clashed");
     }
 
+    public void Dead()
+    {
+        //animator.SetTrigger("Dead");
+        animator.SetBool("Dead", true);
+    }
+
 
     IEnumerator AttackTime()
     {
@@ -104,5 +110,18 @@ public class PlayerAnimations : MonoBehaviour
         canAttack = true;
     }
 
+
+
+    public void ResetAnims()
+    {
+        animator.SetBool("Attack", false);
+        //animator.ResetTrigger("Dead");
+        animator.SetBool("Dead", false);
+        animator.ResetTrigger("Clashed");
+        animator.SetBool("Clash", false);
+        animator.SetBool("Charging", false);
+        animator.ResetTrigger("Attacking");
+        animator.SetBool("Parry", false);
+    }
 
 }
