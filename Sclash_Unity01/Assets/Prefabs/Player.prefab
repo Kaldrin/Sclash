@@ -1036,7 +1036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.7075472, b: 0.32216316, a: 1}
+  m_Color: {r: 0.3718593, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1105,6 +1105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4285f8b82e1c9409c8b616775d4ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManagerName: GlobalManager
   baseMovementsSpeed: 4
   chargeMovementsSpeed: 2
   fallMultiplier: 2.5
@@ -1122,6 +1123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef55c2dc5af1cb24c8df41c4b1076324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManagerName: GlobalManager
   minRecoveryDuration: 0.4
   maxRecoveryDuration: 1
   durationToNextChargeLevel: 1.5
@@ -1149,6 +1151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a62098f6ec8959c419d9e7c33c84ca04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManagerName: GlobalManager
   maxHealth: 1
   maxStamina: 3
   stamina: 3

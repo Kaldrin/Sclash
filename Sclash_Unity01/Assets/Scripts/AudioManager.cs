@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    // Sound functions
+    // SOUND FUNCTIONS
     [SerializeField] SoundFunctions soundFunctions;
 
 
@@ -20,9 +20,11 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource heavyAttack;
     [SerializeField] AudioSource successfulAttack;
     [SerializeField] AudioSource charge;
-    // Audio clip
+    // Audio clips
+    /*
     [SerializeField] AudioClip mainMenuMusic;
     [SerializeField] AudioClip battleMusic;
+    */
 
 
 
@@ -35,6 +37,8 @@ public class AudioManager : MonoBehaviour
     bool fadeMusic = false;
     bool menuMusicFinishedFade = false;
     bool battleMusicFinishedFade = false;
+    [SerializeField] float musicFadeSpeed = 0.001f;
+    float volumeComparisonTolerance = 0.1f;
 
 
 
@@ -42,6 +46,14 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource deathVoice;
     [SerializeField] AudioSource attackVoice;
     [SerializeField] AudioSource introVoice;
+
+
+
+    // PLAYERS
+    GameObject[] players;
+    float distanceBetweenPlayers = 0;
+    [SerializeField] Vector2 battleMusicVolumeDistanceBounds = new Vector2(5, 20);
+    [SerializeField] Vector2 battleMusicVolumeBounds = new Vector2(1, 0);
 
 
 
@@ -60,18 +72,20 @@ public class AudioManager : MonoBehaviour
         }
         
 
-        if (fadeMusic)
-        {
-            FadeMusic();
-        }
+
+        FadeMusic();
     }
 
+    public void FindPlayers()
+    {
+        players = GameObject.FindGameObjectsWithTag("Player");
+    }
 
 
     // MUSIC
     void ActivateMusicFade()
     {
-        fadeMusic = true;
+        //fadeMusic = true;
         menuMusicFinishedFade = false;
         battleMusicFinishedFade = false;
     }
@@ -81,29 +95,43 @@ public class AudioManager : MonoBehaviour
         // Menu music
         if (menuMusicSource.volume > menuMusicObjective)
         {
-            menuMusicSource.volume += -0.01f;
+            menuMusicSource.volume += -musicFadeSpeed;
         }
         else if (menuMusicSource.volume < menuMusicObjective)
         {
-            menuMusicSource.volume += 0.01f;
+            menuMusicSource.volume += musicFadeSpeed;
         }
-        else
+        else if (Mathf.Abs(menuMusicSource.volume - menuMusicObjective) < volumeComparisonTolerance)
         {
+            menuMusicFinishedFade = true;
             menuMusicSource.volume = menuMusicObjective;
         }
 
         // Battle music
         if (battleMusicSource.volume > battleMusicObjective)
         {
-            battleMusicSource.volume += -0.01f;
+            battleMusicSource.volume += -musicFadeSpeed;
         }
         else if (battleMusicSource.volume < battleMusicObjective)
         {
-            battleMusicSource.volume += 0.01f;
+            battleMusicSource.volume += musicFadeSpeed;
         }
-        else
+        else if (Mathf.Abs(battleMusicSource.volume - battleMusicObjective) < volumeComparisonTolerance)
         {
+            battleMusicFinishedFade = true;
             battleMusicSource.volume = battleMusicObjective;
+        }
+
+
+
+        if (menuMusicFinishedFade && battleMusicFinishedFade)
+        {
+            fadeMusic = false;
+            battleMusicFinishedFade = false;
+            menuMusicFinishedFade = false;
+
+            battleMusicSource.volume = battleMusicObjective;
+            menuMusicSource.volume = menuMusicObjective;
         }
     }
 
@@ -133,8 +161,12 @@ public class AudioManager : MonoBehaviour
 
     void AdjustMusicVolumeOnDistance()
     {
-
+        distanceBetweenPlayers = Mathf.Abs(players[0].transform.position.x - players[1].transform.position.x);
     }
+
+
+
+
 
 
 

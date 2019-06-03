@@ -55,8 +55,6 @@ public class GameManager : MonoBehaviour
         // Set on the menu music
         audioManager.MenuMusicOn();
 
-
-
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
@@ -102,7 +100,12 @@ public class GameManager : MonoBehaviour
     IEnumerator StartGame()
     {
         // SOUND
+        audioManager.FindPlayers();
+        yield return new WaitForSeconds(0.1f);
         audioManager.BattleMusicOn();
+        
+
+
 
         mainMenu.SetActive(false);
         blurPanel.SetActive(false);
