@@ -5,16 +5,21 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
-    //Components
+
+    // SOUND
+    [SerializeField] string soundFunctionsName = "GlobalManager";
+    SoundFunctions soundFunctions;
+
+    // COMPONENTS
     PlayerAttack playerAttack;
     PlayerAnimations playerAnimation;
     Rigidbody2D rigid;
 
-    // Health
+    // HEALTH
     float currentHealth;
     [SerializeField] float maxHealth;
 
-    //Stamina
+    //STAMINA
     [SerializeField] float maxStamina = 3f;
     [HideInInspector] public float stamina;
     [SerializeField] Slider staminaSlider;
@@ -28,6 +33,9 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
+        //Getting objects
+        soundFunctions = GameObject.Find(soundFunctionsName).GetComponent<SoundFunctions>();
+
         // Getting components
         rigid = GetComponent<Rigidbody2D>();
         playerAttack = GetComponent<PlayerAttack>();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundManager : MonoBehaviour {
+public class SoundFunctions : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -14,6 +14,8 @@ public class SoundManager : MonoBehaviour {
 		
 	}
 
+
+    // Play sound from name of the game object with the audiosource
     public void PlaySound(string sound)
     {
         AudioSource soundObject = null;
@@ -22,11 +24,14 @@ public class SoundManager : MonoBehaviour {
         {
             soundObject = GameObject.Find(sound).GetComponent<AudioSource>();
             soundObject.Play();
+            soundObject.loop = false;
         }
         else
             Debug.Log("AudioSource '" + sound + "' could'nt be found in the scene");
     }
 
+
+    // Activate an audiosource (Music, ambiance, etc) from name of the game object with the audiosource
     public void SetAudioActive(string sound, bool state)
     {
         AudioSource soundObject = null;
@@ -46,6 +51,8 @@ public class SoundManager : MonoBehaviour {
             Debug.Log("AudioSource '" + sound + "' could'nt be found in the scene");
     }
 
+
+    // Deactivate an audiosource (Music, ambiance, etc) from name of the game object with the audiosource
     public void SetAudioMute(string sound, bool state)
     {
         AudioSource soundObject = null;
