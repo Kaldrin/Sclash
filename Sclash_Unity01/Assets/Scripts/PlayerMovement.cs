@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    //Stats
+    // AUDIO
+    [SerializeField] string audioManagerName = "GlobalManager";
+    AudioManager audioManager;
+
+    // COMPONENTS
     PlayerStats playerStats;
     PlayerAttack playerAttack;
 
-    //Orientation
+    // ORIENTATION
     float initialXScale;
+    bool orientTowardsEnemy = true;
 
-    //Movements
+    // MOVEMENTS
     [SerializeField] [Range(1f, 20f)] float baseMovementsSpeed = 10f;
     [SerializeField] [Range(1f, 20f)] float chargeMovementsSpeed = 5f;
     float movementsMultiplier;
@@ -27,13 +32,19 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        // Get audio
+        audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
+
+
+        // Get components
         playerAttack = GetComponent<PlayerAttack>();
         playerStats = GetComponent<PlayerStats>();
-
-        movementsMultiplier = baseMovementsSpeed;
-        initialXScale = transform.localScale.x;
         rb = GetComponent<Rigidbody2D>();
 
+        // Initialize variables
+        movementsMultiplier = baseMovementsSpeed;
+        initialXScale = transform.localScale.x;
+        
 
         StartCoroutine(ExecOnAwake());
     }
@@ -51,16 +62,28 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        // MOVEMENTS
         rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
 
+        // SOUND
+        if (rb.velocity.x > 0.5f)
+        {
+            audioManager.Walk(true);
+        }
+        else
+        {
+            audioManager.Walk(false);
+        }
 
+
+        // JUMP
         if (jumpRequest)
         {
             rb.AddForce(Vector2.up * jumpHeight * 50, ForceMode2D.Impulse);
             jumpRequest = false;
         }
 
-
+        // DASH
         if (!playerAttack.isDashing)
         {
             if (rb.velocity.y < 0)
@@ -79,6 +102,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+
+    // CHARGING
     public void Charging(bool on)
     {
         if (on)
@@ -87,55 +112,62 @@ public class PlayerMovement : MonoBehaviour
             movementsMultiplier = baseMovementsSpeed;
     }
 
+
+
     IEnumerator ExecOnAwake()
     {
         yield return new WaitForSeconds(0.2f);
         OrientTowardsEnemy();
     }
 
-    // Orients the player towards the other player
+
+
+    // ORIENTATION
     void OrientTowardsEnemy()
     {
-        GameObject p1 = null, p2 = null, self = null, other = null;
-        PlayerStats[] stats = FindObjectsOfType<PlayerStats>();
-
-        foreach (PlayerStats stat in stats)
+        if (orientTowardsEnemy)
         {
-            switch (stat.playerNum)
+            GameObject p1 = null, p2 = null, self = null, other = null;
+            PlayerStats[] stats = FindObjectsOfType<PlayerStats>();
+
+            foreach (PlayerStats stat in stats)
             {
-                case 1:
-                    p1 = stat.gameObject;
-                    break;
+                switch (stat.playerNum)
+                {
+                    case 1:
+                        p1 = stat.gameObject;
+                        break;
 
-                case 2:
-                    p2 = stat.gameObject;
-                    break;
+                    case 2:
+                        p2 = stat.gameObject;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
-        }
 
-        if (p1 == gameObject)
-        {
-            self = p1;
-            other = p2;
-        }
-        else if (p2 == gameObject)
-        {
-            self = p2;
-            other = p1;
-        }
+            if (p1 == gameObject)
+            {
+                self = p1;
+                other = p2;
+            }
+            else if (p2 == gameObject)
+            {
+                self = p2;
+                other = p1;
+            }
 
-        float sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
+            float sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
 
-        if (sign > 0)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-        else
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
+            if (sign > 0)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
         }
     }
 }

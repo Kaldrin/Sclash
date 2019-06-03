@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
-{
+{ 
+    // AUDIO
+    [SerializeField] string audioManagerName = "GlobalManager";
+    AudioManager audioManager;
 
 
     // COMPONENTS
@@ -79,7 +82,10 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
-        //Get components
+        // Get audio
+        audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
+
+        // Get components
         rb = GetComponent<Rigidbody2D>();
         playerStats = GetComponent<PlayerStats>();
         playerAnimations = GetComponent<PlayerAnimations>();
@@ -102,6 +108,9 @@ public class PlayerAttack : MonoBehaviour
     }
 
 
+
+
+
     // RECOVERIES
     void ManageRecoveries()
     {
@@ -113,6 +122,8 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+
+
 
 
 
@@ -201,6 +212,18 @@ public class PlayerAttack : MonoBehaviour
             //ApplyDamage();
 
             playerStats.stamina -= playerStats.staminaCostForMoves;
+
+
+
+            // Activate recovery
+            attackRecovery = true;
+            attackRecoveryStartTime = Time.time;
+            attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
+
+
+
+            // Sound
+            audioManager.Attack(chargeLevel, maxChargeLevel);
         }
         else
         {
@@ -208,14 +231,12 @@ public class PlayerAttack : MonoBehaviour
         }
         
 
-        // Activate recovery
-        attackRecovery = true;
-        attackRecoveryStartTime = Time.time;
-        attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
+        
 
 
         chargeLevel = 1;
     }
+
 
 
 
@@ -239,6 +260,12 @@ public class PlayerAttack : MonoBehaviour
 
 
         actualDashDistance = attackDashDistance;
+
+        
+        // Sound
+        audioManager.ParryOn();
+        
+
 
         yield return new WaitForSeconds(parryDuration);
 
@@ -322,6 +349,12 @@ public class PlayerAttack : MonoBehaviour
     }
     */
 
+
+
+
+
+    //CLASH
+
     public void Clash()
     {
         charging = false;
@@ -344,6 +377,9 @@ public class PlayerAttack : MonoBehaviour
         clashed = true;
         playerAnimations.CancelCharge();
         playerAnimations.Clashed(clashed);
+
+        // Sound
+        audioManager.Clash();
     }
 
 
@@ -358,7 +394,6 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D c in hitsCol)
         {
-            Debug.Log(c);
             if (c.CompareTag("Player"))
             {
                 if (!hits.Contains(c.transform.parent.gameObject))

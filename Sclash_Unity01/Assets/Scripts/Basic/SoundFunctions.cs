@@ -15,8 +15,8 @@ public class SoundFunctions : MonoBehaviour {
 	}
 
 
-    // Play sound from name of the game object with the audiosource
-    public void PlaySound(string sound)
+    // Play sound from name of the game object with the audio source
+    public void PlaySoundFromName(string sound)
     {
         AudioSource soundObject = null;
 
@@ -30,9 +30,24 @@ public class SoundFunctions : MonoBehaviour {
             Debug.Log("AudioSource '" + sound + "' could'nt be found in the scene");
     }
 
+    // Play sound from audio source
+    public void PlaySoundFromSource(AudioSource audioSource)
+    {
+        AudioSource soundObject = null;
 
-    // Activate an audiosource (Music, ambiance, etc) from name of the game object with the audiosource
-    public void SetAudioActive(string sound, bool state)
+        if (audioSource)
+        {
+            soundObject = audioSource;
+            soundObject.Play();
+            soundObject.loop = false;
+        }
+        else
+            Debug.Log("AudioSource '" + audioSource + "' could'nt be found in the scene");
+    }
+
+
+    // Activate / deactivate an audiosource (Music, ambiance, etc) from name of the game object with the audio source
+    public void SetAudioActiveFromName(string sound, bool state)
     {
         AudioSource soundObject = null;
 
@@ -52,8 +67,29 @@ public class SoundFunctions : MonoBehaviour {
     }
 
 
-    // Deactivate an audiosource (Music, ambiance, etc) from name of the game object with the audiosource
-    public void SetAudioMute(string sound, bool state)
+    // Activate / deactivate an audiosource (Music, ambiance, etc)
+    public void SetAudioActiveFromSource(AudioSource audioSource, bool state)
+    {
+        AudioSource soundObject = null;
+
+        if (audioSource)
+        {
+            soundObject = audioSource;
+
+
+            if (state)
+                soundObject.Play();
+            else
+                soundObject.Stop();
+            soundObject.loop = state;
+        }
+        else
+            Debug.Log("AudioSource '" + audioSource + "' could'nt be found in the scene");
+    }
+
+
+    // Mute / unmute an audiosource (Music, ambiance, etc) from name of the game object with the audiosource
+    public void SetAudioMuteFromName(string sound, bool state)
     {
         AudioSource soundObject = null;
 
@@ -65,5 +101,21 @@ public class SoundFunctions : MonoBehaviour {
         }
         else
             Debug.Log("AudioSource '" + sound + "' could'nt be found in the scene");
+    }
+
+
+    // Mute / unmute an audiosource (Music, ambiance, etc)
+    public void SetAudioMuteFromSource(AudioSource audioSource, bool state)
+    {
+        AudioSource soundObject = null;
+
+        if (audioSource)
+        {
+            soundObject = audioSource;
+
+            soundObject.mute = state;
+        }
+        else
+            Debug.Log("AudioSource '" + audioSource + "' could'nt be found in the scene");
     }
 }

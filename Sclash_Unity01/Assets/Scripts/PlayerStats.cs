@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class PlayerStats : MonoBehaviour
 {
 
-    // SOUND
-    [SerializeField] string soundFunctionsName = "GlobalManager";
-    SoundFunctions soundFunctions;
+    // AUDIO
+    [SerializeField] string audioManagerName = "GlobalManager";
+    AudioManager audioManager;
 
     // COMPONENTS
     PlayerAttack playerAttack;
@@ -33,8 +33,8 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
-        //Getting objects
-        soundFunctions = GameObject.Find(soundFunctionsName).GetComponent<SoundFunctions>();
+        // Getting sound 
+        audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
         // Getting components
         rigid = GetComponent<Rigidbody2D>();
@@ -95,6 +95,8 @@ public class PlayerStats : MonoBehaviour
         stamina = maxStamina;
     }
 
+
+    // When receiving an attack
     public bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
         bool hit;
@@ -115,13 +117,16 @@ public class PlayerStats : MonoBehaviour
             playerAttack.Clash();
             hit = false;
         }
-        // PARRY
+        // HURT
         else if (!playerAttack.parrying)
         {
             currentHealth -= 1;
             hit = true;
+
+            // Sound
+            audioManager.SuccessfulAttack();
         }
-        //HURT
+        // PARRY
         else
         {
             //stamina -= hitStrength;
@@ -138,6 +143,11 @@ public class PlayerStats : MonoBehaviour
                 parryBroke = true;
             }
             hit = false;
+
+
+
+            // Sound
+            audioManager.Parried();
         }
 
 
