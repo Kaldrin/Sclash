@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    // AUDIO
+    [SerializeField] string audioManagerName = "GlobalManager";
+    AudioManager audioManager;
+
+
+
     // MENU
     [SerializeField] GameObject mainMenu;
     [SerializeField] Material blur;
@@ -28,13 +34,29 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Get audio
+        audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
+
+        // Reset score
         score = new Vector2(0, 0);
+
+
+        // Start game
         StartCoroutine(SetupGame());
     }
 
 
     IEnumerator SetupGame()
     {
+        yield return new WaitForSeconds(0);
+
+
+        // SOUND
+        // Set on the menu music
+        audioManager.MenuMusicOn();
+
+
+
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
@@ -79,6 +101,9 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StartGame()
     {
+        // SOUND
+        audioManager.BattleMusicOn();
+
         mainMenu.SetActive(false);
         blurPanel.SetActive(false);
         cameraManager.cameraState = "Battle";

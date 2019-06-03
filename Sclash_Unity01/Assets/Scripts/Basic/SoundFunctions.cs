@@ -118,4 +118,11 @@ public class SoundFunctions : MonoBehaviour {
         else
             Debug.Log("AudioSource '" + audioSource + "' could'nt be found in the scene");
     }
+
+
+    // Change the audio source's clip
+    public void ChangeClipOfAudioSource(AudioSource audioSource, AudioClip audioClip)
+    {
+        audioSource.clip = audioClip;
+    }
 }
