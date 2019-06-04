@@ -346,6 +346,8 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
     //DASH
     void ManageDash()
     {
@@ -397,7 +399,7 @@ public class PlayerAttack : MonoBehaviour
                 isDashing = true;
 
                 // Animation
-                playerAnimations.Dash();
+                playerAnimations.Dash(tempDashDirection * transform.localScale.x);
 
                 playerStats.stamina -= playerStats.staminaCostForMoves;
 

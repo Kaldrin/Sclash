@@ -42,7 +42,7 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetBool("Parry", playerAttack.parrying);
         animator.SetFloat("Level", playerAttack.chargeLevel - 1);
         animator.SetBool("Charging", playerAttack.charging);
-        animator.SetBool("Dahsing", playerAttack.isDashing);
+        animator.SetBool("Dashing", playerAttack.isDashing);
         //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
     }
 
@@ -152,7 +152,7 @@ public class PlayerAnimations : MonoBehaviour
 
             animator.SetTrigger("DashOn");
 
-        
-        animator.SetFloat("DashDirection", )
+
+        animator.SetFloat("DashDirection", blendTreeValue);
     }
 }
