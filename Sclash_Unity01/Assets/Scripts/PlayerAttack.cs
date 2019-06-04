@@ -42,7 +42,7 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public int chargeLevel = 1;
     [SerializeField] int maxChargeLevel = 2;
 
-    bool charging = false;
+    [HideInInspector] public bool charging = false;
     bool triggerAttack = false;
     [SerializeField] public bool activeFrame;
 
@@ -78,6 +78,7 @@ public class PlayerAttack : MonoBehaviour
     Vector3 initPos;
     Vector3 targetPos;
     float time;
+    [SerializeField] float dashDeadZone = 0.5f;
 
 
     void Start()
@@ -107,6 +108,62 @@ public class PlayerAttack : MonoBehaviour
         ManageRecoveries();
     }
 
+    void FixedUpdate()
+    {
+        if (activeFrame)
+        {
+            ApplyDamage();
+        }
+
+
+        if (triggerAttack)
+        {
+            Vector3 dir = new Vector3(0, 0, 0);
+            if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
+                dir = new Vector3(dashDirection, 0, 0);
+
+            dir *= dashDistance;
+
+            initPos = transform.position;
+            targetPos = transform.position + dir;
+            targetPos.y = transform.position.y;
+
+            time = 0.0f;
+            rb.velocity = Vector3.zero;
+
+            isDashing = true;
+            rb.gravityScale = 0f;
+
+            //rb.AddForce((Vector2)dir * dashMultiplier, ForceMode2D.Impulse);
+
+            triggerAttack = false;
+        }
+
+
+
+
+        if (isDashing)
+        {
+            time += Time.deltaTime * dashSpeed;
+            transform.position = Vector3.Lerp(initPos, targetPos, time);
+            if (time >= 1.0f)
+            {
+                time = 0;
+                isDashing = false;
+
+
+                // If the player was clashed / countered and has finished their knockback
+                if (clashed)
+                {
+                    clashed = false;
+                    playerAnimations.Clashed(clashed);
+                }
+            }
+        }
+    }
+
+
+
 
 
 
@@ -122,6 +179,9 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+
+
+
 
 
 
@@ -188,6 +248,9 @@ public class PlayerAttack : MonoBehaviour
                     chargeLevel = maxChargeLevel;
                     maxChargeLevelStartTime = Time.time;
                     maxChargeLevelReached = true;
+
+                    playerAnimations.TriggerMaxCharge();
+                    Debug.Log(charging);
                 }
             }
         }
@@ -231,9 +294,7 @@ public class PlayerAttack : MonoBehaviour
         }
         
 
-        
-
-
+       
         chargeLevel = 1;
     }
 
@@ -251,12 +312,17 @@ public class PlayerAttack : MonoBehaviour
     IEnumerator ParryC()
     {
         parrying = true;
+        
         playerMovement.Charging(false);
         charging = false;
         chargeLevel = 1;
         maxChargeLevelReached = false;
+
+
+
         playerAnimations.CancelCharge();
         //playerAnimations.Parry(true);
+        playerAnimations.TriggerParry();
 
 
         actualDashDistance = attackDashDistance;
@@ -274,6 +340,12 @@ public class PlayerAttack : MonoBehaviour
     }
 
 
+
+
+
+
+
+
     //DASH
     void ManageDash()
     {
@@ -282,19 +354,23 @@ public class PlayerAttack : MonoBehaviour
         {
             if (Time.time - dashInitStartTime > dashAllowanceDuration)
             {
-                dashStep = 0;
+                dashStep = -1;
             }
         }
 
         //The player needs to let go the input before pressing it again to dash
-        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) < 0.2)
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) < dashDeadZone)
         {
             if (dashStep == 1)
             {
                 dashStep = 2;
             }
-
-            if (dashStep == 3)
+            else if (dashStep == 3)
+            {
+                dashStep = -1;
+            }
+            // To make the first dash input he must have not been pressing it before, we need a double tap
+            else if (dashStep == -1)
             {
                 dashStep = 0;
             }
@@ -302,15 +378,9 @@ public class PlayerAttack : MonoBehaviour
         }
 
         //When the player presses the directiosn
-        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > dashDeadZone)
         {
             tempDashDirection = Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum));
-
-            if (tempDashDirection != dashDirection)
-            {
-                dashStep = 0;
-            }
-
 
             if (dashStep == 0)
             {
@@ -325,6 +395,9 @@ public class PlayerAttack : MonoBehaviour
                 dashStep = 3;
                 actualDashDistance = dashDistance;
                 isDashing = true;
+
+                // Animation
+                playerAnimations.Dash();
 
                 playerStats.stamina -= playerStats.staminaCostForMoves;
 
@@ -348,6 +421,9 @@ public class PlayerAttack : MonoBehaviour
         }
     }
     */
+
+
+
 
 
 
@@ -385,6 +461,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
     // Hits with a phantom collider
     void ApplyDamage()
     {
@@ -417,59 +494,5 @@ public class PlayerAttack : MonoBehaviour
     {
         if (activeFrame)
             Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -1), transform.position.y, transform.position.z), new Vector3(1, 1, 1));
-    }
-
-    void FixedUpdate()
-    {
-        if (activeFrame)
-        {
-            ApplyDamage();
-        }
-
-
-        if (triggerAttack)
-        {
-            Vector3 dir = new Vector3(0, 0, 0);
-            if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
-                dir = new Vector3(dashDirection, 0, 0);
-
-            dir *= dashDistance;
-
-            initPos = transform.position;
-            targetPos = transform.position + dir;
-            targetPos.y = transform.position.y;
-
-            time = 0.0f;
-            rb.velocity = Vector3.zero;
-
-            isDashing = true;
-            rb.gravityScale = 0f;
-
-            //rb.AddForce((Vector2)dir * dashMultiplier, ForceMode2D.Impulse);
-
-            triggerAttack = false;
-        }
-
-
-
-
-        if (isDashing)
-        {
-            time += Time.deltaTime * dashSpeed;
-            transform.position = Vector3.Lerp(initPos, targetPos, time);
-            if (time >= 1.0f)
-            {
-                time = 0;
-                isDashing = false;
-
-
-                // If the player was clashed / countered and has finished their knockback
-                if (clashed)
-                {
-                    clashed = false;
-                    playerAnimations.Clashed(clashed);
-                }
-            }
-        }
     }
 }

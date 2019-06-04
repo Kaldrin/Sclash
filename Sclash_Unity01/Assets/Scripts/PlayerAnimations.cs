@@ -41,6 +41,8 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)));
         animator.SetBool("Parry", playerAttack.parrying);
         animator.SetFloat("Level", playerAttack.chargeLevel - 1);
+        animator.SetBool("Charging", playerAttack.charging);
+        animator.SetBool("Dahsing", playerAttack.isDashing);
         //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
     }
 
@@ -59,13 +61,19 @@ public class PlayerAnimations : MonoBehaviour
     }
     */
 
+    
+    public void TriggerParry()
+    {
+        animator.SetTrigger("ParryOn");
+    }
+
     public void TriggerAttack()
     {
         if (canAttack)
         {
             canAttack = false;
             animator.SetBool("Attack", true);
-            animator.SetTrigger("Attacking");
+            animator.SetTrigger("AttackOn");
             animator.SetBool("Charging", false);
             StartCoroutine(AttackTime());
         }
@@ -73,7 +81,12 @@ public class PlayerAnimations : MonoBehaviour
 
     public void TriggerCharge()
     {
-        animator.SetBool("Charging", true);
+        animator.SetTrigger("ChargeOn");
+    }
+
+    public void TriggerMaxCharge()
+    {
+        animator.SetTrigger("MaxCharge");
     }
 
     public void CancelCharge()
@@ -100,6 +113,7 @@ public class PlayerAnimations : MonoBehaviour
     {
         //animator.SetTrigger("Dead");
         animator.SetBool("Dead", true);
+        animator.SetTrigger("DeathOn");
     }
 
 
@@ -124,4 +138,21 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetBool("Parry", false);
     }
 
+
+
+    public void Dash(float dashDirection)
+    {
+        float blendTreeValue = 0;
+
+
+        if (dashDirection < 0)
+            blendTreeValue = 0;
+        else
+            blendTreeValue = 1;
+
+            animator.SetTrigger("DashOn");
+
+        
+        animator.SetFloat("DashDirection", )
+    }
 }
