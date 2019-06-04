@@ -44,6 +44,21 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetBool("Charging", playerAttack.charging);
         animator.SetBool("Dashing", playerAttack.isDashing);
         //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
+        UpdateAnimStamina(playerStats.stamina);
+    }
+
+    void UpdateAnimStamina(float stamina)
+    {
+        float blendTreeStamina = 0;
+
+
+        if (stamina < playerStats.staminaCostForMoves)
+            blendTreeStamina = 0;
+        else
+            blendTreeStamina = 1;
+
+
+        animator.SetFloat("Stamina", blendTreeStamina);
     }
 
     // Triggers or deactivates parry
@@ -75,7 +90,7 @@ public class PlayerAnimations : MonoBehaviour
             animator.SetBool("Attack", true);
             animator.SetTrigger("AttackOn");
             animator.SetBool("Charging", false);
-            StartCoroutine(AttackTime());
+            //StartCoroutine(AttackTime());
         }
     }
 
@@ -117,9 +132,13 @@ public class PlayerAnimations : MonoBehaviour
     }
 
 
+    public void EndAttack()
+    {
+        StartCoroutine(AttackTime());
+    }
     IEnumerator AttackTime()
     {
-        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForSeconds(0.05f);
         animator.SetBool("Attack", false);
         canAttack = true;
     }
@@ -134,7 +153,7 @@ public class PlayerAnimations : MonoBehaviour
         animator.ResetTrigger("Clashed");
         animator.SetBool("Clash", false);
         animator.SetBool("Charging", false);
-        animator.ResetTrigger("Attacking");
+        animator.ResetTrigger("AttackOn");
         animator.SetBool("Parry", false);
     }
 

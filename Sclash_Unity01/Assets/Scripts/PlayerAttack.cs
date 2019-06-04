@@ -9,6 +9,8 @@ public class PlayerAttack : MonoBehaviour
     AudioManager audioManager;
 
 
+
+
     // COMPONENTS
     Rigidbody2D rb;
     PlayerStats playerStats;
@@ -27,7 +29,7 @@ public class PlayerAttack : MonoBehaviour
     // ATTACK RECOVERY
     [SerializeField] float minRecoveryDuration = 0.4f;
     [SerializeField] float maxRecoveryDuration = 1;
-    bool attackRecovery = false;
+    [HideInInspector] public bool attackRecovery = false;
     float attackRecoveryStartTime;
     float attackRecoveryDuration;
 
@@ -41,10 +43,10 @@ public class PlayerAttack : MonoBehaviour
     float chargeStartTime;
     [HideInInspector] public int chargeLevel = 1;
     [SerializeField] int maxChargeLevel = 2;
-
     [HideInInspector] public bool charging = false;
     bool triggerAttack = false;
     [SerializeField] public bool activeFrame;
+    //[SerializeField] bool attackDone;
 
     
 
@@ -53,9 +55,13 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] float parryDuration = 0.4f;
 
 
+
+
     // CLASH
     bool clashed = true;
     [SerializeField] float clashKnockback = 2;
+
+
 
 
 
@@ -79,6 +85,15 @@ public class PlayerAttack : MonoBehaviour
     Vector3 targetPos;
     float time;
     [SerializeField] float dashDeadZone = 0.5f;
+    [SerializeField] Collider2D playerCollider;
+    /*
+    [SerializeField] int normalPlayerLayer = 8;
+    [SerializeField] int dashPhantomPlayerLayer = 10;
+    */
+
+
+
+
 
 
     void Start()
@@ -95,14 +110,18 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (playerStats.stamina > 0)
+        if (!playerStats.dead)
         {
-            // ATTACK
-            ManageCharge();
+            if (playerStats.stamina > 0)
+            {
+                // ATTACK
+                ManageCharge();
 
-            // DASH
-            ManageDash();
+                // DASH
+                ManageDash();
+            }
         }
+        
 
         // RECOVERY
         ManageRecoveries();
@@ -120,7 +139,7 @@ public class PlayerAttack : MonoBehaviour
         {
             Vector3 dir = new Vector3(0, 0, 0);
             if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
-                dir = new Vector3(dashDirection, 0, 0);
+                dir = new Vector3(Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)), 0, 0);
 
             dir *= dashDistance;
 
@@ -140,16 +159,21 @@ public class PlayerAttack : MonoBehaviour
         }
 
 
-
-
         if (isDashing)
         {
+            //gameObject.layer = dashPhantomPlayerLayer;
+
+            // Player can cross up, collider is deactivated during dash but it can still be hit
+            playerCollider.isTrigger = true;
+
             time += Time.deltaTime * dashSpeed;
             transform.position = Vector3.Lerp(initPos, targetPos, time);
             if (time >= 1.0f)
             {
                 time = 0;
                 isDashing = false;
+                //gameObject.layer = normalPlayerLayer;
+                playerCollider.isTrigger = false;
 
 
                 // If the player was clashed / countered and has finished their knockback
@@ -176,6 +200,7 @@ public class PlayerAttack : MonoBehaviour
             if (Time.time - attackRecoveryStartTime >= attackRecoveryDuration)
             {
                 attackRecovery = false;
+                playerAnimations.EndAttack();
             }
         }
     }
@@ -241,7 +266,6 @@ public class PlayerAttack : MonoBehaviour
                 {
                     chargeLevel++;
                     //playerAnimations.ChargeChange(chargeLevel);
-                    Debug.Log(chargeLevel);
                 }
                 else if (chargeLevel >= maxChargeLevel)
                 {
@@ -250,7 +274,6 @@ public class PlayerAttack : MonoBehaviour
                     maxChargeLevelReached = true;
 
                     playerAnimations.TriggerMaxCharge();
-                    Debug.Log(charging);
                 }
             }
         }
@@ -270,11 +293,14 @@ public class PlayerAttack : MonoBehaviour
         if (playerStats.stamina >= playerStats.staminaCostForMoves)
         {
             actualDashDistance = attackDashDistance;
+
             triggerAttack = true;
             playerAnimations.TriggerAttack();
             //ApplyDamage();
 
-            playerStats.stamina -= playerStats.staminaCostForMoves;
+
+            // STAMINA COST
+            playerStats.StaminaCost(playerStats.staminaCostForMoves);
 
 
 
@@ -294,7 +320,6 @@ public class PlayerAttack : MonoBehaviour
         }
         
 
-       
         chargeLevel = 1;
     }
 
@@ -401,9 +426,10 @@ public class PlayerAttack : MonoBehaviour
                 // Animation
                 playerAnimations.Dash(tempDashDirection * transform.localScale.x);
 
-                playerStats.stamina -= playerStats.staminaCostForMoves;
+                // STAMINA COST
+                playerStats.StaminaCost(playerStats.staminaCostForMoves);
 
-                
+
 
                 initPos = transform.position;
                 targetPos = transform.position + new Vector3(dashDistance * tempDashDirection, 0, 0);

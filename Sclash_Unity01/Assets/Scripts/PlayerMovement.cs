@@ -8,26 +8,36 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
+
+
     // COMPONENTS
     PlayerStats playerStats;
     PlayerAttack playerAttack;
+    Rigidbody2D rb;
+
+
 
     // ORIENTATION
     float initialXScale;
     bool orientTowardsEnemy = true;
 
+
+
     // MOVEMENTS
     [SerializeField] [Range(1f, 20f)] float baseMovementsSpeed = 10f;
     [SerializeField] [Range(1f, 20f)] float chargeMovementsSpeed = 5f;
     float movementsMultiplier;
+    [SerializeField] float minSpeedForWalkAnim = 0.1f;
+    
 
+
+    // JUMP
+    bool jumpRequest;
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
-
     [Range(1f, 10f)] public float jumpHeight = 10f;
 
-    bool jumpRequest;
-    Rigidbody2D rb;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -57,16 +67,18 @@ public class PlayerMovement : MonoBehaviour
             //jumpRequest = true;
         }
 
-        OrientTowardsEnemy();
+        if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.attackRecovery)
+            OrientTowardsEnemy();
     }
 
     void FixedUpdate()
     {
         // MOVEMENTS
-        rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
+        if (!playerStats.dead && !playerAttack.attackRecovery && !playerAttack.activeFrame)
+            rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
 
         // SOUND
-        if (rb.velocity.x > 0.5f)
+        if (rb.velocity.x > minSpeedForWalkAnim)
         {
             audioManager.Walk(true);
         }
@@ -103,6 +115,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
     // CHARGING
     public void Charging(bool on)
     {
@@ -111,6 +124,7 @@ public class PlayerMovement : MonoBehaviour
         else
             movementsMultiplier = baseMovementsSpeed;
     }
+
 
 
 
@@ -125,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
     // ORIENTATION
     void OrientTowardsEnemy()
     {
+
         if (orientTowardsEnemy)
         {
             GameObject p1 = null, p2 = null, self = null, other = null;
@@ -169,5 +184,6 @@ public class PlayerMovement : MonoBehaviour
                 transform.localScale = new Vector3(-1, 1, 1);
             }
         }
+
     }
 }

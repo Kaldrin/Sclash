@@ -10,14 +10,27 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
+
+
+
+
     // COMPONENTS
     PlayerAttack playerAttack;
     PlayerAnimations playerAnimation;
     Rigidbody2D rigid;
 
+
+
+
+
     // HEALTH
     float currentHealth;
     [SerializeField] float maxHealth;
+    [HideInInspector] public bool dead = false;
+
+
+
+
 
     //STAMINA
     [SerializeField] float maxStamina = 3f;
@@ -26,10 +39,21 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] float staminaGainOverTimeMultiplier = 0.1f;
     [SerializeField] float idleStaminaGainOverTimeMultiplier = 0.5f;
     [SerializeField] public float staminaCostForMoves = 1;
+    bool canRegenStamina = true;
+    float currentTimeBeforeStaminaRegen = 0;
+    [SerializeField] float durationBeforeStaminaRegen = 0.2f;
+
+
+
 
     public int playerNum;
-
     public bool parryBroke = false;
+
+
+
+
+
+
 
     void Awake()
     {
@@ -50,37 +74,21 @@ public class PlayerStats : MonoBehaviour
 
     void FixedUpdate()
     {
-        // If the player is parrying
+        // PARRY
         if (Input.GetButtonDown("Parry" + playerNum) && !parryBroke && !playerAttack.parrying)
         {
             if (stamina >= staminaCostForMoves)
             {
                 //stamina -= Time.deltaTime * 2;
                 playerAttack.Parry();
-                stamina -= staminaCostForMoves;
+                // STAMINA COST
+                StaminaCost(staminaCostForMoves);
             }
         }
         // If the player is not parrying
         else
         {
-            if (stamina < maxStamina)
-            {
-                if (Mathf.Abs(rigid.velocity.x) <= 0.5f)
-                {
-                    stamina += Time.deltaTime * idleStaminaGainOverTimeMultiplier;
-                }     
-                else
-                {
-                    stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
-                }
-                    
-            }
-
-            // If the player recovered at least half of his stamina he can parry again
-            if (stamina >= maxStamina / 2)
-            {
-                parryBroke = false;
-            }
+            StaminaRegen();
         }
     }
 
@@ -89,75 +97,144 @@ public class PlayerStats : MonoBehaviour
         staminaSlider.value = stamina;
     }
 
+
+
+    // STAMINA
+    void StaminaRegen()
+    {
+        if (stamina < maxStamina && canRegenStamina)
+        {
+            if (Mathf.Abs(rigid.velocity.x) <= 0.5f)
+            {
+                stamina += Time.deltaTime * idleStaminaGainOverTimeMultiplier;
+            }
+            else
+            {
+                stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
+            }
+        }
+
+        // Small duration before the player can regen stamina again after a move
+        if (currentTimeBeforeStaminaRegen <= 0 && !canRegenStamina)
+        {
+            currentTimeBeforeStaminaRegen = 0;
+            canRegenStamina = true;
+        }
+        else if (!canRegenStamina)
+        {
+            currentTimeBeforeStaminaRegen -= Time.deltaTime;
+        }
+
+        /*
+        // If the player recovered at least half of his stamina he can parry again
+        if (stamina >= maxStamina / 2)
+        {
+            parryBroke = false;
+        }
+        */
+    }
+
+    public void PauseStaminaRegen()
+    {
+        canRegenStamina = false;
+        currentTimeBeforeStaminaRegen = durationBeforeStaminaRegen;
+    }
+
+    public void StaminaCost(float cost)
+    {
+        stamina -= cost;
+        PauseStaminaRegen();
+    }
+
+
+
+
+
+
+
+
+    // RESET VALUES
     public void ResetValues()
     {
         currentHealth = maxHealth;
         stamina = maxStamina;
+        dead = false;
     }
+
+
+
+
+
+
+
 
 
     // When receiving an attack
     public bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
-        bool hit;
-        /*
-        if (!Input.GetButton("Parry" + playerNum) || parryBroke)
-        {
-            currentHealth -= 1;
-            hit = true;
-        }
-        */
+        bool hit = false;
 
 
-
-        // CLASH
-        if (playerAttack.activeFrame)
-        {
-            instigator.GetComponent<PlayerAttack>().Clash();
-            playerAttack.Clash();
-            hit = false;
-        }
-        // HURT
-        else if (!playerAttack.parrying)
-        {
-            currentHealth -= 1;
-            hit = true;
-
-            // Sound
-            audioManager.SuccessfulAttack();
-        }
-        // PARRY
-        else
-        {
-            //stamina -= hitStrength;
-            stamina += staminaCostForMoves;
-            instigator.GetComponent<PlayerAttack>().Clash();
-
-            if (stamina > 0)
+        if (!dead)
+        { 
+            /*
+            if (!Input.GetButton("Parry" + playerNum) || parryBroke)
             {
-                Debug.Log("Player " + playerNum + " : Clang");
+                currentHealth -= 1;
+                hit = true;
             }
+            */
+
+
+            // CLASH
+            if (playerAttack.activeFrame)
+            {
+                instigator.GetComponent<PlayerAttack>().Clash();
+                playerAttack.Clash();
+                hit = false;
+            }
+            // HURT
+            else if (!playerAttack.parrying)
+            {
+                currentHealth -= 1;
+                hit = true;
+
+                // Sound
+                audioManager.SuccessfulAttack();
+            }
+            // PARRY
             else
             {
-                //PARRY BREAK
-                parryBroke = true;
+                //stamina -= hitStrength;
+                stamina += staminaCostForMoves;
+                instigator.GetComponent<PlayerAttack>().Clash();
+
+                if (stamina > 0)
+                {
+                    Debug.Log("Player " + playerNum + " : Clang");
+                }
+                else
+                {
+                    //PARRY BREAK
+                    parryBroke = true;
+                }
+                hit = false;
+
+
+
+                // Sound
+                audioManager.Parried();
             }
-            hit = false;
 
 
-
-            // Sound
-            audioManager.Parried();
-        }
-
-
-
-        // IS DEAD ?
-        if (currentHealth <= 0)
-        {
-            Debug.Log("Player" + playerNum + " : Dead");
-            FindObjectOfType<GameManager>().Death(instigator.GetComponent<PlayerStats>().playerNum);
-            playerAnimation.Dead();
+            // IS DEAD ?
+            if (currentHealth <= 0 && !dead)
+            {
+                Debug.Log("Player" + playerNum + " : Dead");
+                FindObjectOfType<GameManager>().Death(instigator.GetComponent<PlayerStats>().playerNum);
+                playerAnimation.Dead();
+                dead = true;
+            }
         }
 
         return hit;

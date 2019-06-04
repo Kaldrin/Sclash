@@ -84,7 +84,6 @@ public class GameManager : MonoBehaviour
     IEnumerator Score(int playerNum)
     {
         score[playerNum - 1] += 1;
-        Debug.Log(score);
 
         yield return new WaitForSeconds(timeBeforeNextRound);
 
@@ -134,7 +133,6 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ShowScore()
     {
-        Debug.Log("Show score");
         scoreText.gameObject.SetActive(true);
         yield return new WaitForSeconds(2.5f);
         scoreText.gameObject.SetActive(false);
