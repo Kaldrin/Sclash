@@ -29354,8 +29354,11 @@ MonoBehaviour:
   unblur: {fileID: 2100000, guid: 2005d7c47e747f048b6f734e81c7f860, type: 2}
   timeBeforeNextRound: 3
   player: {fileID: 7003620522291499883, guid: a404c61637450ce4b8f3a963b51d0fe6, type: 3}
-  cameraManager: {fileID: 255681585}
+  playersColors:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0, g: 0.8226874, b: 1, a: 1}
   scoreText: {fileID: 1912285995}
+  cameraManager: {fileID: 255681585}
   score: {x: 0, y: 0}
 --- !u!4 &1310120936
 Transform:

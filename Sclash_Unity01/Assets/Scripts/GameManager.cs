@@ -21,11 +21,15 @@ public class GameManager : MonoBehaviour
     // ROUND
     [SerializeField] float timeBeforeNextRound = 3;
 
-    
+    // PLAYERS
     [SerializeField] GameObject player;
-    [SerializeField] CameraManager cameraManager;
     List<GameObject> playersList = new List<GameObject>();
+    [SerializeField] Color[] playersColors;
+
+
+
     [SerializeField] Text scoreText;
+    [SerializeField] CameraManager cameraManager;
 
     public Vector2 score;
 
@@ -123,11 +127,18 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < playerSpawns.Length; i++)
         {
             PlayerStats playerStats;
+            PlayerAnimations playerAnimations;
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
             playerStats = playersList[i].GetComponent<PlayerStats>();
+            playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
             playerStats.playerNum = i + 1;
             playerStats.ResetValues();
+
+            playerAnimations.spriteRenderer.color = playersColors[i];
+            Debug.Log("Changed color");
+
+
         }
     }
 
@@ -138,11 +149,18 @@ public class GameManager : MonoBehaviour
         scoreText.gameObject.SetActive(false);
     }
 
+
+    
     IEnumerator UpdateBlurPanel()
     {
         yield return new WaitForSeconds(0);
         blur.Lerp(blur, unblur, 3);
     }
+    
+
+
+
+
 
     void ResetPlayers()
     {

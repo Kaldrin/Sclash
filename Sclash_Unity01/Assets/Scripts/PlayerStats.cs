@@ -99,6 +99,8 @@ public class PlayerStats : MonoBehaviour
 
 
 
+
+
     // STAMINA
     void StaminaRegen()
     {
@@ -159,6 +161,10 @@ public class PlayerStats : MonoBehaviour
         currentHealth = maxHealth;
         stamina = maxStamina;
         dead = false;
+        playerAttack.enemyDead = false;
+        playerAnimation.ResetAnims();
+        playerAttack.playerCollider.isTrigger = false;
+        rigid.gravityScale = 1;
     }
 
 
@@ -193,7 +199,7 @@ public class PlayerStats : MonoBehaviour
                 playerAttack.Clash();
                 hit = false;
             }
-            // HURT
+            // DEATH
             else if (!playerAttack.parrying)
             {
                 currentHealth -= 1;
@@ -201,6 +207,8 @@ public class PlayerStats : MonoBehaviour
 
                 // Sound
                 audioManager.SuccessfulAttack();
+
+                playerAttack.playerCollider.isTrigger = true;
             }
             // PARRY
             else

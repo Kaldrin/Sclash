@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
+
 {
     // COMPONENTS
     [SerializeField] Rigidbody2D rigid;
     [SerializeField] Animator animator;
     PlayerAttack playerAttack;
     PlayerStats playerStats;
-
     [SerializeField] GameObject colliderChild;
+    [SerializeField] public SpriteRenderer spriteRenderer;
 
 
     
@@ -39,14 +40,18 @@ public class PlayerAnimations : MonoBehaviour
     void UpdateAnims()
     {
         animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)));
+        
         animator.SetBool("Parry", playerAttack.parrying);
         animator.SetFloat("Level", playerAttack.chargeLevel - 1);
         animator.SetBool("Charging", playerAttack.charging);
         animator.SetBool("Dashing", playerAttack.isDashing);
         //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
         UpdateAnimStamina(playerStats.stamina);
+        animator.SetFloat("WalkDirection", Mathf.Sign(rigid.velocity.x) * transform.localScale.x);
     }
 
+
+    // STAMINA
     void UpdateAnimStamina(float stamina)
     {
         float blendTreeStamina = 0;
@@ -60,6 +65,8 @@ public class PlayerAnimations : MonoBehaviour
 
         animator.SetFloat("Stamina", blendTreeStamina);
     }
+
+
 
     // Triggers or deactivates parry
     /*

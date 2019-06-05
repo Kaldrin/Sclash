@@ -48,6 +48,11 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public bool activeFrame;
     //[SerializeField] bool attackDone;
 
+
+
+    // OTHER PLAYER
+    [HideInInspector] public bool enemyDead;
+
     
 
     // PARRY
@@ -85,7 +90,7 @@ public class PlayerAttack : MonoBehaviour
     Vector3 targetPos;
     float time;
     [SerializeField] float dashDeadZone = 0.5f;
-    [SerializeField] Collider2D playerCollider;
+    [SerializeField] public Collider2D playerCollider;
     /*
     [SerializeField] int normalPlayerLayer = 8;
     [SerializeField] int dashPhantomPlayerLayer = 10;
@@ -509,7 +514,7 @@ public class PlayerAttack : MonoBehaviour
         }
         foreach (GameObject g in hits)
         {
-            g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
+            enemyDead = g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
         }
     }
 

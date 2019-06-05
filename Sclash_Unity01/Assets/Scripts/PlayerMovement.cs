@@ -28,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] [Range(1f, 20f)] float chargeMovementsSpeed = 5f;
     float movementsMultiplier;
     [SerializeField] float minSpeedForWalkAnim = 0.1f;
+    float baseY = 0;
     
 
 
@@ -54,7 +55,9 @@ public class PlayerMovement : MonoBehaviour
         // Initialize variables
         movementsMultiplier = baseMovementsSpeed;
         initialXScale = transform.localScale.x;
-        
+        GetBaseY();
+
+
 
         StartCoroutine(ExecOnAwake());
     }
@@ -67,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
             //jumpRequest = true;
         }
 
-        if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.attackRecovery)
+        if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.attackRecovery && !playerAttack.enemyDead)
             OrientTowardsEnemy();
     }
 
@@ -76,6 +79,13 @@ public class PlayerMovement : MonoBehaviour
         // MOVEMENTS
         if (!playerStats.dead && !playerAttack.attackRecovery && !playerAttack.activeFrame)
             rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
+        else if (playerStats.dead)
+        {
+            rb.velocity = new Vector2(0, 0);
+            transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            rb.gravityScale = 0;
+        }
+            
 
         // SOUND
         if (rb.velocity.x > minSpeedForWalkAnim)
@@ -111,6 +121,14 @@ public class PlayerMovement : MonoBehaviour
                 rb.gravityScale = 1f;
             }
         }
+    }
+
+
+
+    IEnumerator GetBaseY()
+    {
+        yield return new WaitForSeconds(0.5f);
+        baseY = transform.position.y;
     }
 
 
