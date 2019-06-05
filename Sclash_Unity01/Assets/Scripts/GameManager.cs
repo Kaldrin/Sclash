@@ -18,8 +18,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] Material unblur;
 
 
+
     // ROUND
     [SerializeField] float timeBeforeNextRound = 3;
+    [SerializeField] ParticleSystem roundLeaves;
+
+
 
     // PLAYERS
     [SerializeField] GameObject player;
@@ -76,7 +80,16 @@ public class GameManager : MonoBehaviour
 
     public void NextRound()
     {
+        StartCoroutine(NextRoundCoroutine());
+    }
+
+    IEnumerator NextRoundCoroutine()
+    {
         StartCoroutine(ShowScore());
+        roundLeaves.gameObject.SetActive(true);
+        roundLeaves.Play();
+
+        yield return new WaitForSeconds(1.5f);
         ResetPlayers();
     }
 

@@ -434,6 +434,14 @@ public class PlayerAttack : MonoBehaviour
                 // STAMINA COST
                 playerStats.StaminaCost(playerStats.staminaCostForMoves);
 
+                // CANCEL ATTACK
+                charging = false;
+                chargeLevel = 1;
+                maxChargeLevelReached = false;
+                playerMovement.Charging(false);
+                triggerAttack = false;
+                attackRecovery = false;
+
 
 
                 initPos = transform.position;
