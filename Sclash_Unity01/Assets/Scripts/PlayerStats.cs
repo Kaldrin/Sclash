@@ -94,7 +94,7 @@ public class PlayerStats : MonoBehaviour
     void FixedUpdate()
     {
         // PARRY
-        if (Input.GetButtonDown("Parry" + playerNum) && !parryBroke && !playerAttack.parrying && gameManager.gameStarted)
+        if ((Input.GetButtonDown("Parry" + playerNum) || Mathf.Abs(Input.GetAxis("Parry" + playerNum)) > 0) && !parryBroke && !playerAttack.parrying && gameManager.gameStarted)
         {
             Parry();
         }
