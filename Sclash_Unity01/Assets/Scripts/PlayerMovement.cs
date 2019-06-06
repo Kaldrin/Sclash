@@ -84,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(0, 0);
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             rb.gravityScale = 0;
+            rb.simulated = false;
         }
             
 

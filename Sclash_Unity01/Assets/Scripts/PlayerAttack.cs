@@ -10,6 +10,12 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    // MANAGER
+    GameManager gameManager;
+    [SerializeField] string gameManagerName = "GlobalManager";
+
+
+
 
     // COMPONENTS
     Rigidbody2D rb;
@@ -32,6 +38,8 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public bool attackRecovery = false;
     float attackRecoveryStartTime;
     float attackRecoveryDuration;
+
+
 
 
 
@@ -63,7 +71,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // CLASH
-    bool clashed = true;
+    bool clashed = false;
     [SerializeField] float clashKnockback = 2;
 
 
@@ -97,6 +105,11 @@ public class PlayerAttack : MonoBehaviour
     */
 
 
+    // CHEAT
+    [SerializeField] bool cheatCodes = false;
+    [SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
+    [SerializeField] KeyCode deathCheatKey = KeyCode.Alpha2;
+
 
 
 
@@ -105,6 +118,11 @@ public class PlayerAttack : MonoBehaviour
     {
         // Get audio
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
+
+
+        // Get manager
+        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+
 
         // Get components
         rb = GetComponent<Rigidbody2D>();
@@ -115,21 +133,33 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (!playerStats.dead)
+        if (gameManager.gameStarted)
         {
-            if (playerStats.stamina > 0)
+            
+            if (!playerStats.dead)
             {
-                // ATTACK
-                ManageCharge();
+                if (playerStats.stamina > 0)
+                {
+                    // ATTACK
+                    if (!clashed)
+                        ManageCharge();
 
-                // DASH
-                ManageDash();
+                    // DASH
+                    if (!clashed)
+                        ManageDash();
+                }
             }
+
+            // RECOVERY
+            ManageRecoveries();
         }
         
+        
 
-        // RECOVERY
-        ManageRecoveries();
+        
+
+        if (cheatCodes)
+            cheats();
     }
 
     void FixedUpdate()
@@ -192,6 +222,22 @@ public class PlayerAttack : MonoBehaviour
     }
 
 
+
+
+
+
+    // CHEATS
+    void cheats()
+    {
+        if (Input.GetKeyDown(clashCheatKey))
+        {
+            Clash();
+        }
+        if (Input.GetKeyDown(deathCheatKey))
+        {
+            playerStats.TakeDamage(gameObject, 1);
+        }
+    }
 
 
 
@@ -315,9 +361,10 @@ public class PlayerAttack : MonoBehaviour
             attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
 
 
-
+            /*
             // Sound
             audioManager.Attack(chargeLevel, maxChargeLevel);
+            */
         }
         else
         {
@@ -327,6 +374,9 @@ public class PlayerAttack : MonoBehaviour
 
         chargeLevel = 1;
     }
+
+
+
 
 
 
@@ -442,6 +492,18 @@ public class PlayerAttack : MonoBehaviour
                 triggerAttack = false;
                 attackRecovery = false;
 
+                
+
+                // If the player was clashed / countered and has finished their knockback
+                if (clashed)
+                {
+                    clashed = false;
+                    playerAnimations.Clashed(clashed);
+                    time = 0;
+                    //gameObject.layer = normalPlayerLayer;
+                    playerCollider.isTrigger = false;
+                }
+
 
 
                 initPos = transform.position;
@@ -488,7 +550,7 @@ public class PlayerAttack : MonoBehaviour
         actualDashDistance = clashKnockback;
         isDashing = true;
         initPos = transform.position;
-        targetPos = transform.position + new Vector3(dashDistance * tempDashDirection, 0, 0);
+        targetPos = transform.position + new Vector3(actualDashDistance * tempDashDirection, 0, 0);
 
 
         clashed = true;

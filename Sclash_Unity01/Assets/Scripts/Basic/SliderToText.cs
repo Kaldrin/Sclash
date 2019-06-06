@@ -6,22 +6,23 @@ using TMPro;
 
 public class SliderToText : MonoBehaviour {
 
-    //Get slider and text
-    [SerializeField]
-    Slider
-        slider;
-    [SerializeField]
-    GameObject
-        textObject;
+    // SLIDER & TEXT
+    [SerializeField] Slider slider;
+    [SerializeField] GameObject textObject = null;
 
-    //Slider properties to display to text
-    [SerializeField]
-    bool
+
+
+
+    // SLIDER PROPERTIES TO DISPLAY TO TEXT
+    [SerializeField] bool
         minValueToText = false,
         maxValueToText = false,
         currentValueToText = true;
-    [SerializeField]
-    float valueToAdd = 0;
+    [SerializeField] float valueToAdd = 0;
+
+
+
+
 
     // Use this for initialization
     void Start () { 

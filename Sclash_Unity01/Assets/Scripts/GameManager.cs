@@ -11,17 +11,25 @@ public class GameManager : MonoBehaviour
 
 
 
+    // CAMERA
+    [SerializeField] CameraManager cameraManager;
+
+
+
     // MENU
     [SerializeField] GameObject mainMenu;
-    [SerializeField] Material blur;
-    [SerializeField] GameObject blurPanel;
-    [SerializeField] Material unblur;
+    [SerializeField] GameObject blurPanel = null;
+
+
 
 
 
     // ROUND
     [SerializeField] float timeBeforeNextRound = 3;
     [SerializeField] ParticleSystem roundLeaves;
+    public bool gameStarted;
+
+
 
 
 
@@ -32,12 +40,23 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
+    // EFFECTS
+    [SerializeField] float roundEndSlowMoTimeScale = 0.3f;
+    [SerializeField] float rounEndSlowMoDuration = 2f;
+
+
+
+
+    // SCORE
     [SerializeField] Text scoreText;
-    [SerializeField] CameraManager cameraManager;
-
     public Vector2 score;
+    [SerializeField] float scoreShowDuration = 4f;
 
-    float menuPanelBlur = 1.7f;
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +72,8 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SetupGame());
     }
 
+
+    // BEGIN GAME
 
     IEnumerator SetupGame()
     {
@@ -72,42 +93,6 @@ public class GameManager : MonoBehaviour
         */
     }
 
-    string ScoreBuilder()
-    {
-        string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
-        return scoreString;
-    }
-
-    public void NextRound()
-    {
-        StartCoroutine(NextRoundCoroutine());
-    }
-
-    IEnumerator NextRoundCoroutine()
-    {
-        StartCoroutine(ShowScore());
-        roundLeaves.gameObject.SetActive(true);
-        roundLeaves.Play();
-
-        yield return new WaitForSeconds(1.5f);
-        ResetPlayers();
-    }
-
-    public void Death(int playerNum)
-    {
-        StartCoroutine(Score(playerNum));
-    }
-
-    IEnumerator Score(int playerNum)
-    {
-        score[playerNum - 1] += 1;
-
-        yield return new WaitForSeconds(timeBeforeNextRound);
-
-        scoreText.text = ScoreBuilder(); 
-        NextRound();
-    }
-
     public void Play()
     {
         StartCoroutine(StartGame());
@@ -119,8 +104,10 @@ public class GameManager : MonoBehaviour
         audioManager.FindPlayers();
         yield return new WaitForSeconds(0.1f);
         audioManager.BattleMusicOn();
-        
 
+
+
+        gameStarted = true;
 
 
         mainMenu.SetActive(false);
@@ -149,31 +136,40 @@ public class GameManager : MonoBehaviour
             playerStats.ResetValues();
 
             playerAnimations.spriteRenderer.color = playersColors[i];
-            Debug.Log("Changed color");
-
-
         }
     }
 
-    IEnumerator ShowScore()
-    {
-        scoreText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(2.5f);
-        scoreText.gameObject.SetActive(false);
-    }
-
-
-    
+    /*
     IEnumerator UpdateBlurPanel()
     {
         yield return new WaitForSeconds(0);
-        blur.Lerp(blur, unblur, 3);
     }
-    
+    */
 
 
 
 
+    // END & NEXT ROUND
+
+    public void NextRound()
+    {
+        StartCoroutine(NextRoundCoroutine());
+    }
+
+    IEnumerator NextRoundCoroutine()
+    {
+        StartCoroutine(ShowScore());
+        roundLeaves.gameObject.SetActive(true);
+        roundLeaves.Play();
+
+        yield return new WaitForSeconds(1.5f);
+        ResetPlayers();
+    }
+
+    public void Death(int playerNum)
+    {
+        StartCoroutine(Score(playerNum));
+    }
 
     void ResetPlayers()
     {
@@ -189,4 +185,58 @@ public class GameManager : MonoBehaviour
             p.GetComponent<PlayerAnimations>().ResetAnims();
         }
     }
+
+
+
+
+
+
+    // SCORE
+    IEnumerator ShowScore()
+    {
+        scoreText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(scoreShowDuration);
+        scoreText.gameObject.SetActive(false);
+    }
+
+    IEnumerator Score(int playerNum)
+    {
+        yield return new WaitForSecondsRealtime(0.5f);
+        score[playerNum - 1] += 1;
+        scoreText.text = ScoreBuilder();
+
+        yield return new WaitForSecondsRealtime(timeBeforeNextRound);
+
+        
+        NextRound();
+    }
+
+    string ScoreBuilder()
+    {
+        string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
+        return scoreString;
+    }
+
+    
+
+    // EFFECTS
+
+    public void EndRoundSlowMo()
+    {
+        StartCoroutine(EndRoundSlowMoCoroutine());
+    }
+
+    IEnumerator EndRoundSlowMoCoroutine()
+    {
+        
+        Time.timeScale = roundEndSlowMoTimeScale;
+        yield return new WaitForSecondsRealtime(rounEndSlowMoDuration);
+        Time.timeScale = 1;
+    }
+
+
+
+
+
+    
 }

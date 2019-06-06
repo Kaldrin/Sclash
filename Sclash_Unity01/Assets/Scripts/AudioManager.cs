@@ -11,15 +11,17 @@ public class AudioManager : MonoBehaviour
 
     // FX
     // Audio sources
-    [SerializeField] AudioSource walk;
-    [SerializeField] AudioSource dash;
-    [SerializeField] AudioSource clash;
-    [SerializeField] AudioSource parry;
-    [SerializeField] AudioSource parryOn;
-    [SerializeField] AudioSource lightAttack;
-    [SerializeField] AudioSource heavyAttack;
-    [SerializeField] AudioSource successfulAttack;
-    [SerializeField] AudioSource charge;
+    [SerializeField] AudioSource
+        walk = null,
+        dash = null,
+        clash = null,
+        parry = null,
+        parryOn = null,
+        lightAttack = null,
+        heavyAttack = null,
+        successfulAttack = null,
+        charge = null,
+        death = null;
     // Audio clips
     /*
     [SerializeField] AudioClip mainMenuMusic;
@@ -29,9 +31,10 @@ public class AudioManager : MonoBehaviour
 
 
     // MUSIC
-    [SerializeField] AudioSource menuMusicSource;
+    [SerializeField] AudioSource
+        menuMusicSource = null,
+        battleMusicSource = null;
     float menuMusicObjective = 1;
-    [SerializeField] AudioSource battleMusicSource;
     float battleMusicObjective = 0;
     bool battleOn = false;
     bool fadeMusic = false;
@@ -170,6 +173,8 @@ public class AudioManager : MonoBehaviour
 
 
 
+
+
     // FX
     public void Clash()
     {
@@ -204,7 +209,15 @@ public class AudioManager : MonoBehaviour
     // Successful attack sound
     public void SuccessfulAttack()
     {
+        StartCoroutine(SuccessfulAttackCoroutine());
+    }
+
+    IEnumerator SuccessfulAttackCoroutine()
+    {
         soundFunctions.PlaySoundFromSource(successfulAttack);
+
+        yield return new WaitForSeconds(0f);
+        soundFunctions.PlaySoundFromSource(death);
     }
 
 

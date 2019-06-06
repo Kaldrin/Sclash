@@ -5,25 +5,24 @@ using TMPro;
 
 public class DateManager : MonoBehaviour {
 
-    //Display
-    [SerializeField]
-    TextMeshPro
-        minuteText,
-        hourText,
-        dayText,
-        monthText,
-        yearText;
+    // DISPlAY
+    [SerializeField] TextMeshPro
+        minuteText = null,
+        hourText = null,
+        dayText = null,
+        monthText = null,
+        yearText = null;
 
-    //Play / Stop
-    [SerializeField]
-    bool isRunning;
 
-    //Calculus
+
+
+    // PLAY / STOP
+    [SerializeField] bool isRunning;
+
+    // CALCULUS
     float seconds = 0;
-    [SerializeField]
-    float secondsPerMinute = 1;
-    [HideInInspector]
-    public int
+    [SerializeField] float secondsPerMinute = 1;
+    [HideInInspector] public int
         minutes = 0,
         hours = 0,
         days = 0,

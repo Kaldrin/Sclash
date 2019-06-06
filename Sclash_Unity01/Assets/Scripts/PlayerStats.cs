@@ -14,6 +14,15 @@ public class PlayerStats : MonoBehaviour
 
 
 
+
+    // MANAGER
+    GameManager gameManager;
+    [SerializeField] string gameManagerName = "GlobalManager";
+
+
+
+
+
     // COMPONENTS
     PlayerAttack playerAttack;
     PlayerAnimations playerAnimation;
@@ -57,10 +66,18 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
-        // Getting sound 
+        // Get audio
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
-        // Getting components
+
+
+        // Get manager
+        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+
+
+
+
+        // Get components
         rigid = GetComponent<Rigidbody2D>();
         playerAttack = GetComponent<PlayerAttack>();
         playerAnimation = GetComponent<PlayerAnimations>();
@@ -75,15 +92,9 @@ public class PlayerStats : MonoBehaviour
     void FixedUpdate()
     {
         // PARRY
-        if (Input.GetButtonDown("Parry" + playerNum) && !parryBroke && !playerAttack.parrying)
+        if (Input.GetButtonDown("Parry" + playerNum) && !parryBroke && !playerAttack.parrying && gameManager.gameStarted)
         {
-            if (stamina >= staminaCostForMoves)
-            {
-                //stamina -= Time.deltaTime * 2;
-                playerAttack.Parry();
-                // STAMINA COST
-                StaminaCost(staminaCostForMoves);
-            }
+            Parry();
         }
         // If the player is not parrying
         else
@@ -97,6 +108,22 @@ public class PlayerStats : MonoBehaviour
         staminaSlider.value = stamina;
     }
 
+
+
+
+
+
+    // PARRY
+    void Parry()
+    {
+        if (stamina >= staminaCostForMoves)
+        {
+            //stamina -= Time.deltaTime * 2;
+            playerAttack.Parry();
+            // STAMINA COST
+            StaminaCost(staminaCostForMoves);
+        }
+    }
 
 
 
@@ -160,11 +187,13 @@ public class PlayerStats : MonoBehaviour
     {
         currentHealth = maxHealth;
         stamina = maxStamina;
+        staminaSlider.gameObject.SetActive(true);
         dead = false;
         playerAttack.enemyDead = false;
         playerAnimation.ResetAnims();
         playerAttack.playerCollider.isTrigger = false;
         rigid.gravityScale = 1;
+        rigid.simulated = true;
     }
 
 
@@ -175,7 +204,7 @@ public class PlayerStats : MonoBehaviour
 
 
 
-    // When receiving an attack
+    // RECEIVE AN ATTACK
     public bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
         bool hit = false;
@@ -208,7 +237,13 @@ public class PlayerStats : MonoBehaviour
                 // Sound
                 audioManager.SuccessfulAttack();
 
+
+                // Canvas
+                staminaSlider.gameObject.SetActive(false);
+
+
                 playerAttack.playerCollider.isTrigger = true;
+                gameManager.EndRoundSlowMo();
             }
             // PARRY
             else
@@ -238,7 +273,6 @@ public class PlayerStats : MonoBehaviour
             // IS DEAD ?
             if (currentHealth <= 0 && !dead)
             {
-                Debug.Log("Player" + playerNum + " : Dead");
                 FindObjectOfType<GameManager>().Death(instigator.GetComponent<PlayerStats>().playerNum);
                 playerAnimation.Dead();
                 dead = true;
