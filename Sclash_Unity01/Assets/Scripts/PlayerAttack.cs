@@ -43,7 +43,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-    // CHARGE & ATTACK
+    // CHARGE
     [SerializeField] float durationToNextChargeLevel = 1.5f;
     [SerializeField] float maxHoldDurationAtMaxCharge = 3;
     float maxChargeLevelStartTime;
@@ -52,9 +52,18 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public int chargeLevel = 1;
     [SerializeField] int maxChargeLevel = 2;
     [HideInInspector] public bool charging = false;
+
+
+
+
+
+    // ATTACK
     bool triggerAttack = false;
-    [SerializeField] public bool activeFrame;
+    [SerializeField] public bool
+        activeFrame,
+        clashFrames;
     //[SerializeField] bool attackDone;
+    [SerializeField] float lightAttackRange = 1.5f;
 
 
 
@@ -90,8 +99,10 @@ public class PlayerAttack : MonoBehaviour
     float dashInitStartTime = 0;
     [SerializeField] float dashAllowanceDuration = 0.3f;
     [Range(1.0f, 10.0f)] public float dashSpeed;
-    [Range(1.0f, 10.0f)] public float dashDistance;
-    [SerializeField] float attackDashDistance = 3;
+    [Range(1.0f, 10.0f)] public float forwardDashDistance;
+    [Range(1.0f, 10.0f)] public float backwardsDashDistance;
+    [SerializeField] float forwardAttackDashDistance = 3;
+    [SerializeField] float backwardsAttackDashDistance = 3;
     float actualDashDistance;
     [HideInInspector] public bool isDashing;
     Vector3 initPos;
@@ -176,7 +187,11 @@ public class PlayerAttack : MonoBehaviour
             if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
                 dir = new Vector3(Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)), 0, 0);
 
-            dir *= dashDistance;
+
+            if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
+                dir *= forwardDashDistance;
+            else
+                dir *= backwardsDashDistance;
 
             initPos = transform.position;
             targetPos = transform.position + dir;
@@ -194,6 +209,8 @@ public class PlayerAttack : MonoBehaviour
         }
 
 
+
+        // DASH
         if (isDashing)
         {
             //gameObject.layer = dashPhantomPlayerLayer;
@@ -343,7 +360,13 @@ public class PlayerAttack : MonoBehaviour
         // Check if player has enough remaining stamina
         if (playerStats.stamina >= playerStats.staminaCostForMoves)
         {
-            actualDashDistance = attackDashDistance;
+
+            if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
+                actualDashDistance = forwardAttackDashDistance;
+            else
+                actualDashDistance = backwardsAttackDashDistance;
+
+            actualDashDistance = forwardAttackDashDistance;
 
             triggerAttack = true;
             playerAnimations.TriggerAttack();
@@ -405,7 +428,7 @@ public class PlayerAttack : MonoBehaviour
         playerAnimations.TriggerParry();
 
 
-        actualDashDistance = attackDashDistance;
+        actualDashDistance = forwardAttackDashDistance;
 
         
         // Sound
@@ -475,7 +498,13 @@ public class PlayerAttack : MonoBehaviour
             else if (dashStep == 2 && dashDirection == tempDashDirection && playerStats.stamina >= playerStats.staminaCostForMoves)
             {
                 dashStep = 3;
-                actualDashDistance = dashDistance;
+
+                if (Mathf.Sign(dashDirection) == -Mathf.Sign(transform.localScale.x))
+                    actualDashDistance = forwardDashDistance;
+                else
+                    actualDashDistance = backwardsDashDistance;
+
+                //actualDashDistance = dashDistance;
                 isDashing = true;
 
                 // Animation
@@ -507,7 +536,27 @@ public class PlayerAttack : MonoBehaviour
 
 
                 initPos = transform.position;
-                targetPos = transform.position + new Vector3(dashDistance * tempDashDirection, 0, 0);
+                targetPos = transform.position + new Vector3(actualDashDistance * tempDashDirection, 0, 0);
+            }
+        }
+    }
+
+    // If the player collides with a wall
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            time = 0;
+            isDashing = false;
+            //gameObject.layer = normalPlayerLayer;
+            playerCollider.isTrigger = false;
+
+
+            // If the player was clashed / countered and has finished their knockback
+            if (clashed)
+            {
+                clashed = false;
+                playerAnimations.Clashed(clashed);
             }
         }
     }
@@ -568,7 +617,7 @@ public class PlayerAttack : MonoBehaviour
     // Hits with a phantom collider
     void ApplyDamage()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -1), transform.position.y), new Vector2(1, 1), 0);
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y), new Vector2(lightAttackRange, 1), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -584,18 +633,19 @@ public class PlayerAttack : MonoBehaviour
         }
         foreach (GameObject g in hits)
         {
-            enemyDead = g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
+            if (g != gameObject)
+                enemyDead = g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
         }
     }
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -1), transform.position.y, transform.position.z), new Vector3(1, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
     }
 
     private void OnDrawGizmos()
     {
         if (activeFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -1), transform.position.y, transform.position.z), new Vector3(1, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - lightAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
     }
 }

@@ -2776,14 +2776,18 @@ MonoBehaviour:
   maxChargeLevel: 2
   charging: 0
   activeFrame: 0
+  clashFrames: 0
+  lightAttackRange: 1.4
   enemyDead: 0
   parrying: 0
   parryDuration: 0.4
   clashKnockback: 1
   dashAllowanceDuration: 0.3
   dashSpeed: 3.5
-  dashDistance: 2.5
-  attackDashDistance: 1.5
+  forwardDashDistance: 3
+  backwardsDashDistance: 2
+  forwardAttackDashDistance: 2
+  backwardsAttackDashDistance: 1.5
   isDashing: 0
   dashDeadZone: 0.5
   playerCollider: {fileID: 3877102194284395506}

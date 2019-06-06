@@ -26,6 +26,7 @@ public class PlayerStats : MonoBehaviour
     // COMPONENTS
     PlayerAttack playerAttack;
     PlayerAnimations playerAnimation;
+    PlayerMovement playerMovements;
     Rigidbody2D rigid;
 
 
@@ -81,6 +82,7 @@ public class PlayerStats : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         playerAttack = GetComponent<PlayerAttack>();
         playerAnimation = GetComponent<PlayerAnimations>();
+        playerMovements = GetComponent<PlayerMovement>();
 
         // Set the stamina slider's max value to the stamina max value
         staminaSlider.maxValue = maxStamina;
@@ -194,6 +196,8 @@ public class PlayerStats : MonoBehaviour
         playerAttack.playerCollider.isTrigger = false;
         rigid.gravityScale = 1;
         rigid.simulated = true;
+        playerAnimation.CancelCharge();
+        playerMovements.Charging(false);
     }
 
 
@@ -222,7 +226,7 @@ public class PlayerStats : MonoBehaviour
 
 
             // CLASH
-            if (playerAttack.activeFrame)
+            if (playerAttack.activeFrame || playerAttack.clashFrames)
             {
                 instigator.GetComponent<PlayerAttack>().Clash();
                 playerAttack.Clash();
@@ -252,9 +256,9 @@ public class PlayerStats : MonoBehaviour
                 stamina += staminaCostForMoves;
                 instigator.GetComponent<PlayerAttack>().Clash();
 
+                /*
                 if (stamina > 0)
                 {
-                    Debug.Log("Player " + playerNum + " : Clang");
                 }
                 else
                 {
@@ -262,6 +266,7 @@ public class PlayerStats : MonoBehaviour
                     parryBroke = true;
                 }
                 hit = false;
+                */
 
 
 
