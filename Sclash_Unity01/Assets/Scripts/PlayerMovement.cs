@@ -4,50 +4,66 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // AUDIO
+    // AUDIO MANAGER
     [SerializeField] string audioManagerName = "GlobalManager";
-    AudioManager audioManager;
+    AudioManager audioManager = null;
 
 
 
-    // COMPONENTS
-    PlayerStats playerStats;
-    PlayerAttack playerAttack;
-    Rigidbody2D rb;
+
+
+    // PLAYER'S COMPONENTS
+    PlayerStats playerStats = null;
+    PlayerAttack playerAttack = null;
+    Rigidbody2D rb = null;
+
+
 
 
 
     // ORIENTATION
-    float initialXScale;
-    bool orientTowardsEnemy = true;
+    float initialXScale = 0;
+    bool canOrientTowardsEnemy = true;
+
+
+
 
 
 
     // MOVEMENTS
-    [SerializeField] [Range(1f, 20f)] float baseMovementsSpeed = 10f;
-    [SerializeField] [Range(1f, 20f)] float chargeMovementsSpeed = 5f;
-    float movementsMultiplier;
-    [SerializeField] float minSpeedForWalkAnim = 0.1f;
-    float baseY = 0;
+    [SerializeField] float
+        baseMovementsSpeed = 10f,
+        chargeMovementsSpeed = 5f,
+        minSpeedForWalkAnim = 0f;
+    float movementsMultiplier = 0;
     
 
 
+
+
+
     // JUMP
-    bool jumpRequest;
-    public float fallMultiplier = 2.5f;
-    public float lowJumpMultiplier = 2f;
-    [Range(1f, 10f)] public float jumpHeight = 10f;
+    bool jumpRequest = false;
+
+    [SerializeField] float
+        fallMultiplier = 2.5f,
+        lowJumpMultiplier = 2f,
+        jumpHeight = 10f;
 
 
 
+
+
+
+    // BASIC FUNCTIONS
     // Start is called before the first frame update
     void Awake()
     {
-        // Get audio
+        // Get the audio manager to use in the script
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
 
-        // Get components
+        // Get player's components to use in the script
         playerAttack = GetComponent<PlayerAttack>();
         playerStats = GetComponent<PlayerStats>();
         rb = GetComponent<Rigidbody2D>();
@@ -55,50 +71,33 @@ public class PlayerMovement : MonoBehaviour
         // Initialize variables
         movementsMultiplier = baseMovementsSpeed;
         initialXScale = transform.localScale.x;
-        GetBaseY();
-
 
 
         StartCoroutine(ExecOnAwake());
     }
 
-    // Update is called once per frame
+    // Update is called once per graphic frame
     void Update()
     {
+        // JUMP INPUT
         if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.1f)
         {
             //jumpRequest = true;
         }
 
+        // ORIENTATION IF PLAYER CAN ORIENT
         if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.isAttackRecovering && !playerAttack.enemyDead)
             OrientTowardsEnemy();
     }
 
+    // Fixed update is called 30 times per second
     void FixedUpdate()
     {
-        // MOVEMENTS
-        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame)
-            rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
-        else if (playerStats.dead)
-        {
-            rb.velocity = new Vector2(0, 0);
-            transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            rb.gravityScale = 0;
-            rb.simulated = false;
-        }
-            
-
-        // SOUND
-        if (rb.velocity.x > minSpeedForWalkAnim)
-        {
-            audioManager.Walk(true);
-        }
-        else
-        {
-            audioManager.Walk(false);
-        }
+        // MOVEMENTS INPUTS
+        ManageMovements();
 
 
+        /*
         // JUMP
         if (jumpRequest)
         {
@@ -106,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
             jumpRequest = false;
         }
 
-        // DASH
+
         if (!playerAttack.isDashing)
         {
             if (rb.velocity.y < 0)
@@ -122,20 +121,63 @@ public class PlayerMovement : MonoBehaviour
                 rb.gravityScale = 1f;
             }
         }
+        */
     }
 
 
 
-    IEnumerator GetBaseY()
+
+
+
+    // TO EXECUTE A FEW FRAMES AFTER THE AWAKE FUNCTION
+    IEnumerator ExecOnAwake()
     {
-        yield return new WaitForSeconds(0.5f);
-        baseY = transform.position.y;
+        yield return new WaitForSeconds(0.2f);
+        OrientTowardsEnemy();
     }
 
 
 
 
-    // CHARGING
+
+
+
+
+    // MOVEMENTS
+    void ManageMovements()
+    {
+        // The player move if they can in their state
+        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame)
+            rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
+        // If they are dead they can't move and are then stuck in place
+        else if (playerStats.dead)
+        {
+            // rb.velocity = new Vector2(0, 0);
+            // transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            // rb.gravityScale = 0;
+            rb.simulated = false;
+        }
+
+        /*
+        // WALK SOUND
+        if (rb.velocity.x > minSpeedForWalkAnim)
+        {
+            audioManager.Walk(true);
+        }
+        else
+        {
+            audioManager.Walk(false);
+        }
+        */
+    }
+
+
+
+
+
+
+
+    // CHANGE SPEED IF CHARGING/ NOT CHARGING
     public void Charging(bool on)
     {
         if (on)
@@ -147,19 +189,15 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    IEnumerator ExecOnAwake()
-    {
-        yield return new WaitForSeconds(0.2f);
-        OrientTowardsEnemy();
-    }
 
 
 
-    // ORIENTATION
+
+    // ORIENTATION CALLED IN UPDATE
     void OrientTowardsEnemy()
     {
-
-        if (orientTowardsEnemy)
+        // Orient towards the enemy if player can in their current state
+        if (canOrientTowardsEnemy)
         {
             GameObject p1 = null, p2 = null, self = null, other = null;
             PlayerStats[] stats = FindObjectsOfType<PlayerStats>();
@@ -203,6 +241,5 @@ public class PlayerMovement : MonoBehaviour
                 transform.localScale = new Vector3(-1, 1, 1);
             }
         }
-
     }
 }
