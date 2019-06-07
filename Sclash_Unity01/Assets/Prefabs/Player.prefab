@@ -1045,7 +1045,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2849229250956210319}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -2749,10 +2749,6 @@ MonoBehaviour:
   audioManagerName: GlobalManager
   baseMovementsSpeed: 2.5
   chargeMovementsSpeed: 1.2
-  minSpeedForWalkAnim: 0
-  fallMultiplier: 2.5
-  lowJumpMultiplier: 2
-  jumpHeight: 10
 --- !u!114 &7003620522291499873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2770,28 +2766,32 @@ MonoBehaviour:
   minRecoveryDuration: 0.1
   maxRecoveryDuration: 0.6
   attackRecoveryStart: 0
-  attackRecovery: 0
+  isAttackRecovering: 0
+  maxChargeLevel: 3
+  chargeLevel: 1
   durationToNextChargeLevel: 1
   maxHoldDurationAtMaxCharge: 2
-  chargeLevel: 1
-  maxChargeLevel: 2
   charging: 0
+  lightAttackRange: 1.4
+  heavyAttackRange: 2.5
+  actualAttackRange: 0
   activeFrame: 0
   clashFrames: 0
-  lightAttackRange: 1.4
+  isAttacking: 0
   enemyDead: 0
   parrying: 0
   parryDuration: 0.4
   clashKnockback: 1
-  dashAllowanceDuration: 0.3
+  isDashing: 0
+  playerCollider: {fileID: 3877102194284395506}
   dashSpeed: 3.5
   forwardDashDistance: 3
   backwardsDashDistance: 2
+  dashAllowanceDuration: 0.3
   forwardAttackDashDistance: 2
   backwardsAttackDashDistance: 1.5
-  isDashing: 0
   dashDeadZone: 0.5
-  playerCollider: {fileID: 3877102194284395506}
+  shortcutDashDeadZone: 0.5
   cheatCodes: 1
   clashCheatKey: 49
   deathCheatKey: 50
@@ -2810,17 +2810,17 @@ MonoBehaviour:
   audioManagerName: GlobalManager
   gameManagerName: GlobalManager
   maxHealth: 1
+  untouchable: 0
   dead: 0
-  maxStamina: 3
-  stamina: 3
   staminaSlider: {fileID: 994018448512127870}
+  staminaCostForMoves: 1
+  maxStamina: 3
+  durationBeforeStaminaRegen: 0.5
   staminaGainOverTimeMultiplier: 0.3
   idleStaminaGainOverTimeMultiplier: 1
   backWalkingStaminaGainOverTime: 1
-  staminaCostForMoves: 1
-  durationBeforeStaminaRegen: 0.5
+  stamina: 3
   playerNum: 0
-  parryBroke: 0
 --- !u!114 &1250708261086219519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2836,6 +2836,12 @@ MonoBehaviour:
   rigid: {fileID: 7003620522291499887}
   animator: {fileID: 6065618468900711097}
   spriteRenderer: {fileID: 293502933573899569}
+  minSpeedForWalkAnim: 0.05
+  swordTrail: {fileID: 7223841298886415174}
+  lightAttackSwordTrailWidth: 1
+  heavyAttackSwordTrailWidth: 2
+  lightAttackColor: {r: 1, g: 0.9635534, b: 0, a: 1}
+  heavyAttackColor: {r: 0.9056604, g: 0, b: 0.1197052, a: 1}
 --- !u!50 &7003620522291499887
 Rigidbody2D:
   serializedVersion: 4

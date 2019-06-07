@@ -31,10 +31,11 @@ public class PlayerMovement : MonoBehaviour
 
 
     // MOVEMENTS
-    [SerializeField] float
+    [SerializeField]
+    float
         baseMovementsSpeed = 10f,
-        chargeMovementsSpeed = 5f,
-        minSpeedForWalkAnim = 0f;
+        chargeMovementsSpeed = 5f;
+        
     float movementsMultiplier = 0;
     
 
@@ -45,11 +46,12 @@ public class PlayerMovement : MonoBehaviour
     // JUMP
     bool jumpRequest = false;
 
+    /*
     [SerializeField] float
         fallMultiplier = 2.5f,
         lowJumpMultiplier = 2f,
         jumpHeight = 10f;
-
+    */
 
 
 
@@ -86,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // ORIENTATION IF PLAYER CAN ORIENT
-        if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.isAttackRecovering && !playerAttack.enemyDead)
+        if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.isAttackRecovering && !playerAttack.enemyDead && !playerAttack.isAttacking && !playerAttack.isDashing)
             OrientTowardsEnemy();
     }
 

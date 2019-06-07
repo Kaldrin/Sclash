@@ -13,8 +13,28 @@ public class PlayerAnimations : MonoBehaviour
     
 
 
-    
+
+    // ANIMATION VALUES
+    [SerializeField] float minSpeedForWalkAnim = 0.05f;
+
+
+
+
+    // FX
+    [SerializeField] public TrailRenderer swordTrail = null;
+    [SerializeField]
+    float
+        lightAttackSwordTrailWidth = 1.3f,
+        heavyAttackSwordTrailWidth = 2.3f;
+    [SerializeField] Color
+        lightAttackColor = Color.blue,
+        heavyAttackColor = Color.red;
+
+
     bool canAttack = true;
+
+
+
 
 
 
@@ -33,20 +53,60 @@ public class PlayerAnimations : MonoBehaviour
     void Update()
     {
         UpdateAnims();
+        UpdateFX();
+        UpdateAnimStamina(playerStats.stamina);
     }
 
     // Update the animator's parameters in Update
     void UpdateAnims()
     {
-        animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)));
-        
-        //animator.SetBool("Parry", playerAttack.parrying);
         animator.SetFloat("Level", playerAttack.chargeLevel - 1);
         animator.SetBool("Charging", playerAttack.charging);
         animator.SetBool("Dashing", playerAttack.isDashing);
-        //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
-        UpdateAnimStamina(playerStats.stamina);
-        animator.SetFloat("WalkDirection", rigid.velocity.x * - transform.localScale.x);
+
+
+        if ((rigid.velocity.x * -transform.localScale.x) < 0)
+            animator.SetFloat("WalkDirection", 0);
+        else
+            animator.SetFloat("WalkDirection", 1);
+
+
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > minSpeedForWalkAnim)
+            animator.SetFloat("Move", Mathf.Abs(Mathf.Sign((Input.GetAxis("Horizontal" + playerStats.playerNum)))));
+        else
+            animator.SetFloat("Move", 0);
+    }
+
+    // Update FX's parameters in Update
+    void UpdateFX()
+    {
+        Debug.Log(playerAttack.actualAttackRange);
+        swordTrail.startWidth = playerAttack.actualAttackRange;
+
+
+
+        // Trail color and width depending on attack range
+        if (playerAttack.chargeLevel == 1)
+        {
+            swordTrail.startColor = lightAttackColor;
+            swordTrail.startWidth = lightAttackSwordTrailWidth;
+        }     
+        else if (playerAttack.chargeLevel == playerAttack.maxChargeLevel)
+        {
+            swordTrail.startColor = heavyAttackColor;
+            swordTrail.startWidth = heavyAttackSwordTrailWidth;
+        }     
+        else
+        {
+            swordTrail.startColor = new Color(
+                lightAttackColor.r + (heavyAttackColor.r - lightAttackColor.r) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange,
+                lightAttackColor.g + (heavyAttackColor.g - lightAttackColor.g) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange,
+                lightAttackColor.b + (heavyAttackColor.b - lightAttackColor.b) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange);
+
+            swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange;
+
+        }
+            
     }
 
 
@@ -70,6 +130,7 @@ public class PlayerAnimations : MonoBehaviour
 
         animator.SetFloat("Stamina", blendTreeStamina);
     }
+
 
 
 
@@ -183,14 +244,13 @@ public class PlayerAnimations : MonoBehaviour
     {
         StartCoroutine(EndAttackCoroutine());
     }
-
+    
     // Attack's end coroutine
     IEnumerator EndAttackCoroutine()
     {
         yield return new WaitForSeconds(0.05f);
         animator.SetBool("Attack", false);
         canAttack = true;
-        Debug.Log("Attack off");
     }
 
 

@@ -32,8 +32,8 @@ public class PlayerAttack : MonoBehaviour
 
 
     // ATTACK RECOVERY
-    [SerializeField]
-    float minRecoveryDuration = 0.4f,
+    [SerializeField] float
+        minRecoveryDuration = 0.4f,
         maxRecoveryDuration = 1;
     float
         attackRecoveryStartTime = 0,
@@ -47,7 +47,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // CHARGE
-    [SerializeField] int maxChargeLevel = 2;
+    [SerializeField] public int maxChargeLevel = 2;
     [HideInInspector] public int chargeLevel = 1;
 
     [SerializeField] float
@@ -66,7 +66,10 @@ public class PlayerAttack : MonoBehaviour
 
 
     // ATTACK
-    [SerializeField] float lightAttackRange = 1.5f;
+    [SerializeField] public float
+        lightAttackRange = 1.5f,
+        heavyAttackRange = 2.5f;
+    [HideInInspector] public float actualAttackRange = 0;
 
     [SerializeField] public bool
         activeFrame = false,
@@ -121,7 +124,6 @@ public class PlayerAttack : MonoBehaviour
     // 0 = Player wasn't pressing the direction
     // 1 = Player pressed the direction after releasing it, executes dash
 
-
     float
         dashDirection,
         tempDashDirection,
@@ -156,6 +158,13 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
+
+
+
+
+
     // BASE FUNCTIONS
     void Start()
     {
@@ -180,7 +189,7 @@ public class PlayerAttack : MonoBehaviour
         if (gameManager.gameStarted)
         {
             // The player cna only use actions if they are not dead
-            if (!playerStats.dead)
+            if (!playerStats.dead && playerStats.stamina >= playerStats.staminaCostForMoves)
             {
                 if (playerStats.stamina > 0)
                 {
@@ -193,7 +202,7 @@ public class PlayerAttack : MonoBehaviour
                         ManageDash();
 
                     // PARRY INPUT
-                    if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Mathf.Abs(Input.GetAxisRaw("Parry" + playerStats.playerNum)) > 0.1) && !parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering)
+                    if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Input.GetAxis("Parry" + playerStats.playerNum) < - 0.1) && !parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering)
                     {
                         Parry();
                     }
@@ -250,6 +259,8 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
     // RECOVERIES
     void ManageRecoveries()
     {
@@ -284,7 +295,6 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
     //CHARGE
     void ManageCharge()
     {
@@ -296,7 +306,7 @@ public class PlayerAttack : MonoBehaviour
 
 
         //Player presses attack button
-        if (Input.GetButtonDown("Fire" + playerStats.playerNum) && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves)
+        if ((Input.GetButtonDown("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) > 0.1) && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves)
         {
             charging = true;
             chargeStartTime = Time.time;
@@ -306,7 +316,7 @@ public class PlayerAttack : MonoBehaviour
 
 
         //Player releases attack button
-        if (Input.GetButtonUp("Fire" + playerStats.playerNum) && charging)
+        if ((Input.GetButtonUp("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) < 0.1) && charging)
         {
             ReleaseAttack();
         }
@@ -359,6 +369,8 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
     // ATTACK
     // Triggers the attck
     void ReleaseAttack()
@@ -369,7 +381,15 @@ public class PlayerAttack : MonoBehaviour
         isAttacking = true;
 
         maxChargeLevelReached = false;
-        //playerAnimations.TriggerCharge();
+
+        // Calculate attack range depending on level of charge
+        if (chargeLevel == 1)
+            actualAttackRange = lightAttackRange;
+        else if (chargeLevel == maxChargeLevel)
+            actualAttackRange = heavyAttackRange;
+        else
+            actualAttackRange = lightAttackRange + (heavyAttackRange - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
+
 
         // Check if player has enough remaining stamina and attack if so
         if (playerStats.stamina >= playerStats.staminaCostForMoves)
@@ -426,14 +446,13 @@ public class PlayerAttack : MonoBehaviour
         else
         {
             playerAnimations.CancelCharge();
-
         }
     }
 
     // Hits with a phantom collider to apply the attack's damage during active frames
     void ApplyDamage()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y), new Vector2(lightAttackRange, 1), 0);
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * - actualAttackRange / 2), transform.position.y), new Vector2(lightAttackRange, 1), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -457,14 +476,14 @@ public class PlayerAttack : MonoBehaviour
     // Draw the attack range when the player is selected
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - actualAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
     }
 
     // Draw the attack range is the attack is in active frames in the scene viewer
     private void OnDrawGizmos()
     {
         if (activeFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - actualAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
     }
 
 
@@ -530,7 +549,7 @@ public class PlayerAttack : MonoBehaviour
         
         if (Mathf.Abs(Input.GetAxisRaw("Dash" + playerStats.playerNum)) > shortcutDashDeadZone && shortcutDashStep == 0)
         {
-            dashDirection = Input.GetAxisRaw("Dash" + playerStats.playerNum) * - transform.localScale.x;
+            dashDirection = Mathf.Sign(Input.GetAxisRaw("Dash" + playerStats.playerNum));
 
             TriggerBasicDash();
         }
@@ -611,12 +630,20 @@ public class PlayerAttack : MonoBehaviour
     {
         dashStep = 3;
         shortcutDashStep = -1;
-
-        if (Mathf.Sign(dashDirection) == - Mathf.Sign(transform.localScale.x))
+        
+        if (dashDirection == - transform.localScale.x)
+        {
             actualDashDistance = forwardDashDistance;
+            //Debug.Log(dashDirection);
+            //Debug.Log(transform.localScale.x);
+        }
         else
+        {
             actualDashDistance = backwardsDashDistance;
-
+            //Debug.Log(dashDirection);
+            //Debug.Log(transform.localScale.x);
+        }
+           
 
         isDashing = true;
 

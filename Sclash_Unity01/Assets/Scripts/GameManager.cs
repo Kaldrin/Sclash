@@ -57,6 +57,11 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -70,6 +75,13 @@ public class GameManager : MonoBehaviour
         // Start game
         StartCoroutine(SetupGame());
     }
+
+
+
+
+
+
+
 
 
     // BEGIN GAME
@@ -148,6 +160,10 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
+
+
     // END & NEXT ROUND
 
     public void NextRound()
@@ -197,6 +213,9 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
+
     // SCORE
     IEnumerator ShowScore()
     {
@@ -229,22 +248,21 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
+
     // EFFECTS
+    // Slow motion when a player dies
     public void EndRoundSlowMo()
     {
         StartCoroutine(EndRoundSlowMoCoroutine());
     }
 
+    // Slow motion when a player dies coroutine
     IEnumerator EndRoundSlowMoCoroutine()
     {
         Time.timeScale = roundEndSlowMoTimeScale;
         yield return new WaitForSecondsRealtime(rounEndSlowMoDuration);
         Time.timeScale = 1;
-    }
-
-
-
-
-
-    
+    } 
 }
