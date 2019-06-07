@@ -3,20 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
-
 {
-    // COMPONENTS
+    // PLAYER'S COMPONENTS
     [SerializeField] Rigidbody2D rigid = null;
     [SerializeField] Animator animator = null;
+    [SerializeField] public SpriteRenderer spriteRenderer = null;
     PlayerAttack playerAttack = null;
     PlayerStats playerStats = null;
-    //[SerializeField] GameObject colliderChild = null;
-    [SerializeField] public SpriteRenderer spriteRenderer = null;
-
-
     
-    //[SerializeField] string walkBool = "Walk";
-    //[SerializeField] float speedForWalking = 0.5f;
+
 
     
     bool canAttack = true;
@@ -34,18 +29,18 @@ public class PlayerAnimations : MonoBehaviour
         canAttack = true;
     }
 
-    // Update is called once per frame
+    // Update is called once per graphic frame
     void Update()
     {
         UpdateAnims();
     }
 
-
+    // Update the animator's parameters in Update
     void UpdateAnims()
     {
         animator.SetFloat("Move", Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)));
         
-        animator.SetBool("Parry", playerAttack.parrying);
+        //animator.SetBool("Parry", playerAttack.parrying);
         animator.SetFloat("Level", playerAttack.chargeLevel - 1);
         animator.SetBool("Charging", playerAttack.charging);
         animator.SetBool("Dashing", playerAttack.isDashing);
@@ -55,7 +50,13 @@ public class PlayerAnimations : MonoBehaviour
     }
 
 
-    // STAMINA
+
+
+
+
+
+
+    // STAMINA ANIMATIONS STATES
     void UpdateAnimStamina(float stamina)
     {
         float blendTreeStamina = 0;
@@ -71,12 +72,89 @@ public class PlayerAnimations : MonoBehaviour
     }
 
 
-    
-    public void TriggerParry()
+
+
+
+
+
+
+    // PARRY ANIMATION
+    // Triggers on / off parry animation
+    public void TriggerParry(bool state)
     {
-        animator.SetTrigger("ParryOn");
+        if (state)
+            animator.SetTrigger("ParryOn");
+        else
+            animator.SetTrigger("ParryOff");
     }
 
+
+
+
+
+
+
+    // CHARGE ANIMATIONS
+    // Trigger charge animation
+    public void TriggerCharge()
+    {
+        animator.SetTrigger("ChargeOn");
+    }
+
+    // Trigger max charge reached animation
+    public void TriggerMaxCharge()
+    {
+        animator.SetTrigger("MaxCharge");
+    }
+
+    // Cancel charge animation
+    public void CancelCharge()
+    {
+        animator.SetBool("Charging", false);
+    }
+
+
+
+
+
+
+
+
+
+    // CLASHED ANIMATION
+    // Trigger on / off clashed animation
+    public void Clashed(bool state)
+    {
+        animator.SetBool("Clash", state);
+
+        if (state)
+            animator.SetTrigger("Clashed");
+    }
+
+
+
+
+
+
+
+    // DEATH ANIMATION
+    // Trigger death animation
+    public void Dead()
+    {
+        //animator.SetTrigger("Dead");
+        animator.SetBool("Dead", true);
+        animator.SetTrigger("DeathOn");
+    }
+
+
+
+
+
+
+
+
+    // ATTACK ANIMATIONS
+    // Trigger attack depending on the intended direction
     public void TriggerAttack(float attackDir)
     {
         if (canAttack)
@@ -100,49 +178,14 @@ public class PlayerAnimations : MonoBehaviour
         }
     }
 
-    public void TriggerCharge()
-    {
-        animator.SetTrigger("ChargeOn");
-    }
-
-    public void TriggerMaxCharge()
-    {
-        animator.SetTrigger("MaxCharge");
-    }
-
-    public void CancelCharge()
-    {
-        animator.SetBool("Charging", false);
-    }
-
-    /*
-    public void ChargeChange(float chargeLevel)
-    {
-        animator.SetFloat("Level", chargeLevel - 1);
-    }
-    */
-
-    public void Clashed(bool state)
-    {
-        animator.SetBool("Clash", state);
-
-        if (state)
-            animator.SetTrigger("Clashed");
-    }
-
-    public void Dead()
-    {
-        //animator.SetTrigger("Dead");
-        animator.SetBool("Dead", true);
-        animator.SetTrigger("DeathOn");
-    }
-
-
+    // Trigger attack's end animation
     public void EndAttack()
     {
-        StartCoroutine(AttackTime());
+        StartCoroutine(EndAttackCoroutine());
     }
-    IEnumerator AttackTime()
+
+    // Attack's end coroutine
+    IEnumerator EndAttackCoroutine()
     {
         yield return new WaitForSeconds(0.05f);
         animator.SetBool("Attack", false);
@@ -152,20 +195,15 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
-    public void ResetAnims()
-    {
-        animator.SetBool("Attack", false);
-        //animator.ResetTrigger("Dead");
-        animator.SetBool("Dead", false);
-        animator.ResetTrigger("Clashed");
-        animator.SetBool("Clash", false);
-        animator.SetBool("Charging", false);
-        animator.ResetTrigger("AttackOn");
-        animator.SetBool("Parry", false);
-    }
 
 
 
+
+
+
+
+    // DASH ANIMATIONS
+    // Trigger dash animation depending on dash intended direction
     public void Dash(float dashDirection)
     {
         float blendTreeValue = 0;
@@ -176,9 +214,31 @@ public class PlayerAnimations : MonoBehaviour
         else
             blendTreeValue = 1;
 
-            animator.SetTrigger("DashOn");
+        animator.SetTrigger("DashOn");
 
 
         animator.SetFloat("DashDirection", blendTreeValue);
+    }
+
+
+
+
+
+
+
+
+
+
+    // RESET ANIMATION STATES
+    public void ResetAnims()
+    {
+        animator.SetBool("Attack", false);
+        //animator.ResetTrigger("Dead");
+        animator.SetBool("Dead", false);
+        animator.ResetTrigger("Clashed");
+        animator.SetBool("Clash", false);
+        animator.SetBool("Charging", false);
+        animator.ResetTrigger("AttackOn");
+        animator.SetBool("Parry", false);
     }
 }

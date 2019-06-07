@@ -37,6 +37,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] float maxHealth = 0;
     float currentHealth;
 
+    [SerializeField] bool untouchable = false;
     [HideInInspector] public bool dead = false;
 
 
@@ -249,35 +250,26 @@ public class PlayerStats : MonoBehaviour
                 playerAttack.Clash();
                 hit = false;
             }
-            // TOUCHED
-            else if (!playerAttack.parrying)
-            {
-                hit = true;
-                Touched();
-            }
             // PARRY
-            else
+            else if (playerAttack.parrying)
             {
-                //stamina -= hitStrength;
                 stamina += staminaCostForMoves;
                 instigator.GetComponent<PlayerAttack>().Clash();
-
-                /*
-                if (stamina > 0)
-                {
-                }
-                else
-                {
-                    //PARRY BREAK
-                    parryBroke = true;
-                }
-                hit = false;
-                */
-
 
 
                 // Sound
                 audioManager.Parried();
+            }
+            // UNTOUCHABLE FRAMES
+            else if (untouchable)
+            {
+
+            }
+            // TOUCHED
+            else
+            {
+                hit = true;
+                Touched();
             }
 
 

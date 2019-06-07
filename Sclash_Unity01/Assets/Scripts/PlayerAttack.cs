@@ -3,21 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
-{ 
+{
     // AUDIO
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
 
 
+
+
     // MANAGER
-    GameManager gameManager;
     [SerializeField] string gameManagerName = "GlobalManager";
+    GameManager gameManager;
 
 
 
 
-    // COMPONENTS
+
+
+    // PLAYER'S COMPONENTS
     Rigidbody2D rb = null;
     PlayerStats playerStats = null;
     PlayerAnimations playerAnimations = null;
@@ -25,47 +29,50 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-    // TAP
-    // float lastTap = 0;
-    // float tapTime = 0.25f;
-    // bool tapping = false;
-
-
-
 
 
     // ATTACK RECOVERY
-    [SerializeField] float minRecoveryDuration = 0.4f;
-    [SerializeField] float maxRecoveryDuration = 1;
+    [SerializeField]
+    float minRecoveryDuration = 0.4f,
+        maxRecoveryDuration = 1;
+    float
+        attackRecoveryStartTime = 0,
+        attackRecoveryDuration = 0;
+
     [SerializeField] public bool attackRecoveryStart = false;
     [HideInInspector] public bool isAttackRecovering = false;
-    float attackRecoveryStartTime = 0;
-    float attackRecoveryDuration = 0;
 
 
 
 
-    
+
     // CHARGE
-    [SerializeField] float durationToNextChargeLevel = 1.5f;
-    [SerializeField] float maxHoldDurationAtMaxCharge = 3;
-    float maxChargeLevelStartTime = 0;
-    bool maxChargeLevelReached = false;
-    float chargeStartTime = 0;
-    [HideInInspector] public int chargeLevel = 1;
     [SerializeField] int maxChargeLevel = 2;
+    [HideInInspector] public int chargeLevel = 1;
+
+    [SerializeField] float
+        durationToNextChargeLevel = 1.5f,
+        maxHoldDurationAtMaxCharge = 3;
+    float
+        maxChargeLevelStartTime = 0,
+        chargeStartTime = 0;
+
     [HideInInspector] public bool charging = false;
+    bool maxChargeLevelReached = false;
+
 
 
 
 
 
     // ATTACK
+    [SerializeField] float lightAttackRange = 1.5f;
+
     [SerializeField] public bool
         activeFrame = false,
         clashFrames = false;
     [HideInInspector] public bool isAttacking = false;
-    [SerializeField] float lightAttackRange = 1.5f;
+
 
 
 
@@ -73,6 +80,7 @@ public class PlayerAttack : MonoBehaviour
 
     // OTHER PLAYER
     [HideInInspector] public bool enemyDead = false;
+
 
 
 
@@ -99,12 +107,20 @@ public class PlayerAttack : MonoBehaviour
     // DASH
     [HideInInspector] public bool isDashing;
     [SerializeField] public Collider2D playerCollider;
-    int dashStep = 0;
-    //The current step of the dash input
+
+    int dashStep = -1;
+        //The current step of the dash input
+        // - 1 = Player was pressing the direction for too long / nothing
+        // 0 = Player wasn't pressing the direction
+        // 1 = Player pressed the direction 1 time
+        // 2 = Player released the direction after pressing it
+        // 3 = Player pressed again the same direction after releasing it, executes dash
+    int shortcutDashStep = - 1;
+    //The current step of the shortcut dash input
+    // -1 = Player was already pressing the direction
     // 0 = Player wasn't pressing the direction
-    // 1 = Player pressed the direction 1 time
-    // 2 = Player released the direction after pressing it
-    // 3 = Player pressed again the same direction after releasing it, executes dash
+    // 1 = Player pressed the direction after releasing it, executes dash
+
 
     float
         dashDirection,
@@ -120,17 +136,18 @@ public class PlayerAttack : MonoBehaviour
         dashAllowanceDuration = 0.3f,
         forwardAttackDashDistance = 3,
         backwardsAttackDashDistance = 3,
-        dashDeadZone = 0.5f;
+        dashDeadZone = 0.5f,
+        shortcutDashDeadZone = 0.5f;
 
     Vector3 initPos;
     Vector3 targetPos;
-    
 
 
 
 
 
-    // CHEAT
+
+    // CHEATS FOR DEVELOPMENT PURPOSES
     [SerializeField] bool cheatCodes = false;
     [SerializeField] KeyCode
         clashCheatKey = KeyCode.Alpha1,
@@ -139,18 +156,18 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
+    // BASE FUNCTIONS
     void Start()
     {
-        // Get audio
+        // Get audio manager to use in the script
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
 
-        // Get manager
+        // Get game manager to use in the script
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
 
 
-        // Get components
+        // Get player's components to use in the script
         rb = GetComponent<Rigidbody2D>();
         playerStats = GetComponent<PlayerStats>();
         playerAnimations = GetComponent<PlayerAnimations>();
@@ -162,37 +179,33 @@ public class PlayerAttack : MonoBehaviour
         // The player can only use actions when the game has started
         if (gameManager.gameStarted)
         {
-            
+            // The player cna only use actions if they are not dead
             if (!playerStats.dead)
             {
                 if (playerStats.stamina > 0)
                 {
-                    // ATTACK
+                    // CHARGE & ATTAQUE
                     if (!clashed)
                         ManageCharge();
 
-                    // DASH
+                    // DASH INPUTS
                     if (!clashed)
                         ManageDash();
+
+                    // PARRY INPUT
+                    if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Mathf.Abs(Input.GetAxisRaw("Parry" + playerStats.playerNum)) > 0.1) && !parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering)
+                    {
+                        Parry();
+                    }
                 }
             }
-
-
-            // PARRY INPUT
-            if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Mathf.Abs(Input.GetAxisRaw("Parry" + playerStats.playerNum)) > 0.1) && !parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering)
-            {
-                Parry();
-            }
-
 
 
             // RECOVERY TIME MANAGING
             ManageRecoveries();
         }
-        
-        
 
-        
+
         // Cheatcodes to use for development purposes
         if (cheatCodes)
             cheats();
@@ -251,9 +264,9 @@ public class PlayerAttack : MonoBehaviour
             attackRecoveryStartTime = Time.time;
             attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
             chargeLevel = 1;
-            
+
         }
-        
+
 
         if (isAttackRecovering)
         {
@@ -397,7 +410,7 @@ public class PlayerAttack : MonoBehaviour
             {
                 playerAnimations.TriggerAttack(0);
             }
-            
+
 
             // STAMINA COST
             playerStats.StaminaCost(playerStats.staminaCostForMoves);
@@ -413,7 +426,7 @@ public class PlayerAttack : MonoBehaviour
         else
         {
             playerAnimations.CancelCharge();
-            
+
         }
     }
 
@@ -463,40 +476,39 @@ public class PlayerAttack : MonoBehaviour
     // Starts the parry coroutine
     public void Parry()
     {
-        StartCoroutine(ParryC());
+        StartCoroutine(ParryCoroutine());
     }
 
     // Parry coroutine
-    IEnumerator ParryC()
+    IEnumerator ParryCoroutine()
     {
-        parrying = true;
+        // Cancel charge
+        if (charging)
+        {
+            playerMovement.Charging(false);
+            charging = false;
+            chargeLevel = 1;
+            maxChargeLevelReached = false;
+            playerAnimations.CancelCharge();
+        }
+
+        // Stamina cost
+        playerStats.StaminaCost(playerStats.staminaCostForMoves);
+
+        playerAnimations.TriggerParry(true);
+        //actualDashDistance = forwardAttackDashDistance;
+
         
-        playerMovement.Charging(false);
-        charging = false;
-        chargeLevel = 1;
-        maxChargeLevelReached = false;
-
-
-
-        playerAnimations.CancelCharge();
-        //playerAnimations.Parry(true);
-        playerAnimations.TriggerParry();
-
-
-        actualDashDistance = forwardAttackDashDistance;
-
-        
-        // Sound
-        audioManager.ParryOn();
+        // Parry sound
+        // audioManager.ParryOn();
         
 
 
         yield return new WaitForSeconds(parryDuration);
+        playerAnimations.TriggerParry(false);
 
-        parrying = false;
         //playerAnimations.Parry(parrying);
     }
-
 
 
 
@@ -510,6 +522,20 @@ public class PlayerAttack : MonoBehaviour
     // Functions to detect the dash input etc
     void ManageDash()
     {
+        // Detects dash with basic input rather than double tap, shortcut
+        if (Mathf.Abs(Input.GetAxisRaw("Dash" + playerStats.playerNum)) < shortcutDashDeadZone && shortcutDashStep == -1)
+        {
+            shortcutDashStep = 0;
+        }
+        
+        if (Mathf.Abs(Input.GetAxisRaw("Dash" + playerStats.playerNum)) > shortcutDashDeadZone && shortcutDashStep == 0)
+        {
+            dashDirection = Input.GetAxisRaw("Dash" + playerStats.playerNum) * - transform.localScale.x;
+
+            TriggerBasicDash();
+        }
+
+
         // Resets the dash input if too much time has passed
         if (dashStep == 1 || dashStep == 2)
         {
@@ -518,6 +544,7 @@ public class PlayerAttack : MonoBehaviour
                 dashStep = -1;
             }
         }
+
 
         //The player needs to let go the input before pressing it again to dash
         if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) < dashDeadZone)
@@ -538,6 +565,7 @@ public class PlayerAttack : MonoBehaviour
 
         }
 
+
         //When the player presses the directiosn
         if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > dashDeadZone)
         {
@@ -553,46 +581,7 @@ public class PlayerAttack : MonoBehaviour
             // Dash is validated, the player is gonna dash
             else if (dashStep == 2 && dashDirection == tempDashDirection && playerStats.stamina >= playerStats.staminaCostForMoves)
             {
-                dashStep = 3;
-
-                if (Mathf.Sign(dashDirection) == -Mathf.Sign(transform.localScale.x))
-                    actualDashDistance = forwardDashDistance;
-                else
-                    actualDashDistance = backwardsDashDistance;
-
-                //actualDashDistance = dashDistance;
-                isDashing = true;
-
-                // Animation
-                playerAnimations.Dash(tempDashDirection * transform.localScale.x);
-
-                // STAMINA COST
-                playerStats.StaminaCost(playerStats.staminaCostForMoves);
-
-                // CANCEL ATTACK
-                charging = false;
-                chargeLevel = 1;
-                maxChargeLevelReached = false;
-                playerMovement.Charging(false);
-                //triggerAttack = false;
-                isAttackRecovering = false;
-
-                
-
-                // If the player was clashed / countered and has finished their knockback
-                if (clashed)
-                {
-                    clashed = false;
-                    playerAnimations.Clashed(clashed);
-                    time = 0;
-                    //gameObject.layer = normalPlayerLayer;
-                    playerCollider.isTrigger = false;
-                }
-
-
-
-                initPos = transform.position;
-                targetPos = transform.position + new Vector3(actualDashDistance * tempDashDirection, 0, 0);
+                TriggerBasicDash();
             }
         }
     }
@@ -615,6 +604,50 @@ public class PlayerAttack : MonoBehaviour
                 playerAnimations.Clashed(clashed);
             }
         }
+    }
+
+    // Triggers the dash (Not the clash or attack dash) for it to run
+    void TriggerBasicDash()
+    {
+        dashStep = 3;
+        shortcutDashStep = -1;
+
+        if (Mathf.Sign(dashDirection) == - Mathf.Sign(transform.localScale.x))
+            actualDashDistance = forwardDashDistance;
+        else
+            actualDashDistance = backwardsDashDistance;
+
+
+        isDashing = true;
+
+
+        playerAnimations.Dash(dashDirection * transform.localScale.x);
+
+
+        playerStats.StaminaCost(playerStats.staminaCostForMoves);
+
+        // CANCEL ATTACK
+        charging = false;
+        chargeLevel = 1;
+        maxChargeLevelReached = false;
+        playerMovement.Charging(false);
+        isAttackRecovering = false;
+
+
+
+        // If the player was clashed / countered and has finished their knockback
+        if (clashed)
+        {
+            clashed = false;
+            playerAnimations.Clashed(clashed);
+            time = 0;
+            playerCollider.isTrigger = false;
+        }
+
+
+
+        initPos = transform.position;
+        targetPos = transform.position + new Vector3(actualDashDistance * dashDirection, 0, 0);
     }
 
     // Runs the dash, to use in FixedUpdate
