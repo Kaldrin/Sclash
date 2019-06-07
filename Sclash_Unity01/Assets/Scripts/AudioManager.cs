@@ -5,28 +5,28 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     // SOUND FUNCTIONS
-    [SerializeField] SoundFunctions soundFunctions;
+    [SerializeField] SoundFunctions soundFunctions = null;
 
 
 
     // FX
     // Audio sources
-    [SerializeField] AudioSource
+    [SerializeField]
+    AudioSource
         walk = null,
-        dash = null,
         clash = null,
         parry = null,
         parryOn = null,
         lightAttack = null,
         heavyAttack = null,
         successfulAttack = null,
-        charge = null,
         death = null;
-    // Audio clips
+
     /*
-    [SerializeField] AudioClip mainMenuMusic;
-    [SerializeField] AudioClip battleMusic;
-    */
+    [SerializeField] AudioSource
+        charge = null,
+        dash = null;
+        */
 
 
 
@@ -37,7 +37,7 @@ public class AudioManager : MonoBehaviour
     float menuMusicObjective = 1;
     float battleMusicObjective = 0;
     bool battleOn = false;
-    bool fadeMusic = false;
+    // bool fadeMusic = false;
     bool menuMusicFinishedFade = false;
     bool battleMusicFinishedFade = false;
     [SerializeField] float musicFadeSpeed = 0.001f;
@@ -129,7 +129,7 @@ public class AudioManager : MonoBehaviour
 
         if (menuMusicFinishedFade && battleMusicFinishedFade)
         {
-            fadeMusic = false;
+            // fadeMusic = false;
             battleMusicFinishedFade = false;
             menuMusicFinishedFade = false;
 

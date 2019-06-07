@@ -7,15 +7,15 @@ public class SceneManage : MonoBehaviour {
 
     //Scene changement
     [SerializeField]
-    Animator sceneSwitchAnimator;
+    Animator sceneSwitchAnimator = null;
     public bool proceedToLoadScene = false;
-    Scene sceneToLoad;
+    Scene sceneToLoad = new Scene();
     bool quit = false;
 
 
     //Restarting scene
     public KeyCode[]
-        pressSimultaneousKeysToRestart;
+        pressSimultaneousKeysToRestart = null;
 
 
 

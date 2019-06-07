@@ -6,20 +6,24 @@ public class PlayerAnimations : MonoBehaviour
 
 {
     // COMPONENTS
-    [SerializeField] Rigidbody2D rigid;
-    [SerializeField] Animator animator;
-    PlayerAttack playerAttack;
-    PlayerStats playerStats;
-    [SerializeField] GameObject colliderChild;
-    [SerializeField] public SpriteRenderer spriteRenderer;
+    [SerializeField] Rigidbody2D rigid = null;
+    [SerializeField] Animator animator = null;
+    PlayerAttack playerAttack = null;
+    PlayerStats playerStats = null;
+    //[SerializeField] GameObject colliderChild = null;
+    [SerializeField] public SpriteRenderer spriteRenderer = null;
 
 
     
-    [SerializeField] string walkBool = "Walk";
-    [SerializeField] float speedForWalking = 0.5f;
+    //[SerializeField] string walkBool = "Walk";
+    //[SerializeField] float speedForWalking = 0.5f;
 
     
-    bool canAttack;
+    bool canAttack = true;
+
+
+
+
 
     void Awake()
     {
@@ -47,7 +51,7 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetBool("Dashing", playerAttack.isDashing);
         //animator.SetBool("Parry", Input.GetButton("Parry" + stats.playerNum) & !stats.parryBroke);
         UpdateAnimStamina(playerStats.stamina);
-        animator.SetFloat("WalkDirection", Mathf.Sign(rigid.velocity.x) * transform.localScale.x);
+        animator.SetFloat("WalkDirection", rigid.velocity.x * - transform.localScale.x);
     }
 
 
@@ -67,37 +71,32 @@ public class PlayerAnimations : MonoBehaviour
     }
 
 
-
-    // Triggers or deactivates parry
-    /*
-    public void Parry(bool state)
-    {
-        if (state)
-        {
-            animator.SetBool("Parry", true);
-        }
-        else
-        {
-            animator.SetBool("Parry", false);
-        }
-    }
-    */
-
     
     public void TriggerParry()
     {
         animator.SetTrigger("ParryOn");
     }
 
-    public void TriggerAttack()
+    public void TriggerAttack(float attackDir)
     {
         if (canAttack)
         {
+            float attackDirection;
+
+
+            if (attackDir == 1)
+                attackDirection = 0f;
+            else if (attackDir == -1)
+                attackDirection = 0.5f;
+            else
+                attackDirection = 0.5f;
+
             canAttack = false;
             animator.SetBool("Attack", true);
             animator.SetTrigger("AttackOn");
             animator.SetBool("Charging", false);
-            //StartCoroutine(AttackTime());
+
+            animator.SetFloat("AttackDirection", attackDirection);
         }
     }
 
@@ -148,6 +147,7 @@ public class PlayerAnimations : MonoBehaviour
         yield return new WaitForSeconds(0.05f);
         animator.SetBool("Attack", false);
         canAttack = true;
+        Debug.Log("Attack off");
     }
 
 

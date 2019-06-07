@@ -35,7 +35,7 @@ public class PlayerStats : MonoBehaviour
 
     // HEALTH
     float currentHealth;
-    [SerializeField] float maxHealth;
+    [SerializeField] float maxHealth = 0;
     [HideInInspector] public bool dead = false;
 
 
@@ -44,10 +44,12 @@ public class PlayerStats : MonoBehaviour
 
     //STAMINA
     [SerializeField] float maxStamina = 3f;
-    [HideInInspector] public float stamina;
-    [SerializeField] Slider staminaSlider;
-    [SerializeField] float staminaGainOverTimeMultiplier = 0.1f;
-    [SerializeField] float idleStaminaGainOverTimeMultiplier = 0.5f;
+    [HideInInspector] public float stamina = 0;
+    [SerializeField] Slider staminaSlider = null;
+    [SerializeField] float
+        staminaGainOverTimeMultiplier = 0.1f,
+        idleStaminaGainOverTimeMultiplier = 0.5f,
+        backWalkingStaminaGainOverTime = 0.5f;
     [SerializeField] public float staminaCostForMoves = 1;
     bool canRegenStamina = true;
     float currentTimeBeforeStaminaRegen = 0;
@@ -135,7 +137,12 @@ public class PlayerStats : MonoBehaviour
     {
         if (stamina < maxStamina && canRegenStamina)
         {
-            if (Mathf.Abs(rigid.velocity.x) <= 0.5f)
+            // If back walking
+            if (rigid.velocity.x * - transform.localScale.x < 0 )
+            {
+                stamina += Time.deltaTime * backWalkingStaminaGainOverTime;
+            }
+            else if (Mathf.Abs(rigid.velocity.x) <= 0.5f)
             {
                 stamina += Time.deltaTime * idleStaminaGainOverTimeMultiplier;
             }

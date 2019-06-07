@@ -5,36 +5,27 @@ using UnityEngine.Serialization;
 
 public class Button : MonoBehaviour {
 
-    //Visual
-    [SerializeField]
-    bool
+    // VISUAL
+    [SerializeField] bool
         spriteSwap = true,
         animSwap = false;
-    [SerializeField]
-    SpriteRenderer spriteRenderer;
-
-    [SerializeField]
-    Animator animator;
-    [SerializeField]
-    Sprite
-        idle,
-        over,
-        active;
+    [SerializeField] SpriteRenderer spriteRenderer = null;
+    [SerializeField] Animator animator = null;
+    [SerializeField] Sprite
+        idle = null,
+        over = null,
+        active = null;
 
 
 
-    //Functional
-    [SerializeField]
-    KeyCode[] activationKeys;
-    [SerializeField]
-    MonoBehaviour[] scripts;
-    [SerializeField]
-    string[] functionsNames;
-    [SerializeField]
-    float callDelay = 0.1f;
-
-
+    // FUNCTIONAL
+    [SerializeField] KeyCode[] activationKeys = null;
+    [SerializeField] MonoBehaviour[] scripts = null;
+    [SerializeField] string[] functionsNames = null;
+    [SerializeField] float callDelay = 0.1f;
     string selectionState = "Idle";
+
+
 
 
 	// Use this for initialization

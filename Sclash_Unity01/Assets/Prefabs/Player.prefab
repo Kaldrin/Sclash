@@ -1045,7 +1045,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2849229250956210319}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -2815,6 +2815,7 @@ MonoBehaviour:
   staminaSlider: {fileID: 994018448512127870}
   staminaGainOverTimeMultiplier: 0.3
   idleStaminaGainOverTimeMultiplier: 1
+  backWalkingStaminaGainOverTime: 1
   staminaCostForMoves: 1
   durationBeforeStaminaRegen: 0.5
   playerNum: 0
@@ -2833,10 +2834,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigid: {fileID: 7003620522291499887}
   animator: {fileID: 6065618468900711097}
-  colliderChild: {fileID: 1481139419592432652}
   spriteRenderer: {fileID: 293502933573899569}
-  walkBool: Walk
-  speedForWalking: 0.5
 --- !u!50 &7003620522291499887
 Rigidbody2D:
   serializedVersion: 4

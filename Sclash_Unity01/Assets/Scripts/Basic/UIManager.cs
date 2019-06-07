@@ -5,25 +5,23 @@ using UnityEngine;
 public class UIManager : MonoBehaviour {
 
 
-    Animator uiAnimator;
+    Animator uiAnimator = null;
 
-    //Activating pause menu
-    [SerializeField]
-    KeyCode pauseKey;
-    [SerializeField]
-    GameObject[] objectsToFreezeOnPause;
-    [SerializeField]
-    MonoBehaviour[] scriptsToFreezeOnPause;
-    [SerializeField]
-    MonoBehaviour[] scriptsToCallOnPause;
-    [SerializeField]
-    string[] functionsNamesToCallOnPause;
+    // ACTIVATING PAUSE MENU
+    [SerializeField] KeyCode pauseKey = KeyCode.P;
+    [SerializeField] GameObject[] objectsToFreezeOnPause  = null;
+    [SerializeField] MonoBehaviour[] scriptsToFreezeOnPause = null;
+    [SerializeField] MonoBehaviour[] scriptsToCallOnPause = null;
+    [SerializeField] string[] functionsNamesToCallOnPause = null;
 
-    //Deactivating pause
-    [SerializeField]
-    MonoBehaviour[] scriptsToCallOnUnpause;
-    [SerializeField]
-    string[] functionsNamesToCallOnUnpause;
+
+
+    // DEACTIVATING PAUSE MENU
+    [SerializeField] MonoBehaviour[] scriptsToCallOnUnpause = null;
+    [SerializeField] string[] functionsNamesToCallOnUnpause = null;
+
+
+
 
     //Manage cursor
     public bool cursorLocked = false;

@@ -7,17 +7,17 @@ public class GameManager : MonoBehaviour
 {
     // AUDIO
     [SerializeField] string audioManagerName = "GlobalManager";
-    AudioManager audioManager;
+    AudioManager audioManager = null;
 
 
 
     // CAMERA
-    [SerializeField] CameraManager cameraManager;
+    [SerializeField] CameraManager cameraManager = null;
 
 
 
     // MENU
-    [SerializeField] GameObject mainMenu;
+    [SerializeField] GameObject mainMenu = null;
     [SerializeField] GameObject blurPanel = null;
 
 
@@ -26,18 +26,17 @@ public class GameManager : MonoBehaviour
 
     // ROUND
     [SerializeField] float timeBeforeNextRound = 3;
-    [SerializeField] ParticleSystem roundLeaves;
-    public bool gameStarted;
+    [SerializeField] ParticleSystem roundLeaves = null;
+    public bool gameStarted = false;
 
 
 
 
 
     // PLAYERS
-    [SerializeField] GameObject player;
+    [SerializeField] GameObject player = null;
     List<GameObject> playersList = new List<GameObject>();
-    [SerializeField] Color[] playersColors;
-
+    [SerializeField] Color[] playersColors = null;
 
 
 
@@ -50,8 +49,8 @@ public class GameManager : MonoBehaviour
 
 
     // SCORE
-    [SerializeField] Text scoreText;
-    public Vector2 score;
+    [SerializeField] Text scoreText = null;
+    public Vector2 score = new Vector2(0, 0);
     [SerializeField] float scoreShowDuration = 4f;
 
 

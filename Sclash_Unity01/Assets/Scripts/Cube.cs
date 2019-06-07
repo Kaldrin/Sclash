@@ -6,21 +6,29 @@ public class Cube : MonoBehaviour
 {
 
     // COMPONENTS
-    Rigidbody rigid;
+    Rigidbody rigid = null;
+
 
 
     // CAMERA
     [SerializeField] float sensitivity = 3;
-    [SerializeField] GameObject cameraArm;
+    [SerializeField] GameObject cameraArm = null;
+
+
 
 
     // MOVEMENTS
-    [SerializeField] float speed;
+    [SerializeField] float speed = 0;
+
+
 
 
     // JUMP
     [SerializeField] float jumpForce = 100;
     bool canJump = true;
+
+
+
 
 
 

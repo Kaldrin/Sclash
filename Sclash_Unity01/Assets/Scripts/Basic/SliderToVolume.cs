@@ -6,12 +6,9 @@ using UnityEngine.Audio;
 
 public class SliderToVolume : MonoBehaviour
 {
-    [SerializeField]
-    Slider slider;
-    [SerializeField]
-    AudioMixer mixer;
-    [SerializeField]
-    string mixerGroup;
+    [SerializeField] Slider slider = null;
+    [SerializeField] AudioMixer mixer = null;
+    [SerializeField] string mixerGroup = null;
 
     // Start is called before the first frame update
     void Start()

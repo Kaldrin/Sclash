@@ -18,37 +18,40 @@ public class PlayerAttack : MonoBehaviour
 
 
     // COMPONENTS
-    Rigidbody2D rb;
-    PlayerStats playerStats;
-    PlayerAnimations playerAnimations;
-    PlayerMovement playerMovement;
+    Rigidbody2D rb = null;
+    PlayerStats playerStats = null;
+    PlayerAnimations playerAnimations = null;
+    PlayerMovement playerMovement = null;
 
 
 
     // TAP
-    float lastTap;
-    float tapTime = 0.25f;
-    bool tapping;
+    // float lastTap = 0;
+    // float tapTime = 0.25f;
+    // bool tapping = false;
+
+
 
 
 
     // ATTACK RECOVERY
     [SerializeField] float minRecoveryDuration = 0.4f;
     [SerializeField] float maxRecoveryDuration = 1;
+    [SerializeField] public bool attackRecoveryStart = false;
     [HideInInspector] public bool attackRecovery = false;
-    float attackRecoveryStartTime;
-    float attackRecoveryDuration;
+    float attackRecoveryStartTime = 0;
+    float attackRecoveryDuration = 0;
 
 
 
 
-
+    
     // CHARGE
     [SerializeField] float durationToNextChargeLevel = 1.5f;
     [SerializeField] float maxHoldDurationAtMaxCharge = 3;
-    float maxChargeLevelStartTime;
+    float maxChargeLevelStartTime = 0;
     bool maxChargeLevelReached = false;
-    float chargeStartTime;
+    float chargeStartTime = 0;
     [HideInInspector] public int chargeLevel = 1;
     [SerializeField] int maxChargeLevel = 2;
     [HideInInspector] public bool charging = false;
@@ -58,23 +61,29 @@ public class PlayerAttack : MonoBehaviour
 
 
     // ATTACK
-    bool triggerAttack = false;
+    //bool triggerAttack = false;
     [SerializeField] public bool
-        activeFrame,
-        clashFrames;
+        activeFrame = false,
+        clashFrames = false;
     //[SerializeField] bool attackDone;
     [SerializeField] float lightAttackRange = 1.5f;
 
 
 
+
+
     // OTHER PLAYER
-    [HideInInspector] public bool enemyDead;
+    [HideInInspector] public bool enemyDead = false;
 
     
 
+
+
     // PARRY
-    [HideInInspector] public bool parrying;
+    [HideInInspector] public bool parrying = false;
     [SerializeField] float parryDuration = 0.4f;
+
+
 
 
 
@@ -82,6 +91,7 @@ public class PlayerAttack : MonoBehaviour
     // CLASH
     bool clashed = false;
     [SerializeField] float clashKnockback = 2;
+
 
 
 
@@ -181,34 +191,6 @@ public class PlayerAttack : MonoBehaviour
         }
 
 
-        if (triggerAttack)
-        {
-            Vector3 dir = new Vector3(0, 0, 0);
-            if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
-                dir = new Vector3(Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)), 0, 0);
-
-
-            if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
-                dir *= forwardDashDistance;
-            else
-                dir *= backwardsDashDistance;
-
-            initPos = transform.position;
-            targetPos = transform.position + dir;
-            targetPos.y = transform.position.y;
-
-            time = 0.0f;
-            rb.velocity = Vector3.zero;
-
-            isDashing = true;
-            rb.gravityScale = 0f;
-
-            //rb.AddForce((Vector2)dir * dashMultiplier, ForceMode2D.Impulse);
-
-            triggerAttack = false;
-        }
-
-
 
         // DASH
         if (isDashing)
@@ -263,6 +245,18 @@ public class PlayerAttack : MonoBehaviour
     // RECOVERIES
     void ManageRecoveries()
     {
+        if (attackRecoveryStart)
+        {
+            attackRecovery = true;
+            attackRecoveryStart = false;
+            // Activate recovery
+            //attackRecovery = true;
+            attackRecoveryStartTime = Time.time;
+            attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
+            chargeLevel = 1;
+        }
+        
+
         if (attackRecovery)
         {
             if (Time.time - attackRecoveryStartTime >= attackRecoveryDuration)
@@ -333,6 +327,7 @@ public class PlayerAttack : MonoBehaviour
                 if (chargeLevel < maxChargeLevel)
                 {
                     chargeLevel++;
+                    Debug.Log("Charge up");
                     //playerAnimations.ChargeChange(chargeLevel);
                 }
                 else if (chargeLevel >= maxChargeLevel)
@@ -344,6 +339,9 @@ public class PlayerAttack : MonoBehaviour
                     playerAnimations.TriggerMaxCharge();
                 }
             }
+
+
+
         }
     }
 
@@ -356,32 +354,51 @@ public class PlayerAttack : MonoBehaviour
         maxChargeLevelReached = false;
         //playerAnimations.TriggerCharge();
 
-
-        // Check if player has enough remaining stamina
+        // Check if player has enough remaining stamina and attack if so
         if (playerStats.stamina >= playerStats.staminaCostForMoves)
         {
-
             if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
                 actualDashDistance = forwardAttackDashDistance;
             else
                 actualDashDistance = backwardsAttackDashDistance;
 
-            actualDashDistance = forwardAttackDashDistance;
 
-            triggerAttack = true;
-            playerAnimations.TriggerAttack();
-            //ApplyDamage();
 
+            //actualDashDistance = forwardAttackDashDistance;
+            float direction = Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) * transform.localScale.x;
+
+
+
+            Vector3 dir = new Vector3(0, 0, 0);
+            if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
+                dir = new Vector3(Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)), 0, 0);
+
+
+
+            dir *= actualDashDistance;
+            initPos = transform.position;
+            targetPos = transform.position + dir;
+            targetPos.y = transform.position.y;
+            time = 0.0f;
+            rb.velocity = Vector3.zero;
+            isDashing = true;
+            rb.gravityScale = 0f;
+
+
+            if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.1f)
+            {
+                playerAnimations.TriggerAttack(direction);
+            }
+            else
+            {
+                playerAnimations.TriggerAttack(0);
+            }
+            
 
             // STAMINA COST
             playerStats.StaminaCost(playerStats.staminaCostForMoves);
 
 
-
-            // Activate recovery
-            attackRecovery = true;
-            attackRecoveryStartTime = Time.time;
-            attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
 
 
             /*
@@ -392,10 +409,8 @@ public class PlayerAttack : MonoBehaviour
         else
         {
             playerAnimations.CancelCharge();
+            
         }
-        
-
-        chargeLevel = 1;
     }
 
 
@@ -518,7 +533,7 @@ public class PlayerAttack : MonoBehaviour
                 chargeLevel = 1;
                 maxChargeLevelReached = false;
                 playerMovement.Charging(false);
-                triggerAttack = false;
+                //triggerAttack = false;
                 attackRecovery = false;
 
                 
@@ -590,7 +605,7 @@ public class PlayerAttack : MonoBehaviour
         playerAnimations.CancelCharge();
 
         attackRecovery = false;
-        triggerAttack = false;
+        //triggerAttack = false;
         activeFrame = false;
 
         parrying = false;

@@ -7,7 +7,7 @@ using TMPro;
 public class SliderToText : MonoBehaviour {
 
     // SLIDER & TEXT
-    [SerializeField] Slider slider;
+    [SerializeField] Slider slider = null;
     [SerializeField] GameObject textObject = null;
 
 
