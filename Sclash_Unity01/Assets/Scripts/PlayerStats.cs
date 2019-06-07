@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerStats : MonoBehaviour
 {
 
-    // AUDIO
+    // AUDIO MANAGER
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
@@ -14,16 +14,16 @@ public class PlayerStats : MonoBehaviour
 
 
 
-
-    // MANAGER
-    GameManager gameManager;
+    // GAME MANAGER
     [SerializeField] string gameManagerName = "GlobalManager";
+    GameManager gameManager;
+    
 
 
 
 
 
-    // COMPONENTS
+    // PLAYER'S COMPONENTS
     PlayerAttack playerAttack;
     PlayerAnimations playerAnimation;
     PlayerMovement playerMovements;
@@ -34,8 +34,9 @@ public class PlayerStats : MonoBehaviour
 
 
     // HEALTH
-    float currentHealth;
     [SerializeField] float maxHealth = 0;
+    float currentHealth;
+
     [HideInInspector] public bool dead = false;
 
 
@@ -43,23 +44,28 @@ public class PlayerStats : MonoBehaviour
 
 
     //STAMINA
-    [SerializeField] float maxStamina = 3f;
-    [HideInInspector] public float stamina = 0;
-    [SerializeField] Slider staminaSlider = null;
+    [SerializeField] public Slider staminaSlider = null;
+
+    [SerializeField] public float staminaCostForMoves = 1;
     [SerializeField] float
+        maxStamina = 3f,
+        durationBeforeStaminaRegen = 0.2f,
         staminaGainOverTimeMultiplier = 0.1f,
         idleStaminaGainOverTimeMultiplier = 0.5f,
         backWalkingStaminaGainOverTime = 0.5f;
-    [SerializeField] public float staminaCostForMoves = 1;
-    bool canRegenStamina = true;
+    [HideInInspector] public float stamina = 0;  
     float currentTimeBeforeStaminaRegen = 0;
-    [SerializeField] float durationBeforeStaminaRegen = 0.2f;
+
+    bool canRegenStamina = true;
+
+    
 
 
 
 
+    // PLAYER IDENTIFICATION
     public int playerNum;
-    public bool parryBroke = false;
+    //public bool parryBroke = false;
 
 
 
@@ -69,42 +75,46 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
-        // Get audio
+        // Get audio manager to use in the script
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
 
 
-        // Get manager
+        // Get game manager to use in the script
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
 
 
 
 
-        // Get components
+        // Get player's components to use in the script
         rigid = GetComponent<Rigidbody2D>();
         playerAttack = GetComponent<PlayerAttack>();
         playerAnimation = GetComponent<PlayerAnimations>();
         playerMovements = GetComponent<PlayerMovement>();
 
+
+
         // Set the stamina slider's max value to the stamina max value
         staminaSlider.maxValue = maxStamina;
 
 
+
+        // Begin by reseting all the player's values and variable to start fresh
         ResetValues();
     }
 
     void FixedUpdate()
     {
-        // PARRY
-        if ((Input.GetButtonDown("Parry" + playerNum) || Mathf.Abs(Input.GetAxis("Parry" + playerNum)) > 0) && !parryBroke && !playerAttack.parrying && gameManager.gameStarted)
-        {
-            Parry();
-        }
+        /*
         // If the player is not parrying
         else
         {
-            StaminaRegen();
+            
         }
+        */
+
+
+        StaminaRegen();
     }
 
     void LateUpdate()
@@ -239,22 +249,11 @@ public class PlayerStats : MonoBehaviour
                 playerAttack.Clash();
                 hit = false;
             }
-            // DEATH
+            // TOUCHED
             else if (!playerAttack.parrying)
             {
-                currentHealth -= 1;
                 hit = true;
-
-                // Sound
-                audioManager.SuccessfulAttack();
-
-
-                // Canvas
-                staminaSlider.gameObject.SetActive(false);
-
-
-                playerAttack.playerCollider.isTrigger = true;
-                gameManager.EndRoundSlowMo();
+                Touched();
             }
             // PARRY
             else
@@ -285,7 +284,7 @@ public class PlayerStats : MonoBehaviour
             // IS DEAD ?
             if (currentHealth <= 0 && !dead)
             {
-                FindObjectOfType<GameManager>().Death(instigator.GetComponent<PlayerStats>().playerNum);
+                gameManager.Death(instigator.GetComponent<PlayerStats>().playerNum);
                 playerAnimation.Dead();
                 dead = true;
             }
@@ -293,4 +292,25 @@ public class PlayerStats : MonoBehaviour
 
         return hit;
     }
+
+
+
+
+
+    // TOUCHED
+    void Touched()
+    {
+        currentHealth -= 1;
+
+        // Sound
+        audioManager.SuccessfulAttack();
+
+
+        playerAttack.playerCollider.isTrigger = true;
+        gameManager.EndRoundSlowMo();
+    }
 }
+
+
+
+

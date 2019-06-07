@@ -2767,8 +2767,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioManagerName: GlobalManager
   gameManagerName: GlobalManager
-  minRecoveryDuration: 0.4
-  maxRecoveryDuration: 1
+  minRecoveryDuration: 0.1
+  maxRecoveryDuration: 0.6
+  attackRecoveryStart: 0
   attackRecovery: 0
   durationToNextChargeLevel: 1
   maxHoldDurationAtMaxCharge: 2

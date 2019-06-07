@@ -38,7 +38,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] float minRecoveryDuration = 0.4f;
     [SerializeField] float maxRecoveryDuration = 1;
     [SerializeField] public bool attackRecoveryStart = false;
-    [HideInInspector] public bool attackRecovery = false;
+    [HideInInspector] public bool isAttackRecovering = false;
     float attackRecoveryStartTime = 0;
     float attackRecoveryDuration = 0;
 
@@ -61,11 +61,10 @@ public class PlayerAttack : MonoBehaviour
 
 
     // ATTACK
-    //bool triggerAttack = false;
     [SerializeField] public bool
         activeFrame = false,
         clashFrames = false;
-    //[SerializeField] bool attackDone;
+    [HideInInspector] public bool isAttacking = false;
     [SerializeField] float lightAttackRange = 1.5f;
 
 
@@ -75,12 +74,12 @@ public class PlayerAttack : MonoBehaviour
     // OTHER PLAYER
     [HideInInspector] public bool enemyDead = false;
 
-    
+
 
 
 
     // PARRY
-    [HideInInspector] public bool parrying = false;
+    [SerializeField] public bool parrying = false;
     [SerializeField] float parryDuration = 0.4f;
 
 
@@ -98,38 +97,44 @@ public class PlayerAttack : MonoBehaviour
 
 
     // DASH
+    [HideInInspector] public bool isDashing;
+    [SerializeField] public Collider2D playerCollider;
     int dashStep = 0;
-    //The current step to the dash
-    // 0 = Nothing done
+    //The current step of the dash input
+    // 0 = Player wasn't pressing the direction
     // 1 = Player pressed the direction 1 time
     // 2 = Player released the direction after pressing it
-    // 3 = Player pressed again the same direction after releasing it, dash
-    float dashDirection;
-    float tempDashDirection;
-    float dashInitStartTime = 0;
-    [SerializeField] float dashAllowanceDuration = 0.3f;
-    [Range(1.0f, 10.0f)] public float dashSpeed;
-    [Range(1.0f, 10.0f)] public float forwardDashDistance;
-    [Range(1.0f, 10.0f)] public float backwardsDashDistance;
-    [SerializeField] float forwardAttackDashDistance = 3;
-    [SerializeField] float backwardsAttackDashDistance = 3;
-    float actualDashDistance;
-    [HideInInspector] public bool isDashing;
+    // 3 = Player pressed again the same direction after releasing it, executes dash
+
+    float
+        dashDirection,
+        tempDashDirection,
+        dashInitStartTime = 0,
+        actualDashDistance,
+        time;
+    [SerializeField] public float
+        dashSpeed,
+        forwardDashDistance,
+        backwardsDashDistance;
+    [SerializeField] float
+        dashAllowanceDuration = 0.3f,
+        forwardAttackDashDistance = 3,
+        backwardsAttackDashDistance = 3,
+        dashDeadZone = 0.5f;
+
     Vector3 initPos;
     Vector3 targetPos;
-    float time;
-    [SerializeField] float dashDeadZone = 0.5f;
-    [SerializeField] public Collider2D playerCollider;
-    /*
-    [SerializeField] int normalPlayerLayer = 8;
-    [SerializeField] int dashPhantomPlayerLayer = 10;
-    */
+    
+
+
+
 
 
     // CHEAT
     [SerializeField] bool cheatCodes = false;
-    [SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
-    [SerializeField] KeyCode deathCheatKey = KeyCode.Alpha2;
+    [SerializeField] KeyCode
+        clashCheatKey = KeyCode.Alpha1,
+        deathCheatKey = KeyCode.Alpha2;
 
 
 
@@ -154,6 +159,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        // The player can only use actions when the game has started
         if (gameManager.gameStarted)
         {
             
@@ -171,20 +177,30 @@ public class PlayerAttack : MonoBehaviour
                 }
             }
 
-            // RECOVERY
+
+            // PARRY INPUT
+            if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Mathf.Abs(Input.GetAxisRaw("Parry" + playerStats.playerNum)) > 0.1) && !parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering)
+            {
+                Parry();
+            }
+
+
+
+            // RECOVERY TIME MANAGING
             ManageRecoveries();
         }
         
         
 
         
-
+        // Cheatcodes to use for development purposes
         if (cheatCodes)
             cheats();
     }
 
     void FixedUpdate()
     {
+        // Apply damages if the current attack animation has entered active frame, thus activating the bool in the animation
         if (activeFrame)
         {
             ApplyDamage();
@@ -192,31 +208,10 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-        // DASH
+        // DASH FUNCTIONS
         if (isDashing)
         {
-            //gameObject.layer = dashPhantomPlayerLayer;
-
-            // Player can cross up, collider is deactivated during dash but it can still be hit
-            playerCollider.isTrigger = true;
-
-            time += Time.deltaTime * dashSpeed;
-            transform.position = Vector3.Lerp(initPos, targetPos, time);
-            if (time >= 1.0f)
-            {
-                time = 0;
-                isDashing = false;
-                //gameObject.layer = normalPlayerLayer;
-                playerCollider.isTrigger = false;
-
-
-                // If the player was clashed / countered and has finished their knockback
-                if (clashed)
-                {
-                    clashed = false;
-                    playerAnimations.Clashed(clashed);
-                }
-            }
+            RunDash();
         }
     }
 
@@ -245,23 +240,26 @@ public class PlayerAttack : MonoBehaviour
     // RECOVERIES
     void ManageRecoveries()
     {
+        // If the animation of the attack has reached the recovery starting point, it turns on the the attackRecoveryStart bool for a frame, which triggers the recovery time calculation and run
         if (attackRecoveryStart)
         {
-            attackRecovery = true;
+            isAttackRecovering = true;
             attackRecoveryStart = false;
+            isAttacking = false;
             // Activate recovery
             //attackRecovery = true;
             attackRecoveryStartTime = Time.time;
             attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
             chargeLevel = 1;
+            
         }
         
 
-        if (attackRecovery)
+        if (isAttackRecovering)
         {
             if (Time.time - attackRecoveryStartTime >= attackRecoveryDuration)
             {
-                attackRecovery = false;
+                isAttackRecovering = false;
                 playerAnimations.EndAttack();
             }
         }
@@ -274,10 +272,9 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-    //CHARGE & ATTACK
+    //CHARGE
     void ManageCharge()
     {
-
         //Player presses parry button while charging
         if (Input.GetButtonDown("Parry" + playerStats.playerNum) && charging)
         {
@@ -286,7 +283,7 @@ public class PlayerAttack : MonoBehaviour
 
 
         //Player presses attack button
-        if (Input.GetButtonDown("Fire" + playerStats.playerNum) && !attackRecovery)
+        if (Input.GetButtonDown("Fire" + playerStats.playerNum) && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves)
         {
             charging = true;
             chargeStartTime = Time.time;
@@ -345,12 +342,19 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+
+
+
+
+    // ATTACK
+    // Triggers the attck
     void ReleaseAttack()
     {
         // Charge
         playerMovement.Charging(false);
         charging = false;
-        
+        isAttacking = true;
+
         maxChargeLevelReached = false;
         //playerAnimations.TriggerCharge();
 
@@ -413,7 +417,42 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    // Hits with a phantom collider to apply the attack's damage during active frames
+    void ApplyDamage()
+    {
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y), new Vector2(lightAttackRange, 1), 0);
+        List<GameObject> hits = new List<GameObject>();
 
+
+        foreach (Collider2D c in hitsCol)
+        {
+            if (c.CompareTag("Player"))
+            {
+                if (!hits.Contains(c.transform.parent.gameObject))
+                {
+                    hits.Add(c.transform.parent.gameObject);
+                }
+            }
+        }
+        foreach (GameObject g in hits)
+        {
+            if (g != gameObject)
+                enemyDead = g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
+        }
+    }
+
+    // Draw the attack range when the player is selected
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
+    }
+
+    // Draw the attack range is the attack is in active frames in the scene viewer
+    private void OnDrawGizmos()
+    {
+        if (activeFrame)
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
+    }
 
 
 
@@ -427,6 +466,7 @@ public class PlayerAttack : MonoBehaviour
         StartCoroutine(ParryC());
     }
 
+    // Parry coroutine
     IEnumerator ParryC()
     {
         parrying = true;
@@ -467,6 +507,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     //DASH
+    // Functions to detect the dash input etc
     void ManageDash()
     {
         // Resets the dash input if too much time has passed
@@ -534,7 +575,7 @@ public class PlayerAttack : MonoBehaviour
                 maxChargeLevelReached = false;
                 playerMovement.Charging(false);
                 //triggerAttack = false;
-                attackRecovery = false;
+                isAttackRecovering = false;
 
                 
 
@@ -576,18 +617,30 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    /*
-    IEnumerator SingleTap()
+    // Runs the dash, to use in FixedUpdate
+    void RunDash()
     {
-        yield return new WaitForSeconds(tapTime);
-        if (tapping)
+        playerCollider.isTrigger = true;
+
+        time += Time.deltaTime * dashSpeed;
+        transform.position = Vector3.Lerp(initPos, targetPos, time);
+        if (time >= 1.0f)
         {
-            Debug.Log("Single Tap");
-            tapping = false;
-            dashDirection = 0;
+            time = 0;
+            isDashing = false;
+
+            // Player can cross up, collider is deactivated during dash but it can still be hit
+            playerCollider.isTrigger = false;
+
+
+            // If the player was clashed / countered and has finished their knockback
+            if (clashed)
+            {
+                clashed = false;
+                playerAnimations.Clashed(clashed);
+            }
         }
     }
-    */
 
 
 
@@ -597,14 +650,13 @@ public class PlayerAttack : MonoBehaviour
 
 
     //CLASH
-
     public void Clash()
     {
         charging = false;
         chargeLevel = 1;
         playerAnimations.CancelCharge();
 
-        attackRecovery = false;
+        isAttackRecovering = false;
         //triggerAttack = false;
         activeFrame = false;
 
@@ -623,44 +675,5 @@ public class PlayerAttack : MonoBehaviour
 
         // Sound
         audioManager.Clash();
-    }
-
-
-
-
-
-    // Hits with a phantom collider
-    void ApplyDamage()
-    {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y), new Vector2(lightAttackRange, 1), 0);
-        List<GameObject> hits = new List<GameObject>();
-
-
-        foreach (Collider2D c in hitsCol)
-        {
-            if (c.CompareTag("Player"))
-            {
-                if (!hits.Contains(c.transform.parent.gameObject))
-                {
-                    hits.Add(c.transform.parent.gameObject);
-                }
-            }
-        }
-        foreach (GameObject g in hits)
-        {
-            if (g != gameObject)
-                enemyDead = g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
-        }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -lightAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (activeFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - lightAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
     }
 }

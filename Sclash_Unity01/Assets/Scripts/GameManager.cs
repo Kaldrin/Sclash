@@ -167,6 +167,13 @@ public class GameManager : MonoBehaviour
 
     public void Death(int playerNum)
     {
+        // Canvas
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<PlayerStats>().staminaSlider.gameObject.SetActive(false);
+        }
+        
+
         StartCoroutine(Score(playerNum));
     }
 
@@ -218,8 +225,11 @@ public class GameManager : MonoBehaviour
 
     
 
-    // EFFECTS
 
+
+
+
+    // EFFECTS
     public void EndRoundSlowMo()
     {
         StartCoroutine(EndRoundSlowMoCoroutine());
@@ -227,7 +237,6 @@ public class GameManager : MonoBehaviour
 
     IEnumerator EndRoundSlowMoCoroutine()
     {
-        
         Time.timeScale = roundEndSlowMoTimeScale;
         yield return new WaitForSecondsRealtime(rounEndSlowMoDuration);
         Time.timeScale = 1;

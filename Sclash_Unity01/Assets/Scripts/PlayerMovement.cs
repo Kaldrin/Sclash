@@ -70,14 +70,14 @@ public class PlayerMovement : MonoBehaviour
             //jumpRequest = true;
         }
 
-        if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.attackRecovery && !playerAttack.enemyDead)
+        if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.isAttackRecovering && !playerAttack.enemyDead)
             OrientTowardsEnemy();
     }
 
     void FixedUpdate()
     {
         // MOVEMENTS
-        if (!playerStats.dead && !playerAttack.attackRecovery && !playerAttack.activeFrame)
+        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame)
             rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
         else if (playerStats.dead)
         {
