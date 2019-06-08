@@ -66,7 +66,6 @@ public class PlayerStats : MonoBehaviour
 
     // PLAYER IDENTIFICATION
     public int playerNum;
-    //public bool parryBroke = false;
 
 
 
@@ -103,7 +102,8 @@ public class PlayerStats : MonoBehaviour
         // Begin by reseting all the player's values and variable to start fresh
         ResetValues();
     }
-
+    
+    // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
         /*
@@ -128,20 +128,6 @@ public class PlayerStats : MonoBehaviour
 
 
 
-    // PARRY
-    void Parry()
-    {
-        if (stamina >= staminaCostForMoves)
-        {
-            //stamina -= Time.deltaTime * 2;
-            playerAttack.Parry();
-            // STAMINA COST
-            StaminaCost(staminaCostForMoves);
-        }
-    }
-
-
-
 
     // STAMINA
     void StaminaRegen()
@@ -160,6 +146,7 @@ public class PlayerStats : MonoBehaviour
             else
             {
                 stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
+                
             }
         }
 
@@ -284,6 +271,10 @@ public class PlayerStats : MonoBehaviour
 
         return hit;
     }
+
+
+
+
 
 
 

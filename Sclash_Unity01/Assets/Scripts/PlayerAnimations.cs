@@ -80,7 +80,7 @@ public class PlayerAnimations : MonoBehaviour
     // Update FX's parameters in Update
     void UpdateFX()
     {
-        Debug.Log(playerAttack.actualAttackRange);
+        //Debug.Log(playerAttack.actualAttackRange);
         swordTrail.startWidth = playerAttack.actualAttackRange;
 
 
@@ -149,6 +149,28 @@ public class PlayerAnimations : MonoBehaviour
             animator.SetTrigger("ParryOff");
     }
 
+
+
+
+
+
+    // KICK ANIMATION
+    // Trigger on / off kick animation
+    public void TriggerKick(bool state)
+    {
+        if (state)
+            animator.SetTrigger("KickOn");
+        else
+            animator.SetTrigger("KickOff");
+    }
+    // Trigger on / off kicked animation
+    public void TriggerKicked(bool state)
+    {
+        if (state)
+            animator.SetTrigger("KickedOn");
+        else
+            animator.SetTrigger("KickedOff");
+    }
 
 
 

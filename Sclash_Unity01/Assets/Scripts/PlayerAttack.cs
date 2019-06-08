@@ -21,11 +21,13 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
     // PLAYER'S COMPONENTS
     Rigidbody2D rb = null;
     PlayerStats playerStats = null;
     PlayerAnimations playerAnimations = null;
     PlayerMovement playerMovement = null;
+
 
 
 
@@ -39,8 +41,11 @@ public class PlayerAttack : MonoBehaviour
         attackRecoveryStartTime = 0,
         attackRecoveryDuration = 0;
 
+    bool canCharge = true;
     [SerializeField] public bool attackRecoveryStart = false;
     [HideInInspector] public bool isAttackRecovering = false;
+
+
 
 
 
@@ -81,6 +86,9 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
+
     // OTHER PLAYER
     [HideInInspector] public bool enemyDead = false;
 
@@ -89,10 +97,45 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
+
+    // KICK
+    [SerializeField] bool kickFrame = false;
+    bool
+        kicking = false,
+        canKick = true;
+
+    [SerializeField] float
+        kickRange = 1.3f,
+        kickDuration = 0.2f;
+
+
+
+
+
+
+    // KICKED
+    [SerializeField] float
+        kickKnockbackDistance = 1f,
+        kickedStaminaLoss = 1;
+
+    bool kicked = false;
+
+
+
+
+
+
+
+
+
     // PARRY
     [SerializeField] public bool parrying = false;
-    [SerializeField] float parryDuration = 0.4f;
+    bool canParry = true;
 
+    [SerializeField] float parryDuration = 0.4f;
+    
 
 
 
@@ -189,9 +232,9 @@ public class PlayerAttack : MonoBehaviour
         if (gameManager.gameStarted)
         {
             // The player cna only use actions if they are not dead
-            if (!playerStats.dead && playerStats.stamina >= playerStats.staminaCostForMoves)
+            if (!playerStats.dead)
             {
-                if (playerStats.stamina > 0)
+                if (playerStats.stamina >= playerStats.staminaCostForMoves)
                 {
                     // CHARGE & ATTAQUE
                     if (!clashed)
@@ -202,11 +245,12 @@ public class PlayerAttack : MonoBehaviour
                         ManageDash();
 
                     // PARRY INPUT
-                    if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Input.GetAxis("Parry" + playerStats.playerNum) < - 0.1) && !parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering)
-                    {
-                        Parry();
-                    }
+                    ManageParry();
                 }
+
+
+                // KICK
+                ManageKick();
             }
 
 
@@ -217,7 +261,7 @@ public class PlayerAttack : MonoBehaviour
 
         // Cheatcodes to use for development purposes
         if (cheatCodes)
-            cheats();
+            Cheats();
     }
 
     void FixedUpdate()
@@ -227,7 +271,10 @@ public class PlayerAttack : MonoBehaviour
         {
             ApplyDamage();
         }
-
+        else if (kickFrame)
+        {
+            ApplyKick();
+        }
 
 
         // DASH FUNCTIONS
@@ -243,7 +290,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // CHEATS
-    void cheats()
+    void Cheats()
     {
         if (Input.GetKeyDown(clashCheatKey))
         {
@@ -298,39 +345,42 @@ public class PlayerAttack : MonoBehaviour
     //CHARGE
     void ManageCharge()
     {
-        //Player presses parry button while charging
-        if (Input.GetButtonDown("Parry" + playerStats.playerNum) && charging)
-        {
-            Parry();
-        }
-
-
         //Player presses attack button
-        if ((Input.GetButtonDown("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) > 0.1) && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves)
+        if (Input.GetButtonDown("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) > 0.1)
         {
-            charging = true;
-            chargeStartTime = Time.time;
-            playerAnimations.TriggerCharge();
-            playerMovement.Charging(true);
+            if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying)
+            {
+                charging = true;
+                canCharge = false;
+
+                chargeStartTime = Time.time;
+                playerAnimations.TriggerCharge();
+                playerMovement.Charging(true);
+                
+            }
         }
 
 
         //Player releases attack button
-        if ((Input.GetButtonUp("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) < 0.1) && charging)
+        if (!Input.GetButton("Fire" + playerStats.playerNum) && Input.GetAxis("Fire" + playerStats.playerNum) < 0.1)
         {
-            ReleaseAttack();
+            canCharge = true;
+
+            if (charging)
+                ReleaseAttack();
         }
 
-
+        
         //When the player is charging the attack
         if (charging)
         {
+            /*
             // If the player runs out of stamina while charging
             if (playerStats.stamina < playerStats.staminaCostForMoves)
             {
                 ReleaseAttack();
             }
-
+            */
 
             // If the player has wiated too long charging
             if (maxChargeLevelReached)
@@ -434,14 +484,6 @@ public class PlayerAttack : MonoBehaviour
 
             // STAMINA COST
             playerStats.StaminaCost(playerStats.staminaCostForMoves);
-
-
-
-
-            /*
-            // Sound
-            audioManager.Attack(chargeLevel, maxChargeLevel);
-            */
         }
         else
         {
@@ -476,15 +518,22 @@ public class PlayerAttack : MonoBehaviour
     // Draw the attack range when the player is selected
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - actualAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - actualAttackRange / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
     }
 
     // Draw the attack range is the attack is in active frames in the scene viewer
     private void OnDrawGizmos()
     {
         if (activeFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - actualAttackRange / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -actualAttackRange / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange, 1, 1));
+
+        if (kickFrame)
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
     }
+
+
+
 
 
 
@@ -492,7 +541,21 @@ public class PlayerAttack : MonoBehaviour
 
 
     // PARRY
-    // Starts the parry coroutine
+    // Detect parry inputs
+    void ManageParry()
+    {
+        if ((!Input.GetButton("Parry" + playerStats.playerNum) && Input.GetAxis("Parry" + playerStats.playerNum) > -0.1f))
+        {
+            canParry = true;
+        }
+
+        if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Input.GetAxis("Parry" + playerStats.playerNum) < -0.1) && !parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering && canParry && !kicking)
+        {
+            Parry();
+        }
+    }
+        
+    // Start the parry coroutine
     public void Parry()
     {
         StartCoroutine(ParryCoroutine());
@@ -510,25 +573,154 @@ public class PlayerAttack : MonoBehaviour
             maxChargeLevelReached = false;
             playerAnimations.CancelCharge();
         }
+        
+
+        canParry = false;
 
         // Stamina cost
         playerStats.StaminaCost(playerStats.staminaCostForMoves);
 
         playerAnimations.TriggerParry(true);
-        //actualDashDistance = forwardAttackDashDistance;
-
-        
-        // Parry sound
-        // audioManager.ParryOn();
-        
-
 
         yield return new WaitForSeconds(parryDuration);
         playerAnimations.TriggerParry(false);
-
-        //playerAnimations.Parry(parrying);
     }
 
+
+
+
+
+
+
+
+
+    // KICK
+    // Detect kick inputs
+    void ManageKick()
+    {
+        if ((Input.GetButtonDown("Fire" + playerStats.playerNum) && Input.GetButtonDown("Parry" + playerStats.playerNum)) || Input.GetButtonDown("Kick" + playerStats.playerNum))
+        {
+            if (canKick && !kicked && !isAttacking && !activeFrame && !kicking && !parrying)
+                Kick();
+        }
+    }
+
+    // Start the kick coroutine
+    void Kick()
+    {
+        StartCoroutine(KickCoroutine());
+    }
+
+    // Kick coroutine
+    IEnumerator KickCoroutine()
+    {
+        playerAnimations.TriggerKick(true);
+        kicking = true;
+        yield return new WaitForSeconds(kickDuration);
+        playerAnimations.TriggerKick(false);
+        kicking = false;
+    }
+
+    // Apply kick hitbox depending on kick frames
+    void ApplyKick()
+    {
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y), new Vector2(kickRange, 1), 0);
+        List<GameObject> hits = new List<GameObject>();
+        foreach (Collider2D c in hitsCol)
+        {
+            if (c.CompareTag("Player"))
+            {
+                if (!hits.Contains(c.transform.parent.gameObject))
+                {
+                    hits.Add(c.transform.parent.gameObject);
+                }
+            }
+        }
+        foreach (GameObject g in hits)
+        {
+            if (g != gameObject)
+            {
+                //g.GetComponent<PlayerStats>().StaminaCost(kickedStaminaLoss);
+                if (!g.GetComponent<PlayerAttack>().kicked)
+                {
+                    g.GetComponent<PlayerAttack>().Kicked();
+                    Debug.Log("Kick");
+                }
+                    
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+    // KICKED
+    public void Kicked()
+    {
+        charging = false;
+        isAttackRecovering = false;
+        isAttacking = false;
+        canCharge = true;
+        activeFrame = false;
+        parrying = false;
+        kicking = false;
+        isDashing = true;
+        clashed = true;
+
+        chargeLevel = 1;
+
+        dashDirection = transform.localScale.x;
+        actualDashDistance = kickKnockbackDistance;
+
+        initPos = transform.position;
+        targetPos = transform.position + new Vector3(actualDashDistance * dashDirection, 0, 0);
+
+        playerAnimations.CancelCharge();
+        playerAnimations.Clashed(clashed);
+
+        playerStats.StaminaCost(kickedStaminaLoss);
+
+        // Sound
+        audioManager.Clash();
+    }
+
+
+
+
+
+
+    //CLASH
+    public void Clash()
+    {
+        charging = false;
+        isAttackRecovering = false;
+        isAttacking = false;
+        canCharge = true;
+        activeFrame = false;
+        parrying = false;
+        kicking = false;
+        isDashing = true;
+        clashed = true;
+
+        chargeLevel = 1;
+
+        tempDashDirection = transform.localScale.x;
+        actualDashDistance = clashKnockback;
+
+        initPos = transform.position;
+        targetPos = transform.position + new Vector3(actualDashDistance * tempDashDirection, 0, 0);
+
+        playerAnimations.CancelCharge();
+        playerAnimations.Clashed(clashed);
+
+        // Sound
+        audioManager.Clash();
+    }
 
 
 
@@ -547,7 +739,8 @@ public class PlayerAttack : MonoBehaviour
             shortcutDashStep = 0;
         }
         
-        if (Mathf.Abs(Input.GetAxisRaw("Dash" + playerStats.playerNum)) > shortcutDashDeadZone && shortcutDashStep == 0)
+
+        if (Mathf.Abs(Input.GetAxisRaw("Dash" + playerStats.playerNum)) > shortcutDashDeadZone && shortcutDashStep == 0 && !isAttacking && !activeFrame && !parrying)
         {
             dashDirection = Mathf.Sign(Input.GetAxisRaw("Dash" + playerStats.playerNum));
 
@@ -598,7 +791,7 @@ public class PlayerAttack : MonoBehaviour
 
             }
             // Dash is validated, the player is gonna dash
-            else if (dashStep == 2 && dashDirection == tempDashDirection && playerStats.stamina >= playerStats.staminaCostForMoves)
+            else if (dashStep == 2 && dashDirection == tempDashDirection && playerStats.stamina >= playerStats.staminaCostForMoves && !isAttacking && !activeFrame && !parrying)
             {
                 TriggerBasicDash();
             }
@@ -625,54 +818,65 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            time = 0;
+            isDashing = false;
+            //gameObject.layer = normalPlayerLayer;
+            playerCollider.isTrigger = false;
+
+
+            // If the player was clashed / countered and has finished their knockback
+            if (clashed)
+            {
+                clashed = false;
+                playerAnimations.Clashed(clashed);
+            }
+        }
+    }
+
     // Triggers the dash (Not the clash or attack dash) for it to run
     void TriggerBasicDash()
     {
         dashStep = 3;
         shortcutDashStep = -1;
-        
+        chargeLevel = 1;
+        time = 0;
+
+        charging = false;
+        isDashing = true;
+        isAttackRecovering = false;
+        maxChargeLevelReached = false;
+
+
         if (dashDirection == - transform.localScale.x)
         {
             actualDashDistance = forwardDashDistance;
-            //Debug.Log(dashDirection);
-            //Debug.Log(transform.localScale.x);
         }
         else
         {
             actualDashDistance = backwardsDashDistance;
-            //Debug.Log(dashDirection);
-            //Debug.Log(transform.localScale.x);
         }
            
 
-        isDashing = true;
-
-
         playerAnimations.Dash(dashDirection * transform.localScale.x);
-
-
         playerStats.StaminaCost(playerStats.staminaCostForMoves);
-
-        // CANCEL ATTACK
-        charging = false;
-        chargeLevel = 1;
-        maxChargeLevelReached = false;
         playerMovement.Charging(false);
-        isAttackRecovering = false;
-
-
+        
 
         // If the player was clashed / countered and has finished their knockback
-        if (clashed)
+        if (clashed || kicked)
         {
             clashed = false;
+            kicked = false;
             playerAnimations.Clashed(clashed);
             time = 0;
             playerCollider.isTrigger = false;
         }
 
-
-
+ 
         initPos = transform.position;
         targetPos = transform.position + new Vector3(actualDashDistance * dashDirection, 0, 0);
     }
@@ -699,41 +903,12 @@ public class PlayerAttack : MonoBehaviour
                 clashed = false;
                 playerAnimations.Clashed(clashed);
             }
+
+            if (kicked)
+            {
+                kicked = false;
+                playerAnimations.TriggerKicked(false);
+            }
         }
-    }
-
-
-
-
-
-
-
-
-    //CLASH
-    public void Clash()
-    {
-        charging = false;
-        chargeLevel = 1;
-        playerAnimations.CancelCharge();
-
-        isAttackRecovering = false;
-        //triggerAttack = false;
-        activeFrame = false;
-
-        parrying = false;
-
-        tempDashDirection = transform.localScale.x;
-        actualDashDistance = clashKnockback;
-        isDashing = true;
-        initPos = transform.position;
-        targetPos = transform.position + new Vector3(actualDashDistance * tempDashDirection, 0, 0);
-
-
-        clashed = true;
-        playerAnimations.CancelCharge();
-        playerAnimations.Clashed(clashed);
-
-        // Sound
-        audioManager.Clash();
-    }
+    }  
 }
