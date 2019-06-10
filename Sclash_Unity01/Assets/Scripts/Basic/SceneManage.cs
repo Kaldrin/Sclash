@@ -5,23 +5,33 @@ using UnityEngine.SceneManagement;
 
 public class SceneManage : MonoBehaviour {
 
-    //Scene changement
-    [SerializeField]
-    Animator sceneSwitchAnimator = null;
-    public bool proceedToLoadScene = false;
+    // SCENE LOADING
+    [Header("Scene loading")]
+    [SerializeField] Animator sceneSwitchAnimator = null;
+    [SerializeField]  public bool proceedToLoadScene = false;
     Scene sceneToLoad = new Scene();
     bool quit = false;
 
 
-    //Restarting scene
-    public KeyCode[]
-        pressSimultaneousKeysToRestart = null;
+
+    // RESTARTING
+    [Header("Restarting")]
+    [SerializeField] KeyCode[] pressSimultaneousKeysToRestart = null;
 
 
 
+
+
+
+
+
+
+
+
+
+    // BASE FUNCTIONS
     // Use this for initialization
     void Start () {
-        //sceneSwitchAnimator = GetComponent<Animator>();
     }
 	
 	// Update is called once per frame
@@ -29,6 +39,7 @@ public class SceneManage : MonoBehaviour {
 		
 	}
 
+    // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
         //Checks if the conditions to restart the scene were fulfilled
@@ -51,13 +62,19 @@ public class SceneManage : MonoBehaviour {
     }
 
     
-    //Scene loading
 
+
+
+
+
+    // SCENE LOADING
+    // Open the selected scene
     void LoadScene(Scene scene)
     {
         SceneManager.LoadScene(scene.name);
     }
     
+    // Restart the current scene
     void Restart()
     {
         
@@ -66,12 +83,14 @@ public class SceneManage : MonoBehaviour {
         
     }
 
+    // Set to load the selected scene when the transition animation is complete
     public void SetLoadScene(Scene scene)
     {
         sceneToLoad = scene;
         sceneSwitchAnimator.SetTrigger("CloseScene");
     }
 
+    // Quit the game when the transition animation is done
     public void Quit()
     {
         sceneSwitchAnimator.SetTrigger("CloseScene");
@@ -80,8 +99,13 @@ public class SceneManage : MonoBehaviour {
 
 
 
-    //Scene controls
 
+
+
+
+
+    // SCENE CONTROLS
+    // Check if all the keys in the list are pressed simultaneously
     bool CheckIfAllKeysPressed(KeyCode[] keys)
     {
         bool notPressed = false;

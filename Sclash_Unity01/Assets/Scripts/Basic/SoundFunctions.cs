@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SoundFunctions : MonoBehaviour {
 
+    // BASE FUNCTIONS
 	// Use this for initialization
 	void Start () {
 		
@@ -15,6 +16,9 @@ public class SoundFunctions : MonoBehaviour {
 	}
 
 
+
+
+    // PLAY
     // Play sound from name of the game object with the audio source
     public void PlaySoundFromName(string sound)
     {
@@ -46,6 +50,11 @@ public class SoundFunctions : MonoBehaviour {
     }
 
 
+
+
+
+
+    // ACTIVATE
     // Activate / deactivate an audiosource (Music, ambiance, etc) from name of the game object with the audio source
     public void SetAudioActiveFromName(string sound, bool state)
     {
@@ -65,7 +74,6 @@ public class SoundFunctions : MonoBehaviour {
         else
             Debug.Log("AudioSource '" + sound + "' could'nt be found in the scene");
     }
-
 
     // Activate / deactivate an audiosource (Music, ambiance, etc)
     public void SetAudioActiveFromSource(AudioSource audioSource, bool state)
@@ -88,6 +96,10 @@ public class SoundFunctions : MonoBehaviour {
     }
 
 
+
+
+
+    // MUTE
     // Mute / unmute an audiosource (Music, ambiance, etc) from name of the game object with the audiosource
     public void SetAudioMuteFromName(string sound, bool state)
     {
@@ -102,7 +114,6 @@ public class SoundFunctions : MonoBehaviour {
         else
             Debug.Log("AudioSource '" + sound + "' could'nt be found in the scene");
     }
-
 
     // Mute / unmute an audiosource (Music, ambiance, etc)
     public void SetAudioMuteFromSource(AudioSource audioSource, bool state)
@@ -120,6 +131,9 @@ public class SoundFunctions : MonoBehaviour {
     }
 
 
+
+
+    // CLIP
     // Change the audio source's clip
     public void ChangeClipOfAudioSource(AudioSource audioSource, AudioClip audioClip)
     {

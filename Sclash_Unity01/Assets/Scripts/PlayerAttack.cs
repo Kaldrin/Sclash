@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    // AUDIO
+    // AUDIO MANAGER
+    [Header("Audio manager")]
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
@@ -12,7 +13,8 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-    // MANAGER
+    // GAME MANAGER
+    [Header("Game manager")]
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
 
@@ -23,6 +25,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // PLAYER'S COMPONENTS
+    [Header("Player's components")]
     Rigidbody2D rb = null;
     PlayerStats playerStats = null;
     PlayerAnimations playerAnimations = null;
@@ -33,7 +36,27 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    // ATTACK
+    [Header("Attack")]
+    [SerializeField]
+    public float
+        lightAttackRange = 1.5f,
+        heavyAttackRange = 2.5f;
+    [HideInInspector] public float actualAttackRange = 0;
+
+    [SerializeField]
+    public bool
+        activeFrame = false,
+        clashFrames = false;
+    [HideInInspector] public bool isAttacking = false;
+
+
+
+
+
+
     // ATTACK RECOVERY
+    [Header("Attack recovery")]
     [SerializeField] float
         minRecoveryDuration = 0.4f,
         maxRecoveryDuration = 1;
@@ -52,6 +75,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // CHARGE
+    [Header("Charge")]
     [SerializeField] public int maxChargeLevel = 2;
     [HideInInspector] public int chargeLevel = 1;
 
@@ -70,16 +94,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-    // ATTACK
-    [SerializeField] public float
-        lightAttackRange = 1.5f,
-        heavyAttackRange = 2.5f;
-    [HideInInspector] public float actualAttackRange = 0;
 
-    [SerializeField] public bool
-        activeFrame = false,
-        clashFrames = false;
-    [HideInInspector] public bool isAttacking = false;
 
 
 
@@ -90,6 +105,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // OTHER PLAYER
+    [Header("Other player")]
     [HideInInspector] public bool enemyDead = false;
 
 
@@ -101,6 +117,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // KICK
+    [Header("Kick")]
     [SerializeField] bool kickFrame = false;
     bool
         kicking = false,
@@ -116,9 +133,9 @@ public class PlayerAttack : MonoBehaviour
 
 
     // KICKED
-    [SerializeField] float
-        kickKnockbackDistance = 1f,
-        kickedStaminaLoss = 1;
+    [Header("Kicked")]
+    [SerializeField] float kickKnockbackDistance = 1f;
+    [SerializeField] float kickedStaminaLoss = 1;
 
     bool kicked = false;
 
@@ -131,17 +148,19 @@ public class PlayerAttack : MonoBehaviour
 
 
     // PARRY
+    [Header("Parry")]
     [SerializeField] public bool parrying = false;
     bool canParry = true;
 
     [SerializeField] float parryDuration = 0.4f;
-    
+
 
 
 
 
 
     // CLASH
+    [Header("Clash")]
     bool clashed = false;
     [SerializeField] float clashKnockback = 2;
 
@@ -151,6 +170,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // DASH
+    [Header("Dash")]
     [HideInInspector] public bool isDashing;
     [SerializeField] public Collider2D playerCollider;
 
@@ -193,6 +213,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // CHEATS FOR DEVELOPMENT PURPOSES
+    [Header("Cheats")]
     [SerializeField] bool cheatCodes = false;
     [SerializeField] KeyCode
         clashCheatKey = KeyCode.Alpha1,
@@ -549,9 +570,10 @@ public class PlayerAttack : MonoBehaviour
             canParry = true;
         }
 
-        if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Input.GetAxis("Parry" + playerStats.playerNum) < -0.1) && !parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering && canParry && !kicking)
+        if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Input.GetAxis("Parry" + playerStats.playerNum) < -0.1))
         {
-            Parry();
+            if (!parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering && canParry && !kicking && !kicked)
+                Parry();
         }
     }
         
@@ -614,9 +636,14 @@ public class PlayerAttack : MonoBehaviour
     // Kick coroutine
     IEnumerator KickCoroutine()
     {
-        playerAnimations.TriggerKick(true);
         kicking = true;
+        parrying = false;
+        isAttacking = false;
+
+        playerAnimations.TriggerKick(true);
+        
         yield return new WaitForSeconds(kickDuration);
+
         playerAnimations.TriggerKick(false);
         kicking = false;
     }
@@ -660,17 +687,19 @@ public class PlayerAttack : MonoBehaviour
 
 
     // KICKED
+    // The player have been kicked
     public void Kicked()
     {
         charging = false;
         isAttackRecovering = false;
         isAttacking = false;
-        canCharge = true;
+        canCharge = false;
         activeFrame = false;
         parrying = false;
         kicking = false;
         isDashing = true;
         clashed = true;
+        kicked = true;
 
         chargeLevel = 1;
 
@@ -695,8 +724,18 @@ public class PlayerAttack : MonoBehaviour
 
 
     //CLASH
+    // Start the clash coroutine
     public void Clash()
     {
+        StartCoroutine(ClashCoroutine());
+    }
+
+    // The player have been clashed / parried
+    IEnumerator ClashCoroutine()
+    {
+        gameManager.SlowMo(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
+
+
         charging = false;
         isAttackRecovering = false;
         isAttacking = false;
@@ -720,6 +759,8 @@ public class PlayerAttack : MonoBehaviour
 
         // Sound
         audioManager.Clash();
+
+        yield return new WaitForSeconds(0f);
     }
 
 
@@ -803,18 +844,8 @@ public class PlayerAttack : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            time = 0;
-            isDashing = false;
-            //gameObject.layer = normalPlayerLayer;
-            playerCollider.isTrigger = false;
-
-
-            // If the player was clashed / countered and has finished their knockback
-            if (clashed)
-            {
-                clashed = false;
-                playerAnimations.Clashed(clashed);
-            }
+            //EndDash();
+            targetPos = transform.position;
         }
     }
 
@@ -822,18 +853,8 @@ public class PlayerAttack : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            time = 0;
-            isDashing = false;
-            //gameObject.layer = normalPlayerLayer;
-            playerCollider.isTrigger = false;
-
-
-            // If the player was clashed / countered and has finished their knockback
-            if (clashed)
-            {
-                clashed = false;
-                playerAnimations.Clashed(clashed);
-            }
+            //EndDash();
+            targetPos = transform.position;
         }
     }
 
@@ -890,25 +911,31 @@ public class PlayerAttack : MonoBehaviour
         transform.position = Vector3.Lerp(initPos, targetPos, time);
         if (time >= 1.0f)
         {
-            time = 0;
-            isDashing = false;
-
-            // Player can cross up, collider is deactivated during dash but it can still be hit
-            playerCollider.isTrigger = false;
-
-
-            // If the player was clashed / countered and has finished their knockback
-            if (clashed)
-            {
-                clashed = false;
-                playerAnimations.Clashed(clashed);
-            }
-
-            if (kicked)
-            {
-                kicked = false;
-                playerAnimations.TriggerKicked(false);
-            }
+            EndDash();
         }
-    }  
+    } 
+    
+    // End currently running dash
+    void EndDash()
+    {
+        time = 0;
+        isDashing = false;
+
+        // Player can cross up, collider is deactivated during dash but it can still be hit
+        playerCollider.isTrigger = false;
+
+
+        // If the player was clashed / countered and has finished their knockback
+        if (clashed)
+        {
+            clashed = false;
+            playerAnimations.Clashed(clashed);
+        }
+
+        if (kicked)
+        {
+            kicked = false;
+            playerAnimations.TriggerKicked(false);
+        }
+    }
 }

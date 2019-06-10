@@ -15741,7 +15741,10 @@ MonoBehaviour:
   cameraState: Inactive
   cameraZLimits: {x: -10, y: -23}
   playersDistanceForCameraZoomedUnzoomedLimits: {x: 7, y: 27}
-  smoothMovementsMultiplier: 0.05
+  roundEndSlowMoZoom: -6
+  battleSmoothMovementsMultiplier: 0.2
+  cinematicSmoothMovementsMultiplier: 0.03
+  actualSmoothMovementsMultiplier: 0.5
   maxSidesZoomedUnzoomed: {x: 8, y: 5}
 --- !u!4 &255681586
 Transform:
@@ -29295,9 +29298,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1310120936}
   - component: {fileID: 1310120940}
+  - component: {fileID: 1310120939}
   - component: {fileID: 1310120938}
   - component: {fileID: 1310120935}
-  - component: {fileID: 1310120939}
   - component: {fileID: 1310120941}
   - component: {fileID: 1310120937}
   m_Layer: 0
@@ -29330,8 +29333,16 @@ MonoBehaviour:
   playersColors:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0.8226874, b: 1, a: 1}
-  roundEndSlowMoTimeScale: 0.3
-  rounEndSlowMoDuration: 2
+  roundEndSlowMoTimeScale: 0.2
+  minTimeScale: 0.05
+  rounEndSlowMoDuration: 1.3
+  roundEndTimeScaleFadeSpeed: 0.05
+  clashSlowMoTimeScale: 0.1
+  clashSlowMoDuration: 0.5
+  clashTimeScaleFadeSpeed: 0.2
+  parrySlowMoTimeScale: 0.2
+  parrySlowMoDuration: 2
+  parryTimeScaleFadeSpeed: 0.2
   scoreText: {fileID: 1912285995}
   score: {x: 0, y: 0}
   scoreShowDuration: 4
@@ -39389,7 +39400,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1371339143}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -20.67, y: 0, z: 0}
+  m_LocalPosition: {x: -20.67, y: -1.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1479083794}
@@ -40771,7 +40782,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 32, y: 1}
+  m_Size: {x: 40, y: 1}
   m_EdgeRadius: 0
 --- !u!1 &1823705976
 GameObject:
@@ -41863,7 +41874,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1984874868}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 21.46, y: 0, z: 0}
+  m_LocalPosition: {x: 21.46, y: -1.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1479083794}

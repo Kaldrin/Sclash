@@ -5,18 +5,25 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    // AUDIO
+    // AUDIO MANAGER
+    [Header("Audio manager")]
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
 
 
 
-    // CAMERA
+
+
+    // CAMERA MANAGER
+    [Header("Camera manager")]
     [SerializeField] CameraManager cameraManager = null;
 
 
 
+
+
     // MENU
+    [Header("Menu")]
     [SerializeField] GameObject mainMenu = null;
     [SerializeField] GameObject blurPanel = null;
 
@@ -25,6 +32,7 @@ public class GameManager : MonoBehaviour
 
 
     // ROUND
+    [Header("Round")]
     [SerializeField] float timeBeforeNextRound = 3;
     [SerializeField] ParticleSystem roundLeaves = null;
     public bool gameStarted = false;
@@ -33,7 +41,9 @@ public class GameManager : MonoBehaviour
 
 
 
+
     // PLAYERS
+    [Header("Players")]
     [SerializeField] GameObject player = null;
     List<GameObject> playersList = new List<GameObject>();
     [SerializeField] Color[] playersColors = null;
@@ -41,14 +51,34 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
     // EFFECTS
-    [SerializeField] float roundEndSlowMoTimeScale = 0.3f;
-    [SerializeField] float rounEndSlowMoDuration = 2f;
+    [Header("Effects")]
+    [SerializeField] public float roundEndSlowMoTimeScale = 0.3f;
+    [SerializeField]
+    public float
+        minTimeScale = 0.05f,
+        rounEndSlowMoDuration = 2f,
+        roundEndTimeScaleFadeSpeed = 0.05f,
+        clashSlowMoTimeScale = 0.2f,
+        clashSlowMoDuration = 2f,
+        clashTimeScaleFadeSpeed = 0.2f,
+        parrySlowMoTimeScale = 0.2f,
+        parrySlowMoDuration = 2f,
+        parryTimeScaleFadeSpeed = 0.2f;
+    float actualTimeScaleUpdateSmoothness = 0.05f;
+    float
+        baseTimeScale = 1,
+        timeScaleObjective = 1;
+
+
 
 
 
 
     // SCORE
+    [Header("Score")]
     [SerializeField] Text scoreText = null;
     public Vector2 score = new Vector2(0, 0);
     [SerializeField] float scoreShowDuration = 4f;
@@ -61,19 +91,28 @@ public class GameManager : MonoBehaviour
 
 
 
-
+    // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
         // Get audio
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
-        // Reset score
+        // Set variables
         score = new Vector2(0, 0);
+        baseTimeScale = Time.timeScale;
+        actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
 
 
-        // Start game
+        // START GAME
         StartCoroutine(SetupGame());
+    }
+
+    // FixedUpdate is called 30 times per second
+    private void FixedUpdate()
+    {
+        // EFFECTS
+        RunTimeScaleUpdate();
     }
 
 
@@ -85,7 +124,7 @@ public class GameManager : MonoBehaviour
 
 
     // BEGIN GAME
-
+    // Setup the game before it starts
     IEnumerator SetupGame()
     {
         yield return new WaitForSeconds(0);
@@ -104,11 +143,13 @@ public class GameManager : MonoBehaviour
         */
     }
 
+    // Begins the StartGame coroutine
     public void Play()
     {
         StartCoroutine(StartGame());
     }
 
+    // Start the game
     IEnumerator StartGame()
     {
         // SOUND
@@ -117,20 +158,19 @@ public class GameManager : MonoBehaviour
         audioManager.BattleMusicOn();
 
 
-
         gameStarted = true;
-
 
         mainMenu.SetActive(false);
         blurPanel.SetActive(false);
+
         cameraManager.cameraState = "Battle";
-        //StartCoroutine(UpdateBlurPanel());
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
         yield return new WaitForSeconds(1);
-        cameraManager.smoothMovementsMultiplier = 0.5f;
+        cameraManager.actualSmoothMovementsMultiplier = cameraManager.battleSmoothMovementsMultiplier;
     }
 
+    // Spawn the players
     void SpawnPlayers()
     {
         GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
@@ -150,13 +190,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /*
-    IEnumerator UpdateBlurPanel()
-    {
-        yield return new WaitForSeconds(0);
-    }
-    */
-
 
 
 
@@ -165,12 +198,13 @@ public class GameManager : MonoBehaviour
 
 
     // END & NEXT ROUND
-
+    // Start NextRoundCoroutine
     public void NextRound()
     {
         StartCoroutine(NextRoundCoroutine());
     }
 
+    // Start next round
     IEnumerator NextRoundCoroutine()
     {
         StartCoroutine(ShowScore());
@@ -181,6 +215,7 @@ public class GameManager : MonoBehaviour
         ResetPlayers();
     }
 
+    // Executed when a player dies
     public void Death(int playerNum)
     {
         // Canvas
@@ -193,6 +228,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(Score(playerNum));
     }
 
+    // Reset all the players' variables
     void ResetPlayers()
     {
         GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
@@ -217,6 +253,7 @@ public class GameManager : MonoBehaviour
 
 
     // SCORE
+    // Display the current score for a given amount of time
     IEnumerator ShowScore()
     {
         scoreText.gameObject.SetActive(true);
@@ -224,6 +261,7 @@ public class GameManager : MonoBehaviour
         scoreText.gameObject.SetActive(false);
     }
 
+    // Update score
     IEnumerator Score(int playerNum)
     {
         yield return new WaitForSecondsRealtime(0.5f);
@@ -236,6 +274,7 @@ public class GameManager : MonoBehaviour
         NextRound();
     }
 
+    // Build the score display message
     string ScoreBuilder()
     {
         string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
@@ -252,17 +291,54 @@ public class GameManager : MonoBehaviour
 
 
     // EFFECTS
-    // Slow motion when a player dies
-    public void EndRoundSlowMo()
+    // Start the SlowMo coroutine
+    public void SlowMo(float slownMoDuration, float slowMoTimeScale, float fadeSpeed)
     {
-        StartCoroutine(EndRoundSlowMoCoroutine());
+        StartCoroutine(SlowMoCoroutine(slownMoDuration, slowMoTimeScale, fadeSpeed));
     }
 
-    // Slow motion when a player dies coroutine
-    IEnumerator EndRoundSlowMoCoroutine()
+    // Slow motion for a given duration
+    IEnumerator SlowMoCoroutine(float slowMoDuration, float slowMoTimeScale, float fadeSpeed)
     {
-        Time.timeScale = roundEndSlowMoTimeScale;
-        yield return new WaitForSecondsRealtime(rounEndSlowMoDuration);
-        Time.timeScale = 1;
+        actualTimeScaleUpdateSmoothness = fadeSpeed;
+        timeScaleObjective = slowMoTimeScale;
+        cameraManager.cameraState = "Event";
+
+        yield return new WaitForSecondsRealtime(slowMoDuration);
+
+        actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
+        timeScaleObjective = baseTimeScale;
+        cameraManager.cameraState = "Battle";
+
+        yield return new WaitForSecondsRealtime(0.5f);
+
+       Time.timeScale = timeScaleObjective;
     } 
+
+    // Update the timescale smoothly for smooth slow mo effects in FixedUpdate
+    void RunTimeScaleUpdate()
+    {
+        
+        if (FastApproximately(Time.timeScale, timeScaleObjective, 0.06f) || timeScaleObjective == Time.timeScale)
+            Time.timeScale = timeScaleObjective;
+        else
+            Time.timeScale += actualTimeScaleUpdateSmoothness * Mathf.Sign(timeScaleObjective - Time.timeScale);
+
+        if (Time.timeScale <= minTimeScale)
+            Time.timeScale = minTimeScale;
+
+        Debug.Log(Time.timeScale);
+    }
+
+
+
+
+
+
+    // SECONDARY FUNCTIONS
+    // Compares 2 floats with a range of tolerance
+    public static bool FastApproximately(float a, float b, float threshold)
+    {
+        return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
+    }
 }

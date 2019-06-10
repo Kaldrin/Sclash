@@ -7,6 +7,7 @@ public class PlayerStats : MonoBehaviour
 {
 
     // AUDIO MANAGER
+    [Header("Audio manager")]
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
@@ -15,15 +16,17 @@ public class PlayerStats : MonoBehaviour
 
 
     // GAME MANAGER
+    [Header("Game manager")]
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
-    
+
 
 
 
 
 
     // PLAYER'S COMPONENTS
+    [Header("Player's components")]
     PlayerAttack playerAttack;
     PlayerAnimations playerAnimation;
     PlayerMovement playerMovements;
@@ -34,6 +37,7 @@ public class PlayerStats : MonoBehaviour
 
 
     // HEALTH
+    [Header("Health")]
     [SerializeField] float maxHealth = 0;
     float currentHealth;
 
@@ -45,6 +49,7 @@ public class PlayerStats : MonoBehaviour
 
 
     //STAMINA
+    [Header("Stamina")]
     [SerializeField] public Slider staminaSlider = null;
 
     [SerializeField] public float staminaCostForMoves = 1;
@@ -59,13 +64,12 @@ public class PlayerStats : MonoBehaviour
 
     bool canRegenStamina = true;
 
-    
 
 
 
 
     // PLAYER IDENTIFICATION
-    public int playerNum;
+    [HideInInspector] public int playerNum;
 
 
 
@@ -73,6 +77,13 @@ public class PlayerStats : MonoBehaviour
 
 
 
+
+
+
+
+
+
+    // BASE FUNCTIONS
     void Awake()
     {
         // Get audio manager to use in the script
@@ -106,21 +117,12 @@ public class PlayerStats : MonoBehaviour
     // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
-        /*
-        // If the player is not parrying
-        else
-        {
-            
-        }
-        */
-
-
         StaminaRegen();
     }
 
     void LateUpdate()
     {
-        staminaSlider.value = stamina;
+        UpdateStaminaSlider();
     }
 
 
@@ -130,6 +132,7 @@ public class PlayerStats : MonoBehaviour
 
 
     // STAMINA
+    // Manage stamina regeneration, executed in FixedUpdate
     void StaminaRegen()
     {
         if (stamina < maxStamina && canRegenStamina)
@@ -170,19 +173,30 @@ public class PlayerStats : MonoBehaviour
         */
     }
 
+    // Trigger the stamina regen pause duration
     public void PauseStaminaRegen()
     {
         canRegenStamina = false;
         currentTimeBeforeStaminaRegen = durationBeforeStaminaRegen;
     }
 
+    // Function to decrement to stamina
     public void StaminaCost(float cost)
     {
         stamina -= cost;
         PauseStaminaRegen();
+
+        if (stamina <= 0)
+        {
+            stamina = 0;
+        }
     }
 
-
+    // Update stamina slider value
+    void UpdateStaminaSlider()
+    {
+        staminaSlider.value = stamina;
+    }
 
 
 
@@ -221,28 +235,17 @@ public class PlayerStats : MonoBehaviour
 
         if (!dead)
         { 
-            /*
-            if (!Input.GetButton("Parry" + playerNum) || parryBroke)
-            {
-                currentHealth -= 1;
-                hit = true;
-            }
-            */
-
-
             // CLASH
             if (playerAttack.activeFrame || playerAttack.clashFrames)
             {
-                instigator.GetComponent<PlayerAttack>().Clash();
                 playerAttack.Clash();
-                hit = false;
+                instigator.GetComponent<PlayerAttack>().Clash();
             }
             // PARRY
             else if (playerAttack.parrying)
             {
                 stamina += staminaCostForMoves;
                 instigator.GetComponent<PlayerAttack>().Clash();
-
 
                 // Sound
                 audioManager.Parried();
@@ -290,7 +293,7 @@ public class PlayerStats : MonoBehaviour
 
 
         playerAttack.playerCollider.isTrigger = true;
-        gameManager.EndRoundSlowMo();
+        gameManager.SlowMo(gameManager.rounEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
     }
 }
 
