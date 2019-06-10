@@ -302,13 +302,13 @@ public class GameManager : MonoBehaviour
     {
         actualTimeScaleUpdateSmoothness = fadeSpeed;
         timeScaleObjective = slowMoTimeScale;
-        cameraManager.cameraState = "Event";
+        //cameraManager.cameraState = "Event";
 
         yield return new WaitForSecondsRealtime(slowMoDuration);
 
         actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
         timeScaleObjective = baseTimeScale;
-        cameraManager.cameraState = "Battle";
+        //cameraManager.cameraState = "Battle";
 
         yield return new WaitForSecondsRealtime(0.5f);
 
@@ -327,7 +327,7 @@ public class GameManager : MonoBehaviour
         if (Time.timeScale <= minTimeScale)
             Time.timeScale = minTimeScale;
 
-        Debug.Log(Time.timeScale);
+        //Debug.Log(Time.timeScale);
     }
 
 

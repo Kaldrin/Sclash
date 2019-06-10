@@ -240,7 +240,7 @@ public class PlayerAnimations : MonoBehaviour
     // Trigger attack depending on the intended direction
     public void TriggerAttack(float attackDir)
     {
-        if (canAttack)
+        if (true)
         {
             float attackDirection;
 

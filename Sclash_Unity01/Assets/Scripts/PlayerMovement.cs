@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     // JUMP
-    bool jumpRequest = false;
+    //bool jumpRequest = false;
 
     /*
     [SerializeField] float
@@ -52,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
         lowJumpMultiplier = 2f,
         jumpHeight = 10f;
     */
+
+
 
 
 

@@ -161,8 +161,9 @@ public class PlayerAttack : MonoBehaviour
 
     // CLASH
     [Header("Clash")]
-    bool clashed = false;
     [SerializeField] float clashKnockback = 2;
+    bool clashed = false;
+    
 
 
 
@@ -171,8 +172,9 @@ public class PlayerAttack : MonoBehaviour
 
     // DASH
     [Header("Dash")]
-    [HideInInspector] public bool isDashing;
     [SerializeField] public Collider2D playerCollider;
+    [HideInInspector] public bool isDashing;
+    
 
     int dashStep = -1;
         //The current step of the dash input
@@ -338,12 +340,10 @@ public class PlayerAttack : MonoBehaviour
             isAttackRecovering = true;
             attackRecoveryStart = false;
             isAttacking = false;
-            // Activate recovery
-            //attackRecovery = true;
             attackRecoveryStartTime = Time.time;
             attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
             chargeLevel = 1;
-
+            Debug.Log("Recovery started");
         }
 
 
@@ -352,6 +352,7 @@ public class PlayerAttack : MonoBehaviour
             if (Time.time - attackRecoveryStartTime >= attackRecoveryDuration)
             {
                 isAttackRecovering = false;
+                Debug.Log("End recovery");
                 playerAnimations.EndAttack();
             }
         }
@@ -369,15 +370,18 @@ public class PlayerAttack : MonoBehaviour
         //Player presses attack button
         if (Input.GetButtonDown("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) > 0.1)
         {
+            //Debug.Log(isAttacking);
             if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying)
             {
                 charging = true;
                 canCharge = false;
+                isAttackRecovering = false;
 
                 chargeStartTime = Time.time;
                 playerAnimations.TriggerCharge();
                 playerMovement.Charging(true);
-                
+
+                //Debug.Log("Charge");
             }
         }
 
@@ -386,23 +390,19 @@ public class PlayerAttack : MonoBehaviour
         if (!Input.GetButton("Fire" + playerStats.playerNum) && Input.GetAxis("Fire" + playerStats.playerNum) < 0.1)
         {
             canCharge = true;
-
+            //isAttackRecovering = false;
+            
             if (charging)
+            {
+                Debug.Log(charging);
                 ReleaseAttack();
+            }
         }
 
         
         //When the player is charging the attack
         if (charging)
         {
-            /*
-            // If the player runs out of stamina while charging
-            if (playerStats.stamina < playerStats.staminaCostForMoves)
-            {
-                ReleaseAttack();
-            }
-            */
-
             // If the player has wiated too long charging
             if (maxChargeLevelReached)
             {
@@ -463,53 +463,42 @@ public class PlayerAttack : MonoBehaviour
 
 
         // Check if player has enough remaining stamina and attack if so
-        if (playerStats.stamina >= playerStats.staminaCostForMoves)
+        if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
+            actualDashDistance = forwardAttackDashDistance;
+        else
+            actualDashDistance = backwardsAttackDashDistance;
+
+
+        float direction = Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) * transform.localScale.x;
+        Vector3 dir = new Vector3(0, 0, 0);
+
+
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
+            dir = new Vector3(Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)), 0, 0);
+
+
+        dir *= actualDashDistance;
+        initPos = transform.position;
+        targetPos = transform.position + dir;
+        targetPos.y = transform.position.y;
+        time = 0.0f;
+        rb.velocity = Vector3.zero;
+        isDashing = true;
+        rb.gravityScale = 0f;
+
+
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.1f)
         {
-            if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
-                actualDashDistance = forwardAttackDashDistance;
-            else
-                actualDashDistance = backwardsAttackDashDistance;
-
-
-
-            //actualDashDistance = forwardAttackDashDistance;
-            float direction = Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) * transform.localScale.x;
-
-
-
-            Vector3 dir = new Vector3(0, 0, 0);
-            if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
-                dir = new Vector3(Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)), 0, 0);
-
-
-
-            dir *= actualDashDistance;
-            initPos = transform.position;
-            targetPos = transform.position + dir;
-            targetPos.y = transform.position.y;
-            time = 0.0f;
-            rb.velocity = Vector3.zero;
-            isDashing = true;
-            rb.gravityScale = 0f;
-
-
-            if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.1f)
-            {
-                playerAnimations.TriggerAttack(direction);
-            }
-            else
-            {
-                playerAnimations.TriggerAttack(0);
-            }
-
-
-            // STAMINA COST
-            playerStats.StaminaCost(playerStats.staminaCostForMoves);
+            playerAnimations.TriggerAttack(direction);
         }
         else
         {
-            playerAnimations.CancelCharge();
+            playerAnimations.TriggerAttack(0);
         }
+
+
+        // STAMINA COST
+         playerStats.StaminaCost(playerStats.staminaCostForMoves);
     }
 
     // Hits with a phantom collider to apply the attack's damage during active frames
@@ -595,8 +584,8 @@ public class PlayerAttack : MonoBehaviour
             maxChargeLevelReached = false;
             playerAnimations.CancelCharge();
         }
-        
 
+        isAttacking = false;
         canParry = false;
 
         // Stamina cost
@@ -723,7 +712,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-    //CLASH
+    //CLASHED
     // Start the clash coroutine
     public void Clash()
     {
