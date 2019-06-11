@@ -64,7 +64,6 @@ public class PlayerAttack : MonoBehaviour
         attackRecoveryStartTime = 0,
         attackRecoveryDuration = 0;
 
-    bool canCharge = true;
     [SerializeField] public bool attackRecoveryStart = false;
     [HideInInspector] public bool isAttackRecovering = false;
 
@@ -88,8 +87,7 @@ public class PlayerAttack : MonoBehaviour
 
     [HideInInspector] public bool charging = false;
     bool maxChargeLevelReached = false;
-
-
+    [HideInInspector] public bool canCharge = true;
 
 
 
@@ -118,8 +116,8 @@ public class PlayerAttack : MonoBehaviour
 
     // KICK
     [Header("Kick")]
-    [SerializeField] bool kickFrame = false;
-    bool
+    [SerializeField] public bool kickFrame = false;
+    [HideInInspector] public bool
         kicking = false,
         canKick = true;
 
@@ -137,7 +135,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] float kickKnockbackDistance = 1f;
     [SerializeField] float kickedStaminaLoss = 1;
 
-    bool kicked = false;
+    [HideInInspector] public bool kicked = false;
 
 
 
@@ -150,7 +148,7 @@ public class PlayerAttack : MonoBehaviour
     // PARRY
     [Header("Parry")]
     [SerializeField] public bool parrying = false;
-    bool canParry = true;
+    [HideInInspector] public bool canParry = true;
 
     [SerializeField] float parryDuration = 0.4f;
 
@@ -252,7 +250,7 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
         // The player can only use actions when the game has started
-        if (gameManager.gameStarted)
+        if (gameManager.gameStarted && !gameManager.paused)
         {
             // The player cna only use actions if they are not dead
             if (!playerStats.dead)
@@ -343,7 +341,6 @@ public class PlayerAttack : MonoBehaviour
             attackRecoveryStartTime = Time.time;
             attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
             chargeLevel = 1;
-            Debug.Log("Recovery started");
         }
 
 
@@ -352,7 +349,6 @@ public class PlayerAttack : MonoBehaviour
             if (Time.time - attackRecoveryStartTime >= attackRecoveryDuration)
             {
                 isAttackRecovering = false;
-                Debug.Log("End recovery");
                 playerAnimations.EndAttack();
             }
         }
@@ -394,7 +390,6 @@ public class PlayerAttack : MonoBehaviour
             
             if (charging)
             {
-                Debug.Log(charging);
                 ReleaseAttack();
             }
         }
@@ -609,7 +604,7 @@ public class PlayerAttack : MonoBehaviour
     // Detect kick inputs
     void ManageKick()
     {
-        if ((Input.GetButtonDown("Fire" + playerStats.playerNum) && Input.GetButtonDown("Parry" + playerStats.playerNum)) || Input.GetButtonDown("Kick" + playerStats.playerNum))
+        if (Input.GetButtonDown("Kick" + playerStats.playerNum))
         {
             if (canKick && !kicked && !isAttacking && !activeFrame && !kicking && !parrying)
                 Kick();

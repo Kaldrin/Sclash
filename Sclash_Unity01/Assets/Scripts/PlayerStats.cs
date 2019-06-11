@@ -210,12 +210,24 @@ public class PlayerStats : MonoBehaviour
         stamina = maxStamina;
         staminaSlider.gameObject.SetActive(true);
         dead = false;
+
+        playerAttack.parrying = false;
+        playerAttack.isAttacking = false;
+        playerAttack.isAttackRecovering = false;
+        playerAttack.kicking = false;
+        playerAttack.canKick = true;
+        playerAttack.canCharge = true;
+        playerAttack.canParry = true;
+        playerAttack.canKick = true;
         playerAttack.enemyDead = false;
-        playerAnimation.ResetAnims();
         playerAttack.playerCollider.isTrigger = false;
+
         rigid.gravityScale = 1;
         rigid.simulated = true;
+
         playerAnimation.CancelCharge();
+        playerAnimation.ResetAnims();
+
         playerMovements.Charging(false);
     }
 

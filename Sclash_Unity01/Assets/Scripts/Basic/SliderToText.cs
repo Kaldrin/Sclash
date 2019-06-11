@@ -17,13 +17,14 @@ public class SliderToText : MonoBehaviour {
     [SerializeField] bool
         minValueToText = false,
         maxValueToText = false,
-        currentValueToText = true;
+        currentValueToText = true,
+        intOnly = true;
     [SerializeField] float valueToAdd = 0;
 
 
 
 
-
+    // BASE FUNCTIONS
     // Use this for initialization
     void Start () { 
     }
@@ -39,34 +40,73 @@ public class SliderToText : MonoBehaviour {
         {
             TextMeshPro textComponent = GetComponent<TextMeshPro>();
 
-            if (minValueToText)
-                textComponent.text = (slider.minValue + valueToAdd).ToString();
-            else if (maxValueToText)
-                textComponent.text = (slider.maxValue + valueToAdd).ToString();
-            else if (currentValueToText)
-                textComponent.text = (slider.value + valueToAdd).ToString();
+
+            if (intOnly)
+            {
+                if (minValueToText)
+                    textComponent.text = ((int)slider.minValue + (int)valueToAdd).ToString();
+                else if (maxValueToText)
+                    textComponent.text = ((int)slider.maxValue + (int)valueToAdd).ToString();
+                else if (currentValueToText)
+                    textComponent.text = ((int)slider.value + (int)valueToAdd).ToString();
+            }
+            else
+            {
+                if (minValueToText)
+                    textComponent.text = (slider.minValue + valueToAdd).ToString();
+                else if (maxValueToText)
+                    textComponent.text = (slider.maxValue + valueToAdd).ToString();
+                else if (currentValueToText)
+                    textComponent.text = (slider.value + valueToAdd).ToString();
+            }
         }
         if (textObject.GetComponent<TextMeshProUGUI>())
         {
             TextMeshProUGUI textComponent = GetComponent<TextMeshProUGUI>();
 
-            if (minValueToText)
-                textComponent.text = (slider.minValue + valueToAdd).ToString();
-            else if (maxValueToText)
-                textComponent.text = (slider.maxValue + valueToAdd).ToString();
-            else if (currentValueToText)
-                textComponent.text = (slider.value + valueToAdd).ToString();
+
+            if (intOnly)
+            {
+                if (minValueToText)
+                    textComponent.text = ((int)slider.minValue + (int)valueToAdd).ToString();
+                else if (maxValueToText)
+                    textComponent.text = ((int)slider.maxValue + (int)valueToAdd).ToString();
+                else if (currentValueToText)
+                    textComponent.text = ((int)slider.value + (int)valueToAdd).ToString();
+            }
+            else
+            {
+                if (minValueToText)
+                    textComponent.text = (slider.minValue + valueToAdd).ToString();
+                else if (maxValueToText)
+                    textComponent.text = (slider.maxValue + valueToAdd).ToString();
+                else if (currentValueToText)
+                    textComponent.text = (slider.value + valueToAdd).ToString();
+            }
         }
         if (textObject.GetComponent<Text>())
         {
             Text textComponent = GetComponent<Text>();
 
-            if (minValueToText)
-                textComponent.text = (slider.minValue + valueToAdd).ToString();
-            else if (maxValueToText)
-                textComponent.text = (slider.maxValue + valueToAdd).ToString();
-            else if (currentValueToText)
-                textComponent.text = (slider.value + valueToAdd).ToString();
+
+            if (intOnly)
+            {
+                if (minValueToText)
+                    textComponent.text = ((int)slider.minValue + (int)valueToAdd).ToString();
+                else if (maxValueToText)
+                    textComponent.text = ((int)slider.maxValue + (int)valueToAdd).ToString();
+                else if (currentValueToText)
+                    textComponent.text = ((int)slider.value + (int)valueToAdd).ToString();
+            }
+            else
+            {
+                if (minValueToText)
+                    textComponent.text = (slider.minValue + valueToAdd).ToString();
+                else if (maxValueToText)
+                    textComponent.text = (slider.maxValue + valueToAdd).ToString();
+                else if (currentValueToText)
+                    textComponent.text = (slider.value + valueToAdd).ToString();
+            }
         }
     }
 }

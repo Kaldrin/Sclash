@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    // GAME MANAGER
+    [Header("Game manager")]
+    [SerializeField] string gameManagerName = "GlobalManager";
+    GameManager gameManager;
+
+
+
+
     // AUDIO MANAGER
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
@@ -63,6 +72,10 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        // Get game manager to use in the script
+        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+
+
         // Get the audio manager to use in the script
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
@@ -151,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
     void ManageMovements()
     {
         // The player move if they can in their state
-        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame)
+        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused)
             rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
         // If they are dead they can't move and are then stuck in place
         else if (playerStats.dead)

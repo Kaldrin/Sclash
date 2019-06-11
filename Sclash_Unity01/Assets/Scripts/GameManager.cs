@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     [Header("Menu")]
     [SerializeField] GameObject mainMenu = null;
     [SerializeField] GameObject blurPanel = null;
+    [HideInInspector] public bool paused = false;
 
 
 
@@ -82,7 +83,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text scoreText = null;
     public Vector2 score = new Vector2(0, 0);
     [SerializeField] float scoreShowDuration = 4f;
-
+    [SerializeField] int scoreToWin = 10;
+    [SerializeField] DynamicValueTMP scoreToWinMenuValue = null;
 
 
 
@@ -113,6 +115,8 @@ public class GameManager : MonoBehaviour
     {
         // EFFECTS
         RunTimeScaleUpdate();
+
+        scoreToWin = scoreToWinMenuValue.value;
     }
 
 
@@ -266,6 +270,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(0.5f);
         score[playerNum - 1] += 1;
+
         scoreText.text = ScoreBuilder();
 
         yield return new WaitForSecondsRealtime(timeBeforeNextRound);
@@ -279,6 +284,17 @@ public class GameManager : MonoBehaviour
     {
         string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
         return scoreString;
+    }
+
+    void CheckIfPlayerWon()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            if (score[i] >= scoreToWin)
+            {
+                Debug.Log("Won");
+            }
+        }
     }
 
     

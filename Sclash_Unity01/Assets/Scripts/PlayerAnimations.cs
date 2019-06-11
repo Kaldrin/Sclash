@@ -31,7 +31,7 @@ public class PlayerAnimations : MonoBehaviour
         heavyAttackColor = Color.red;
 
 
-    bool canAttack = true;
+    //bool canAttack = true;
 
 
 
@@ -46,7 +46,7 @@ public class PlayerAnimations : MonoBehaviour
         playerStats = GetComponent<PlayerStats>();
 
 
-        canAttack = true;
+        //canAttack = true;
     }
 
     // Update is called once per graphic frame
@@ -240,25 +240,23 @@ public class PlayerAnimations : MonoBehaviour
     // Trigger attack depending on the intended direction
     public void TriggerAttack(float attackDir)
     {
-        if (true)
-        {
-            float attackDirection;
+
+        float attackDirection;
 
 
-            if (attackDir == 1)
-                attackDirection = 0f;
-            else if (attackDir == -1)
-                attackDirection = 0.5f;
-            else
-                attackDirection = 0.5f;
+        if (attackDir == 1)
+            attackDirection = 0f;
+        else if (attackDir == -1)
+            attackDirection = 0.5f;
+        else
+            attackDirection = 0.5f;
 
-            canAttack = false;
-            animator.SetBool("Attack", true);
-            animator.SetTrigger("AttackOn");
-            animator.SetBool("Charging", false);
+        //canAttack = false;
+        animator.SetBool("Attack", true);
+        animator.SetTrigger("AttackOn");
+        animator.SetBool("Charging", false);
 
-            animator.SetFloat("AttackDirection", attackDirection);
-        }
+        animator.SetFloat("AttackDirection", attackDirection);
     }
 
     // Trigger attack's end animation
@@ -272,7 +270,7 @@ public class PlayerAnimations : MonoBehaviour
     {
         yield return new WaitForSeconds(0.05f);
         animator.SetBool("Attack", false);
-        canAttack = true;
+        //canAttack = true;
     }
 
 
