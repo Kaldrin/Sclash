@@ -318,17 +318,19 @@ public class GameManager : MonoBehaviour
     {
         actualTimeScaleUpdateSmoothness = fadeSpeed;
         timeScaleObjective = slowMoTimeScale;
-        //cameraManager.cameraState = "Event";
+        cameraManager.cameraState = "Event";
+        cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
 
         yield return new WaitForSecondsRealtime(slowMoDuration);
 
         actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
         timeScaleObjective = baseTimeScale;
-        //cameraManager.cameraState = "Battle";
+        cameraManager.cameraState = "Battle";
+        cameraManager.actualZoomSpeed = cameraManager.cinematicZoomSpeed;
 
         yield return new WaitForSecondsRealtime(0.5f);
 
-       Time.timeScale = timeScaleObjective;
+        Time.timeScale = timeScaleObjective;
     } 
 
     // Update the timescale smoothly for smooth slow mo effects in FixedUpdate

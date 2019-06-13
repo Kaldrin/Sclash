@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 
 public class SliderToVolume : MonoBehaviour
 {
-    [SerializeField] Slider slider = null;
+    [SerializeField] public Slider slider = null;
     [SerializeField] AudioMixer mixer = null;
     [SerializeField] string mixerGroup = null;
 
@@ -18,6 +18,11 @@ public class SliderToVolume : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        UpdateVolume();
+    }
+
+    public void UpdateVolume()
     {
         mixer.SetFloat(mixerGroup, slider.value);
     }

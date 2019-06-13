@@ -2,16 +2,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
+
+    // SAVE PARAMETERS
+    [Header("Save parameters")]
+    [SerializeField] MenuParameters menuParametersSave = null;
+    [SerializeField] SliderToVolume
+        masterVolume = null,
+        musicVolume = null,
+        fxVolume = null,
+        voiceVolume = null;
+    [SerializeField] DynamicValueTMP roundToWin = null;
+
+
+
+
+
     // PAUSE
     [Header("Pause menu")]
     [SerializeField] GameObject
         blurPanel = null;
-    [SerializeField] GameObject pauseMenu = null,
+    [SerializeField] GameObject
+        pauseMenu = null,
+        mainMenu = null,
         backButton = null,
         resumeButton = null;
+
+
+
+
+
+    // MENUS ITEMS
+    [Header("Menu items")]
+    [SerializeField] int mainMenuDefaultIndex = 2;
+    [SerializeField] int optionsMenuDefaultIndex = 0;
+    int
+        currentMainMenuIndex = 0,
+        currentOptionsMenuIndex = 0;
+
+    [SerializeField] MenuElement[]
+        mainMenuItems = null,
+        optionsMenuItems = null,
+        currentMenu = null;
+    
+
 
 
 
@@ -23,12 +60,21 @@ public class MenuManager : MonoBehaviour
 
 
 
+
+
+
+
+
+
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
         // Get game manager to use in the script
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+        //DefaultMain();
+        LoadParameters();
+        Debug.Log("Load parameters");
     }
 
     // Update is called once per frame
@@ -41,7 +87,76 @@ public class MenuManager : MonoBehaviour
                 TriggerPause(!gameManager.paused);
             }
         }
+
+
+        MenuManage();
     }
+
+
+
+
+
+
+    // MENU MANAGE
+    // Manage menu navigation
+    void MenuManage()
+    {
+        if (mainMenu.activeSelf)
+        {
+        }
+
+
+        if (pauseMenu.activeSelf)
+        {
+
+        }
+    }
+
+    // Select default main menu element
+    void DefaultMain()
+    {
+        mainMenuItems[mainMenuDefaultIndex].Select(true);
+    }
+
+    // Select default options menu element
+    void DefaultOptions()
+    {
+        optionsMenuItems[optionsMenuDefaultIndex].Select(true);
+    }
+
+
+
+
+
+
+    // SAVE / LOAD PARAMETERS
+    void LoadParameters()
+    {
+        masterVolume.slider.value = menuParametersSave.masterVolume;
+        masterVolume.UpdateVolume();
+
+        musicVolume.slider.value = menuParametersSave.musicVolume;
+        musicVolume.UpdateVolume();
+
+        fxVolume.slider.value = menuParametersSave.fxVolume;
+        fxVolume.UpdateVolume();
+
+        voiceVolume.slider.value = menuParametersSave.voiceVolume;
+        voiceVolume.UpdateVolume();
+    }
+
+    public void SaveParameters()
+    {
+        menuParametersSave.masterVolume = masterVolume.slider.value;
+        menuParametersSave.musicVolume = musicVolume.slider.value;
+        menuParametersSave.fxVolume = fxVolume.slider.value;
+        menuParametersSave.voiceVolume = voiceVolume.slider.value;
+    }
+
+
+
+
+
 
 
     // PAUSE
@@ -58,12 +173,6 @@ public class MenuManager : MonoBehaviour
         resumeButton.SetActive(state);
         gameManager.paused = state;
 
-        if (state)
-        {
-        }
-        else
-        {
-
-        }
+        SaveParameters();
     }
 }

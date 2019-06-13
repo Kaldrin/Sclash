@@ -77,6 +77,8 @@ public class PlayerAttack : MonoBehaviour
     [Header("Charge")]
     [SerializeField] public int maxChargeLevel = 2;
     [HideInInspector] public int chargeLevel = 1;
+    [SerializeField] int numberOfFramesToDetectChargeInput = 3;
+    int currentChargeFramesPressed = 0;
 
     [SerializeField] float
         durationToNextChargeLevel = 1.5f,
@@ -125,6 +127,8 @@ public class PlayerAttack : MonoBehaviour
         kickRange = 1.3f,
         kickDuration = 0.2f;
 
+    int activeKickInput = 0;
+
 
 
 
@@ -151,6 +155,10 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public bool canParry = true;
 
     [SerializeField] float parryDuration = 0.4f;
+
+    [SerializeField] int numberOfFramesToDetectParryInput = 3;
+    int currentParryFramesPressed = 0;
+
 
 
 
@@ -229,6 +237,9 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
+
     // BASE FUNCTIONS
     void Start()
     {
@@ -255,6 +266,10 @@ public class PlayerAttack : MonoBehaviour
             // The player cna only use actions if they are not dead
             if (!playerStats.dead)
             {
+                // KICK
+                ManageKick();
+
+
                 if (playerStats.stamina >= playerStats.staminaCostForMoves)
                 {
                     // CHARGE & ATTAQUE
@@ -268,10 +283,6 @@ public class PlayerAttack : MonoBehaviour
                     // PARRY INPUT
                     ManageParry();
                 }
-
-
-                // KICK
-                ManageKick();
             }
 
 
@@ -304,6 +315,7 @@ public class PlayerAttack : MonoBehaviour
             RunDash();
         }
     }
+
 
 
 
@@ -366,12 +378,15 @@ public class PlayerAttack : MonoBehaviour
         //Player presses attack button
         if (Input.GetButtonDown("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) > 0.1)
         {
+            currentChargeFramesPressed++;
+
             //Debug.Log(isAttacking);
             if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying)
             {
                 charging = true;
                 canCharge = false;
                 isAttackRecovering = false;
+                currentChargeFramesPressed = 0;
 
                 chargeStartTime = Time.time;
                 playerAnimations.TriggerCharge();
@@ -549,15 +564,23 @@ public class PlayerAttack : MonoBehaviour
     // Detect parry inputs
     void ManageParry()
     {
-        if ((!Input.GetButton("Parry" + playerStats.playerNum) && Input.GetAxis("Parry" + playerStats.playerNum) > -0.1f))
+        if ((!Input.GetButtonDown("Parry" + playerStats.playerNum) && Input.GetAxis("Parry" + playerStats.playerNum) > -0.1f))
         {
             canParry = true;
+            currentParryFramesPressed = 0;
         }
+
 
         if ((Input.GetButtonDown("Parry" + playerStats.playerNum) || Input.GetAxis("Parry" + playerStats.playerNum) < -0.1))
         {
+            currentParryFramesPressed++;
+
+
             if (!parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering && canParry && !kicking && !kicked)
+            {
                 Parry();
+                currentParryFramesPressed = 0;
+            }
         }
     }
         
@@ -604,11 +627,21 @@ public class PlayerAttack : MonoBehaviour
     // Detect kick inputs
     void ManageKick()
     {
-        if (Input.GetButtonDown("Kick" + playerStats.playerNum))
+        /*
+        if (!Input.GetButton("Kick" + playerStats.playerNum) && (!Input.GetButton("Parry" + playerStats.playerNum) && !Input.GetButton("Fire" + playerStats.playerNum)))
         {
-            if (canKick && !kicked && !isAttacking && !activeFrame && !kicking && !parrying)
+            canKick = true;
+        }
+        */
+
+
+        
+        if (Input.GetButton("Kick" + playerStats.playerNum) || (Input.GetButton("Parry" + playerStats.playerNum) && Input.GetButton("Fire" + playerStats.playerNum)))
+        {
+            if (canKick && !kicked && !isAttacking && !activeFrame && !kicking && !parrying && activeKickInput >= 3)
                 Kick();
         }
+        
     }
 
     // Start the kick coroutine
@@ -624,6 +657,7 @@ public class PlayerAttack : MonoBehaviour
         parrying = false;
         isAttacking = false;
 
+        activeKickInput = 0;
         playerAnimations.TriggerKick(true);
         
         yield return new WaitForSeconds(kickDuration);

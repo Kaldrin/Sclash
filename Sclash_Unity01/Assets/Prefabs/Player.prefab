@@ -2896,6 +2896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4285f8b82e1c9409c8b616775d4ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManagerName: GlobalManager
   audioManagerName: GlobalManager
   baseMovementsSpeed: 2.5
   chargeMovementsSpeed: 1.2
@@ -2928,14 +2929,19 @@ MonoBehaviour:
   durationToNextChargeLevel: 1
   maxHoldDurationAtMaxCharge: 2
   charging: 0
+  canCharge: 1
   enemyDead: 0
   kickFrame: 0
+  kicking: 0
+  canKick: 1
   kickRange: 0.8
   kickDuration: 0.3
   kickKnockbackDistance: 1
   kickedStaminaLoss: 1
+  kicked: 0
   parrying: 0
-  parryDuration: 0.65
+  canParry: 1
+  parryDuration: 0.3
   clashKnockback: 1.5
   playerCollider: {fileID: 3877102194284395506}
   isDashing: 0
@@ -2943,7 +2949,7 @@ MonoBehaviour:
   forwardDashDistance: 3
   backwardsDashDistance: 2
   dashAllowanceDuration: 0.3
-  forwardAttackDashDistance: 2
+  forwardAttackDashDistance: 3
   backwardsAttackDashDistance: 1.5
   dashDeadZone: 0.5
   shortcutDashDeadZone: 0.5
