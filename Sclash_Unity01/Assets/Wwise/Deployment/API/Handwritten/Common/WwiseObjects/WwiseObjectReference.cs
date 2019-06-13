@@ -10,7 +10,7 @@ public abstract class WwiseObjectReference : UnityEngine.ScriptableObject
 	#region Serialized fields
 	[AkShowOnly]
 	[UnityEngine.SerializeField]
-	private string objectName;
+	private string objectName = null;
 
 	[AkShowOnly]
 	[UnityEngine.SerializeField]

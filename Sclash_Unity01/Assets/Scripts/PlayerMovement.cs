@@ -68,6 +68,11 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
+
+
+
+
     // BASIC FUNCTIONS
     // Start is called before the first frame update
     void Awake()
@@ -164,7 +169,7 @@ public class PlayerMovement : MonoBehaviour
     void ManageMovements()
     {
         // The player move if they can in their state
-        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused)
+        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused && gameManager.gameStarted)
             rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
         // If they are dead they can't move and are then stuck in place
         else if (playerStats.dead)

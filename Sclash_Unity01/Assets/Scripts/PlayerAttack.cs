@@ -77,7 +77,7 @@ public class PlayerAttack : MonoBehaviour
     [Header("Charge")]
     [SerializeField] public int maxChargeLevel = 2;
     [HideInInspector] public int chargeLevel = 1;
-    [SerializeField] int numberOfFramesToDetectChargeInput = 3;
+    //[SerializeField] int numberOfFramesToDetectChargeInput = 3;
     int currentChargeFramesPressed = 0;
 
     [SerializeField] float
@@ -155,8 +155,8 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public bool canParry = true;
 
     [SerializeField] float parryDuration = 0.4f;
-
-    [SerializeField] int numberOfFramesToDetectParryInput = 3;
+    
+    //[SerializeField] int numberOfFramesToDetectParryInput = 3;
     int currentParryFramesPressed = 0;
 
 

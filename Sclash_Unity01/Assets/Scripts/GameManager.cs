@@ -12,6 +12,12 @@ public class GameManager : MonoBehaviour
 
 
 
+    // MENU MANAGER
+    [Header("Menu manager")]
+    [SerializeField] string menuManagerName = "GlobalManager";
+    MenuManager menuManager = null;
+
+
 
 
     // CAMERA MANAGER
@@ -93,12 +99,19 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
+
+
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
         // Get audio
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
+
+        // Get menu manager
+        menuManager = GameObject.Find(menuManagerName).GetComponent<MenuManager>();
 
         // Set variables
         score = new Vector2(0, 0);
@@ -163,6 +176,7 @@ public class GameManager : MonoBehaviour
 
 
         gameStarted = true;
+        paused = false;
 
         mainMenu.SetActive(false);
         blurPanel.SetActive(false);
@@ -254,6 +268,34 @@ public class GameManager : MonoBehaviour
 
 
 
+    // RESTART GAME
+    public void RestartGame()
+    {
+        StartCoroutine(RestartGameCoroutine());
+    }
+
+    IEnumerator RestartGameCoroutine()
+    {
+        roundLeaves.gameObject.SetActive(true);
+        roundLeaves.Play();
+        gameStarted = false;
+
+        yield return new WaitForSecondsRealtime(1.5f);
+
+
+        ResetPlayers();
+        ResetScore();
+        cameraManager.cameraState = "Inactive";
+        cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
+        cameraManager.cam.transform.position = cameraManager.cameraBasePos;
+        menuManager.mainMenu.SetActive(true);
+        menuManager.pauseMenu.SetActive(false);
+    }
+
+
+
+
+
 
 
     // SCORE
@@ -295,6 +337,11 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Won");
             }
         }
+    }
+
+    void ResetScore()
+    {
+        score = new Vector2(0, 0);
     }
 
     

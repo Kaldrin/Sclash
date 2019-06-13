@@ -6,7 +6,7 @@ public class CameraManager : MonoBehaviour
 {
 
     // CAMERA
-    Camera cam;
+    [HideInInspector] public Camera cam;
 
 
 
@@ -35,8 +35,9 @@ public class CameraManager : MonoBehaviour
         distanceBetweenPlayers = 0;
     [HideInInspector] public float actualZoomSpeed = 0;
     Vector3 currentZoomSpeed = new Vector3(0, 0, 0);
-    
-    
+    [HideInInspector] public Vector3 cameraBasePos = new Vector3(0, 0, 0);
+
+
 
 
 
@@ -46,11 +47,14 @@ public class CameraManager : MonoBehaviour
     [HideInInspector] public float actualSmoothMovementsMultiplier = 0.5f;
     [SerializeField] Vector2 maxSidesZoomedUnzoomed = new Vector2(-10, -5);
     GameObject[] players;
-    float time = 0;
+    //float time = 0;
+    /*
     [SerializeField] float
         movementsSpeed = 25,
         maxMovementsSpeed = 15;
-    Vector3 currentMovementSpeed;
+    */
+    Vector3 currentMovementSpeed = new Vector3(0, 0, 0);
+    [HideInInspector] public Vector3 cameraArmBasePos = new Vector3(0, 0, 0);
 
 
 
@@ -75,6 +79,8 @@ public class CameraManager : MonoBehaviour
         
         actualSmoothMovementsMultiplier = cinematicSmoothMovementsMultiplier;
         actualZoomSpeed = cinematicZoomSpeed;
+        cameraBasePos = cam.transform.position;
+        cameraArmBasePos = transform.position;
 
         StartCoroutine(BehaviourDependingOnState());
     }

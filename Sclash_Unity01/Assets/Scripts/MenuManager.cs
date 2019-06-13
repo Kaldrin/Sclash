@@ -15,7 +15,7 @@ public class MenuManager : MonoBehaviour
         musicVolume = null,
         fxVolume = null,
         voiceVolume = null;
-    [SerializeField] DynamicValueTMP roundToWin = null;
+    //[SerializeField] DynamicValueTMP roundToWin = null;
 
 
 
@@ -25,11 +25,14 @@ public class MenuManager : MonoBehaviour
     [Header("Pause menu")]
     [SerializeField] GameObject
         blurPanel = null;
-    [SerializeField] GameObject
+    [SerializeField] public GameObject
         pauseMenu = null,
-        mainMenu = null,
+        mainMenu = null;
+    [SerializeField] GameObject
         backButton = null,
-        resumeButton = null;
+        resumeButton = null,
+        quitButton = null,
+        mainMenuButton = null;
 
 
 
@@ -39,14 +42,18 @@ public class MenuManager : MonoBehaviour
     [Header("Menu items")]
     [SerializeField] int mainMenuDefaultIndex = 2;
     [SerializeField] int optionsMenuDefaultIndex = 0;
+    /*
     int
         currentMainMenuIndex = 0,
         currentOptionsMenuIndex = 0;
-
+        */
+    
+    
     [SerializeField] MenuElement[]
         mainMenuItems = null,
         optionsMenuItems = null,
         currentMenu = null;
+    
     
 
 
@@ -74,7 +81,6 @@ public class MenuManager : MonoBehaviour
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
         //DefaultMain();
         LoadParameters();
-        Debug.Log("Load parameters");
     }
 
     // Update is called once per frame
@@ -130,8 +136,10 @@ public class MenuManager : MonoBehaviour
 
 
     // SAVE / LOAD PARAMETERS
+    // Load menu parameters
     void LoadParameters()
     {
+        // Save from current session saves
         masterVolume.slider.value = menuParametersSave.masterVolume;
         masterVolume.UpdateVolume();
 
@@ -143,15 +151,47 @@ public class MenuManager : MonoBehaviour
 
         voiceVolume.slider.value = menuParametersSave.voiceVolume;
         voiceVolume.UpdateVolume();
+
+
+        // Loads actual saves
+        JsonSave save = SaveGameManager.GetCurrentSave();
+
+
+        masterVolume.slider.value = save.masterVolume;
+        masterVolume.UpdateVolume();
+
+        musicVolume.slider.value = save.musicVolume;
+        musicVolume.UpdateVolume();
+
+        fxVolume.slider.value = save.fxVolume;
+        fxVolume.UpdateVolume();
+
+        voiceVolume.slider.value = save.voiceVolume;
+        voiceVolume.UpdateVolume();
     }
 
+    // Save menu parameters
     public void SaveParameters()
     {
+        // Save for current session
         menuParametersSave.masterVolume = masterVolume.slider.value;
         menuParametersSave.musicVolume = musicVolume.slider.value;
         menuParametersSave.fxVolume = fxVolume.slider.value;
         menuParametersSave.voiceVolume = voiceVolume.slider.value;
+
+
+        // Save forever
+        JsonSave save = SaveGameManager.GetCurrentSave();
+
+        save.masterVolume = masterVolume.slider.value;
+        save.musicVolume = musicVolume.slider.value;
+        save.fxVolume = fxVolume.slider.value;
+        save.voiceVolume = voiceVolume.slider.value;
+
+        SaveGameManager.Save();
     }
+
+
 
 
 
@@ -171,6 +211,9 @@ public class MenuManager : MonoBehaviour
         pauseMenu.SetActive(state);
         backButton.SetActive(!state);
         resumeButton.SetActive(state);
+        quitButton.SetActive(state);
+        mainMenuButton.SetActive(state);
+
         gameManager.paused = state;
 
         SaveParameters();

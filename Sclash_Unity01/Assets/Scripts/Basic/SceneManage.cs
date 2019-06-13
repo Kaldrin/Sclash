@@ -75,7 +75,7 @@ public class SceneManage : MonoBehaviour {
     }
     
     // Restart the current scene
-    void Restart()
+    public void Restart()
     {
         
         sceneToLoad = SceneManager.GetActiveScene();

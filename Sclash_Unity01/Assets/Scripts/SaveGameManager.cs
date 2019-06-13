@@ -30,13 +30,10 @@ public class stickerOnBoardAndPosition
 public class JsonSave
 {
     public bool isEmpty = true;
-    public int lieu = 0;
-    public List<int> carnetCharactersList;
-    public List<int> carnetHintsList;
-    public List<int> carnetFactsList;
-    public List<int> carnetGuessList;
-    public List<stickerOnBoardAndPosition> playerMemoryList;
-    public List<int> allStickers;
+    public float masterVolume;
+    public float musicVolume;
+    public float fxVolume;
+    public float voiceVolume;
 }
 
 public static class SaveGameManager

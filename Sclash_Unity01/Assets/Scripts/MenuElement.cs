@@ -7,10 +7,10 @@ public class MenuElement : MonoBehaviour
 {
     [SerializeField] SpriteRenderer selectedSprite = null;
 
-    [SerializeField] bool button = false;
-    [SerializeField] bool slider = false;
-    [SerializeField] Button buttonScript = null;
-    [SerializeField] Slider sliderScript = null;
+    //[SerializeField] bool button = false;
+    //[SerializeField] bool slider = false;
+    //[SerializeField] Button buttonScript = null;
+    //[SerializeField] Slider sliderScript = null;
     bool selected = false;
 
     // Start is called before the first frame update
