@@ -183,11 +183,12 @@ public class PlayerMovement : MonoBehaviour
             // rb.gravityScale = 0;
             rb.simulated = false;
         }
-        else if (gameManager.paused)
+        else if (gameManager.paused || !gameManager.gameStarted)
         {
             rb.velocity = new Vector2(0, 0);
             rb.simulated = false;
         }
+
 
         /*
         // WALK SOUND

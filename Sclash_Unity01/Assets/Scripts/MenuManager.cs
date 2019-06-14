@@ -33,7 +33,8 @@ public class MenuManager : MonoBehaviour
         backButton = null,
         resumeButton = null,
         quitButton = null,
-        mainMenuButton = null;
+        mainMenuButton = null,
+        backToWinScreenButton = null;
 
 
 
@@ -195,6 +196,7 @@ public class MenuManager : MonoBehaviour
         quitButton.SetActive(state);
         mainMenuButton.SetActive(state);
         gameManager.scoreObject.SetActive(state);
+        backToWinScreenButton.SetActive(false);
 
         gameManager.paused = state;
 

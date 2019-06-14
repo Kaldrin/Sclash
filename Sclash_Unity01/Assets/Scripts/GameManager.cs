@@ -83,13 +83,18 @@ public class GameManager : MonoBehaviour
 
 
     // SCORE
-    [Header("Score")]
-    [SerializeField] public Text scoreText = null;
+    [Header("Score")] [SerializeField] public Text scoreText = null;
     [SerializeField] public GameObject scoreObject = null;
     public Vector2 score = new Vector2(0, 0);
     [SerializeField] float scoreShowDuration = 4f;
     [SerializeField] public int scoreToWin = 10;
     [SerializeField] DynamicValueTMP scoreToWinMenuValue = null;
+
+
+
+
+    // WIN
+    [Header("Win")] [SerializeField] float timeBeforeWinScreenAppears = 2f;
 
 
 
@@ -275,23 +280,27 @@ public class GameManager : MonoBehaviour
 
     IEnumerator RestartGameCoroutine()
     {
-        roundLeaves.gameObject.SetActive(true);
-        roundLeaves.Play();
         gameStarted = false;
+
+        roundLeaves.gameObject.SetActive(true);
         menuManager.pauseMenu.SetActive(false);
         menuManager.winScreen.SetActive(false);
         scoreObject.SetActive(false);
+        blurPanel.SetActive(true);
+
+        roundLeaves.Play();
 
         yield return new WaitForSecondsRealtime(1.5f);
 
-        audioManager.BattleMusicOn();
-        ResetPlayers();
-        ResetScore();
         cameraManager.cameraState = "Inactive";
         cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
         cameraManager.cam.transform.position = cameraManager.cameraBasePos;
+
         menuManager.mainMenu.SetActive(true);
+
         audioManager.MenuMusicOn();
+        ResetPlayers();
+        ResetScore();
     }
 
 
@@ -315,23 +324,24 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.5f);
         score[playerNum - 1] += 1;
         scoreText.text = ScoreBuilder();
-        
-        
-        if (CheckIfPlayerWon() != 0)
+
+        if (score[playerNum - 1] >= scoreToWin)
+        {
+            yield return new WaitForSecondsRealtime(1f);
+
+            gameStarted = false;
+
+            yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
+
+            blurPanel.SetActive(false);
+            menuManager.winScreen.SetActive(true);
+        }
+        else
         {
             yield return new WaitForSecondsRealtime(timeBeforeNextRound);
 
-            paused = true;
-            yield return new WaitForSecondsRealtime(timeBeforeNextRound);
-            ResetScore();
-        }
-        
-
-        yield return new WaitForSecondsRealtime(timeBeforeNextRound);
-
-
-        NextRound();
-
+            NextRound();
+        }     
     }
 
     // Build the score display message

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
 {
+    // MANAGER
+    [Header("Managers")] [SerializeField] string gameManagerName = "GlobalManager";
+    GameManager gameManager;
+
+
     // PLAYER'S COMPONENTS
     [Header("Player's components")] [SerializeField] Rigidbody2D rigid = null;
     [SerializeField] Animator animator = null;
@@ -48,6 +53,10 @@ public class PlayerAnimations : MonoBehaviour
     // BASE FUNCTIONS
     void Awake()
     {
+        // Get managers
+        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+
+        // Get player's components
         playerAttack = GetComponent<PlayerAttack>();
         playerStats = GetComponent<PlayerStats>();
 
@@ -89,7 +98,8 @@ public class PlayerAnimations : MonoBehaviour
             animator.SetFloat("WalkDirection", 1);
 
 
-        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > minSpeedForWalkAnim)
+
+        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > minSpeedForWalkAnim && gameManager.gameStarted)
             animator.SetFloat("Move", Mathf.Abs(Mathf.Sign((Input.GetAxis("Horizontal" + playerStats.playerNum)))));
         else
             animator.SetFloat("Move", 0);
