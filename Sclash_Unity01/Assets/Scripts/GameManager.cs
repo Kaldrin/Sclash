@@ -327,9 +327,10 @@ public class GameManager : MonoBehaviour
 
         if (score[playerNum - 1] >= scoreToWin)
         {
-            yield return new WaitForSecondsRealtime(1f);
+            yield return new WaitForSecondsRealtime(2f);
 
             gameStarted = false;
+            menuManager.winMessage.SetActive(true);
 
             yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
 
@@ -351,22 +352,7 @@ public class GameManager : MonoBehaviour
         return scoreString;
     }
 
-    int CheckIfPlayerWon()
-    {
-        int player = 0;
-
-
-        for (int i = 0; i < 2; i++)
-        {
-            if (score[i] >= scoreToWin)
-            {
-                player = i + 1;
-            }
-        }
-
-        return player;
-    }
-
+    // Reset the score and its display
     void ResetScore()
     {
         score = new Vector2(0, 0);

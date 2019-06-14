@@ -34,6 +34,7 @@ public class JsonSave
     public float musicVolume;
     public float fxVolume;
     public float voiceVolume;
+    public int roundsToWin;
 }
 
 public static class SaveGameManager

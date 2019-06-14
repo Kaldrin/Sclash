@@ -33,8 +33,13 @@ public class MenuManager : MonoBehaviour
         backButton = null,
         resumeButton = null,
         quitButton = null,
-        mainMenuButton = null,
-        backToWinScreenButton = null;
+        mainMenuButton = null;
+
+
+
+    // WIN
+    [Header("Win menu")] [SerializeField] GameObject backToWinScreenButton = null;
+    [SerializeField] public GameObject winMessage = null;
 
 
 
@@ -134,6 +139,8 @@ public class MenuManager : MonoBehaviour
         roundToWin.value = menuParametersSave.roundToWin;
 
 
+
+
         // Loads actual saves
         JsonSave save = SaveGameManager.GetCurrentSave();
 
@@ -149,6 +156,8 @@ public class MenuManager : MonoBehaviour
 
         voiceVolume.slider.value = save.voiceVolume;
         voiceVolume.UpdateVolume();
+
+        roundToWin.value = save.roundsToWin;
     }
 
     // Save menu parameters
@@ -169,6 +178,7 @@ public class MenuManager : MonoBehaviour
         save.musicVolume = musicVolume.slider.value;
         save.fxVolume = fxVolume.slider.value;
         save.voiceVolume = voiceVolume.slider.value;
+        save.roundsToWin = roundToWin.value;
 
         SaveGameManager.Save();
     }

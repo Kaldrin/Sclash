@@ -6,7 +6,7 @@ using TMPro;
 public class DynamicValueTMP : MonoBehaviour
 {
     
-    [HideInInspector] public int value = 0;
+    [HideInInspector] public int value = 10;
     [SerializeField] GameObject textObject = null;
     [SerializeField] int
         defaultValue = 0,
@@ -19,7 +19,7 @@ public class DynamicValueTMP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        value = defaultValue;
+        //value = defaultValue;
         UpdateValueVisual();
     }
 
@@ -29,6 +29,12 @@ public class DynamicValueTMP : MonoBehaviour
         
     }
 
+
+
+
+
+
+    // VALUE
     public void Increment()
     {
         value += incrementation;
@@ -57,6 +63,11 @@ public class DynamicValueTMP : MonoBehaviour
         UpdateValueVisual();
     }
 
+
+
+
+
+    // DISPLAY
     void UpdateValueVisual()
     {
         if (textObject.GetComponent<TextMeshPro>())

@@ -8,6 +8,10 @@ public class PlayRandomSoundInList : MonoBehaviour
     [SerializeField] AudioSource audioSource = null;
     [SerializeField] AudioClip[] soundList = null;
 
+
+
+
+    // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
@@ -26,5 +30,16 @@ public class PlayRandomSoundInList : MonoBehaviour
             audioSource.clip = soundList[randomSoundIndex];
             audioSource.Play();
         }
+    }
+
+
+
+
+
+
+    // PLAY
+    public void Play()
+    {
+        play = true;
     }
 }
