@@ -47,14 +47,15 @@ public class MenuManager : MonoBehaviour
         currentMainMenuIndex = 0,
         currentOptionsMenuIndex = 0;
         */
-    
-    
+
+
     [SerializeField] MenuElement[]
         mainMenuItems = null,
-        optionsMenuItems = null,
-        currentMenu = null;
-    
-    
+        optionsMenuItems = null;
+
+    //[SerializeField] MenuElement[] currentMenu = null;
+
+
 
 
 

@@ -41,7 +41,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] float maxHealth = 0;
     float currentHealth;
 
-    [SerializeField] bool untouchable = false;
+    [SerializeField] public bool untouchable = false;
     [HideInInspector] public bool dead = false;
 
 
@@ -117,7 +117,8 @@ public class PlayerStats : MonoBehaviour
     // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
-        StaminaRegen();
+        if (!gameManager.paused)
+            StaminaRegen();
     }
 
     void LateUpdate()

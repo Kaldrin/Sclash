@@ -5,23 +5,23 @@ using UnityEngine;
 public class PlayerAnimations : MonoBehaviour
 {
     // PLAYER'S COMPONENTS
-    [SerializeField] Rigidbody2D rigid = null;
+    [Header("Player's components")] [SerializeField] Rigidbody2D rigid = null;
     [SerializeField] Animator animator = null;
     [SerializeField] public SpriteRenderer spriteRenderer = null;
     PlayerAttack playerAttack = null;
     PlayerStats playerStats = null;
-    
+
 
 
 
     // ANIMATION VALUES
-    [SerializeField] float minSpeedForWalkAnim = 0.05f;
+    [Header("Animation values")] [SerializeField] float minSpeedForWalkAnim = 0.05f;
 
 
 
 
     // FX
-    [SerializeField] public TrailRenderer swordTrail = null;
+    [Header("FX")] [SerializeField] public TrailRenderer swordTrail = null;
     [SerializeField]
     float
         lightAttackSwordTrailWidth = 1.3f,
@@ -31,7 +31,11 @@ public class PlayerAnimations : MonoBehaviour
         heavyAttackColor = Color.red;
 
 
-    //bool canAttack = true;
+
+
+    // SPRITE COLORS
+    [Header("Sprite colors")]
+    [SerializeField] float untouchableFrameOpacity = 0.4f;
 
 
 
@@ -40,6 +44,8 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
+
+    // BASE FUNCTIONS
     void Awake()
     {
         playerAttack = GetComponent<PlayerAttack>();
@@ -57,6 +63,18 @@ public class PlayerAnimations : MonoBehaviour
         UpdateAnimStamina(playerStats.stamina);
     }
 
+    // FixedUpdate is called 30 times per second
+    private void FixedUpdate()
+    {
+        ManageUntouchableFramesVisual();
+    }
+
+
+
+
+
+
+    // UPDATE VISUALS
     // Update the animator's parameters in Update
     void UpdateAnims()
     {
@@ -298,6 +316,26 @@ public class PlayerAnimations : MonoBehaviour
 
 
         animator.SetFloat("DashDirection", blendTreeValue);
+    }
+
+
+
+
+
+
+
+
+    // UNTOUCHABLE FRAMES
+    void ManageUntouchableFramesVisual()
+    {
+        if (playerStats.untouchable)
+        {
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
+        }
+        else
+        {
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
+        }
     }
 
 

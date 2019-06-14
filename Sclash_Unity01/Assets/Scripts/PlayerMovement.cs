@@ -170,13 +170,22 @@ public class PlayerMovement : MonoBehaviour
     {
         // The player move if they can in their state
         if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused && gameManager.gameStarted)
+        {
+            if (rb.simulated == false)
+                rb.simulated = true;
             rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
+        }
         // If they are dead they can't move and are then stuck in place
         else if (playerStats.dead)
         {
             // rb.velocity = new Vector2(0, 0);
             // transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             // rb.gravityScale = 0;
+            rb.simulated = false;
+        }
+        else if (gameManager.paused)
+        {
+            rb.velocity = new Vector2(0, 0);
             rb.simulated = false;
         }
 

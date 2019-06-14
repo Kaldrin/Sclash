@@ -282,7 +282,7 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(1.5f);
 
-
+        audioManager.BattleMusicOn();
         ResetPlayers();
         ResetScore();
         cameraManager.cameraState = "Inactive";
@@ -312,13 +312,23 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(0.5f);
         score[playerNum - 1] += 1;
-
         scoreText.text = ScoreBuilder();
+        /*
+        if (CheckIfPlayerWon() != 0)
+        {
+            yield return new WaitForSecondsRealtime(timeBeforeNextRound);
+
+            paused = true;
+            yield return new WaitForSecondsRealtime(timeBeforeNextRound);
+            ResetScore();
+        }
+        */
 
         yield return new WaitForSecondsRealtime(timeBeforeNextRound);
 
-        
+
         NextRound();
+
     }
 
     // Build the score display message
@@ -328,15 +338,20 @@ public class GameManager : MonoBehaviour
         return scoreString;
     }
 
-    void CheckIfPlayerWon()
+    int CheckIfPlayerWon()
     {
+        int player = 0;
+
+
         for (int i = 0; i < 2; i++)
         {
             if (score[i] >= scoreToWin)
             {
-                Debug.Log("Won");
+                player = i + 1;
             }
         }
+
+        return player;
     }
 
     void ResetScore()

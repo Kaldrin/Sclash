@@ -310,7 +310,7 @@ public class PlayerAttack : MonoBehaviour
 
 
         // DASH FUNCTIONS
-        if (isDashing)
+        if (isDashing && !gameManager.paused)
         {
             RunDash();
         }
@@ -428,7 +428,6 @@ public class PlayerAttack : MonoBehaviour
                 if (chargeLevel < maxChargeLevel)
                 {
                     chargeLevel++;
-                    Debug.Log("Charge up");
                     //playerAnimations.ChargeChange(chargeLevel);
                 }
                 else if (chargeLevel >= maxChargeLevel)
