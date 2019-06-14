@@ -5,24 +5,22 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    // AUDIO MANAGER
-    [Header("Audio manager")]
+    // MANAGERS
+    [Header("Managers")]
+    // Audio manager
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
 
-
-
-    // MENU MANAGER
-    [Header("Menu manager")]
+    // Menu manager
     [SerializeField] string menuManagerName = "GlobalManager";
     MenuManager menuManager = null;
 
-
-
-
-    // CAMERA MANAGER
-    [Header("Camera manager")]
+    // Camera manager
     [SerializeField] CameraManager cameraManager = null;
+
+    // Input manager
+    [SerializeField] string inputManagerName = "GlobalManager";
+    InputManager inputManager = null;
 
 
 
@@ -86,7 +84,7 @@ public class GameManager : MonoBehaviour
 
     // SCORE
     [Header("Score")]
-    [SerializeField] Text scoreText = null;
+    [SerializeField] public Text scoreText = null;
     public Vector2 score = new Vector2(0, 0);
     [SerializeField] float scoreShowDuration = 4f;
     [SerializeField] int scoreToWin = 10;
@@ -279,10 +277,11 @@ public class GameManager : MonoBehaviour
         roundLeaves.gameObject.SetActive(true);
         roundLeaves.Play();
         gameStarted = false;
+        menuManager.winScreen.SetActive(false);
 
         yield return new WaitForSecondsRealtime(1.5f);
 
-        audioManager.BattleMusicOn();
+        audioManager.MenuMusicOn();
         ResetPlayers();
         ResetScore();
         cameraManager.cameraState = "Inactive";

@@ -4,48 +4,45 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    // SOUND FUNCTIONS
+    // SOUND FUNCTIONS7
+    [Header("Sound functions")]
     [SerializeField] SoundFunctions soundFunctions = null;
 
 
 
     // FX
+    [Header("FX")]
     // Audio sources
-    [SerializeField]
-    AudioSource
-        walk = null,
-        clash = null,
-        parry = null,
-        parryOn = null,
-        lightAttack = null,
-        heavyAttack = null,
-        successfulAttack = null,
-        death = null;
-
-    /*
+    [SerializeField] AudioSource successfulAttack = null;
     [SerializeField] AudioSource
-        charge = null,
-        dash = null;
-        */
+        death = null,
+        parried = null;
+    [SerializeField] PlayRandomSoundInList clashRandomSoundScript = null;
 
 
 
     // MUSIC
-    [SerializeField] AudioSource
-        menuMusicSource = null,
-        battleMusicSource = null;
+    [Header("Music")]
+    // Audio sources
+    [SerializeField] AudioSource menuMusicSource = null;
+    [SerializeField] AudioSource battleMusicSource = null;
+
     float menuMusicObjective = 1;
     float battleMusicObjective = 0;
-    bool battleOn = false;
-    // bool fadeMusic = false;
-    bool menuMusicFinishedFade = false;
-    bool battleMusicFinishedFade = false;
     [SerializeField] float musicFadeSpeed = 0.001f;
     float volumeComparisonTolerance = 0.1f;
+
+    bool battleOn = false;
+    bool menuMusicFinishedFade = false;
+    bool battleMusicFinishedFade = false;
+    
+    [SerializeField] Vector2 battleMusicVolumeDistanceBounds = new Vector2(5, 20);
+    [SerializeField] Vector2 battleMusicVolumeBounds = new Vector2(1, 0);
 
 
 
     // VOICE
+    [Header("Voice")]
     [SerializeField] AudioSource deathVoice;
     [SerializeField] AudioSource attackVoice;
     [SerializeField] AudioSource introVoice;
@@ -53,10 +50,14 @@ public class AudioManager : MonoBehaviour
 
 
     // PLAYERS
+    [Header("Players")]
     GameObject[] players;
     float distanceBetweenPlayers = 0;
-    [SerializeField] Vector2 battleMusicVolumeDistanceBounds = new Vector2(5, 20);
-    [SerializeField] Vector2 battleMusicVolumeBounds = new Vector2(1, 0);
+    
+
+
+
+
 
 
 
@@ -80,15 +81,24 @@ public class AudioManager : MonoBehaviour
             AdjustMusicVolumeOnDistance();
         }
         
-
-
         FadeMusic();
     }
 
+
+
+
+
+
+    // PLAYERS
+    // Find the players in scene
     public void FindPlayers()
     {
         players = GameObject.FindGameObjectsWithTag("Player");
     }
+
+
+
+
 
 
     // MUSIC
@@ -146,9 +156,7 @@ public class AudioManager : MonoBehaviour
 
     public void MenuMusicOn()
     {
-        //soundFunctions.ChangeClipOfAudioSource(mainMusicSource, mainMenuMusic);
         soundFunctions.SetAudioActiveFromSource(menuMusicSource, true);
-        //soundFunctions.SetAudioActiveFromSource(battleMusicSource, false);
 
         menuMusicObjective = 1;
         battleMusicObjective = 0;
@@ -158,7 +166,6 @@ public class AudioManager : MonoBehaviour
 
     public void BattleMusicOn()
     {
-        //soundFunctions.ChangeClipOfAudioSource(menuMusicSource, battleMusic);
         soundFunctions.SetAudioActiveFromSource(battleMusicSource, true);
 
         battleOn = true;
@@ -184,53 +191,22 @@ public class AudioManager : MonoBehaviour
     // FX
     public void Clash()
     {
-        soundFunctions.PlaySoundFromSource(clash);
+        //soundFunctions.PlaySoundFromSource(clash);
+        clashRandomSoundScript.play = true;
     }
 
-    // Parry sound
-    public void Parried()
-    {
-        soundFunctions.PlaySoundFromSource(parry);
-    }
-
-    public void ParryOn()
-    {
-        
-        soundFunctions.PlaySoundFromSource(parryOn);
-    }
-
-    // Attack sound depending on level
-    public void Attack(int level, int maxLevel)
-    {
-        if (level >= maxLevel)
-        {
-            soundFunctions.PlaySoundFromSource(heavyAttack);
-        }
-        else
-        {
-            soundFunctions.PlaySoundFromSource(lightAttack);
-        } 
-    }
-
-    // Successful attack sound
     public void SuccessfulAttack()
     {
-        StartCoroutine(SuccessfulAttackCoroutine());
-    }
-
-    IEnumerator SuccessfulAttackCoroutine()
-    {
         soundFunctions.PlaySoundFromSource(successfulAttack);
-
-        yield return new WaitForSeconds(0f);
-        soundFunctions.PlaySoundFromSource(death);
     }
 
-
-    // Walk sound
-    public void Walk(bool state)
+    public void Parried()
     {
-        soundFunctions.SetAudioActiveFromSource(walk, true);
-        soundFunctions.SetAudioMuteFromSource(walk, !state);
+        soundFunctions.PlaySoundFromSource(parried);
+    }
+
+    public void Death()
+    {
+        soundFunctions.PlaySoundFromSource(death);
     }
 }

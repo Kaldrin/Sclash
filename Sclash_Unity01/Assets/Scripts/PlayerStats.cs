@@ -260,8 +260,10 @@ public class PlayerStats : MonoBehaviour
                 stamina += staminaCostForMoves;
                 instigator.GetComponent<PlayerAttack>().Clash();
 
+                /*
                 // Sound
                 audioManager.Parried();
+                */
             }
             // UNTOUCHABLE FRAMES
             else if (untouchable)
@@ -282,6 +284,10 @@ public class PlayerStats : MonoBehaviour
                 gameManager.Death(instigator.GetComponent<PlayerStats>().playerNum);
                 playerAnimation.Dead();
                 dead = true;
+
+
+                // Sound
+                audioManager.Death();
             }
         }
 
