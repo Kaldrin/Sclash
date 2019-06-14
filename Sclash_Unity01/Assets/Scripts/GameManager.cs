@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     // PLAYERS
     [Header("Players")]
     [SerializeField] GameObject player = null;
-    List<GameObject> playersList = new List<GameObject>();
+    [HideInInspector] public List<GameObject> playersList = new List<GameObject>();
     [SerializeField] Color[] playersColors = null;
 
 
@@ -84,10 +84,11 @@ public class GameManager : MonoBehaviour
 
     // SCORE
     [Header("Score")]
-    [SerializeField] Text scoreText = null;
+    [SerializeField] public Text scoreText = null;
+    [SerializeField] public GameObject scoreObject = null;
     public Vector2 score = new Vector2(0, 0);
     [SerializeField] float scoreShowDuration = 4f;
-    [SerializeField] int scoreToWin = 10;
+    [SerializeField] public int scoreToWin = 10;
     [SerializeField] DynamicValueTMP scoreToWinMenuValue = null;
 
 
@@ -279,6 +280,7 @@ public class GameManager : MonoBehaviour
         gameStarted = false;
         menuManager.pauseMenu.SetActive(false);
         menuManager.winScreen.SetActive(false);
+        scoreObject.SetActive(false);
 
         yield return new WaitForSecondsRealtime(1.5f);
 
@@ -289,6 +291,7 @@ public class GameManager : MonoBehaviour
         cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
         cameraManager.cam.transform.position = cameraManager.cameraBasePos;
         menuManager.mainMenu.SetActive(true);
+        audioManager.MenuMusicOn();
     }
 
 
@@ -301,9 +304,9 @@ public class GameManager : MonoBehaviour
     // Display the current score for a given amount of time
     IEnumerator ShowScore()
     {
-        scoreText.gameObject.SetActive(true);
+        scoreObject.SetActive(true);
         yield return new WaitForSeconds(scoreShowDuration);
-        scoreText.gameObject.SetActive(false);
+        scoreObject.SetActive(false);
     }
 
     // Update score
@@ -312,7 +315,8 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.5f);
         score[playerNum - 1] += 1;
         scoreText.text = ScoreBuilder();
-        /*
+        
+        
         if (CheckIfPlayerWon() != 0)
         {
             yield return new WaitForSecondsRealtime(timeBeforeNextRound);
@@ -321,7 +325,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(timeBeforeNextRound);
             ResetScore();
         }
-        */
+        
 
         yield return new WaitForSecondsRealtime(timeBeforeNextRound);
 
@@ -356,6 +360,7 @@ public class GameManager : MonoBehaviour
     void ResetScore()
     {
         score = new Vector2(0, 0);
+        scoreText.text = ScoreBuilder();
     }
 
     

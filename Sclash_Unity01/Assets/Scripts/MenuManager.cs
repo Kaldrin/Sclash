@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
-
     // SAVE PARAMETERS
     [Header("Save parameters")]
     [SerializeField] MenuParameters menuParametersSave = null;
@@ -15,7 +14,7 @@ public class MenuManager : MonoBehaviour
         musicVolume = null,
         fxVolume = null,
         voiceVolume = null;
-    //[SerializeField] DynamicValueTMP roundToWin = null;
+    [SerializeField] DynamicValueTMP roundToWin = null;
 
 
 
@@ -38,13 +37,16 @@ public class MenuManager : MonoBehaviour
 
 
 
-
-
-
-    // GAME MANAGER
-    [Header("Game manager")]
+    // MANAGERS
+    [Header("Managers")]
+    // Game managers
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
+
+    // Input manager
+    [SerializeField] string inputManagerName = "GlobalManager";
+    InputManager inputManager = null;
+
 
 
 
@@ -59,8 +61,12 @@ public class MenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // MANAGER
+        // Get the input manager
+        inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
         // Get game manager to use in the script
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+
         //DefaultMain();
         LoadParameters();
     }
@@ -75,8 +81,32 @@ public class MenuManager : MonoBehaviour
                 TriggerPause(!gameManager.paused);
             }
         }
+
+        UpdateScoreDisplay();
     }
 
+
+
+
+
+
+    // SCORE
+    //Update score display
+    void UpdateScoreDisplay()
+    {
+        bool playerDead = false;
+
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            if (gameManager.playersList[i].GetComponent<PlayerStats>().dead)
+            {
+                playerDead = true;
+            }
+        }
+
+        if (!playerDead && !gameManager.paused && gameManager.gameStarted)
+            gameManager.scoreObject.SetActive(inputManager.score);
+    }
 
 
 
@@ -99,6 +129,8 @@ public class MenuManager : MonoBehaviour
 
         voiceVolume.slider.value = menuParametersSave.voiceVolume;
         voiceVolume.UpdateVolume();
+
+        roundToWin.value = menuParametersSave.roundToWin;
 
 
         // Loads actual saves
@@ -126,6 +158,7 @@ public class MenuManager : MonoBehaviour
         menuParametersSave.musicVolume = musicVolume.slider.value;
         menuParametersSave.fxVolume = fxVolume.slider.value;
         menuParametersSave.voiceVolume = voiceVolume.slider.value;
+        menuParametersSave.roundToWin = gameManager.scoreToWin;
 
 
         // Save forever
@@ -161,6 +194,7 @@ public class MenuManager : MonoBehaviour
         resumeButton.SetActive(state);
         quitButton.SetActive(state);
         mainMenuButton.SetActive(state);
+        gameManager.scoreObject.SetActive(state);
 
         gameManager.paused = state;
 

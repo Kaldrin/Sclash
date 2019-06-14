@@ -9,24 +9,17 @@ public class AudioManager : MonoBehaviour
 
 
 
+
+
     // FX
     // Audio sources
     [SerializeField]
     AudioSource
-        walk = null,
         clash = null,
         parry = null,
-        parryOn = null,
-        lightAttack = null,
-        heavyAttack = null,
         successfulAttack = null,
         death = null;
 
-    /*
-    [SerializeField] AudioSource
-        charge = null,
-        dash = null;
-        */
 
 
 
@@ -94,7 +87,6 @@ public class AudioManager : MonoBehaviour
     // MUSIC
     void ActivateMusicFade()
     {
-        //fadeMusic = true;
         menuMusicFinishedFade = false;
         battleMusicFinishedFade = false;
     }
@@ -135,7 +127,6 @@ public class AudioManager : MonoBehaviour
 
         if (menuMusicFinishedFade && battleMusicFinishedFade)
         {
-            // fadeMusic = false;
             battleMusicFinishedFade = false;
             menuMusicFinishedFade = false;
 
@@ -146,9 +137,7 @@ public class AudioManager : MonoBehaviour
 
     public void MenuMusicOn()
     {
-        //soundFunctions.ChangeClipOfAudioSource(mainMusicSource, mainMenuMusic);
         soundFunctions.SetAudioActiveFromSource(menuMusicSource, true);
-        //soundFunctions.SetAudioActiveFromSource(battleMusicSource, false);
 
         menuMusicObjective = 1;
         battleMusicObjective = 0;
@@ -158,7 +147,6 @@ public class AudioManager : MonoBehaviour
 
     public void BattleMusicOn()
     {
-        //soundFunctions.ChangeClipOfAudioSource(menuMusicSource, battleMusic);
         soundFunctions.SetAudioActiveFromSource(battleMusicSource, true);
 
         battleOn = true;
@@ -193,25 +181,6 @@ public class AudioManager : MonoBehaviour
         soundFunctions.PlaySoundFromSource(parry);
     }
 
-    public void ParryOn()
-    {
-        
-        soundFunctions.PlaySoundFromSource(parryOn);
-    }
-
-    // Attack sound depending on level
-    public void Attack(int level, int maxLevel)
-    {
-        if (level >= maxLevel)
-        {
-            soundFunctions.PlaySoundFromSource(heavyAttack);
-        }
-        else
-        {
-            soundFunctions.PlaySoundFromSource(lightAttack);
-        } 
-    }
-
     // Successful attack sound
     public void SuccessfulAttack()
     {
@@ -224,13 +193,5 @@ public class AudioManager : MonoBehaviour
 
         yield return new WaitForSeconds(0f);
         soundFunctions.PlaySoundFromSource(death);
-    }
-
-
-    // Walk sound
-    public void Walk(bool state)
-    {
-        soundFunctions.SetAudioActiveFromSource(walk, true);
-        soundFunctions.SetAudioMuteFromSource(walk, !state);
     }
 }

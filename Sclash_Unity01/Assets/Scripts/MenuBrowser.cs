@@ -7,13 +7,13 @@ using UnityEngine.EventSystems;
 
 public class MenuBrowser : MonoBehaviour
 {
-    [SerializeField] GameObject[] elements;
+    [SerializeField] GameObject[] elements = null;
 
     [SerializeField] int browseIndex;
     int sens = 1;
 
     bool vAxisInUse = false;
-    [SerializeField] bool invert;
+    [SerializeField] bool invert = false;
 
     
 
