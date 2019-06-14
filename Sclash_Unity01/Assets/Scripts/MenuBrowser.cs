@@ -7,19 +7,21 @@ using UnityEngine.EventSystems;
 
 public class MenuBrowser : MonoBehaviour
 {
-    [SerializeField]
-    GameObject[] elements;
+    [SerializeField] GameObject[] elements;
 
-    [SerializeField]
-    int browseIndex;
-
-    bool vAxisInUse = false;
-
-    [SerializeField]
-    bool invert;
-
+    [SerializeField] int browseIndex;
     int sens = 1;
 
+    bool vAxisInUse = false;
+    [SerializeField] bool invert;
+
+    
+
+
+
+
+
+    // BASE FUNCTIONS
     void Awake()
     {
         if (invert)
@@ -32,6 +34,7 @@ public class MenuBrowser : MonoBehaviour
         }
     }
 
+    // Update is called once per graphic frame
     void Update()
     {
 
@@ -100,6 +103,10 @@ public class MenuBrowser : MonoBehaviour
 
     }
 
+
+
+
+    // COLOR
     void ResetColor()
     {
         for (int i = 0; i < elements.Length; i++)

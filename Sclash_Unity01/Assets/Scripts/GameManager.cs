@@ -5,24 +5,22 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    // AUDIO MANAGER
-    [Header("Audio manager")]
+    // MANAGERS
+    [Header("Managers")]
+    // Audio manager
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
 
-
-
-    // MENU MANAGER
+    // Menu manager
     [Header("Menu manager")]
     [SerializeField] string menuManagerName = "GlobalManager";
     MenuManager menuManager = null;
 
-
-
-
-    // CAMERA MANAGER
+    // Camera manager
     [Header("Camera manager")]
     [SerializeField] CameraManager cameraManager = null;
+
+
 
 
 
@@ -279,6 +277,8 @@ public class GameManager : MonoBehaviour
         roundLeaves.gameObject.SetActive(true);
         roundLeaves.Play();
         gameStarted = false;
+        menuManager.pauseMenu.SetActive(false);
+        menuManager.winScreen.SetActive(false);
 
         yield return new WaitForSecondsRealtime(1.5f);
 
@@ -289,7 +289,6 @@ public class GameManager : MonoBehaviour
         cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
         cameraManager.cam.transform.position = cameraManager.cameraBasePos;
         menuManager.mainMenu.SetActive(true);
-        menuManager.pauseMenu.SetActive(false);
     }
 
 

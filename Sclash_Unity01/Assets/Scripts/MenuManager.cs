@@ -25,35 +25,16 @@ public class MenuManager : MonoBehaviour
     [Header("Pause menu")]
     [SerializeField] GameObject
         blurPanel = null;
-    [SerializeField] public GameObject
+    [SerializeField]
+    public GameObject
         pauseMenu = null,
-        mainMenu = null;
+        mainMenu = null,
+        winScreen = null;
     [SerializeField] GameObject
         backButton = null,
         resumeButton = null,
         quitButton = null,
         mainMenuButton = null;
-
-
-
-
-
-    // MENUS ITEMS
-    [Header("Menu items")]
-    [SerializeField] int mainMenuDefaultIndex = 2;
-    [SerializeField] int optionsMenuDefaultIndex = 0;
-    /*
-    int
-        currentMainMenuIndex = 0,
-        currentOptionsMenuIndex = 0;
-        */
-
-
-    [SerializeField] MenuElement[]
-        mainMenuItems = null,
-        optionsMenuItems = null;
-
-    //[SerializeField] MenuElement[] currentMenu = null;
 
 
 
@@ -94,42 +75,8 @@ public class MenuManager : MonoBehaviour
                 TriggerPause(!gameManager.paused);
             }
         }
-
-
-        MenuManage();
     }
 
-
-
-
-
-
-    // MENU MANAGE
-    // Manage menu navigation
-    void MenuManage()
-    {
-        if (mainMenu.activeSelf)
-        {
-        }
-
-
-        if (pauseMenu.activeSelf)
-        {
-
-        }
-    }
-
-    // Select default main menu element
-    void DefaultMain()
-    {
-        mainMenuItems[mainMenuDefaultIndex].Select(true);
-    }
-
-    // Select default options menu element
-    void DefaultOptions()
-    {
-        optionsMenuItems[optionsMenuDefaultIndex].Select(true);
-    }
 
 
 
