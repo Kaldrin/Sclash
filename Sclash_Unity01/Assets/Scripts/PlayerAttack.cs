@@ -38,8 +38,10 @@ public class PlayerAttack : MonoBehaviour
 
     // ATTACK
     [Header("Attack")]
-    [SerializeField] public float lightAttackRange = 1.5f;
-    [SerializeField] public float heavyAttackRange = 2.5f;
+    [SerializeField]
+    public float
+        lightAttackRange = 1.5f,
+        heavyAttackRange = 2.5f;
     [HideInInspector] public float actualAttackRange = 0;
 
     [SerializeField]

@@ -2947,7 +2947,7 @@ MonoBehaviour:
   isDashing: 0
   dashSpeed: 3.5
   forwardDashDistance: 3
-  backwardsDashDistance: 3
+  backwardsDashDistance: 2
   dashAllowanceDuration: 0.3
   forwardAttackDashDistance: 3
   backwardsAttackDashDistance: 1.5
@@ -3003,7 +3003,6 @@ MonoBehaviour:
   heavyAttackSwordTrailWidth: 2
   lightAttackColor: {r: 1, g: 0.9635534, b: 0, a: 1}
   heavyAttackColor: {r: 0.9056604, g: 0, b: 0.1197052, a: 1}
-  untouchableFrameOpacity: 0.4
 --- !u!95 &6065618468900711097
 Animator:
   serializedVersion: 3

@@ -27,13 +27,12 @@ public class MenuManager : MonoBehaviour
         blurPanel = null;
     [SerializeField] public GameObject
         pauseMenu = null,
-        mainMenu = null,
-        winScreen = null;
+        mainMenu = null;
     [SerializeField] GameObject
-        optionToMainMenuBackButton = null,
-        resumeFromPauseButton = null,
-        quitGameFromPauseButton = null,
-        fromPauseMainMenuButton = null;
+        backButton = null,
+        resumeButton = null,
+        quitButton = null,
+        mainMenuButton = null;
 
 
 
@@ -211,13 +210,12 @@ public class MenuManager : MonoBehaviour
     {
         blurPanel.SetActive(state);
         pauseMenu.SetActive(state);
-        optionToMainMenuBackButton.SetActive(!state);
-        resumeFromPauseButton.SetActive(state);
-        quitGameFromPauseButton.SetActive(state);
-        fromPauseMainMenuButton.SetActive(state);
+        backButton.SetActive(!state);
+        resumeButton.SetActive(state);
+        quitButton.SetActive(state);
+        mainMenuButton.SetActive(state);
 
         gameManager.paused = state;
-        gameManager.scoreText.gameObject.SetActive(state);
 
         SaveParameters();
     }
