@@ -18,7 +18,7 @@ public abstract class WwiseObjectReference : UnityEngine.ScriptableObject
 
 	[AkShowOnly]
 	[UnityEngine.SerializeField]
-	private string guid;
+	private string guid = null;
 	#endregion
 
 	#region Properties

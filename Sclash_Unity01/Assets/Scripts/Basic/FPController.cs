@@ -5,7 +5,7 @@ using UnityEngine;
 public class FPController : MonoBehaviour {
 
     //Camera controls
-    public new GameObject camera;
+    public new GameObject camera = null;
     public Vector2 cameraControlSpeed = new Vector2(1, 1);
 
     //Player base controls

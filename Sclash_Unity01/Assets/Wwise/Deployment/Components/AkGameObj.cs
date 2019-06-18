@@ -24,7 +24,7 @@ public class AkGameObj : UnityEngine.MonoBehaviour
 	public bool isEnvironmentAware = true;
 
 	/// Maintains and persists the Static setting of the gameobject, which is available only in the editor.
-	[UnityEngine.SerializeField] private bool isStaticObject;
+	[UnityEngine.SerializeField] private bool isStaticObject = false;
 
 	/// Cache the bounds to avoid calls to GetComponent()
 	private UnityEngine.Collider m_Collider;

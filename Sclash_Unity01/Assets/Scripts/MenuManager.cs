@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     // SAVE PARAMETERS
-    [Header("Save parameters")]
-    [SerializeField] MenuParameters menuParametersSave = null;
+    [Header("Save parameters")] [SerializeField] MenuParameters menuParametersSave = null;
     [SerializeField] SliderToVolume
         masterVolume = null,
         musicVolume = null,

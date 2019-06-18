@@ -5,6 +5,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     // SOUND FUNCTIONS
+    [Header("Sound functions")]
     [SerializeField] SoundFunctions soundFunctions = null;
 
 
@@ -13,9 +14,9 @@ public class AudioManager : MonoBehaviour
 
     // FX
     // Audio sources
-    [SerializeField]
-    AudioSource
-        clash = null,
+    [Header("FX")]
+    [SerializeField] AudioSource clash = null;
+    [SerializeField] AudioSource
         parry = null,
         successfulAttack = null,
         death = null;
@@ -24,10 +25,15 @@ public class AudioManager : MonoBehaviour
 
 
     // MUSIC
-    [SerializeField] AudioSource
-        menuMusicSource = null,
-        battleMusicSource = null;
-    float menuMusicObjective = 1;
+    [Header("SMusic")]
+    [SerializeField] AudioSource menuMusicSource = null;
+    [SerializeField] AudioSource battleMusicSource = null;
+    [SerializeField]
+    float
+        menuMusicMaxVolume = 0.7f,
+        battleMusicMaxVolume = 1f;
+
+    float menuMusicObjective = 0.7f;
     float battleMusicObjective = 0;
     bool battleOn = false;
     // bool fadeMusic = false;
@@ -39,17 +45,19 @@ public class AudioManager : MonoBehaviour
 
 
     // VOICE
+    [Header("Voice")]
     [SerializeField] AudioSource deathVoice;
-    [SerializeField] AudioSource attackVoice;
     [SerializeField] AudioSource introVoice;
 
 
 
     // PLAYERS
-    GameObject[] players;
-    float distanceBetweenPlayers = 0;
+    [Header("Players")]
     [SerializeField] Vector2 battleMusicVolumeDistanceBounds = new Vector2(5, 20);
     [SerializeField] Vector2 battleMusicVolumeBounds = new Vector2(1, 0);
+
+    GameObject[] players;
+    float distanceBetweenPlayers = 0;
 
 
 
@@ -62,6 +70,7 @@ public class AudioManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        menuMusicObjective = menuMusicMaxVolume;
         FindPlayers();
     }
 
@@ -108,6 +117,7 @@ public class AudioManager : MonoBehaviour
             menuMusicSource.volume = menuMusicObjective;
         }
 
+
         // Battle music
         if (battleMusicSource.volume > battleMusicObjective)
         {
@@ -139,7 +149,7 @@ public class AudioManager : MonoBehaviour
     {
         soundFunctions.SetAudioActiveFromSource(menuMusicSource, true);
 
-        menuMusicObjective = 1;
+        menuMusicObjective = menuMusicMaxVolume;
         battleMusicObjective = 0;
 
         ActivateMusicFade();
@@ -151,7 +161,7 @@ public class AudioManager : MonoBehaviour
 
         battleOn = true;
         menuMusicObjective = 0;
-        battleMusicObjective = 1;
+        battleMusicObjective = battleMusicMaxVolume;
 
         ActivateMusicFade();
     }

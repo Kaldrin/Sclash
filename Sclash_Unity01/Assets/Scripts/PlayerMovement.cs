@@ -4,18 +4,23 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    // GAME MANAGER
-    [Header("Game manager")]
+    // MANAGERS
+    [Header("Managers")]
+    // Game manager
     [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager;
+    GameManager gameManager = null;
 
 
 
-
-    // AUDIO MANAGER
+    // Audio manager
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
+
+
+
+    // Input manager
+    [SerializeField] string inputManagerName = "GlobalManager";
+    InputManager inputManager = null;
 
 
 
@@ -80,9 +85,12 @@ public class PlayerMovement : MonoBehaviour
         // Get game manager to use in the script
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
 
-
         // Get the audio manager to use in the script
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
+
+        // Get the input manager
+        inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
+
 
 
         // Get player's components to use in the script
