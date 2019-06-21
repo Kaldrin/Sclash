@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject player = null;
     [HideInInspector] public List<GameObject> playersList = new List<GameObject>();
     [SerializeField] Color[] playersColors = null;
+    [SerializeField] string[] playerNames = {"Red samuraï", "Blue samuraï"};
 
 
 
@@ -369,6 +371,8 @@ public class GameManager : MonoBehaviour
 
             gameStarted = false;
             menuManager.winMessage.SetActive(true);
+            menuManager.winName.text = playerNames[playerNum - 1];
+            menuManager.winName.color = playersColors[playerNum - 1];
 
             for (int i = 0; i < playersList.Count; i++)
             {

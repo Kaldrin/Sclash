@@ -51,6 +51,7 @@ public class PlayerStats : MonoBehaviour
     //STAMINA
     [Header("Stamina")]
     [SerializeField] public Slider staminaSlider = null;
+    List<Slider> staminaSliders = new List<Slider>();
 
     [SerializeField] public float staminaCostForMoves = 1;
     [SerializeField] float
@@ -59,10 +60,13 @@ public class PlayerStats : MonoBehaviour
         staminaGainOverTimeMultiplier = 0.1f,
         idleStaminaGainOverTimeMultiplier = 0.5f,
         backWalkingStaminaGainOverTime = 0.5f;
-    [HideInInspector] public float stamina = 0;  
-    float currentTimeBeforeStaminaRegen = 0;
+    [HideInInspector] public float stamina = 0;
+    float
+        currentTimeBeforeStaminaRegen = 0,
+        staminaBarsOpacity = 1;
 
-    bool canRegenStamina = true;
+    bool canRegenStamina = true,
+        staminaFull = false;
 
 
 
@@ -106,11 +110,12 @@ public class PlayerStats : MonoBehaviour
 
 
         // Set the stamina slider's max value to the stamina max value
-        staminaSlider.maxValue = maxStamina;
+        //staminaSlider.maxValue = maxStamina;
 
-
+        SetUpStaminaBars();
 
         // Begin by reseting all the player's values and variable to start fresh
+
         ResetValues();
     }
     
@@ -119,6 +124,11 @@ public class PlayerStats : MonoBehaviour
     {
         if (!gameManager.paused)
             StaminaRegen();
+
+        if (gameManager.gameStarted && !playerAttack.enemyDead)
+            StaminaBarsOpacity(staminaBarsOpacity);
+        else
+            StaminaBarsOpacity(0);
     }
 
     void LateUpdate()
@@ -196,7 +206,49 @@ public class PlayerStats : MonoBehaviour
     // Update stamina slider value
     void UpdateStaminaSlider()
     {
-        staminaSlider.value = stamina;
+        staminaSliders[0].value = Mathf.Clamp(stamina, 0, 1);
+
+
+        for (int i = 1; i < staminaSliders.Count; i++)
+        {
+            staminaSliders[i].value = Mathf.Clamp(stamina, i, i +1) - i;
+        }
+        
+        if (stamina >= maxStamina)
+        {
+            staminaFull = true;
+            if (staminaBarsOpacity > 0)
+                staminaBarsOpacity -= 0.01f;
+        }
+        else
+        {
+            staminaFull = false;
+            staminaBarsOpacity = 1;
+        }
+    }
+
+    // Set up stamina bar system
+    void SetUpStaminaBars()
+    {
+        staminaSliders.Add(staminaSlider);
+
+        for (int i = 0; i < maxStamina - 1; i++)
+        {
+            staminaSliders.Add(Instantiate(staminaSlider.gameObject, staminaSlider.transform.parent).GetComponent<Slider>());
+        }
+    }
+
+    // Manages stamina bars opacity
+    void StaminaBarsOpacity(float opacity)
+    {
+        for (int i = 0; i < staminaSliders.Count; i++)
+        {
+            Color
+                fillColor = staminaSliders[i].fillRect.GetComponent<Image>().color,
+                backgroundColor = staminaSliders[i].transform.GetChild(0).GetComponent<Image>().color;
+            staminaSliders[i].fillRect.GetComponent<Image>().color = new Color(fillColor.r, fillColor.g, fillColor.b, opacity);
+            staminaSliders[i].transform.GetChild(0).GetComponent<Image>().color = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, opacity);
+        }
     }
 
 

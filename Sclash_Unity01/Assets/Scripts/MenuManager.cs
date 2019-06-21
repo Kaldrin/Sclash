@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class MenuManager : MonoBehaviour
     // WIN
     [Header("Win menu")] [SerializeField] GameObject backToWinScreenButton = null;
     [SerializeField] public GameObject winMessage = null;
+    [SerializeField] public TextMeshProUGUI winName = null;
 
 
 
