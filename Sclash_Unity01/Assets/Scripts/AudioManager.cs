@@ -24,23 +24,32 @@ public class AudioManager : MonoBehaviour
 
 
 
-    // MUSIC
-    [Header("SMusic")]
-    [SerializeField] AudioSource menuMusicSource = null;
-    [SerializeField] AudioSource battleMusicSource = null;
-    [SerializeField]
-    float
-        menuMusicMaxVolume = 0.7f,
-        battleMusicMaxVolume = 1f;
 
-    float menuMusicObjective = 0.7f;
-    float battleMusicObjective = 0;
-    bool battleOn = false;
-    // bool fadeMusic = false;
-    bool menuMusicFinishedFade = false;
-    bool battleMusicFinishedFade = false;
+
+    // MUSIC
+    [Header("Music")]
+    [SerializeField] AudioSource menuMusicSource = null;
+    [SerializeField] AudioSource
+        battleMusicSource = null,
+        windSource = null;
+    [SerializeField] float
+        menuMusicMaxVolume = 0.7f,
+        battleMusicMaxVolume = 1f,
+        windMaxVolume = 1f;
+    float
+        menuMusicObjective = 0.7f,
+        battleMusicObjective = 0,
+        windObjective = 0;
+    bool
+        battleOn = false,
+        menuMusicFinishedFade = false,
+        battleMusicFinishedFade = false,
+        windFinishedFade = false;
     [SerializeField] float musicFadeSpeed = 0.001f;
     float volumeComparisonTolerance = 0.1f;
+
+
+
 
 
 
@@ -51,6 +60,9 @@ public class AudioManager : MonoBehaviour
 
 
 
+
+
+
     // PLAYERS
     [Header("Players")]
     [SerializeField] Vector2 battleMusicVolumeDistanceBounds = new Vector2(5, 20);
@@ -58,6 +70,9 @@ public class AudioManager : MonoBehaviour
 
     GameObject[] players;
     float distanceBetweenPlayers = 0;
+
+
+
 
 
 
@@ -93,13 +108,12 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    // MUSIC
-    void ActivateMusicFade()
-    {
-        menuMusicFinishedFade = false;
-        battleMusicFinishedFade = false;
-    }
-    
+
+
+
+
+
+    // MUSIC   
     void FadeMusic()
     {
         // Menu music
@@ -134,27 +148,48 @@ public class AudioManager : MonoBehaviour
         }
 
 
+        // Wind
+        if (windSource.volume > windObjective)
+        {
+            windSource.volume += -musicFadeSpeed;
+        }
+        else if (windSource.volume < windObjective)
+        {
+            windSource.volume += musicFadeSpeed;
+        }
+        else if (Mathf.Abs(windSource.volume - windObjective) < volumeComparisonTolerance)
+        {
+            windFinishedFade = true;
+            windSource.volume = battleMusicObjective;
+        }
 
-        if (menuMusicFinishedFade && battleMusicFinishedFade)
+
+        if (menuMusicFinishedFade && battleMusicFinishedFade && windFinishedFade)
         {
             battleMusicFinishedFade = false;
             menuMusicFinishedFade = false;
+            windFinishedFade = false;
 
             battleMusicSource.volume = battleMusicObjective;
             menuMusicSource.volume = menuMusicObjective;
+            windSource.volume = windObjective;
         }
     }
 
+    // Activate menu music
     public void MenuMusicOn()
     {
         soundFunctions.SetAudioActiveFromSource(menuMusicSource, true);
 
+        battleOn = false;
         menuMusicObjective = menuMusicMaxVolume;
         battleMusicObjective = 0;
+        windObjective = 0;
 
-        ActivateMusicFade();
+        //ActivateMusicFade();
     }  
 
+    // Activate battle music
     public void BattleMusicOn()
     {
         soundFunctions.SetAudioActiveFromSource(battleMusicSource, true);
@@ -162,10 +197,25 @@ public class AudioManager : MonoBehaviour
         battleOn = true;
         menuMusicObjective = 0;
         battleMusicObjective = battleMusicMaxVolume;
+        windObjective = 0;
 
-        ActivateMusicFade();
+        //ActivateMusicFade();
     }
 
+    // Activate wind
+    public void WindOn()
+    {
+        soundFunctions.SetAudioActiveFromSource(windSource, true);
+
+        battleOn = false;
+        menuMusicObjective = 0;
+        battleMusicObjective = 0;
+        windObjective = windMaxVolume;
+
+        //ActivateMusicFade();
+    }
+
+    // Adjust volume depending on distance between players
     void AdjustMusicVolumeOnDistance()
     {
         distanceBetweenPlayers = Mathf.Abs(players[0].transform.position.x - players[1].transform.position.x);
@@ -180,6 +230,7 @@ public class AudioManager : MonoBehaviour
 
 
     // FX
+    // Clash sound
     public void Clash()
     {
         soundFunctions.PlaySoundFromSource(clash);

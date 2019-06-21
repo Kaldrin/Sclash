@@ -5,7 +5,7 @@ using UnityEngine;
 public class FPController : MonoBehaviour {
 
     //Camera controls
-    public new GameObject camera = null;
+    public GameObject cam = null;
     public Vector2 cameraControlSpeed = new Vector2(1, 1);
 
     //Player base controls
@@ -52,11 +52,11 @@ public class FPController : MonoBehaviour {
     {
         float
             cameraXMovement = - Input.GetAxis("Mouse Y") * cameraControlSpeed.y,
-            cameraXNextPosition = cameraXMovement + camera.transform.localEulerAngles.x;
+            cameraXNextPosition = cameraXMovement + cam.transform.localEulerAngles.x;
 
 
         if (cameraXNextPosition < 90 || cameraXNextPosition > 270)
-            camera.transform.Rotate(cameraXMovement, 0, 0);
+            cam.transform.Rotate(cameraXMovement, 0, 0);
 
         transform.Rotate(0, Input.GetAxis("Mouse X") * cameraControlSpeed.x, 0);
     }
@@ -110,7 +110,7 @@ public class FPController : MonoBehaviour {
 
     void CreateStaminaBar()
     {
-        Transform camTransform = camera.transform;
+        Transform camTransform = cam.transform;
         GameObject staminaBar;
 
         staminaBar = Instantiate(new GameObject("staminaBar"), camTransform.position + new Vector3(0, 5, 0), camTransform.rotation, camTransform);

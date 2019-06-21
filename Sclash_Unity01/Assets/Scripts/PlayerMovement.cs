@@ -177,18 +177,16 @@ public class PlayerMovement : MonoBehaviour
     void ManageMovements()
     {
         // The player move if they can in their state
-        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused && gameManager.gameStarted)
+        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused && gameManager.gameStarted && playerAttack.hasDrawn)
         {
             if (rb.simulated == false)
                 rb.simulated = true;
-            rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
+            //rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
+            rb.velocity = new Vector2(inputManager.playerInputs[playerStats.playerNum - 1].horizontal * movementsMultiplier, rb.velocity.y);
         }
         // If they are dead they can't move and are then stuck in place
         else if (playerStats.dead)
         {
-            // rb.velocity = new Vector2(0, 0);
-            // transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            // rb.gravityScale = 0;
             rb.simulated = false;
         }
         else if (gameManager.paused || !gameManager.gameStarted)
@@ -196,19 +194,6 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(0, 0);
             rb.simulated = false;
         }
-
-
-        /*
-        // WALK SOUND
-        if (rb.velocity.x > minSpeedForWalkAnim)
-        {
-            audioManager.Walk(true);
-        }
-        else
-        {
-            audioManager.Walk(false);
-        }
-        */
     }
 
 

@@ -163,7 +163,17 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
+    // DRAW ANIMATION
+    // Trigger draw animation
+    public void TriggerDraw()
+    {
+        animator.SetTrigger("Draw");
+    }
 
+    public void TriggerSneath()
+    {
+        animator.SetTrigger("Sneath");
+    }
 
 
 

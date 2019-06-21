@@ -25,6 +25,13 @@ public class GameManager : MonoBehaviour
 
 
 
+    // START
+    [Header("Start")]
+    [SerializeField] float timeBeforeBattleCamera = 2f;
+
+
+
+
 
     // MENU
     [Header("Menu")]
@@ -94,7 +101,8 @@ public class GameManager : MonoBehaviour
 
 
     // WIN
-    [Header("Win")] [SerializeField] float timeBeforeWinScreenAppears = 2f;
+    [Header("Win")]
+    [SerializeField] float timeBeforeWinScreenAppears = 2f;
 
 
 
@@ -158,10 +166,6 @@ public class GameManager : MonoBehaviour
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
-        /*
-        yield return new WaitForSeconds(2);
-        Play();
-        */
     }
 
     // Begins the StartGame coroutine
@@ -176,11 +180,10 @@ public class GameManager : MonoBehaviour
         // SOUND
         audioManager.FindPlayers();
         yield return new WaitForSeconds(0.1f);
-        audioManager.BattleMusicOn();
-
-
-        gameStarted = true;
+        audioManager.WindOn();
+        
         paused = false;
+        gameStarted = true;
 
         mainMenu.SetActive(false);
         blurPanel.SetActive(false);
@@ -188,8 +191,33 @@ public class GameManager : MonoBehaviour
         cameraManager.cameraState = "Battle";
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(timeBeforeBattleCamera);
         cameraManager.actualSmoothMovementsMultiplier = cameraManager.battleSmoothMovementsMultiplier;
+    }
+
+    public void DrawSabers()
+    {
+        StartCoroutine(DrawSabersCoroutine());
+    }
+
+    IEnumerator DrawSabersCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(1.5f);
+
+        bool allPlayersHaveDrawn = true;
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            if (!playersList[i].GetComponent<PlayerAttack>().hasDrawn)
+                allPlayersHaveDrawn = false;
+        }
+
+
+        if (allPlayersHaveDrawn)
+        {
+            audioManager.BattleMusicOn();
+            Debug.Log("Battle music");
+        }
     }
 
     // Spawn the players
@@ -292,7 +320,14 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(1.5f);
 
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
+        }
+
         cameraManager.cameraState = "Inactive";
+        cameraManager.actualSmoothMovementsMultiplier = cameraManager.cinematicSmoothMovementsMultiplier;
         cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
         cameraManager.cam.transform.position = cameraManager.cameraBasePos;
 
@@ -321,16 +356,26 @@ public class GameManager : MonoBehaviour
     // Update score
     IEnumerator Score(int playerNum)
     {
-        yield return new WaitForSecondsRealtime(0.5f);
+        
         score[playerNum - 1] += 1;
+       
+        yield return new WaitForSecondsRealtime(0f);
         scoreText.text = ScoreBuilder();
 
         if (score[playerNum - 1] >= scoreToWin)
         {
+            audioManager.WindOn();
             yield return new WaitForSecondsRealtime(2f);
 
             gameStarted = false;
             menuManager.winMessage.SetActive(true);
+
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
+            }
+
+            playersList[playerNum - 1].GetComponent<PlayerAnimations>().TriggerSneath();
 
             yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
 
@@ -381,14 +426,14 @@ public class GameManager : MonoBehaviour
         actualTimeScaleUpdateSmoothness = fadeSpeed;
         timeScaleObjective = slowMoTimeScale;
         cameraManager.cameraState = "Event";
-        cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
+        //cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
 
         yield return new WaitForSecondsRealtime(slowMoDuration);
 
         actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
         timeScaleObjective = baseTimeScale;
         cameraManager.cameraState = "Battle";
-        cameraManager.actualZoomSpeed = cameraManager.cinematicZoomSpeed;
+        //cameraManager.actualZoomSpeed = cameraManager.cinematicZoomSpeed;
 
         yield return new WaitForSecondsRealtime(0.5f);
 

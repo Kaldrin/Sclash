@@ -133,7 +133,7 @@ public class CameraManager : MonoBehaviour
             else if (cameraState == "Battle")
             {
                 givenDistanceBetweenPlayers = distanceBetweenPlayers;
-
+                actualZoomSpeed = battleZoomSpeed;
 
                 MoveCameraWithPlayers();
                 ZoomCameraWithPlayers();
@@ -174,10 +174,12 @@ public class CameraManager : MonoBehaviour
             }
 
             tempPos.x = tempPos.x / players.Length;
+            tempPos.y = players[0].transform.position.y;
         }
         else if (players.Length == 1)
         {
             tempPos.x = players[0].transform.position.x;
+            tempPos.y = players[0].transform.position.y;
         }
 
 

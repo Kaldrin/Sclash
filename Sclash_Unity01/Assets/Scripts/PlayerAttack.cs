@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    // AUDIO MANAGER
-    [Header("Audio manager")]
+    // MANAGERS
+    [Header("Managers")]
+    // Audio manager
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
-
-
-
-
-    // GAME MANAGER
+    // Game manager
     [Header("Game manager")]
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
 
+    // Input manager
+    [SerializeField] string inputManagerName = "GlobalManager";
+    InputManager inputManager = null;
 
 
 
@@ -55,9 +55,8 @@ public class PlayerAttack : MonoBehaviour
 
     // ATTACK RECOVERY
     [Header("Attack recovery")]
-    [SerializeField] float
-        minRecoveryDuration = 0.4f,
-        maxRecoveryDuration = 1;
+    [SerializeField] float minRecoveryDuration = 0.4f;
+    [SerializeField] float maxRecoveryDuration = 1;
     float
         attackRecoveryStartTime = 0,
         attackRecoveryDuration = 0;
@@ -95,6 +94,11 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    // DRAW
+    [Header("Draw")]
+    [SerializeField] bool drawOn = false;
+    [HideInInspector] public bool hasDrawn;
+
 
 
 
@@ -125,7 +129,7 @@ public class PlayerAttack : MonoBehaviour
         kickRange = 1.3f,
         kickDuration = 0.2f;
 
-    int activeKickInput = 0;
+    //int activeKickInput = 0;
 
 
 
@@ -223,7 +227,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] bool cheatCodes = false;
     [SerializeField] KeyCode
         clashCheatKey = KeyCode.Alpha1,
-        deathCheatKey = KeyCode.Alpha2;
+        deathCheatKey = KeyCode.Alpha2,
+        drawCheatKey = KeyCode.Alpha3;
 
 
 
@@ -244,9 +249,11 @@ public class PlayerAttack : MonoBehaviour
         // Get audio manager to use in the script
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
-
         // Get game manager to use in the script
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+
+        // Get input manager
+        inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
 
 
         // Get player's components to use in the script
@@ -256,13 +263,14 @@ public class PlayerAttack : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
     }
 
+    // Update is called once per graphic frame
     void Update()
     {
         // The player can only use actions when the game has started
         if (gameManager.gameStarted && !gameManager.paused)
         {
             // The player cna only use actions if they are not dead
-            if (!playerStats.dead)
+            if (!playerStats.dead && !enemyDead && hasDrawn)
             {
                 // KICK
                 ManageKick();
@@ -274,13 +282,19 @@ public class PlayerAttack : MonoBehaviour
                     if (!clashed)
                         ManageCharge();
 
+
                     // DASH INPUTS
                     if (!clashed)
                         ManageDash();
 
+
                     // PARRY INPUT
                     ManageParry();
                 }
+            }
+            else if (!hasDrawn && gameManager.gameStarted && !enemyDead)
+            {
+                ManageDraw();
             }
 
 
@@ -294,6 +308,7 @@ public class PlayerAttack : MonoBehaviour
             Cheats();
     }
 
+    // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
         // Apply damages if the current attack animation has entered active frame, thus activating the bool in the animation
@@ -331,6 +346,10 @@ public class PlayerAttack : MonoBehaviour
         {
             playerStats.TakeDamage(gameObject, 1);
         }
+        if (Input.GetKeyDown(drawCheatKey))
+        {
+            hasDrawn = true;
+        }
     }
 
 
@@ -367,6 +386,35 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    // DRAW
+    void ManageDraw()
+    {
+        
+
+        if (drawOn)
+        {
+            drawOn = false;
+            hasDrawn = true;
+        }
+        if (!hasDrawn)
+        {
+            if (Input.GetButtonDown("Fire" + playerStats.playerNum))
+            {
+                StartCoroutine(Draw());
+            }
+        }
+    }
+
+    IEnumerator Draw()
+    {
+        playerAnimations.TriggerDraw();
+        gameManager.DrawSabers();
+        yield return new WaitForSecondsRealtime(1f);
+        hasDrawn = true;
+    }
+
+
+
 
 
 
@@ -379,7 +427,7 @@ public class PlayerAttack : MonoBehaviour
             currentChargeFramesPressed++;
 
             //Debug.Log(isAttacking);
-            if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying)
+            if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying && !clashed)
             {
                 charging = true;
                 canCharge = false;
@@ -573,7 +621,7 @@ public class PlayerAttack : MonoBehaviour
             currentParryFramesPressed++;
 
 
-            if (!parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering && canParry && !kicking && !kicked)
+            if (!parrying && gameManager.gameStarted && !isAttacking && !isAttackRecovering && canParry && !kicking && !kicked && !clashed)
             {
                 Parry();
                 currentParryFramesPressed = 0;
@@ -624,21 +672,20 @@ public class PlayerAttack : MonoBehaviour
     // Detect kick inputs
     void ManageKick()
     {
-        /*
-        if (!Input.GetButton("Kick" + playerStats.playerNum) && (!Input.GetButton("Parry" + playerStats.playerNum) && !Input.GetButton("Fire" + playerStats.playerNum)))
+        if (!inputManager.playerInputs[playerStats.playerNum - 1].kick)
         {
             canKick = true;
         }
-        */
-
-
         
-        if (Input.GetButton("Kick" + playerStats.playerNum) || (Input.GetButton("Parry" + playerStats.playerNum) && Input.GetButton("Fire" + playerStats.playerNum)))
+   
+        if (inputManager.playerInputs[playerStats.playerNum - 1].kickDown)
         {
-            if (canKick && !kicked && !isAttacking && !activeFrame && !kicking && !parrying && activeKickInput >= 3)
+            if (canKick && !kicked && !isAttacking && !activeFrame && !kicking && !parrying && !clashed)
+            {
+                Debug.Log("Kick");
                 Kick();
-        }
-        
+            }
+        }     
     }
 
     // Start the kick coroutine
@@ -654,7 +701,7 @@ public class PlayerAttack : MonoBehaviour
         parrying = false;
         isAttacking = false;
 
-        activeKickInput = 0;
+        //activeKickInput = 0;
         playerAnimations.TriggerKick(true);
         
         yield return new WaitForSeconds(kickDuration);
