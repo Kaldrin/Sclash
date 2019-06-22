@@ -49,10 +49,6 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public bool isAttacking = false;
 
 
-
-
-
-
     // ATTACK RECOVERY
     [Header("Attack recovery")]
     [SerializeField] float minRecoveryDuration = 0.4f;
@@ -96,7 +92,11 @@ public class PlayerAttack : MonoBehaviour
 
     // DRAW
     [Header("Draw")]
+    [SerializeField] public float drawDuration = 2f;
+
     [SerializeField] bool drawOn = false;
+    bool isDrawing = false;
+
     [HideInInspector] public bool hasDrawn;
 
 
@@ -129,7 +129,19 @@ public class PlayerAttack : MonoBehaviour
         kickRange = 1.3f,
         kickDuration = 0.2f;
 
-    //int activeKickInput = 0;
+
+    // KICK RECOVERY
+    [Header("Kick recovery")]
+    [SerializeField] public bool kickRecovering = false;
+    /*
+    [SerializeField] float kickRecoveryDuration = 0.4f;
+    float
+        attackRecoveryStartTime = 0,
+        attackRecoveryDuration = 0;
+
+    [SerializeField] public bool attackRecoveryStart = false;
+    [HideInInspector] public bool isAttackRecovering = false;
+    */
 
 
 
@@ -273,23 +285,25 @@ public class PlayerAttack : MonoBehaviour
             if (!playerStats.dead && !enemyDead && hasDrawn)
             {
                 // KICK
-                ManageKick();
+                if (!kickRecovering)
+                    ManageKick();
 
 
                 if (playerStats.stamina >= playerStats.staminaCostForMoves)
                 {
                     // CHARGE & ATTAQUE
-                    if (!clashed)
+                    if (!clashed && !kickRecovering)
                         ManageCharge();
 
 
                     // DASH INPUTS
-                    if (!clashed)
+                    if (!clashed && !kickRecovering)
                         ManageDash();
 
 
                     // PARRY INPUT
-                    ManageParry();
+                    if (!kickRecovering)
+                        ManageParry();
                 }
             }
             else if (!hasDrawn && gameManager.gameStarted && !enemyDead)
@@ -387,30 +401,35 @@ public class PlayerAttack : MonoBehaviour
 
 
     // DRAW
+    // Detects draw input
     void ManageDraw()
     {
-        
-
         if (drawOn)
         {
             drawOn = false;
             hasDrawn = true;
         }
+
+
         if (!hasDrawn)
         {
             if (Input.GetButtonDown("Fire" + playerStats.playerNum))
             {
-                StartCoroutine(Draw());
+                if (!isDrawing)
+                    StartCoroutine(Draw());
             }
         }
     }
 
+    // Trigger draw
     IEnumerator Draw()
     {
+        isDrawing = true;
         playerAnimations.TriggerDraw();
-        gameManager.DrawSabers();
-        yield return new WaitForSecondsRealtime(1f);
+        gameManager.DrawSabers(playerStats.playerNum);
+        yield return new WaitForSecondsRealtime(drawDuration);
         hasDrawn = true;
+        isDrawing = false;
     }
 
 
@@ -427,7 +446,7 @@ public class PlayerAttack : MonoBehaviour
             currentChargeFramesPressed++;
 
             //Debug.Log(isAttacking);
-            if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying && !clashed)
+            if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying && !clashed && !isDrawing)
             {
                 charging = true;
                 canCharge = false;
@@ -682,7 +701,6 @@ public class PlayerAttack : MonoBehaviour
         {
             if (canKick && !kicked && !isAttacking && !activeFrame && !kicking && !parrying && !clashed)
             {
-                Debug.Log("Kick");
                 Kick();
             }
         }     

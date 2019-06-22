@@ -195,16 +195,17 @@ public class GameManager : MonoBehaviour
         cameraManager.FindPlayers();
         yield return new WaitForSeconds(timeBeforeBattleCamera);
         cameraManager.actualSmoothMovementsMultiplier = cameraManager.battleSmoothMovementsMultiplier;
+        cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
     }
 
-    public void DrawSabers()
+    public void DrawSabers(int playerNum)
     {
-        StartCoroutine(DrawSabersCoroutine());
+        StartCoroutine(DrawSabersCoroutine(playerNum));
     }
 
-    IEnumerator DrawSabersCoroutine()
+    IEnumerator DrawSabersCoroutine(int playerNum)
     {
-        yield return new WaitForSecondsRealtime(1.5f);
+        yield return new WaitForSecondsRealtime(playersList[playerNum - 1].GetComponent<PlayerAttack>().drawDuration + 0.5f);
 
         bool allPlayersHaveDrawn = true;
 
