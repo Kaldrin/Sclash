@@ -308,11 +308,11 @@ MonoBehaviour:
   play: 0
   audioSource: {fileID: 2271044709782225318}
   soundList:
-  - {fileID: 8300000, guid: f2b4a5148ba8eff4eab194ed5f1e8ec5, type: 3}
-  - {fileID: 8300000, guid: 34aa288c7a780c64ea5daa906a9040fb, type: 3}
-  - {fileID: 8300000, guid: bff376290cec1354a819943007c26b0a, type: 3}
-  - {fileID: 8300000, guid: 606784bc81aa5a04ba0590776416fcdf, type: 3}
-  - {fileID: 8300000, guid: 39b0d7b5d60775444a7922d826e7b16e, type: 3}
+  - {fileID: 8300000, guid: 27da643ab100e0840b9b547aaab1e8ce, type: 3}
+  - {fileID: 8300000, guid: 0c89684225d36044eb27b4c1c0f1f54b, type: 3}
+  - {fileID: 8300000, guid: 9aae1e2ff5f1394438c1dd784ca19e73, type: 3}
+  - {fileID: 8300000, guid: b1fcbc0a37b6df447be3b4a9d51df3a9, type: 3}
+  - {fileID: 8300000, guid: c923471b8f85e4a489ddb4633ffdcee5, type: 3}
 --- !u!1 &305320824323555533
 GameObject:
   m_ObjectHideFlags: 0
@@ -1573,7 +1573,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -1262927834741442465, guid: 275943a6e37692942bb40ae18900f60a,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 913a337a3b944034188f86d5dd05354b, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -3865,6 +3865,7 @@ MonoBehaviour:
   maxHoldDurationAtMaxCharge: 2
   charging: 0
   canCharge: 1
+  drawDuration: 2
   drawOn: 0
   hasDrawn: 0
   enemyDead: 0
@@ -3872,7 +3873,7 @@ MonoBehaviour:
   kicking: 0
   canKick: 1
   kickRange: 0.8
-  kickDuration: 0.3
+  kickDuration: 0.6
   kickKnockbackDistance: 1
   kickedStaminaLoss: 1
   kicked: 0

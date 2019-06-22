@@ -129,7 +129,7 @@ public class PlayerAttack : MonoBehaviour
         kickRange = 1.3f,
         kickDuration = 0.2f;
 
-
+    /*
     // KICK RECOVERY
     [Header("Kick recovery")]
     [SerializeField] public bool kickRecovering = false;
@@ -204,10 +204,10 @@ public class PlayerAttack : MonoBehaviour
         // 2 = Player released the direction after pressing it
         // 3 = Player pressed again the same direction after releasing it, executes dash
     int shortcutDashStep = - 1;
-    //The current step of the shortcut dash input
-    // -1 = Player was already pressing the direction
-    // 0 = Player wasn't pressing the direction
-    // 1 = Player pressed the direction after releasing it, executes dash
+        //The current step of the shortcut dash input
+        // -1 = Player was already pressing the direction
+        // 0 = Player wasn't pressing the direction
+        // 1 = Player pressed the direction after releasing it, executes dash
 
     float
         dashDirection,
@@ -285,25 +285,23 @@ public class PlayerAttack : MonoBehaviour
             if (!playerStats.dead && !enemyDead && hasDrawn)
             {
                 // KICK
-                if (!kickRecovering)
-                    ManageKick();
+                ManageKick();
 
 
                 if (playerStats.stamina >= playerStats.staminaCostForMoves)
                 {
                     // CHARGE & ATTAQUE
-                    if (!clashed && !kickRecovering)
+                    if (!clashed)
                         ManageCharge();
 
 
                     // DASH INPUTS
-                    if (!clashed && !kickRecovering)
+                    if (!clashed)
                         ManageDash();
 
 
                     // PARRY INPUT
-                    if (!kickRecovering)
-                        ManageParry();
+                    ManageParry();
                 }
             }
             else if (!hasDrawn && gameManager.gameStarted && !enemyDead)

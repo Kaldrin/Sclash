@@ -177,7 +177,7 @@ public class PlayerMovement : MonoBehaviour
     void ManageMovements()
     {
         // The player move if they can in their state
-        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused && gameManager.gameStarted && playerAttack.hasDrawn && !playerAttack.kickRecovering)
+        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused && gameManager.gameStarted && playerAttack.hasDrawn)
         {
             if (rb.simulated == false)
                 rb.simulated = true;

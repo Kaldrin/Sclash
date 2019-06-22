@@ -216,9 +216,10 @@ public class AudioManager : MonoBehaviour
     }
 
     // Adjust volume depending on distance between players
+    
     void AdjustMusicVolumeOnDistance()
     {
-        distanceBetweenPlayers = Mathf.Abs(players[0].transform.position.x - players[1].transform.position.x);
+        //distanceBetweenPlayers = Mathf.Abs(players[0].transform.position.x - players[1].transform.position.x);
     }
 
 

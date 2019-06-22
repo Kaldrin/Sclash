@@ -696,7 +696,7 @@ SpriteRenderer:
   m_Size: {x: 38.399998, y: 21.599998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &340911367
@@ -6301,9 +6301,10 @@ GameObject:
   m_Component:
   - component: {fileID: 736706339}
   - component: {fileID: 736706335}
-  - component: {fileID: 736706338}
   - component: {fileID: 736706337}
   - component: {fileID: 736706336}
+  - component: {fileID: 736706340}
+  - component: {fileID: 736706338}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -6431,14 +6432,20 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   priority: 0
---- !u!81 &736706338
-AudioListener:
+--- !u!114 &736706338
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736706334}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68cf80e6d0bcb7346883b38008445b77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDefaultListener: 1
+  listenerId: 0
 --- !u!4 &736706339
 Transform:
   m_ObjectHideFlags: 0
@@ -6453,6 +6460,28 @@ Transform:
   m_Father: {fileID: 1140890357}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 2.9580002, y: 0, z: 0}
+--- !u!114 &736706340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736706334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 655c456b2e5f748468a09c407c2fbed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 0
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
 --- !u!1 &739260122
 GameObject:
   m_ObjectHideFlags: 0
@@ -6875,7 +6904,7 @@ SpriteRenderer:
   m_Size: {x: 19.21, y: 19.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &901884219
@@ -7429,7 +7458,7 @@ SpriteRenderer:
   m_Size: {x: 38.399998, y: 21.599998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1062042425
@@ -12348,11 +12377,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eb6cf1af8b1f914bb1905057dcb19f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
   cameraState: Inactive
   cameraZLimits: {x: -10, y: -23}
   playersDistanceForCameraZoomedUnzoomedLimits: {x: 7, y: 27}
-  smoothMovementsMultiplier: 0.05
+  roundEndSlowMoZoom: -6
+  zoomSpeed: 1
+  cinematicZoomSpeed: 5
+  battleZoomSpeed: 20
+  actualZoomSpeed: 0
+  cameraBasePos: {x: 0, y: 0, z: 0}
+  battleSmoothMovementsMultiplier: 0.5
+  cinematicSmoothMovementsMultiplier: 0.05
+  actualSmoothMovementsMultiplier: 0.5
   maxSidesZoomedUnzoomed: {x: 8, y: 5}
+  cameraArmBasePos: {x: 0, y: 0, z: 0}
 --- !u!1 &1145835577
 GameObject:
   m_ObjectHideFlags: 0
@@ -12606,14 +12645,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 560f797f219a21a4e92bb9e664c5c32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainMenu: {fileID: 162119151}
-  blur: {fileID: 2100000, guid: 3124d2be854b9fc4e920bd577d5574c5, type: 2}
-  blurPanel: {fileID: 1402406727}
-  unblur: {fileID: 2100000, guid: 2005d7c47e747f048b6f734e81c7f860, type: 2}
-  player: {fileID: 7003620522291499883, guid: a404c61637450ce4b8f3a963b51d0fe6, type: 3}
+  audioManagerName: GlobalManager
+  menuManagerName: GlobalManager
   cameraManager: {fileID: 1140890358}
+  timeBeforeBattleCamera: 2
+  mainMenu: {fileID: 162119151}
+  blurPanel: {fileID: 1402406727}
+  paused: 0
+  timeBeforeNextRound: 3
+  roundLeaves: {fileID: 0}
+  gameStarted: 0
+  player: {fileID: 7003620522291499883, guid: a404c61637450ce4b8f3a963b51d0fe6, type: 3}
+  playersList: []
+  playersColors: []
+  playerNames:
+  - "Red samura\xEF"
+  - "Blue samura\xEF"
+  roundEndSlowMoTimeScale: 0.3
+  minTimeScale: 0.05
+  rounEndSlowMoDuration: 2
+  roundEndTimeScaleFadeSpeed: 0.05
+  clashSlowMoTimeScale: 0.2
+  clashSlowMoDuration: 2
+  clashTimeScaleFadeSpeed: 0.2
+  parrySlowMoTimeScale: 0.2
+  parrySlowMoDuration: 2
+  parryTimeScaleFadeSpeed: 0.2
   scoreText: {fileID: 739260124}
+  scoreObject: {fileID: 0}
   score: {x: 0, y: 0}
+  scoreShowDuration: 4
+  scoreToWin: 10
+  scoreToWinMenuValue: {fileID: 0}
+  timeBeforeWinScreenAppears: 2
 --- !u!114 &1219787604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17540,6 +17604,65 @@ VisualEffect:
       m_Array: []
     m_Bool:
       m_Array: []
+--- !u!1 &1285543267
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1285543269}
+  - component: {fileID: 1285543268}
+  m_Layer: 0
+  m_Name: WwiseGlobal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1285543268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285543267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d9d182eac81af4cacc9094a9d5e271, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitializationSettings: {fileID: 11400000, guid: 942d50dcdb3b50d409eae6fab1b63e7f,
+    type: 2}
+  basePath: 
+  language: 
+  defaultPoolSize: 0
+  lowerPoolSize: 0
+  streamingPoolSize: 0
+  preparePoolSize: 0
+  memoryCutoffThreshold: 0
+  monitorPoolSize: 0
+  monitorQueuePoolSize: 0
+  callbackManagerBufferSize: 0
+  spatialAudioPoolSize: 0
+  maxSoundPropagationDepth: 0
+  diffractionFlags: 11
+  engineLogging: 0
+--- !u!4 &1285543269
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285543267}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1318419895
 GameObject:
   m_ObjectHideFlags: 0
@@ -23260,7 +23383,7 @@ SpriteRenderer:
   m_Size: {x: 38.399998, y: 21.599998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1769529760
@@ -23339,7 +23462,7 @@ SpriteRenderer:
   m_Size: {x: 38.399998, y: 21.599998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1778421045
@@ -23575,7 +23698,7 @@ SpriteRenderer:
   m_Size: {x: 38.399998, y: 21.599998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1788201661
@@ -23756,7 +23879,7 @@ SpriteRenderer:
   m_Size: {x: 38.399998, y: 21.599998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1884349546

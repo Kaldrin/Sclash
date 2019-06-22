@@ -65,8 +65,7 @@ public class PlayerStats : MonoBehaviour
         currentTimeBeforeStaminaRegen = 0,
         staminaBarsOpacity = 1;
 
-    bool canRegenStamina = true,
-        staminaFull = false;
+    bool canRegenStamina = true;
 
 
 
@@ -216,13 +215,11 @@ public class PlayerStats : MonoBehaviour
         
         if (stamina >= maxStamina)
         {
-            staminaFull = true;
             if (staminaBarsOpacity > 0)
                 staminaBarsOpacity -= 0.01f;
         }
         else
         {
-            staminaFull = false;
             staminaBarsOpacity = 1;
         }
     }
