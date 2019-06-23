@@ -5,21 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class SceneManage : MonoBehaviour {
 
-    // SCENE LOADING
-    [Header("Scene loading")]
+    //Scene changement
+    [Header("Scene change")]
     [SerializeField] Animator sceneSwitchAnimator = null;
-    [SerializeField]  public bool proceedToLoadScene = false;
-    Scene sceneToLoad = new Scene();
+    public bool proceedToLoadScene = false;
+    Scene sceneToLoad;
     bool quit = false;
 
 
-
-    // RESTARTING
-    [Header("Restarting")]
-    [SerializeField] KeyCode[] pressSimultaneousKeysToRestart = null;
-
-
-
+    //Restarting scene
+    [Header("Restart scene")]
+    public KeyCode[]
+        pressSimultaneousKeysToRestart;
 
 
 
@@ -32,9 +29,10 @@ public class SceneManage : MonoBehaviour {
     // BASE FUNCTIONS
     // Use this for initialization
     void Start () {
+        //sceneSwitchAnimator = GetComponent<Animator>();
     }
 	
-	// Update is called once per frame
+	// Update is called once per graphic frame
 	void Update () {
 		
 	}
@@ -65,17 +63,13 @@ public class SceneManage : MonoBehaviour {
 
 
 
-
-
     // SCENE LOADING
-    // Open the selected scene
     void LoadScene(Scene scene)
     {
         SceneManager.LoadScene(scene.name);
     }
     
-    // Restart the current scene
-    public void Restart()
+    void Restart()
     {
         
         sceneToLoad = SceneManager.GetActiveScene();
@@ -83,14 +77,12 @@ public class SceneManage : MonoBehaviour {
         
     }
 
-    // Set to load the selected scene when the transition animation is complete
     public void SetLoadScene(Scene scene)
     {
         sceneToLoad = scene;
         sceneSwitchAnimator.SetTrigger("CloseScene");
     }
 
-    // Quit the game when the transition animation is done
     public void Quit()
     {
         sceneSwitchAnimator.SetTrigger("CloseScene");
@@ -103,9 +95,7 @@ public class SceneManage : MonoBehaviour {
 
 
 
-
     // SCENE CONTROLS
-    // Check if all the keys in the list are pressed simultaneously
     bool CheckIfAllKeysPressed(KeyCode[] keys)
     {
         bool notPressed = false;

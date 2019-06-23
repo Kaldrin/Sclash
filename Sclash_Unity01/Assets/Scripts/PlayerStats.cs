@@ -5,18 +5,13 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
-
-    // AUDIO MANAGER
-    [Header("Audio manager")]
+    // MANAGERS
+    [Header("MANAGERS")]
+    // Audio manager
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
-
-
-
-
-    // GAME MANAGER
-    [Header("Game manager")]
+    // Game manager
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
 
@@ -26,7 +21,7 @@ public class PlayerStats : MonoBehaviour
 
 
     // PLAYER'S COMPONENTS
-    [Header("Player's components")]
+    [Header("PLAYER'S COMPONENTS")]
     PlayerAttack playerAttack;
     PlayerAnimations playerAnimation;
     PlayerMovement playerMovements;
@@ -37,7 +32,7 @@ public class PlayerStats : MonoBehaviour
 
 
     // HEALTH
-    [Header("Health")]
+    [Header("HEALTH")]
     [SerializeField] float maxHealth = 0;
     float currentHealth;
 
@@ -49,7 +44,7 @@ public class PlayerStats : MonoBehaviour
 
 
     //STAMINA
-    [Header("Stamina")]
+    [Header("stamina")]
     [SerializeField] public Slider staminaSlider = null;
     List<Slider> staminaSliders = new List<Slider>();
 

@@ -8,7 +8,7 @@ using TMPro;
 public class MenuManager : MonoBehaviour
 {
     // SAVE PARAMETERS
-    [Header("Save parameters")] [SerializeField] MenuParameters menuParametersSave = null;
+    [Header("SAVE PARAMETERS")] [SerializeField] MenuParameters menuParametersSave = null;
     [SerializeField] SliderToVolume
         masterVolume = null,
         musicVolume = null,
@@ -21,7 +21,7 @@ public class MenuManager : MonoBehaviour
 
 
     // PAUSE
-    [Header("Pause menu")]
+    [Header("PAUSE MENU")]
     [SerializeField] GameObject
         blurPanel = null;
     [SerializeField]
@@ -37,15 +37,17 @@ public class MenuManager : MonoBehaviour
 
 
 
+
     // WIN
-    [Header("Win menu")] [SerializeField] GameObject backToWinScreenButton = null;
+    [Header("WIN MENU")] [SerializeField] GameObject backToWinScreenButton = null;
     [SerializeField] public GameObject winMessage = null;
     [SerializeField] public TextMeshProUGUI winName = null;
 
 
 
+
     // MANAGERS
-    [Header("Managers")]
+    [Header("MANAGERS")]
     // Game managers
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
@@ -53,6 +55,9 @@ public class MenuManager : MonoBehaviour
     // Input manager
     [SerializeField] string inputManagerName = "GlobalManager";
     InputManager inputManager = null;
+
+
+
 
 
 
@@ -78,7 +83,7 @@ public class MenuManager : MonoBehaviour
         LoadParameters();
     }
 
-    // Update is called once per frame
+    // Update is called once per grahic frame
     void Update()
     {
         if (Input.GetButtonUp("Pause"))
@@ -210,6 +215,16 @@ public class MenuManager : MonoBehaviour
         backToWinScreenButton.SetActive(false);
 
         gameManager.paused = state;
+
+        /*
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            if (state)
+                gameManager.playersList[i].GetComponent<Animator>().speed = 0;
+            else
+                gameManager.playersList[i].GetComponent<Animator>().speed = 1;
+        }
+        */
 
         SaveParameters();
     }

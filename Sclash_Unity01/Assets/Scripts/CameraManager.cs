@@ -23,10 +23,11 @@ public class CameraManager : MonoBehaviour
     [SerializeField] Vector2 cameraZLimits = new Vector2(-9, -19);
     [SerializeField] Vector2 playersDistanceForCameraZoomedUnzoomedLimits = new Vector2(5, 25);
 
-    [SerializeField]
-    float
-        roundEndSlowMoZoom = -6f,
-        zoomSpeed = 1;
+    [SerializeField] float roundEndSlowMoZoom = -6f;
+    [SerializeField] public float
+        actualZoomSmoothDuration = 1f,
+        battleZoomSmoothDuration = 0.25f,
+        cinematicZoomSmoothDuration = 1f;
     [SerializeField] public float 
         cinematicZoomSpeed = 5,
         battleZoomSpeed = 20;
@@ -79,6 +80,7 @@ public class CameraManager : MonoBehaviour
         
         actualSmoothMovementsMultiplier = cinematicSmoothMovementsMultiplier;
         actualZoomSpeed = cinematicZoomSpeed;
+        actualZoomSmoothDuration = cinematicZoomSmoothDuration;
         cameraBasePos = cam.transform.position;
         cameraArmBasePos = transform.position;
 
@@ -239,7 +241,7 @@ public class CameraManager : MonoBehaviour
         //cam.transform.localPosition = cam.transform.localPosition + (newPos - cam.transform.localPosition) * actualSmoothMovementsMultiplier;
 
         //cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, newPos, Time.unscaledDeltaTime * zoomSpeed);
-        cam.transform.localPosition = Vector3.SmoothDamp(cam.transform.localPosition, newPos, ref currentZoomSpeed, zoomSpeed, actualZoomSpeed, Time.unscaledDeltaTime);
+        cam.transform.localPosition = Vector3.SmoothDamp(cam.transform.localPosition, newPos, ref currentZoomSpeed, actualZoomSmoothDuration, actualZoomSpeed, Time.unscaledDeltaTime);
     }
 
     void ZoomCameraCustom(float customZoom)
@@ -251,6 +253,6 @@ public class CameraManager : MonoBehaviour
         //cam.transform.localPosition = cam.transform.localPosition + (newPos - cam.transform.localPosition) * actualSmoothMovementsMultiplier;
 
         //cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, newPos, Time.unscaledDeltaTime * zoomSpeed);
-        cam.transform.localPosition = Vector3.SmoothDamp(cam.transform.localPosition, newPos, ref currentZoomSpeed, zoomSpeed, actualZoomSpeed, Time.unscaledDeltaTime);
+        cam.transform.localPosition = Vector3.SmoothDamp(cam.transform.localPosition, newPos, ref currentZoomSpeed, actualZoomSmoothDuration, actualZoomSpeed, Time.unscaledDeltaTime);
     }
 }

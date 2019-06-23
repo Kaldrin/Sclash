@@ -5,7 +5,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     // SOUND FUNCTIONS
-    [Header("Sound functions")]
+    [Header("SOUND FUNCTIONS")]
     [SerializeField] SoundFunctions soundFunctions = null;
 
 
@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
 
 
     // MUSIC
-    [Header("Music")]
+    [Header("MUSIC")]
     [SerializeField] AudioSource menuMusicSource = null;
     [SerializeField] AudioSource
         battleMusicSource = null,
@@ -54,7 +54,7 @@ public class AudioManager : MonoBehaviour
 
 
     // VOICE
-    [Header("Voice")]
+    [Header("VOICE")]
     [SerializeField] AudioSource deathVoice;
     [SerializeField] AudioSource introVoice;
 
@@ -64,12 +64,12 @@ public class AudioManager : MonoBehaviour
 
 
     // PLAYERS
-    [Header("Players")]
+    [Header("PLAYERS")]
     [SerializeField] Vector2 battleMusicVolumeDistanceBounds = new Vector2(5, 20);
     [SerializeField] Vector2 battleMusicVolumeBounds = new Vector2(1, 0);
 
     GameObject[] players;
-    float distanceBetweenPlayers = 0;
+    //float distanceBetweenPlayers = 0;
 
 
 
@@ -216,7 +216,6 @@ public class AudioManager : MonoBehaviour
     }
 
     // Adjust volume depending on distance between players
-    
     void AdjustMusicVolumeOnDistance()
     {
         //distanceBetweenPlayers = Mathf.Abs(players[0].transform.position.x - players[1].transform.position.x);

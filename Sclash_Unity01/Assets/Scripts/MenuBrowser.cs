@@ -21,6 +21,7 @@ public class MenuBrowser : MonoBehaviour
 
 
 
+
     // BASE FUNCTIONS
     void Awake()
     {
@@ -102,6 +103,8 @@ public class MenuBrowser : MonoBehaviour
         }
 
     }
+
+
 
 
 

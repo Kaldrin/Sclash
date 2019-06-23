@@ -5,18 +5,14 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     // MANAGERS
-    [Header("Managers")]
+    [Header("MANAGERS")]
     // Game manager
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager = null;
 
-
-
     // Audio manager
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
-
-
 
     // Input manager
     [SerializeField] string inputManagerName = "GlobalManager";
@@ -45,11 +41,9 @@ public class PlayerMovement : MonoBehaviour
 
 
     // MOVEMENTS
-    [SerializeField]
-    float
-        baseMovementsSpeed = 10f,
-        chargeMovementsSpeed = 5f;
-        
+    [Header("MOVEMENTS")]
+    [SerializeField] float baseMovementsSpeed = 10f;
+    [SerializeField] float chargeMovementsSpeed = 5f;
     float movementsMultiplier = 0;
     
 
@@ -159,13 +153,14 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
+
     // TO EXECUTE A FEW FRAMES AFTER THE AWAKE FUNCTION
     IEnumerator ExecOnAwake()
     {
         yield return new WaitForSeconds(0.2f);
         OrientTowardsEnemy();
     }
-
 
 
 
@@ -202,7 +197,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    // CHANGE SPEED IF CHARGING/ NOT CHARGING
+    // CHANGE SPEED IF CHARGING / NOT CHARGING
     public void Charging(bool on)
     {
         if (on)

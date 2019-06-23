@@ -13,9 +13,19 @@ public class InputManager : MonoBehaviour
         public float horizontal;
         public bool kick;
         public bool kickDown;
+        public bool anyKeyDown;
+        public bool anyKey;
     }
 
     [HideInInspector] public PlayerInputs[] playerInputs = new PlayerInputs[2];
+
+
+
+
+
+
+
+
 
 
     // BASE FUNCTIONS   
@@ -44,6 +54,7 @@ public class InputManager : MonoBehaviour
         score = Input.GetButton("Score");
         ManageHorizontalInput();
         ManageKick();
+        ManageAnyKey();
     }
 
 
@@ -63,14 +74,34 @@ public class InputManager : MonoBehaviour
 
 
 
+
+
     // KICK
     void ManageKick()
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
             playerInputs[i].kick = Input.GetButton("Kick" + (i + 1));
-            playerInputs[i].kickDown = Input.GetButtonDown("Kick" + (i + 1));
-                
+            playerInputs[i].kickDown = Input.GetButtonDown("Kick" + (i + 1));    
+        }
+    }
+
+
+
+
+
+    // ANY KEY
+    void ManageAnyKey()
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].anyKeyDown = (Input.GetButtonDown("Kick" + (i + 1))
+                || Input.GetButtonDown("Parry" + (i + 1))
+                || Input.GetButtonDown("Fire" + (i + 1))
+                || Input.GetAxis("Fire" + (i + 1)) > 0.1
+                || Input.GetAxis("Parry" + (i + 1)) < - 0.1f
+                || Input.GetButtonDown("Kick" + (i + 1)));
+            //playerInputs[i].anyKey = Input.GetButtonDown("Kick" + (i + 1));
         }
     }
 }

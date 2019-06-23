@@ -5,9 +5,10 @@ using TMPro;
 
 public class DateManager : MonoBehaviour {
 
-    // DISPlAY
+    // DISPLAY
+    [Header("DISPLAY")]
+    [SerializeField] TextMeshPro minuteText = null;
     [SerializeField] TextMeshPro
-        minuteText = null,
         hourText = null,
         dayText = null,
         monthText = null,
@@ -17,18 +18,23 @@ public class DateManager : MonoBehaviour {
 
 
     // PLAY / STOP
-    [SerializeField] bool isRunning;
+    [Header("PLAY / STOP")]
+    [SerializeField] bool isRunning = true;
+
+
+
 
     // CALCULUS
-    float seconds = 0;
+    [Header("CALCULUS")]
     [SerializeField] float secondsPerMinute = 1;
+    float seconds = 0;
+
     [HideInInspector] public int
         minutes = 0,
         hours = 0,
         days = 0,
         months = 0,
         years = 0;
-
     int[]
         months31 = { 1, 3, 5, 7, 8, 10, 12 },
         months30 = { 4, 6, 9, 11 };
@@ -36,17 +42,34 @@ public class DateManager : MonoBehaviour {
         
         
 
+
+
+
+
+
+
+
+
+
+
+    // BASE FUNCTIONS
 	// Use this for initialization
 	void Start () {
 		
 	}
 	
-	// Update is called once per frame
+	// Update is called once per graphic frame
 	void Update () {
         UpdateTime();
 
     }
 
+
+
+
+
+
+    // DISPLAY
     public void DisplayTime()
     {
         if (minutes < 10)
@@ -98,6 +121,11 @@ public class DateManager : MonoBehaviour {
     }
 
 
+
+
+
+
+    // UPDATE
     void UpdateTime()
     {
         if (isRunning)
@@ -164,6 +192,12 @@ public class DateManager : MonoBehaviour {
         years = year;
     }
 
+
+
+
+
+
+    // PLAY / PAUSE
     public void ResumeTime()
     {
         isRunning = true;
@@ -177,8 +211,9 @@ public class DateManager : MonoBehaviour {
 
 
 
-    //Secondary
 
+
+    // SECONDARY
     bool CheckIntInArray(int intToCheck, int[] intArray)
     {
         bool intInArray = false;

@@ -5,13 +5,12 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     // MANAGERS
-    [Header("Managers")]
+    [Header("MANAGERS")]
     // Audio manager
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
     // Game manager
-    [Header("Game manager")]
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
 
@@ -25,7 +24,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // PLAYER'S COMPONENTS
-    [Header("Player's components")]
+    [Header("PLAYER'S COMPONENTS")]
     Rigidbody2D rb = null;
     PlayerStats playerStats = null;
     PlayerAnimations playerAnimations = null;
@@ -37,7 +36,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // ATTACK
-    [Header("Attack")]
+    [Header("ATTACK")]
     [SerializeField] public float lightAttackRange = 1.5f;
     [SerializeField] public float heavyAttackRange = 2.5f;
     [HideInInspector] public float actualAttackRange = 0;
@@ -49,8 +48,12 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public bool isAttacking = false;
 
 
+
+
+
+
     // ATTACK RECOVERY
-    [Header("Attack recovery")]
+    [Header("ATTACK RECOVERY")]
     [SerializeField] float minRecoveryDuration = 0.4f;
     [SerializeField] float maxRecoveryDuration = 1;
     float
@@ -67,7 +70,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // CHARGE
-    [Header("Charge")]
+    [Header("CHARGE")]
     [SerializeField] public int maxChargeLevel = 2;
     [HideInInspector] public int chargeLevel = 1;
     //[SerializeField] int numberOfFramesToDetectChargeInput = 3;
@@ -91,13 +94,14 @@ public class PlayerAttack : MonoBehaviour
 
 
     // DRAW
-    [Header("Draw")]
+    [Header("DRAW")]
     [SerializeField] public float drawDuration = 2f;
 
-    [SerializeField] bool drawOn = false;
-    bool isDrawing = false;
+    [SerializeField] bool
+        drawOn = false,
+        isDrawing = false;
 
-    [HideInInspector] public bool hasDrawn;
+    [SerializeField] public bool hasDrawn = false;
 
 
 
@@ -107,7 +111,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // OTHER PLAYER
-    [Header("Other player")]
+    [Header("OTHER PLAYER")]
     [HideInInspector] public bool enemyDead = false;
 
 
@@ -119,7 +123,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // KICK
-    [Header("Kick")]
+    [Header("KICK")]
     [SerializeField] public bool kickFrame = false;
     [HideInInspector] public bool
         kicking = false,
@@ -129,19 +133,6 @@ public class PlayerAttack : MonoBehaviour
         kickRange = 1.3f,
         kickDuration = 0.2f;
 
-    /*
-    // KICK RECOVERY
-    [Header("Kick recovery")]
-    [SerializeField] public bool kickRecovering = false;
-    /*
-    [SerializeField] float kickRecoveryDuration = 0.4f;
-    float
-        attackRecoveryStartTime = 0,
-        attackRecoveryDuration = 0;
-
-    [SerializeField] public bool attackRecoveryStart = false;
-    [HideInInspector] public bool isAttackRecovering = false;
-    */
 
 
 
@@ -149,7 +140,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // KICKED
-    [Header("Kicked")]
+    [Header("KICKED")]
     [SerializeField] float kickKnockbackDistance = 1f;
     [SerializeField] float kickedStaminaLoss = 1;
 
@@ -164,7 +155,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // PARRY
-    [Header("Parry")]
+    [Header("PARRY")]
     [SerializeField] public bool parrying = false;
     [HideInInspector] public bool canParry = true;
 
@@ -180,7 +171,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // CLASH
-    [Header("Clash")]
+    [Header("CLASH")]
     [SerializeField] float clashKnockback = 2;
     bool clashed = false;
     
@@ -191,10 +182,9 @@ public class PlayerAttack : MonoBehaviour
 
 
     // DASH
-    [Header("Dash")]
+    [Header("DASH")]
     [SerializeField] public Collider2D playerCollider;
     [HideInInspector] public bool isDashing;
-    
 
     int dashStep = -1;
         //The current step of the dash input
@@ -255,6 +245,8 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
     // BASE FUNCTIONS
     void Start()
     {
@@ -279,36 +271,39 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
         // The player can only use actions when the game has started
-        if (gameManager.gameStarted && !gameManager.paused)
+        if (gameManager.gameStarted)
         {
-            // The player cna only use actions if they are not dead
-            if (!playerStats.dead && !enemyDead && hasDrawn)
+            if (!gameManager.paused)
             {
-                // KICK
-                ManageKick();
-
-
-                if (playerStats.stamina >= playerStats.staminaCostForMoves)
+                // The player cna only use actions if they are not dead
+                if (!playerStats.dead && !enemyDead && hasDrawn)
                 {
-                    // CHARGE & ATTAQUE
-                    if (!clashed)
-                        ManageCharge();
+                    // KICK
+                    ManageKick();
 
 
-                    // DASH INPUTS
-                    if (!clashed)
-                        ManageDash();
+                    if (playerStats.stamina >= playerStats.staminaCostForMoves)
+                    {
+                        // CHARGE & ATTAQUE
+                        if (!clashed)
+                            ManageCharge();
 
 
-                    // PARRY INPUT
-                    ManageParry();
+                        // DASH INPUTS
+                        if (!clashed)
+                            ManageDash();
+
+
+                        // PARRY INPUT
+                        ManageParry();
+                    }
+                }
+                else if (!hasDrawn && gameManager.gameStarted && !enemyDead)
+                {
+                    ManageDraw();
                 }
             }
-            else if (!hasDrawn && gameManager.gameStarted && !enemyDead)
-            {
-                ManageDraw();
-            }
-
+            
 
             // RECOVERY TIME MANAGING
             ManageRecoveries();
@@ -398,6 +393,10 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
+
+
     // DRAW
     // Detects draw input
     void ManageDraw()
@@ -411,11 +410,18 @@ public class PlayerAttack : MonoBehaviour
 
         if (!hasDrawn)
         {
+            if (inputManager.playerInputs[playerStats.playerNum - 1].anyKeyDown)
+            {
+                if (!isDrawing)
+                    StartCoroutine(Draw());
+            }
+            /*
             if (Input.GetButtonDown("Fire" + playerStats.playerNum))
             {
                 if (!isDrawing)
                     StartCoroutine(Draw());
             }
+            */
         }
     }
 
@@ -429,6 +435,8 @@ public class PlayerAttack : MonoBehaviour
         hasDrawn = true;
         isDrawing = false;
     }
+
+
 
 
 

@@ -5,12 +5,16 @@ using UnityEngine;
 public class PlayerAnimations : MonoBehaviour
 {
     // MANAGER
-    [Header("Managers")] [SerializeField] string gameManagerName = "GlobalManager";
+    [Header("MANAGERS")]
+    [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
 
 
+
+
     // PLAYER'S COMPONENTS
-    [Header("Player's components")] [SerializeField] Rigidbody2D rigid = null;
+    [Header("PLAYER'S COMPONENTS")]
+    [SerializeField] Rigidbody2D rigid = null;
     [SerializeField] Animator animator = null;
     [SerializeField] public SpriteRenderer spriteRenderer = null;
     PlayerAttack playerAttack = null;
@@ -19,16 +23,19 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
+
     // ANIMATION VALUES
-    [Header("Animation values")] [SerializeField] float minSpeedForWalkAnim = 0.05f;
+    [Header("ANIMATION VALUES")]
+    [SerializeField] float minSpeedForWalkAnim = 0.05f;
+
 
 
 
 
     // FX
-    [Header("FX")] [SerializeField] public TrailRenderer swordTrail = null;
-    [SerializeField]
-    float
+    [Header("FX")]
+    [SerializeField] public TrailRenderer swordTrail = null;
+    [SerializeField] float
         lightAttackSwordTrailWidth = 1.3f,
         heavyAttackSwordTrailWidth = 2.3f;
     [SerializeField] Color
@@ -39,7 +46,7 @@ public class PlayerAnimations : MonoBehaviour
 
 
     // SPRITE COLORS
-    [Header("Sprite colors")]
+    [Header("SPRITE COLORS")]
     [SerializeField] float untouchableFrameOpacity = 0.4f;
 
 
@@ -192,6 +199,7 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
+
     // KICK ANIMATION
     // Trigger on / off kick animation
     public void TriggerKick(bool state)
@@ -209,6 +217,7 @@ public class PlayerAnimations : MonoBehaviour
         else
             animator.SetTrigger("KickedOff");
     }
+
 
 
 

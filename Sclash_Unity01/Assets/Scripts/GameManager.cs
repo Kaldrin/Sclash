@@ -7,18 +7,16 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     // MANAGERS
-    [Header("Managers")]
+    [Header("MANAGERS")]
     // Audio manager
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
 
     // Menu manager
-    [Header("Menu manager")]
     [SerializeField] string menuManagerName = "GlobalManager";
     MenuManager menuManager = null;
 
     // Camera manager
-    [Header("Camera manager")]
     [SerializeField] CameraManager cameraManager = null;
 
 
@@ -27,7 +25,7 @@ public class GameManager : MonoBehaviour
 
 
     // START
-    [Header("Start")]
+    [Header("START")]
     [SerializeField] float timeBeforeBattleCamera = 2f;
 
 
@@ -35,7 +33,7 @@ public class GameManager : MonoBehaviour
 
 
     // MENU
-    [Header("Menu")]
+    [Header("MENU")]
     [SerializeField] GameObject mainMenu = null;
     [SerializeField] GameObject blurPanel = null;
     [HideInInspector] public bool paused = false;
@@ -45,7 +43,7 @@ public class GameManager : MonoBehaviour
 
 
     // ROUND
-    [Header("Round")]
+    [Header("ROUND")]
     [SerializeField] float timeBeforeNextRound = 3;
     [SerializeField] ParticleSystem roundLeaves = null;
     public bool gameStarted = false;
@@ -56,7 +54,7 @@ public class GameManager : MonoBehaviour
 
 
     // PLAYERS
-    [Header("Players")]
+    [Header("PLAYERS")]
     [SerializeField] GameObject player = null;
     [HideInInspector] public List<GameObject> playersList = new List<GameObject>();
     [SerializeField] Color[] playersColors = null;
@@ -68,7 +66,7 @@ public class GameManager : MonoBehaviour
 
 
     // EFFECTS
-    [Header("Effects")]
+    [Header("EFFECTS")]
     [SerializeField] public float roundEndSlowMoTimeScale = 0.3f;
     [SerializeField]
     public float
@@ -92,7 +90,7 @@ public class GameManager : MonoBehaviour
 
 
     // SCORE
-    [Header("Score")] [SerializeField] public Text scoreText = null;
+    [Header("SCORE")] [SerializeField] public Text scoreText = null;
     [SerializeField] public GameObject scoreObject = null;
     public Vector2 score = new Vector2(0, 0);
     [SerializeField] float scoreShowDuration = 4f;
@@ -103,8 +101,10 @@ public class GameManager : MonoBehaviour
 
 
     // WIN
-    [Header("Win")]
+    [Header("WIN")]
     [SerializeField] float timeBeforeWinScreenAppears = 2f;
+
+
 
 
 
@@ -196,6 +196,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(timeBeforeBattleCamera);
         cameraManager.actualSmoothMovementsMultiplier = cameraManager.battleSmoothMovementsMultiplier;
         cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
+        cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
     }
 
     public void DrawSabers(int playerNum)
@@ -219,7 +220,6 @@ public class GameManager : MonoBehaviour
         if (allPlayersHaveDrawn)
         {
             audioManager.BattleMusicOn();
-            Debug.Log("Battle music");
         }
     }
 
@@ -327,10 +327,12 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < playersList.Count; i++)
         {
             playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
+            playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
         }
 
         cameraManager.cameraState = "Inactive";
         cameraManager.actualSmoothMovementsMultiplier = cameraManager.cinematicSmoothMovementsMultiplier;
+        cameraManager.actualZoomSmoothDuration = cameraManager.cinematicZoomSmoothDuration;
         cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
         cameraManager.cam.transform.position = cameraManager.cameraBasePos;
 

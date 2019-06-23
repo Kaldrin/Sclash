@@ -5,35 +5,50 @@ using UnityEngine;
 public class UIManager : MonoBehaviour {
 
 
-    Animator uiAnimator = null;
+    Animator uiAnimator;
 
-    // ACTIVATING PAUSE MENU
-    [SerializeField] KeyCode pauseKey = KeyCode.P;
-    [SerializeField] GameObject[] objectsToFreezeOnPause  = null;
+
+
+
+    // ACTIVATING
+    [Header("ACTIVATING")]
+    [SerializeField] KeyCode pauseKey = KeyCode.Escape;
+    [SerializeField] GameObject[] objectsToFreezeOnPause = null;
     [SerializeField] MonoBehaviour[] scriptsToFreezeOnPause = null;
     [SerializeField] MonoBehaviour[] scriptsToCallOnPause = null;
     [SerializeField] string[] functionsNamesToCallOnPause = null;
 
 
 
-    // DEACTIVATING PAUSE MENU
+
+    // DEACTIVATING
+    [Header("DEACTIVATING")]
     [SerializeField] MonoBehaviour[] scriptsToCallOnUnpause = null;
     [SerializeField] string[] functionsNamesToCallOnUnpause = null;
 
 
 
-
-    //Manage cursor
+    // CURSOR
+    [Header("CURSOR")]
     public bool cursorLocked = false;
 
 
+
+
+
+
+
+
+
+
+    // BASE FUNCTIONS
     // Use this for initialization
     void Start () {
         uiAnimator = GetComponent<Animator>();
         lockCursor(cursorLocked);
     }
 	
-	// Update is called once per frame
+	// Update is called once per graphic frame
 	void Update () {
 		if (Input.GetKeyUp(pauseKey))
         {
@@ -42,8 +57,10 @@ public class UIManager : MonoBehaviour {
 	}
 
 
-    //Pause
 
+
+
+    // PAUSE ON / OFF
     void Pause()
     {
         if (uiAnimator.GetBool("Pause"))
@@ -62,8 +79,6 @@ public class UIManager : MonoBehaviour {
             callFunctionsOnPause();
         }
     }
-
-
 
     void callFunctionsOnPause()
     {
@@ -88,8 +103,11 @@ public class UIManager : MonoBehaviour {
     }
 
 
-    //Control cursor
 
+
+
+
+    // CURSOR
     void lockCursor(bool state)
     {
         if (state)
@@ -101,8 +119,10 @@ public class UIManager : MonoBehaviour {
     }
 
 
-    //Freeze objects
 
+
+
+    // FREEZE
     void freezeObjects(bool state)
     {
         for (int i = 0; i < objectsToFreezeOnPause.Length; i++)
