@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
+
+// Created for Unity 2019.1.1f1
 public class MenuBrowser : MonoBehaviour
 {
     [SerializeField] GameObject[] elements = null;

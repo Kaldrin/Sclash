@@ -225,7 +225,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     // CHEATS FOR DEVELOPMENT PURPOSES
-    [Header("Cheats")]
+    [Header("CHEATS")]
     [SerializeField] bool cheatCodes = false;
     [SerializeField] KeyCode
         clashCheatKey = KeyCode.Alpha1,
@@ -401,27 +401,24 @@ public class PlayerAttack : MonoBehaviour
     // Detects draw input
     void ManageDraw()
     {
+        /*
         if (drawOn)
         {
             drawOn = false;
             hasDrawn = true;
         }
+        */
 
 
         if (!hasDrawn)
         {
             if (inputManager.playerInputs[playerStats.playerNum - 1].anyKeyDown)
-            {
+            {   
                 if (!isDrawing)
+                {
                     StartCoroutine(Draw());
+                }   
             }
-            /*
-            if (Input.GetButtonDown("Fire" + playerStats.playerNum))
-            {
-                if (!isDrawing)
-                    StartCoroutine(Draw());
-            }
-            */
         }
     }
 

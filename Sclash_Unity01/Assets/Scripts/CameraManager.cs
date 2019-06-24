@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// Created for Unity 2019.1.1f1
 public class CameraManager : MonoBehaviour
 {
 

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// Created for Unity 2019.1.1f1
 public class PlayerMovement : MonoBehaviour
 {
     // MANAGERS
@@ -172,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
     void ManageMovements()
     {
         // The player move if they can in their state
-        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused && gameManager.gameStarted && playerAttack.hasDrawn)
+        if (!playerStats.dead && !playerAttack.isAttackRecovering && !playerAttack.activeFrame && !gameManager.paused && gameManager.gameStarted && playerAttack.hasDrawn && !playerAttack.kicking)
         {
             if (rb.simulated == false)
                 rb.simulated = true;
@@ -188,6 +190,10 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = new Vector2(0, 0);
             rb.simulated = false;
+        }
+        else
+        {
+            rb.velocity = new Vector2(0, 0);
         }
     }
 

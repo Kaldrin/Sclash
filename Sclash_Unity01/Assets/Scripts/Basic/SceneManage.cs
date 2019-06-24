@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
+// Created for Unity 2019.1.1f1
 public class SceneManage : MonoBehaviour {
 
     //Scene changement
-    [Header("Scene change")]
+    [Header("SCENE CHANGE")]
     [SerializeField] Animator sceneSwitchAnimator = null;
     public bool proceedToLoadScene = false;
     Scene sceneToLoad;
     bool quit = false;
 
 
+
     //Restarting scene
-    [Header("Restart scene")]
+    [Header("RESTART SCENE")]
     public KeyCode[]
         pressSimultaneousKeysToRestart;
 

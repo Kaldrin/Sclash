@@ -5,6 +5,8 @@ using UnityEngine.Audio;
 using UnityEngine.UI;
 using TMPro;
 
+
+// Created for Unity 2019.1.1f1
 public class MenuManager : MonoBehaviour
 {
     // SAVE PARAMETERS
@@ -24,8 +26,7 @@ public class MenuManager : MonoBehaviour
     [Header("PAUSE MENU")]
     [SerializeField] GameObject
         blurPanel = null;
-    [SerializeField]
-    public GameObject
+    [SerializeField] public GameObject
         pauseMenu = null,
         mainMenu = null,
         winScreen = null;
@@ -33,7 +34,10 @@ public class MenuManager : MonoBehaviour
         backButton = null,
         resumeButton = null,
         quitButton = null,
-        mainMenuButton = null;
+        mainMenuButton = null,
+        pauseOptionMenuBrowser = null,
+        mainOptionMenuBrowser = null,
+        winOptionMenuBrower = null;
 
 
 
@@ -88,7 +92,7 @@ public class MenuManager : MonoBehaviour
     {
         if (Input.GetButtonUp("Pause"))
         {
-            if (gameManager.gameStarted)
+            if (gameManager.gameStarted && !gameManager.playerDead)
             {
                 TriggerPause(!gameManager.paused);
             }
@@ -213,6 +217,10 @@ public class MenuManager : MonoBehaviour
         mainMenuButton.SetActive(state);
         gameManager.scoreObject.SetActive(state);
         backToWinScreenButton.SetActive(false);
+
+        pauseOptionMenuBrowser.SetActive(state);
+        mainOptionMenuBrowser.SetActive(false);
+        winOptionMenuBrower.SetActive(false);
 
         gameManager.paused = state;
 

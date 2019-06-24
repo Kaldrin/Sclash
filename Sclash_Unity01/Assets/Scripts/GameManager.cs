@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
+// Created for Unity 2019.1.1f1
 public class GameManager : MonoBehaviour
 {
     // MANAGERS
@@ -59,6 +61,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public List<GameObject> playersList = new List<GameObject>();
     [SerializeField] Color[] playersColors = null;
     [SerializeField] string[] playerNames = {"Red samuraï", "Blue samuraï"};
+    [HideInInspector] public bool playerDead = false;
 
 
 
@@ -271,6 +274,9 @@ public class GameManager : MonoBehaviour
     // Executed when a player dies
     public void Death(int playerNum)
     {
+        playerDead = true;
+
+
         // Canvas
         for (int i = 0; i < playersList.Count; i++)
         {
@@ -295,6 +301,9 @@ public class GameManager : MonoBehaviour
             p.GetComponent<PlayerStats>().ResetValues();
             p.GetComponent<PlayerAnimations>().ResetAnims();
         }
+
+
+        playerDead = false;
     }
 
 
@@ -312,6 +321,7 @@ public class GameManager : MonoBehaviour
     IEnumerator RestartGameCoroutine()
     {
         gameStarted = false;
+        playerDead = false;
 
         roundLeaves.gameObject.SetActive(true);
         menuManager.pauseMenu.SetActive(false);
