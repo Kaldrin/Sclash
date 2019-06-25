@@ -97,9 +97,7 @@ public class PlayerAttack : MonoBehaviour
     [Header("DRAW")]
     [SerializeField] public float drawDuration = 2f;
 
-    [SerializeField] bool
-        drawOn = false,
-        isDrawing = false;
+    [SerializeField] bool isDrawing = false;
 
     [SerializeField] public bool hasDrawn = false;
 
@@ -222,6 +220,12 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    // FX
+    [Header("FX")]
+    [SerializeField] GameObject attackSign = null;
+        
+
+
 
 
     // CHEATS FOR DEVELOPMENT PURPOSES
@@ -231,6 +235,7 @@ public class PlayerAttack : MonoBehaviour
         clashCheatKey = KeyCode.Alpha1,
         deathCheatKey = KeyCode.Alpha2,
         drawCheatKey = KeyCode.Alpha3;
+
 
 
 
@@ -401,15 +406,6 @@ public class PlayerAttack : MonoBehaviour
     // Detects draw input
     void ManageDraw()
     {
-        /*
-        if (drawOn)
-        {
-            drawOn = false;
-            hasDrawn = true;
-        }
-        */
-
-
         if (!hasDrawn)
         {
             if (inputManager.playerInputs[playerStats.playerNum - 1].anyKeyDown)
@@ -538,6 +534,8 @@ public class PlayerAttack : MonoBehaviour
         else
             actualAttackRange = lightAttackRange + (heavyAttackRange - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
 
+        Vector3 attackSignPos = attackSign.transform.localPosition;
+        attackSign.transform.localPosition = new Vector3(transform.position.x + (transform.localScale.x * -actualAttackRange), attackSignPos.y, attackSignPos.z);
 
         // Check if player has enough remaining stamina and attack if so
         if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))

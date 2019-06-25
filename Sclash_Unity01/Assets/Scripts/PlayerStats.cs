@@ -62,6 +62,13 @@ public class PlayerStats : MonoBehaviour
 
     bool canRegenStamina = true;
 
+    [SerializeField] GameObject staminaFX = null;
+    [SerializeField] Color
+        staminaBaseColor = Color.green,
+        staminaDeadColor = Color.red;
+
+
+
 
 
 
@@ -119,7 +126,7 @@ public class PlayerStats : MonoBehaviour
         if (!gameManager.paused)
             StaminaRegen();
 
-        if (gameManager.gameStarted && !playerAttack.enemyDead)
+        if (gameManager.gameStarted && !playerAttack.enemyDead && !dead)
             StaminaBarsOpacity(staminaBarsOpacity);
         else
             StaminaBarsOpacity(0);
@@ -127,7 +134,10 @@ public class PlayerStats : MonoBehaviour
 
     void LateUpdate()
     {
-        UpdateStaminaSlider();
+        if (!dead)
+            UpdateStaminaSlider();
+
+        UpdateStaminaColor();
     }
 
 
@@ -191,6 +201,9 @@ public class PlayerStats : MonoBehaviour
         stamina -= cost;
         PauseStaminaRegen();
 
+        staminaFX.SetActive(true);
+        staminaFX.GetComponent<ParticleSystem>().Play();
+
         if (stamina <= 0)
         {
             stamina = 0;
@@ -201,17 +214,18 @@ public class PlayerStats : MonoBehaviour
     void UpdateStaminaSlider()
     {
         staminaSliders[0].value = Mathf.Clamp(stamina, 0, 1);
+        staminaFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina + 0.5f), 0, maxStamina - 1)].transform.position;
 
 
         for (int i = 1; i < staminaSliders.Count; i++)
         {
-            staminaSliders[i].value = Mathf.Clamp(stamina, i, i +1) - i;
+            staminaSliders[i].value = Mathf.Clamp(stamina, i, i + 1) - i;
         }
         
         if (stamina >= maxStamina)
         {
             if (staminaBarsOpacity > 0)
-                staminaBarsOpacity -= 0.01f;
+                staminaBarsOpacity -= 0.05f;
         }
         else
         {
@@ -240,6 +254,26 @@ public class PlayerStats : MonoBehaviour
                 backgroundColor = staminaSliders[i].transform.GetChild(0).GetComponent<Image>().color;
             staminaSliders[i].fillRect.GetComponent<Image>().color = new Color(fillColor.r, fillColor.g, fillColor.b, opacity);
             staminaSliders[i].transform.GetChild(0).GetComponent<Image>().color = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, opacity);
+        }
+    }
+
+    void UpdateStaminaColor()
+    {
+        if (stamina < staminaCostForMoves)
+        {
+            SetStaminaColor(staminaDeadColor);
+        }
+        else
+        {
+            SetStaminaColor(staminaBaseColor);
+        }
+    }
+
+    void SetStaminaColor(Color color)
+    {
+        for (int i = 0; i < staminaSliders.Count; i++)
+        {
+            staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color = Color.Lerp(staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color, color, Time.deltaTime * 10);
         }
     }
 
@@ -326,6 +360,8 @@ public class PlayerStats : MonoBehaviour
                 gameManager.Death(instigator.GetComponent<PlayerStats>().playerNum);
                 playerAnimation.Dead();
                 dead = true;
+
+                StaminaBarsOpacity(0);
             }
         }
 

@@ -9,15 +9,35 @@ using UnityEngine.EventSystems;
 // Created for Unity 2019.1.1f1
 public class MenuBrowser : MonoBehaviour
 {
+    // BROWSING
+    [Header("Browsing")]
     [SerializeField] GameObject[] elements = null;
-
     [SerializeField] int browseIndex;
     int sens = 1;
-
     bool vAxisInUse = false;
     [SerializeField] bool invert = false;
 
+
+
+
+
+    // VISUAL
+    [Header("VISUAL")]
+    [SerializeField] Color defaultColor = Color.black;
+    [SerializeField] Color selectedColor = Color.white;
+
+
+
+
+    // SOUND
+    [Header("Sound")]
+    [SerializeField] PlayRandomSoundInList hoverSound = null;
+
+
     
+
+
+
 
 
 
@@ -40,7 +60,7 @@ public class MenuBrowser : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-
+        // Move sliders with horizontal
         if (Input.GetAxisRaw("Horizontal") > 0)
         {
             if (elements[browseIndex].GetComponent<SliderToVolume>())
@@ -56,34 +76,39 @@ public class MenuBrowser : MonoBehaviour
             }
         }
 
-
+        // V AXIS
+        // Detects V axis let go
         if (Input.GetAxisRaw("Vertical") == 0)
         {
             vAxisInUse = false;
         }
 
+
+        // Detects positive V axis input
         if (Input.GetAxisRaw("Vertical") > 0)
         {
             if (vAxisInUse == false)
             {
-
                 browseIndex += sens;
-
                 vAxisInUse = true;
+                hoverSound.Play();
             }
         }
 
+
+        // Detects negative V axis input
         if (Input.GetAxisRaw("Vertical") < 0)
         {
             if (vAxisInUse == false)
             {
-
                 browseIndex -= sens;
-
                 vAxisInUse = true;
+                hoverSound.Play();
             }
         }
 
+
+        // Loop index navigation
         if (browseIndex > elements.Length - 1)
         {
             browseIndex = 0;
@@ -92,6 +117,7 @@ public class MenuBrowser : MonoBehaviour
         {
             browseIndex = elements.Length - 1;
         }
+
 
         if (elements[browseIndex].GetComponent<Button>())
         {
@@ -103,8 +129,9 @@ public class MenuBrowser : MonoBehaviour
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
             ColorSwap();
         }
-
     }
+
+
 
 
 
@@ -120,7 +147,7 @@ public class MenuBrowser : MonoBehaviour
 
             if (g.transform.GetChild(0).GetComponent<TextMeshProUGUI>())
             {
-                g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.black;
+                g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = defaultColor;
             }
         }
     }
@@ -131,15 +158,16 @@ public class MenuBrowser : MonoBehaviour
         {
             GameObject g = elements[i];
 
+
             if (g.transform.GetChild(0).GetComponent<TextMeshProUGUI>())
             {
                 if (g == elements[browseIndex])
                 {
-                    g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.white;
+                    g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = selectedColor;
                 }
                 else
                 {
-                    g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.black;
+                    g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = defaultColor;
                 }
             }
         }

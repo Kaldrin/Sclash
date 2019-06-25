@@ -278,10 +278,12 @@ public class GameManager : MonoBehaviour
 
 
         // Canvas
+        /*
         for (int i = 0; i < playersList.Count; i++)
         {
             playersList[i].GetComponent<PlayerStats>().staminaSlider.gameObject.SetActive(false);
         }
+        */
         
 
         StartCoroutine(Score(playerNum));
