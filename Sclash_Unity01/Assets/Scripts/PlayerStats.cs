@@ -44,7 +44,7 @@ public class PlayerStats : MonoBehaviour
 
 
     //STAMINA
-    [Header("stamina")]
+    [Header("STAMINA")]
     [SerializeField] public Slider staminaSlider = null;
     List<Slider> staminaSliders = new List<Slider>();
 
@@ -62,13 +62,21 @@ public class PlayerStats : MonoBehaviour
 
     bool canRegenStamina = true;
 
-    [SerializeField] GameObject staminaFX = null;
+    
     [SerializeField] Color
         staminaBaseColor = Color.green,
         staminaDeadColor = Color.red;
 
 
 
+    // FX
+    [Header("FX")]
+    [SerializeField] GameObject staminaFX = null;
+    [SerializeField] GameObject deathFX = null;
+
+    [SerializeField] float deathFXRotationForDirectionChange = 70;
+
+    Vector3 deathFXbaseAngles = new Vector3(0, 0, 0);
 
 
 
@@ -95,11 +103,8 @@ public class PlayerStats : MonoBehaviour
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
 
 
-
         // Get game manager to use in the script
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
-
-
 
 
         // Get player's components to use in the script
@@ -111,12 +116,13 @@ public class PlayerStats : MonoBehaviour
 
 
         // Set the stamina slider's max value to the stamina max value
-        //staminaSlider.maxValue = maxStamina;
+        // staminaSlider.maxValue = maxStamina;
 
         SetUpStaminaBars();
 
         // Begin by reseting all the player's values and variable to start fresh
 
+        deathFXbaseAngles = deathFX.transform.localEulerAngles;
         ResetValues();
     }
     
@@ -130,12 +136,18 @@ public class PlayerStats : MonoBehaviour
             StaminaBarsOpacity(staminaBarsOpacity);
         else
             StaminaBarsOpacity(0);
+
+
+        if (transform.localScale.x < 0)
+            deathFX.transform.localEulerAngles = new Vector3(deathFXbaseAngles.x, deathFXbaseAngles.y, deathFXRotationForDirectionChange);
+        else
+            deathFX.transform.localEulerAngles = new Vector3(deathFXbaseAngles.x, deathFXbaseAngles.y, deathFXbaseAngles.z);
     }
 
     void LateUpdate()
     {
         if (!dead)
-            UpdateStaminaSlider();
+            UpdateStaminaSlidersValue();
 
         UpdateStaminaColor();
     }
@@ -211,7 +223,7 @@ public class PlayerStats : MonoBehaviour
     }
 
     // Update stamina slider value
-    void UpdateStaminaSlider()
+    void UpdateStaminaSlidersValue()
     {
         staminaSliders[0].value = Mathf.Clamp(stamina, 0, 1);
         staminaFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina + 0.5f), 0, maxStamina - 1)].transform.position;

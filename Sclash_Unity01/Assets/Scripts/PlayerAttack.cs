@@ -38,7 +38,9 @@ public class PlayerAttack : MonoBehaviour
     // ATTACK
     [Header("ATTACK")]
     [SerializeField] public float lightAttackRange = 1.5f;
-    [SerializeField] public float heavyAttackRange = 2.5f;
+    [SerializeField] public float
+        heavyAttackRange = 2.5f,
+        attackRangeDisjoint = 0.5f;
     [HideInInspector] public float actualAttackRange = 0;
 
     [SerializeField]
@@ -98,7 +100,6 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public float drawDuration = 2f;
 
     [SerializeField] bool isDrawing = false;
-
     [SerializeField] public bool hasDrawn = false;
 
 
@@ -222,8 +223,10 @@ public class PlayerAttack : MonoBehaviour
 
     // FX
     [Header("FX")]
-    [SerializeField] GameObject attackSign = null;
-        
+    [SerializeField] public GameObject attackSign = null;
+    [SerializeField] public GameObject
+        clash = null;
+
 
 
 
@@ -535,7 +538,7 @@ public class PlayerAttack : MonoBehaviour
             actualAttackRange = lightAttackRange + (heavyAttackRange - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
 
         Vector3 attackSignPos = attackSign.transform.localPosition;
-        attackSign.transform.localPosition = new Vector3(transform.position.x + (transform.localScale.x * -actualAttackRange), attackSignPos.y, attackSignPos.z);
+        attackSign.transform.localPosition = new Vector3(- actualAttackRange, attackSignPos.y, attackSignPos.z);
 
         // Check if player has enough remaining stamina and attack if so
         if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
@@ -579,7 +582,7 @@ public class PlayerAttack : MonoBehaviour
     // Hits with a phantom collider to apply the attack's damage during active frames
     void ApplyDamage()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * - actualAttackRange / 2), transform.position.y), new Vector2(lightAttackRange, 1), 0);
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (- actualAttackRange + attackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + attackRangeDisjoint, 1), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -603,7 +606,7 @@ public class PlayerAttack : MonoBehaviour
     // Draw the attack range when the player is selected
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - actualAttackRange / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * ( - actualAttackRange + attackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + attackRangeDisjoint, 1, 1));
         Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
     }
 
@@ -611,7 +614,7 @@ public class PlayerAttack : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (activeFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -actualAttackRange / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + attackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + attackRangeDisjoint, 1, 1));
 
         if (kickFrame)
             Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
@@ -814,6 +817,8 @@ public class PlayerAttack : MonoBehaviour
     // The player have been clashed / parried
     IEnumerator ClashCoroutine()
     {
+        clash.SetActive(false);
+        clash.SetActive(true);
         gameManager.SlowMo(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
 
 

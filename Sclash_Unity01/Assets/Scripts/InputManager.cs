@@ -32,6 +32,7 @@ public class InputManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        /*
         if (Input.GetJoystickNames().Length > 1)
         {
             for (int i = 0; i < Input.GetJoystickNames().Length; i++)
@@ -40,6 +41,7 @@ public class InputManager : MonoBehaviour
                 controllersText[i].text = Input.GetJoystickNames()[i];
             }
         }
+        */
     }
 
     // Update is called once per graphic frame

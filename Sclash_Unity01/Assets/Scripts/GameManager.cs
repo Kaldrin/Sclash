@@ -59,7 +59,9 @@ public class GameManager : MonoBehaviour
     [Header("PLAYERS")]
     [SerializeField] GameObject player = null;
     [HideInInspector] public List<GameObject> playersList = new List<GameObject>();
-    [SerializeField] Color[] playersColors = null;
+    [SerializeField] Color[]
+        playersColors = null,
+        attackSignColors = null;
     [SerializeField] string[] playerNames = {"Red samuraï", "Blue samuraï"};
     [HideInInspector] public bool playerDead = false;
 
@@ -235,14 +237,18 @@ public class GameManager : MonoBehaviour
         {
             PlayerStats playerStats;
             PlayerAnimations playerAnimations;
+            PlayerAttack playerAttack;
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
             playerStats = playersList[i].GetComponent<PlayerStats>();
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
+            playerAttack = playersList[i].GetComponent<PlayerAttack>();
+
             playerStats.playerNum = i + 1;
             playerStats.ResetValues();
 
             playerAnimations.spriteRenderer.color = playersColors[i];
+            playerAttack.attackSign.GetComponent<ParticleSystem>().startColor = attackSignColors[i];
         }
     }
 
