@@ -6,7 +6,7 @@ using TMPro;
 public class InputManager : MonoBehaviour
 {
     [HideInInspector] public bool score = false;
-    [SerializeField] TextMeshPro[] controllersText = null;
+    //[SerializeField] TextMeshPro[] controllersText = null;
 
     public struct PlayerInputs
     {

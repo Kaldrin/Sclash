@@ -186,19 +186,30 @@ public class GameManager : MonoBehaviour
     {
         // SOUND
         audioManager.FindPlayers();
+
+
         yield return new WaitForSeconds(0.1f);
-        audioManager.WindOn();
-        
+    
+      
         paused = false;
         gameStarted = true;
+        cameraManager.cameraState = "Battle";
 
         mainMenu.SetActive(false);
         blurPanel.SetActive(false);
+        audioManager.WindOn();
 
-        cameraManager.cameraState = "Battle";
+        
         yield return new WaitForSeconds(0.5f);
+
+
+        audioManager.matchBegins.Play();
         cameraManager.FindPlayers();
+
+
         yield return new WaitForSeconds(timeBeforeBattleCamera);
+
+
         cameraManager.actualSmoothMovementsMultiplier = cameraManager.battleSmoothMovementsMultiplier;
         cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
         cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
@@ -274,7 +285,15 @@ public class GameManager : MonoBehaviour
         roundLeaves.Play();
 
         yield return new WaitForSeconds(1.5f);
+
+
         ResetPlayers();
+
+
+        yield return new WaitForSeconds(1f);
+
+
+        audioManager.roundBegins.Play();
     }
 
     // Executed when a player dies

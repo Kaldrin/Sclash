@@ -12,10 +12,19 @@ public class MenuBrowser : MonoBehaviour
     // BROWSING
     [Header("Browsing")]
     [SerializeField] GameObject[] elements = null;
+    [SerializeField] GameObject backElement = null;
+
     [SerializeField] int browseIndex;
     int sens = 1;
+
     bool vAxisInUse = false;
     [SerializeField] bool invert = false;
+    [SerializeField] bool canBack = false;
+
+    [SerializeField] string
+        horizontalAxis = "Horizontal",
+        verticalAxis = "Vertical",
+        backButton = "Back";
 
 
 
@@ -61,14 +70,16 @@ public class MenuBrowser : MonoBehaviour
     void Update()
     {
         // Move sliders with horizontal
-        if (Input.GetAxisRaw("Horizontal") > 0)
+        if (Input.GetAxisRaw(horizontalAxis) > 0)
         {
             if (elements[browseIndex].GetComponent<SliderToVolume>())
             {
                 elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
             }
         }
-        if (Input.GetAxisRaw("Horizontal") < 0)
+
+
+        if (Input.GetAxisRaw(horizontalAxis) < 0)
         {
             if (elements[browseIndex].GetComponent<SliderToVolume>())
             {
@@ -76,16 +87,17 @@ public class MenuBrowser : MonoBehaviour
             }
         }
 
+
         // V AXIS
         // Detects V axis let go
-        if (Input.GetAxisRaw("Vertical") == 0)
+        if (Input.GetAxisRaw(verticalAxis) == 0)
         {
             vAxisInUse = false;
         }
 
 
         // Detects positive V axis input
-        if (Input.GetAxisRaw("Vertical") > 0)
+        if (Input.GetAxisRaw(verticalAxis) > 0)
         {
             if (vAxisInUse == false)
             {
@@ -97,7 +109,7 @@ public class MenuBrowser : MonoBehaviour
 
 
         // Detects negative V axis input
-        if (Input.GetAxisRaw("Vertical") < 0)
+        if (Input.GetAxisRaw(verticalAxis) < 0)
         {
             if (vAxisInUse == false)
             {
@@ -128,6 +140,16 @@ public class MenuBrowser : MonoBehaviour
         {
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
             ColorSwap();
+        }
+
+
+        // BACK
+        if (canBack)
+        {
+            if (Input.GetButtonUp(backButton))
+            {
+                backElement.GetComponent<Button>().onClick.Invoke();
+            }
         }
     }
 

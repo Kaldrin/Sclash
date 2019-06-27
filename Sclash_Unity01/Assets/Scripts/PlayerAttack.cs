@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -221,11 +222,16 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
     // FX
     [Header("FX")]
     [SerializeField] public GameObject attackSign = null;
     [SerializeField] public GameObject
-        clash = null;
+        clash = null,
+        clashKana = null,
+        kickedFX = null;
+    [SerializeField] GameObject chargeFX = null;
+    [SerializeField] Slider chargeSlider = null;
 
 
 
@@ -386,7 +392,7 @@ public class PlayerAttack : MonoBehaviour
             attackRecoveryDuration = minRecoveryDuration + (maxRecoveryDuration - minRecoveryDuration) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
             chargeLevel = 1;
         }
-
+        
 
         if (isAttackRecovering)
         {
@@ -468,7 +474,7 @@ public class PlayerAttack : MonoBehaviour
         if (!Input.GetButton("Fire" + playerStats.playerNum) && Input.GetAxis("Fire" + playerStats.playerNum) < 0.1)
         {
             canCharge = true;
-            //isAttackRecovering = false;
+
             
             if (charging)
             {
@@ -480,6 +486,9 @@ public class PlayerAttack : MonoBehaviour
         //When the player is charging the attack
         if (charging)
         {
+            chargeFX.SetActive(true);
+            chargeSlider.value -= 0.01f;
+
             // If the player has wiated too long charging
             if (maxChargeLevelReached)
             {
@@ -495,23 +504,22 @@ public class PlayerAttack : MonoBehaviour
                 if (chargeLevel < maxChargeLevel)
                 {
                     chargeLevel++;
-                    //playerAnimations.ChargeChange(chargeLevel);
                 }
                 else if (chargeLevel >= maxChargeLevel)
                 {
                     chargeLevel = maxChargeLevel;
                     maxChargeLevelStartTime = Time.time;
                     maxChargeLevelReached = true;
-
                     playerAnimations.TriggerMaxCharge();
                 }
             }
-
-
-
+        }
+        else
+        {
+            chargeFX.SetActive(false);
+            chargeSlider.value = 1;
         }
     }
-
 
 
 
@@ -526,8 +534,8 @@ public class PlayerAttack : MonoBehaviour
         playerMovement.Charging(false);
         charging = false;
         isAttacking = true;
-
         maxChargeLevelReached = false;
+
 
         // Calculate attack range depending on level of charge
         if (chargeLevel == 1)
@@ -719,6 +727,16 @@ public class PlayerAttack : MonoBehaviour
     // Kick coroutine
     IEnumerator KickCoroutine()
     {
+        if (charging)
+        {
+            playerMovement.Charging(false);
+            charging = false;
+            chargeLevel = 1;
+            maxChargeLevelReached = false;
+            playerAnimations.CancelCharge();
+        }
+
+
         kicking = true;
         parrying = false;
         isAttacking = false;
@@ -747,6 +765,8 @@ public class PlayerAttack : MonoBehaviour
                 }
             }
         }
+
+
         foreach (GameObject g in hits)
         {
             if (g != gameObject)
@@ -755,9 +775,7 @@ public class PlayerAttack : MonoBehaviour
                 if (!g.GetComponent<PlayerAttack>().kicked)
                 {
                     g.GetComponent<PlayerAttack>().Kicked();
-                    Debug.Log("Kick");
-                }
-                    
+                }  
             }
         }
     }
@@ -774,6 +792,10 @@ public class PlayerAttack : MonoBehaviour
     // The player have been kicked
     public void Kicked()
     {
+        // FX
+        kickedFX.SetActive(false);
+        kickedFX.SetActive(true);
+
         charging = false;
         isAttackRecovering = false;
         isAttacking = false;
@@ -789,7 +811,6 @@ public class PlayerAttack : MonoBehaviour
 
         dashDirection = transform.localScale.x;
         actualDashDistance = kickKnockbackDistance;
-
         initPos = transform.position;
         targetPos = transform.position + new Vector3(actualDashDistance * dashDirection, 0, 0);
 
@@ -818,7 +839,9 @@ public class PlayerAttack : MonoBehaviour
     IEnumerator ClashCoroutine()
     {
         clash.SetActive(false);
+        clashKana.SetActive(false);
         clash.SetActive(true);
+        clashKana.SetActive(true);
         gameManager.SlowMo(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
 
 

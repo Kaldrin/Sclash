@@ -58,7 +58,8 @@ public class PlayerStats : MonoBehaviour
     [HideInInspector] public float stamina = 0;
     float
         currentTimeBeforeStaminaRegen = 0,
-        staminaBarsOpacity = 1;
+        staminaBarsOpacity = 1,
+        oldStamina = 0;
 
     bool canRegenStamina = true;
 
@@ -89,7 +90,9 @@ public class PlayerStats : MonoBehaviour
 
 
 
-
+    // SOUND
+    [Header("SOUND")]
+    [SerializeField] AudioSource staminaBarCharged = null;
 
 
 
@@ -225,6 +228,15 @@ public class PlayerStats : MonoBehaviour
     // Update stamina slider value
     void UpdateStaminaSlidersValue()
     {
+        // DETECT STAMINA CHARGE UP
+        if (Mathf.FloorToInt(oldStamina) < Mathf.FloorToInt(stamina))
+        {
+            staminaBarCharged.Play();
+        }
+
+        oldStamina = stamina;
+
+
         staminaSliders[0].value = Mathf.Clamp(stamina, 0, 1);
         staminaFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina + 0.5f), 0, maxStamina - 1)].transform.position;
 
@@ -234,6 +246,7 @@ public class PlayerStats : MonoBehaviour
             staminaSliders[i].value = Mathf.Clamp(stamina, i, i + 1) - i;
         }
         
+
         if (stamina >= maxStamina)
         {
             if (staminaBarsOpacity > 0)

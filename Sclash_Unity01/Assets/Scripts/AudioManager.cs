@@ -20,6 +20,9 @@ public class AudioManager : MonoBehaviour
         parry = null,
         successfulAttack = null,
         death = null;
+    [SerializeField] public PlayRandomSoundInList
+        matchBegins = null,
+        roundBegins = null;
 
 
 
