@@ -45,7 +45,9 @@ public class PlayerMovement : MonoBehaviour
     // MOVEMENTS
     [Header("MOVEMENTS")]
     [SerializeField] float baseMovementsSpeed = 10f;
-    [SerializeField] float chargeMovementsSpeed = 5f;
+    [SerializeField] float
+        chargeMovementsSpeed = 5f,
+        clampY = 2f;
     float movementsMultiplier = 0;
     
 
@@ -123,6 +125,10 @@ public class PlayerMovement : MonoBehaviour
         ManageMovements();
 
 
+        // CLAMP
+        ClampY();
+
+
         /*
         // JUMP
         if (jumpRequest)
@@ -197,6 +203,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void ClampY()
+    {
+        Vector3 playerPos = transform.position;
+
+
+        if (transform.position.y >= clampY)
+        {
+            transform.position = new Vector3(playerPos.x, clampY, playerPos.z);
+        }
+    }
+
 
 
 
@@ -245,6 +262,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
+
             if (p1 == gameObject)
             {
                 self = p1;
@@ -256,7 +274,9 @@ public class PlayerMovement : MonoBehaviour
                 other = p1;
             }
 
+
             float sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
+
 
             if (sign > 0)
             {

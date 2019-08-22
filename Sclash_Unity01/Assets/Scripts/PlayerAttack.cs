@@ -103,6 +103,9 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] bool isDrawing = false;
     [SerializeField] public bool hasDrawn = false;
 
+    [SerializeField] GameObject drawText = null;
+    Vector3 drawTextScale = new Vector3(0, 0, 0);
+
 
 
 
@@ -230,7 +233,7 @@ public class PlayerAttack : MonoBehaviour
         clash = null,
         clashKana = null,
         kickedFX = null;
-    [SerializeField] GameObject chargeFX = null;
+    [SerializeField] public GameObject chargeFX = null;
     [SerializeField] Slider chargeSlider = null;
 
 
@@ -279,6 +282,9 @@ public class PlayerAttack : MonoBehaviour
         playerStats = GetComponent<PlayerStats>();
         playerAnimations = GetComponent<PlayerAnimations>();
         playerMovement = GetComponent<PlayerMovement>();
+
+
+        drawTextScale = drawText.transform.localScale;
     }
 
     // Update is called once per graphic frame
@@ -317,7 +323,15 @@ public class PlayerAttack : MonoBehaviour
                     ManageDraw();
                 }
             }
-            
+
+
+            if (!hasDrawn)
+                drawText.SetActive(true);
+            else
+                drawText.SetActive(false);
+
+            drawText.transform.localScale = new Vector3(drawTextScale.x * transform.localScale.x, drawTextScale.y, drawTextScale.z);
+
 
             // RECOVERY TIME MANAGING
             ManageRecoveries();
@@ -487,7 +501,11 @@ public class PlayerAttack : MonoBehaviour
         if (charging)
         {
             chargeFX.SetActive(true);
-            chargeSlider.value -= 0.01f;
+            
+
+            if (chargeSlider.value > 0)
+                chargeSlider.value -= 0.007f;
+
 
             // If the player has wiated too long charging
             if (maxChargeLevelReached)
@@ -604,10 +622,15 @@ public class PlayerAttack : MonoBehaviour
                 }
             }
         }
+
+
         foreach (GameObject g in hits)
         {
             if (g != gameObject)
+            {
                 enemyDead = g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
+                Debug.Log("EnemyTouched");
+            }   
         }
     }
 
@@ -755,6 +778,8 @@ public class PlayerAttack : MonoBehaviour
     {
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y), new Vector2(kickRange, 1), 0);
         List<GameObject> hits = new List<GameObject>();
+
+
         foreach (Collider2D c in hitsCol)
         {
             if (c.CompareTag("Player"))

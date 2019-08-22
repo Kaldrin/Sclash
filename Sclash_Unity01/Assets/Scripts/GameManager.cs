@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     // START
     [Header("START")]
     [SerializeField] float timeBeforeBattleCamera = 2f;
+    [SerializeField] GameObject drawText = null;
 
 
 
@@ -114,7 +115,7 @@ public class GameManager : MonoBehaviour
 
 
 
-
+    
 
 
 

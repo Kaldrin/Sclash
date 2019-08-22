@@ -351,8 +351,12 @@ public class PlayerStats : MonoBehaviour
 
         if (!dead)
         { 
+            if (!playerAttack.hasDrawn)
+            {
+                instigator.GetComponent<PlayerStats>().Touched();
+            }
             // CLASH
-            if (playerAttack.activeFrame || playerAttack.clashFrames)
+            else if (playerAttack.activeFrame || playerAttack.clashFrames)
             {
                 playerAttack.Clash();
                 instigator.GetComponent<PlayerAttack>().Clash();
@@ -385,6 +389,7 @@ public class PlayerStats : MonoBehaviour
                 gameManager.Death(instigator.GetComponent<PlayerStats>().playerNum);
                 playerAnimation.Dead();
                 dead = true;
+                playerAttack.chargeFX.SetActive(false);
 
                 StaminaBarsOpacity(0);
             }
