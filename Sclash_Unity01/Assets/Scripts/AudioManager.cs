@@ -13,7 +13,6 @@ public class AudioManager : MonoBehaviour
 
 
     // FX
-    // Audio sources
     [Header("FX")]
     [SerializeField] AudioSource clash = null;
     [SerializeField] AudioSource
@@ -99,7 +98,8 @@ public class AudioManager : MonoBehaviour
         {
             AdjustMusicVolumeOnDistance();
         }
-        
+
+
 
 
         FadeMusic();
@@ -214,8 +214,6 @@ public class AudioManager : MonoBehaviour
         menuMusicObjective = 0;
         battleMusicObjective = 0;
         windObjective = windMaxVolume;
-
-        //ActivateMusicFade();
     }
 
     // Adjust volume depending on distance between players

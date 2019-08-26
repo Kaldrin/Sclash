@@ -8,6 +8,7 @@ public class CameraManager : MonoBehaviour
 {
 
     // CAMERA
+    [Header("CAMERA")]
     [HideInInspector] public Camera cam;
 
 
@@ -15,6 +16,7 @@ public class CameraManager : MonoBehaviour
 
 
     // CAMERA STATE
+    [Header("CAMERA STATE")]
     [HideInInspector] public string cameraState = "Inactive";
 
 
@@ -22,6 +24,7 @@ public class CameraManager : MonoBehaviour
 
 
     // ZOOM
+    [Header("ZOOM")]
     [SerializeField] Vector2 cameraZLimits = new Vector2(-9, -19);
     [SerializeField] Vector2 playersDistanceForCameraZoomedUnzoomedLimits = new Vector2(5, 25);
 
@@ -45,17 +48,12 @@ public class CameraManager : MonoBehaviour
 
 
     // CAMERA MOVEMENTS
+    [Header("CAMERA MOVEMENTS")]
     [SerializeField] public float battleSmoothMovementsMultiplier = 0.5f;
     [SerializeField] public float cinematicSmoothMovementsMultiplier = 0.05f;
     [HideInInspector] public float actualSmoothMovementsMultiplier = 0.5f;
     [SerializeField] Vector2 maxSidesZoomedUnzoomed = new Vector2(-10, -5);
     GameObject[] players;
-    //float time = 0;
-    /*
-    [SerializeField] float
-        movementsSpeed = 25,
-        maxMovementsSpeed = 15;
-    */
     Vector3 currentMovementSpeed = new Vector3(0, 0, 0);
     [HideInInspector] public Vector3 cameraArmBasePos = new Vector3(0, 0, 0);
 
@@ -74,6 +72,8 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
+
+
         if (players == null)
         {
             players = FindPlayers();
@@ -92,12 +92,15 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+
+        }
     }
 
-    // FixedUpdate is called 30 times per second
+    // FixedUpdate is called 50 times per second
     private void FixedUpdate()
     {
-        //BehaviourDependingOnState();
     }
 
 

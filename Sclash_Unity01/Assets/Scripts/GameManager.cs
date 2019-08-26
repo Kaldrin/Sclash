@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviour
     // START
     [Header("START")]
     [SerializeField] float timeBeforeBattleCamera = 2f;
-    [SerializeField] GameObject drawText = null;
 
 
 
@@ -164,9 +163,6 @@ public class GameManager : MonoBehaviour
     // Setup the game before it starts
     IEnumerator SetupGame()
     {
-        yield return new WaitForSeconds(0);
-
-
         // SOUND
         // Set on the menu music
         audioManager.MenuMusicOn();
@@ -176,7 +172,7 @@ public class GameManager : MonoBehaviour
         cameraManager.FindPlayers();
     }
 
-    // Begins the StartGame coroutine
+    // Begins the StartGame coroutine, this function is called by the menu button
     public void Play()
     {
         StartCoroutine(StartGame());
@@ -471,33 +467,31 @@ public class GameManager : MonoBehaviour
         actualTimeScaleUpdateSmoothness = fadeSpeed;
         timeScaleObjective = slowMoTimeScale;
         cameraManager.cameraState = "Event";
-        //cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
+
 
         yield return new WaitForSecondsRealtime(slowMoDuration);
+
 
         actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
         timeScaleObjective = baseTimeScale;
         cameraManager.cameraState = "Battle";
-        //cameraManager.actualZoomSpeed = cameraManager.cinematicZoomSpeed;
+
 
         yield return new WaitForSecondsRealtime(0.5f);
-
         Time.timeScale = timeScaleObjective;
     } 
 
     // Update the timescale smoothly for smooth slow mo effects in FixedUpdate
     void RunTimeScaleUpdate()
     {
-        
         if (FastApproximately(Time.timeScale, timeScaleObjective, 0.06f) || timeScaleObjective == Time.timeScale)
             Time.timeScale = timeScaleObjective;
         else
             Time.timeScale += actualTimeScaleUpdateSmoothness * Mathf.Sign(timeScaleObjective - Time.timeScale);
 
+
         if (Time.timeScale <= minTimeScale)
             Time.timeScale = minTimeScale;
-
-        //Debug.Log(Time.timeScale);
     }
 
 
