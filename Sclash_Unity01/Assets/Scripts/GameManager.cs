@@ -256,6 +256,7 @@ public class GameManager : MonoBehaviour
             playerStats.ResetValues();
 
             playerAnimations.spriteRenderer.color = playersColors[i];
+            playerAnimations.legsSpriteRenderer.color = playersColors[i];
             playerAttack.attackSign.GetComponent<ParticleSystem>().startColor = attackSignColors[i];
         }
     }
@@ -403,6 +404,14 @@ public class GameManager : MonoBehaviour
 
         if (score[playerNum - 1] >= scoreToWin)
         {
+            /*
+            for (int i =0; i < playersList.Count; i++)
+            {
+                playersList[i].GetComponent<PlayerStats>().canRegenStamina = false;
+            }
+            */
+
+
             audioManager.WindOn();
             yield return new WaitForSecondsRealtime(2f);
 

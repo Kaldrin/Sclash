@@ -19750,7 +19750,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 8300000, guid: b94307d4a9d6c4743bc79a64047eb713, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.4
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -21248,11 +21248,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68cf80e6d0bcb7346883b38008445b77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EmittersToStartListeningTo:
-  - {fileID: 519420030}
-  EmittersToStopListeningTo: []
-  isDefaultListener: 1
-  listenerId: 0
 --- !u!114 &519420030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21265,19 +21260,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 655c456b2e5f748468a09c407c2fbed0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_listeners:
-    initialListenerList:
-    - {fileID: 519420029}
-    useDefaultListeners: 1
-  isEnvironmentAware: 0
-  isStaticObject: 0
-  m_Collider: {fileID: 0}
-  m_positionOffsetData:
-    KeepMe: 0
-    positionOffset: {x: 0, y: 0, z: 0}
-  isRegistered: 1
-  m_posOffsetData: {fileID: 0}
-  listenerMask: 1
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -49479,7 +49461,6 @@ MonoBehaviour:
   menuManagerName: GlobalManager
   cameraManager: {fileID: 255681585}
   timeBeforeBattleCamera: 3
-  drawText: {fileID: 1229062924}
   mainMenu: {fileID: 1081475827}
   blurPanel: {fileID: 335762532}
   paused: 0
@@ -61192,7 +61173,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 8300000, guid: b94307d4a9d6c4743bc79a64047eb713, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.4
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -86567,7 +86548,7 @@ PrefabInstance:
     - target: {fileID: 8615812617494039648, guid: 35c915b42d677b5409603355b575b40d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.001
       objectReference: {fileID: 0}
     - target: {fileID: 8615812617494039648, guid: 35c915b42d677b5409603355b575b40d,
         type: 3}

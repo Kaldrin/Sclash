@@ -61,7 +61,7 @@ public class PlayerStats : MonoBehaviour
         staminaBarsOpacity = 1,
         oldStamina = 0;
 
-    bool canRegenStamina = true;
+    [HideInInspector] public bool canRegenStamina = true;
 
     
     [SerializeField] Color
@@ -231,7 +231,8 @@ public class PlayerStats : MonoBehaviour
         // DETECT STAMINA CHARGE UP
         if (Mathf.FloorToInt(oldStamina) < Mathf.FloorToInt(stamina))
         {
-            staminaBarCharged.Play();
+            if (!gameManager.playerDead)
+                staminaBarCharged.Play();
         }
 
         oldStamina = stamina;
@@ -314,6 +315,7 @@ public class PlayerStats : MonoBehaviour
         stamina = maxStamina;
         staminaSlider.gameObject.SetActive(true);
         dead = false;
+        canRegenStamina = true;
 
         playerAttack.parrying = false;
         playerAttack.isAttacking = false;

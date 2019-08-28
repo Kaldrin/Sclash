@@ -123,10 +123,25 @@ public class AudioManager : MonoBehaviour
         if (menuMusicSource.volume > menuMusicObjective)
         {
             menuMusicSource.volume += -musicFadeSpeed;
+
+
+            if (menuMusicSource.volume <= menuMusicObjective)
+            {
+                menuMusicSource.volume = menuMusicObjective;
+                menuMusicFinishedFade = true;
+                menuMusicSource.volume = menuMusicObjective;
+            }
         }
         else if (menuMusicSource.volume < menuMusicObjective)
         {
             menuMusicSource.volume += musicFadeSpeed;
+
+            if (menuMusicSource.volume >= menuMusicObjective)
+            {
+                menuMusicSource.volume = menuMusicObjective;
+                menuMusicFinishedFade = true;
+                menuMusicSource.volume = menuMusicObjective;
+            }
         }
         else if (Mathf.Abs(menuMusicSource.volume - menuMusicObjective) < volumeComparisonTolerance)
         {

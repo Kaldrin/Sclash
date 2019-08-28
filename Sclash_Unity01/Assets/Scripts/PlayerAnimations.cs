@@ -15,11 +15,18 @@ public class PlayerAnimations : MonoBehaviour
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [SerializeField] Rigidbody2D rigid = null;
-    [SerializeField] Animator animator = null;
-    [SerializeField] public SpriteRenderer spriteRenderer = null;
+    [SerializeField] Animator
+        animator = null,
+        legsAnimator = null;
+
+    [SerializeField] public SpriteRenderer
+        spriteRenderer = null,
+        legsSpriteRenderer = null;
+
     PlayerAttack playerAttack = null;
     PlayerStats playerStats = null;
-
+    PlayerMovement playerMovements = null;
+    
 
 
 
@@ -31,13 +38,13 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
-
     // FX
     [Header("FX")]
     [SerializeField] public TrailRenderer swordTrail = null;
     [SerializeField] float
         lightAttackSwordTrailWidth = 1.3f,
         heavyAttackSwordTrailWidth = 2.3f;
+
     [SerializeField] Color
         lightAttackColor = Color.blue,
         heavyAttackColor = Color.red;
@@ -45,9 +52,20 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
+
     // SPRITE COLORS
     [Header("SPRITE COLORS")]
     [SerializeField] float untouchableFrameOpacity = 0.4f;
+
+
+
+
+
+    // ANIMATION OBJECTS
+    [Header("ANIMATION OBJECTS")]
+    [SerializeField] GameObject legsMask = null;
+
+
 
 
 
@@ -66,6 +84,7 @@ public class PlayerAnimations : MonoBehaviour
         // Get player's components
         playerAttack = GetComponent<PlayerAttack>();
         playerStats = GetComponent<PlayerStats>();
+        playerMovements = GetComponent<PlayerMovement>();
 
 
         //canAttack = true;
@@ -77,6 +96,7 @@ public class PlayerAnimations : MonoBehaviour
         UpdateAnims();
         UpdateFX();
         UpdateAnimStamina(playerStats.stamina);
+        UpdateChargeWalk();
     }
 
     // FixedUpdate is called 30 times per second
@@ -100,9 +120,16 @@ public class PlayerAnimations : MonoBehaviour
 
 
         if ((rigid.velocity.x * -transform.localScale.x) < 0)
+        {
             animator.SetFloat("WalkDirection", 0);
+            legsAnimator.SetFloat("WalkDirection", 0);
+        }
         else
+        {
             animator.SetFloat("WalkDirection", 1);
+            legsAnimator.SetFloat("WalkDirection", 1);
+        }
+            
 
 
 
@@ -242,6 +269,20 @@ public class PlayerAnimations : MonoBehaviour
     {
         animator.SetBool("Charging", false);
     }
+
+    // Update charge walking anim
+    void UpdateChargeWalk()
+    {
+        if (playerAttack.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
+        {
+            legsMask.SetActive(true);
+        }
+        else
+        {
+            legsMask.SetActive(false);
+        }
+    }
+
 
 
 
