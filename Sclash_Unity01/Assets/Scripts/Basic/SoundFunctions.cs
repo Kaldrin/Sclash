@@ -76,7 +76,7 @@ public class SoundFunctions : MonoBehaviour {
     }
 
     // Activate / deactivate an audiosource (Music, ambiance, etc)
-    public void SetAudioActiveFromSource(AudioSource audioSource, bool state)
+    public void SetAudioActiveFromSource(AudioSource audioSource, bool state, bool loop)
     {
         AudioSource soundObject = null;
 
@@ -89,7 +89,7 @@ public class SoundFunctions : MonoBehaviour {
                 soundObject.Play();
             else
                 soundObject.Stop();
-            soundObject.loop = state;
+            soundObject.loop = loop;
         }
         else
             Debug.Log("AudioSource '" + audioSource + "' could'nt be found in the scene");

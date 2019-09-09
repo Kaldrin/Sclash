@@ -112,9 +112,16 @@ public class GameManager : MonoBehaviour
 
 
 
+    // CHEATS FOR DEVELOPMENT PURPOSES
+    [Header("CHEATS")]
+    [SerializeField] public bool cheatCodes = false;
 
 
-    
+
+
+
+
+
 
 
 
@@ -219,20 +226,25 @@ public class GameManager : MonoBehaviour
 
     IEnumerator DrawSabersCoroutine(int playerNum)
     {
+        
         yield return new WaitForSecondsRealtime(playersList[playerNum - 1].GetComponent<PlayerAttack>().drawDuration + 0.5f);
+        Debug.Log(audioManager.battleMusicOn);
 
-        bool allPlayersHaveDrawn = true;
-
-        for (int i = 0; i < playersList.Count; i++)
+        if (!audioManager.battleMusicOn)
         {
-            if (!playersList[i].GetComponent<PlayerAttack>().hasDrawn)
-                allPlayersHaveDrawn = false;
-        }
+            bool allPlayersHaveDrawn = true;
+
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                if (!playersList[i].GetComponent<PlayerAttack>().hasDrawn)
+                    allPlayersHaveDrawn = false;
+            }
 
 
-        if (allPlayersHaveDrawn)
-        {
-            audioManager.BattleMusicOn();
+            if (allPlayersHaveDrawn)
+            {
+                audioManager.BattleMusicOn();
+            }
         }
     }
 
@@ -281,10 +293,11 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ShowScore());
         roundLeaves.gameObject.SetActive(true);
         roundLeaves.Play();
+        audioManager.adjustVolumeOnDistance = true;
 
         yield return new WaitForSeconds(1.5f);
 
-
+        audioManager.UpdatePhaseMusic();
         ResetPlayers();
 
 
@@ -356,6 +369,7 @@ public class GameManager : MonoBehaviour
 
         roundLeaves.Play();
 
+
         yield return new WaitForSecondsRealtime(1.5f);
 
 
@@ -373,6 +387,7 @@ public class GameManager : MonoBehaviour
 
         menuManager.mainMenu.SetActive(true);
 
+        audioManager.ResetMusicPhase();
         audioManager.MenuMusicOn();
         ResetPlayers();
         ResetScore();
@@ -419,6 +434,7 @@ public class GameManager : MonoBehaviour
             menuManager.winMessage.SetActive(true);
             menuManager.winName.text = playerNames[playerNum - 1];
             menuManager.winName.color = playersColors[playerNum - 1];
+            audioManager.adjustVolumeOnDistance = false;
 
             for (int i = 0; i < playersList.Count; i++)
             {

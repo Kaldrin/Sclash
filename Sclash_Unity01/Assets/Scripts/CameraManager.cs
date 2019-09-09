@@ -33,12 +33,13 @@ public class CameraManager : MonoBehaviour
         actualZoomSmoothDuration = 1f,
         battleZoomSmoothDuration = 0.25f,
         cinematicZoomSmoothDuration = 1f;
-    [SerializeField] public float 
+    [SerializeField]
+    public float
         cinematicZoomSpeed = 5,
         battleZoomSpeed = 20;
-    float
-        givenDistanceBetweenPlayers = 0,
-        distanceBetweenPlayers = 0;
+    public float distanceBetweenPlayers = 0;
+    float givenDistanceBetweenPlayers = 0;
+        
     [HideInInspector] public float actualZoomSpeed = 0;
     Vector3 currentZoomSpeed = new Vector3(0, 0, 0);
     [HideInInspector] public Vector3 cameraBasePos = new Vector3(0, 0, 0);

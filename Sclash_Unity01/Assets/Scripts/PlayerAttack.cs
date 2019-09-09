@@ -242,7 +242,6 @@ public class PlayerAttack : MonoBehaviour
 
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
-    [SerializeField] bool cheatCodes = false;
     [SerializeField] KeyCode
         clashCheatKey = KeyCode.Alpha1,
         deathCheatKey = KeyCode.Alpha2,
@@ -325,10 +324,11 @@ public class PlayerAttack : MonoBehaviour
             }
 
 
-            if (!hasDrawn)
+            if (!hasDrawn && !isDrawing)
                 drawText.SetActive(true);
             else
                 drawText.SetActive(false);
+
 
             drawText.transform.localScale = new Vector3(drawTextScale.x * transform.localScale.x, drawTextScale.y, drawTextScale.z);
 
@@ -339,7 +339,7 @@ public class PlayerAttack : MonoBehaviour
 
 
         // Cheatcodes to use for development purposes
-        if (cheatCodes)
+        if (gameManager.cheatCodes)
             Cheats();
     }
 
@@ -629,7 +629,6 @@ public class PlayerAttack : MonoBehaviour
             if (g != gameObject)
             {
                 enemyDead = g.GetComponent<PlayerStats>().TakeDamage(gameObject, chargeLevel);
-                Debug.Log("EnemyTouched");
             }   
         }
     }
@@ -766,7 +765,6 @@ public class PlayerAttack : MonoBehaviour
 
         //activeKickInput = 0;
         playerAnimations.TriggerKick(true);
-        
         yield return new WaitForSeconds(kickDuration);
 
         playerAnimations.TriggerKick(false);
@@ -817,35 +815,39 @@ public class PlayerAttack : MonoBehaviour
     // The player have been kicked
     public void Kicked()
     {
-        // FX
-        kickedFX.SetActive(false);
-        kickedFX.SetActive(true);
+        if (!kickFrame)
+        {
+            // FX
+            kickedFX.SetActive(false);
+            kickedFX.SetActive(true);
 
-        charging = false;
-        isAttackRecovering = false;
-        isAttacking = false;
-        canCharge = false;
-        activeFrame = false;
-        parrying = false;
-        kicking = false;
-        isDashing = true;
-        clashed = true;
-        kicked = true;
+            charging = false;
+            isAttackRecovering = false;
+            isAttacking = false;
+            canCharge = false;
+            activeFrame = false;
+            parrying = false;
+            kicking = false;
+            isDashing = true;
+            clashed = true;
+            kicked = true;
 
-        chargeLevel = 1;
+            chargeLevel = 1;
 
-        dashDirection = transform.localScale.x;
-        actualDashDistance = kickKnockbackDistance;
-        initPos = transform.position;
-        targetPos = transform.position + new Vector3(actualDashDistance * dashDirection, 0, 0);
+            dashDirection = transform.localScale.x;
+            actualDashDistance = kickKnockbackDistance;
+            initPos = transform.position;
+            targetPos = transform.position + new Vector3(actualDashDistance * dashDirection, 0, 0);
 
-        playerAnimations.CancelCharge();
-        playerAnimations.Clashed(clashed);
+            playerAnimations.CancelCharge();
+            playerAnimations.Clashed(clashed);
 
-        playerStats.StaminaCost(kickedStaminaLoss);
+            playerStats.StaminaCost(kickedStaminaLoss);
 
-        // Sound
-        audioManager.Clash();
+            // Sound
+            audioManager.Clash();
+            audioManager.BattleEvent();
+        }
     }
 
 
@@ -893,6 +895,7 @@ public class PlayerAttack : MonoBehaviour
 
         // Sound
         audioManager.Clash();
+        audioManager.BattleEvent();
 
         yield return new WaitForSeconds(0f);
     }

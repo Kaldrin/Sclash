@@ -415,6 +415,7 @@ public class PlayerStats : MonoBehaviour
 
         // Sound
         audioManager.SuccessfulAttack();
+        audioManager.BattleEvent();
 
 
         playerAttack.playerCollider.isTrigger = true;
