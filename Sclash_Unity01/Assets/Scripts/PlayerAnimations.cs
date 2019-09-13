@@ -63,7 +63,7 @@ public class PlayerAnimations : MonoBehaviour
 
     // ANIMATION OBJECTS
     [Header("ANIMATION OBJECTS")]
-    [SerializeField] GameObject legsMask = null;
+    [SerializeField] public GameObject legsMask = null;
 
 
 
