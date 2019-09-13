@@ -129,7 +129,7 @@ public class PlayerStats : MonoBehaviour
         ResetValues();
     }
     
-    // FixedUpdate is called 30 times per second
+    // FixedUpdate is called 50 times per second
     void FixedUpdate()
     {
         if (!gameManager.paused)
@@ -415,7 +415,7 @@ public class PlayerStats : MonoBehaviour
 
         // Sound
         audioManager.SuccessfulAttack();
-        audioManager.BattleEvent();
+        audioManager.BattleEventIncreaseIntensity();
 
 
         playerAttack.playerCollider.isTrigger = true;

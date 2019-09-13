@@ -179,16 +179,15 @@ public class GameManager : MonoBehaviour
         cameraManager.FindPlayers();
     }
 
-    // Begins the StartGame coroutine, this function is called by the menu button
-    public void Play()
+    // Begins the StartMatch coroutine, this function is called by the menu button Sclash
+    public void StartMatch()
     {
-        StartCoroutine(StartGame());
+        StartCoroutine(StartMatchCoroutine());
     }
 
-    // Start the game
-    IEnumerator StartGame()
+    // Starts the match, activates the camera cinematic zoom and then switches to battle camera
+    IEnumerator StartMatchCoroutine()
     {
-        // SOUND
         audioManager.FindPlayers();
 
 
@@ -207,7 +206,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
 
-        audioManager.matchBegins.Play();
+        audioManager.matchBeginsRandomSoundSource.Play();
         cameraManager.FindPlayers();
 
 
@@ -219,16 +218,17 @@ public class GameManager : MonoBehaviour
         cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
     }
 
-    public void DrawSabers(int playerNum)
+    // Starts the DrawSabersCoroutine
+    public void SaberDrawn(int playerNum)
     {
-        StartCoroutine(DrawSabersCoroutine(playerNum));
+        StartCoroutine(SaberDrawnCoroutine(playerNum));
     }
 
-    IEnumerator DrawSabersCoroutine(int playerNum)
+    // A saber has been drawn, stores it and checks if both players have drawn
+    IEnumerator SaberDrawnCoroutine(int playerNum)
     {
-        
         yield return new WaitForSecondsRealtime(playersList[playerNum - 1].GetComponent<PlayerAttack>().drawDuration + 0.5f);
-        Debug.Log(audioManager.battleMusicOn);
+
 
         if (!audioManager.battleMusicOn)
         {
@@ -296,18 +296,18 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ShowScore());
         roundLeaves.gameObject.SetActive(true);
         roundLeaves.Play();
-        audioManager.adjustVolumeOnDistance = true;
+        audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = true;
 
         yield return new WaitForSeconds(1.5f);
 
-        audioManager.UpdatePhaseMusic();
+        audioManager.UpdateMusicPhaseThatShouldPlayDependingOnScore();
         ResetPlayers();
 
 
         yield return new WaitForSeconds(1f);
 
 
-        audioManager.roundBegins.Play();
+        audioManager.roundBeginsRandomSoundSource.Play();
     }
 
     // Executed when a player dies
@@ -390,7 +390,7 @@ public class GameManager : MonoBehaviour
 
         menuManager.mainMenu.SetActive(true);
 
-        audioManager.ResetMusicPhase();
+        audioManager.ResetBattleMusicPhase();
         audioManager.MenuMusicOn();
         ResetPlayers();
         ResetScore();
@@ -437,7 +437,7 @@ public class GameManager : MonoBehaviour
             menuManager.winMessage.SetActive(true);
             menuManager.winName.text = playerNames[playerNum - 1];
             menuManager.winName.color = playersColors[playerNum - 1];
-            audioManager.adjustVolumeOnDistance = false;
+            audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
 
             for (int i = 0; i < playersList.Count; i++)
             {

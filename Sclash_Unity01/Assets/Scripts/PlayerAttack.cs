@@ -441,12 +441,12 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // Trigger draw
+    // Triggers saber draw and informs the game manager
     IEnumerator Draw()
     {
         isDrawing = true;
         playerAnimations.TriggerDraw();
-        gameManager.DrawSabers(playerStats.playerNum);
+        gameManager.SaberDrawn(playerStats.playerNum);
         yield return new WaitForSecondsRealtime(drawDuration);
         hasDrawn = true;
         isDrawing = false;
@@ -460,6 +460,7 @@ public class PlayerAttack : MonoBehaviour
 
 
     //CHARGE
+    // Manages the detection of attack charge inputs
     void ManageCharge()
     {
         //Player presses attack button
@@ -846,7 +847,7 @@ public class PlayerAttack : MonoBehaviour
 
             // Sound
             audioManager.Clash();
-            audioManager.BattleEvent();
+            audioManager.BattleEventIncreaseIntensity();
         }
     }
 
@@ -895,7 +896,7 @@ public class PlayerAttack : MonoBehaviour
 
         // Sound
         audioManager.Clash();
-        audioManager.BattleEvent();
+        audioManager.BattleEventIncreaseIntensity();
 
         yield return new WaitForSeconds(0f);
     }
