@@ -26,7 +26,6 @@ public class ChooseTip : MonoBehaviour
     {
         while (true)
         {
-            Debug.Log("Change tip");
             int randomIndex = Random.Range(0, tips.tipsList.Count);
 
 

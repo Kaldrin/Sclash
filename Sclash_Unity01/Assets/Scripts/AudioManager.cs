@@ -63,15 +63,9 @@ public class AudioManager : MonoBehaviour
     [HideInInspector] public bool
         adjustBattleMusicVolumeDepdendingOnPlayersDistance = true,
         battleMusicOn = false;
-    bool
-        menuMusicFinishedFade = false,
-        battleMusicFinishedFade = false,
-        windFinishedFade = false,
-        shouldChangeMusicPhase = false;
-    bool[] battleMusicFinishedFades = { false, false, false };
+    bool shouldChangeMusicPhase = false;
 
     int
-        randomMusicChoice = 0,
         chosenMusic = 0,
         currentPhase = 0,
         currentStem = 0;
@@ -181,11 +175,12 @@ public class AudioManager : MonoBehaviour
 
 
         // Adjusts phase 1 volume depnding on players' distance from each other
-        Debug.Log(battleMusicOn);
+        
         if (battleMusicOn)
         {
             if (currentPhase < 1)
             {
+                Debug.Log(adjustBattleMusicVolumeDepdendingOnPlayersDistance);
                 AdjustBattleMusicVolumeDependingOnPlayersDistance();
             }
         }
@@ -242,7 +237,7 @@ public class AudioManager : MonoBehaviour
 
     // MUSICS ACTIVATION
     // Activates menu music
-    public void MenuMusicOn()
+    public void ActivateMenuMusic()
     {
         soundFunctions.SetAudioActiveFromSource(menuMusicAudioSource, true, true);
 
@@ -253,17 +248,19 @@ public class AudioManager : MonoBehaviour
     }  
 
     // Activates battle music
-    public void BattleMusicOn()
+    public void ActivateBattleMusic()
     {
         soundFunctions.SetAudioActiveFromSource(battleMusicPhaseSources[0], true, false);
 
         battleMusicOn = true;
+        adjustBattleMusicVolumeDepdendingOnPlayersDistance = true;
+
         menuMusicVolumeObjective = 0;
         battleMusicsVolumeObjectives[0] = battleMusicMaxVolume;
     }
 
     // Activates wind and deactivates other musics
-    public void WindOn()
+    public void ActivateWind()
     {
         soundFunctions.SetAudioActiveFromSource(windAudioSource, true, true);
 
@@ -296,68 +293,70 @@ public class AudioManager : MonoBehaviour
     {
         // MENU MUSIC
         // Adjusts smoothly the menu music volume depending on its volume objective and checks if it's done modifying it
-        if (menuMusicAudioSource.volume > menuMusicVolumeObjective)
+        if (menuMusicAudioSource.volume != menuMusicVolumeObjective)
         {
-            menuMusicAudioSource.volume += -musicVolumeFadeSpeed;
+            if (menuMusicAudioSource.volume > menuMusicVolumeObjective)
+            {
+                menuMusicAudioSource.volume += -musicVolumeFadeSpeed;
 
 
-            if (menuMusicAudioSource.volume <= menuMusicVolumeObjective)
+                if (menuMusicAudioSource.volume <= menuMusicVolumeObjective)
+                {
+                    menuMusicAudioSource.volume = menuMusicVolumeObjective;
+                }
+            }
+            else if (menuMusicAudioSource.volume < menuMusicVolumeObjective)
+            {
+                menuMusicAudioSource.volume += musicVolumeFadeSpeed;
+
+                if (menuMusicAudioSource.volume >= menuMusicVolumeObjective)
+                {
+                    menuMusicAudioSource.volume = menuMusicVolumeObjective;
+                }
+            }
+            else if (Mathf.Abs(menuMusicAudioSource.volume - menuMusicVolumeObjective) < volumeDifferenceToleranceToFinishVolumeInterp)
             {
                 menuMusicAudioSource.volume = menuMusicVolumeObjective;
-                menuMusicFinishedFade = true;
             }
         }
-        else if (menuMusicAudioSource.volume < menuMusicVolumeObjective)
-        {
-            menuMusicAudioSource.volume += musicVolumeFadeSpeed;
-
-            if (menuMusicAudioSource.volume >= menuMusicVolumeObjective)
-            {
-                menuMusicAudioSource.volume = menuMusicVolumeObjective;
-                menuMusicFinishedFade = true;
-            }
-        }
-        else if (Mathf.Abs(menuMusicAudioSource.volume - menuMusicVolumeObjective) < volumeDifferenceToleranceToFinishVolumeInterp)
-        {
-            menuMusicFinishedFade = true;
-            menuMusicAudioSource.volume = menuMusicVolumeObjective;
-        }
+        
 
 
 
 
         // BATTLE MUSIC
         // Adjusts smoothly the battle music volume depending on its volume objective and checks if it's done modifying it, for each of the battle musuc audio sources
+        
         for (int i = 0; i < battleMusicPhaseSources.Length; i++)
         {
-            // If the current volume of the battle music audio source is superior to its volume objective
-            if (battleMusicPhaseSources[i].volume > battleMusicsVolumeObjectives[i])
+            if (battleMusicPhaseSources[i].volume != battleMusicsVolumeObjectives[i])
             {
-                battleMusicPhaseSources[i].volume += - musicVolumeFadeSpeed;
+                // If the current volume of the battle music audio source is superior to its volume objective
+                if (battleMusicPhaseSources[i].volume > battleMusicsVolumeObjectives[i])
+                {
+                    battleMusicPhaseSources[i].volume += -musicVolumeFadeSpeed;
 
 
-                if (battleMusicPhaseSources[i].volume <= battleMusicsVolumeObjectives[i])
+                    if (battleMusicPhaseSources[i].volume <= battleMusicsVolumeObjectives[i])
+                    {
+                        battleMusicPhaseSources[i].volume = battleMusicsVolumeObjectives[i];
+                    }
+                }
+                // If the current volume of the battle music audio source is inferior to its volume objective
+                else if (battleMusicPhaseSources[i].volume < battleMusicsVolumeObjectives[i])
+                {
+                    battleMusicPhaseSources[i].volume += musicVolumeFadeSpeed;
+
+
+                    if (battleMusicPhaseSources[i].volume >= battleMusicsVolumeObjectives[i])
+                    {
+                        battleMusicPhaseSources[i].volume = battleMusicsVolumeObjectives[i];
+                    }
+                }
+                else if (Mathf.Abs(battleMusicPhaseSources[i].volume - battleMusicsVolumeObjectives[i]) < volumeDifferenceToleranceToFinishVolumeInterp)
                 {
                     battleMusicPhaseSources[i].volume = battleMusicsVolumeObjectives[i];
-                    battleMusicFinishedFades[i] = true;
                 }
-            }
-            // If the current volume of the battle music audio source is inferior to its volume objective
-            else if (battleMusicPhaseSources[i].volume < battleMusicsVolumeObjectives[i])
-            {
-                battleMusicPhaseSources[i].volume += musicVolumeFadeSpeed;
-
-
-                if (battleMusicPhaseSources[i].volume >= battleMusicsVolumeObjectives[i])
-                {
-                    battleMusicPhaseSources[i].volume = battleMusicsVolumeObjectives[i];
-                    battleMusicFinishedFades[i] = true;
-                }
-            }
-            else if (Mathf.Abs(battleMusicPhaseSources[i].volume - battleMusicsVolumeObjectives[i]) < volumeDifferenceToleranceToFinishVolumeInterp)
-            {
-                battleMusicFinishedFades[i] = true;
-                battleMusicPhaseSources[i].volume = battleMusicsVolumeObjectives[i];
             }
         }
 
@@ -367,45 +366,34 @@ public class AudioManager : MonoBehaviour
 
         // WIND
         // Adjusts smoothly the wind track volume depending on its volume objective and checks if it's done modifying it
-        // If the current volume of the wind audio source is superior to its volume objective
-        if (windAudioSource.volume > windVolumeObjective)
+        if (windAudioSource.volume != windVolumeObjective)
         {
-            windAudioSource.volume += - musicVolumeFadeSpeed;
+            // If the current volume of the wind audio source is superior to its volume objective
+            if (windAudioSource.volume > windVolumeObjective)
+            {
+                windAudioSource.volume += -musicVolumeFadeSpeed;
 
-            if (windAudioSource.volume <= windVolumeObjective)
+                if (windAudioSource.volume <= windVolumeObjective)
+                {
+                    windAudioSource.volume = windVolumeObjective;
+                }
+            }
+            // If the current volume of the wind audio source is inferior to its volume objective
+            else if (windAudioSource.volume < windVolumeObjective)
+            {
+                windAudioSource.volume += musicVolumeFadeSpeed;
+
+
+                if (windAudioSource.volume >= windVolumeObjective)
+                {
+                    windAudioSource.volume = windVolumeObjective;
+                }
+            }
+            else if (Mathf.Abs(windAudioSource.volume - windVolumeObjective) < volumeDifferenceToleranceToFinishVolumeInterp)
             {
                 windAudioSource.volume = windVolumeObjective;
-                windFinishedFade = true;
             }
         }
-        // If the current volume of the wind audio source is inferior to its volume objective
-        else if (windAudioSource.volume < windVolumeObjective)
-        {
-            windAudioSource.volume += musicVolumeFadeSpeed;
-
-
-            if (windAudioSource.volume >= windVolumeObjective)
-            {
-                windAudioSource.volume = windVolumeObjective;
-                windFinishedFade = true;
-            }
-        }
-        else if (Mathf.Abs(windAudioSource.volume - windVolumeObjective) < volumeDifferenceToleranceToFinishVolumeInterp)
-        {
-            windFinishedFade = true;
-            windAudioSource.volume = windVolumeObjective;
-        }
-
-        /*
-        //battleMusicFinishedFade = true;
-        for (int i = 0; i < battleMusicFinishedFades.Length; i++)
-        {
-            if (!battleMusicFinishedFades[i])
-            {
-                battleMusicFinishedFade = false;
-            }
-        }
-        */
     }
 
     // Adjusts battle music volume depending on distance between players, called in FixedUpdate
@@ -413,6 +401,7 @@ public class AudioManager : MonoBehaviour
     {
         if (adjustBattleMusicVolumeDepdendingOnPlayersDistance)
         {
+            
             if (currentPhase == 0)
             {
                 //battleMusicsVolumeObjectives[0] = ((cameraManager.distanceBetweenPlayers - playersDistanceForVolumeLimits.y) / (playersDistanceForVolumeLimits.x - playersDistanceForVolumeLimits.y)) * battleMusicMaxVolume;
@@ -444,7 +433,30 @@ public class AudioManager : MonoBehaviour
     public void BattleEventIncreaseIntensity()
     {
         intensity++;
-        //Debug.Log(intensity);
+        Debug.Log(intensity);
+        UpdateMusicPhaseImmediatlyDependingOnBattleIntensity();
+    }
+
+    // Updates immediatly the currently playing music phase depending on the level of intensity in the battle
+    void UpdateMusicPhaseImmediatlyDependingOnBattleIntensity()
+    {
+        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+
+
+        // Modifies the phase that will play at the next stem dependng on the score' proximity to the win score
+        if (intensity > 5)
+        {
+            ImmediatlySwitchChosenPhase(2);
+            Debug.Log("Phase 3");
+        }
+        if (intensity > 1)
+        {
+            ImmediatlySwitchChosenPhase(1);
+        }
+        else
+        {
+            //ModifyMusicPhaseToPlayParameters(0, 0);
+        }
     }
 
     // Modifies music parameters for next music change
@@ -514,6 +526,26 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+
+    void ImmediatlySwitchChosenPhase(int phase)
+    {
+
+        float stemTime = battleMusicPhaseSources[0].time;
+
+        // Increases phase number
+        ModifyMusicPhaseToPlayParameters(phase, currentStem);
+        shouldChangeMusicPhase = true;
+        UpdateCurrentlyPlayingMusicImmediatly();
+
+
+        // Keeps the current time of the stem
+        for (int i = 0; i < battleMusicPhaseSources.Length; i++)
+        {
+            battleMusicPhaseSources[i].time = stemTime;
+        }
+    }
+
+
     // Applies music changes immediatly to the audio sources
     void UpdateCurrentlyPlayingMusicImmediatly()
     {
@@ -531,7 +563,6 @@ public class AudioManager : MonoBehaviour
                 
                 battleMusicPhaseSources[i].clip = musicDataBase.musicsList[chosenMusic].phases[i].stems[currentStem].stemAudio;
                 
-                battleMusicFinishedFades[i] = false;
 
                 if ( i != currentPhase)
                 {

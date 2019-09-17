@@ -172,7 +172,7 @@ public class GameManager : MonoBehaviour
     {
         // SOUND
         // Set on the menu music
-        audioManager.MenuMusicOn();
+        audioManager.ActivateMenuMusic();
 
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
@@ -200,7 +200,7 @@ public class GameManager : MonoBehaviour
 
         mainMenu.SetActive(false);
         blurPanel.SetActive(false);
-        audioManager.WindOn();
+        audioManager.ActivateWind();
 
         
         yield return new WaitForSeconds(0.5f);
@@ -243,7 +243,7 @@ public class GameManager : MonoBehaviour
 
             if (allPlayersHaveDrawn)
             {
-                audioManager.BattleMusicOn();
+                audioManager.ActivateBattleMusic();
             }
         }
     }
@@ -272,7 +272,9 @@ public class GameManager : MonoBehaviour
             playerAnimations.spriteRenderer.sortingOrder += 10 * i;
             playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
             playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
-            playerAttack.attackSign.GetComponent<ParticleSystem>().startColor = attackSignColors[i];
+            ParticleSystem attackSignParticles = playerAttack.attackSign.GetComponent<ParticleSystem>();
+            ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
+            attackSignParticlesMain.startColor = attackSignColors[i];
         }
     }
 
@@ -310,22 +312,11 @@ public class GameManager : MonoBehaviour
         audioManager.roundBeginsRandomSoundSource.Play();
     }
 
-    // Executed when a player dies
+    // Executed when a player dies, starts the score display and next round parameters
     public void Death(int playerNum)
     {
         playerDead = true;
-
-
-        // Canvas
-        /*
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            playersList[i].GetComponent<PlayerStats>().staminaSlider.gameObject.SetActive(false);
-        }
-        */
-        
-
-        StartCoroutine(Score(playerNum));
+        StartCoroutine(UpdatePlayersScores(playerNum));
     }
 
     // Reset all the players' variables
@@ -354,12 +345,14 @@ public class GameManager : MonoBehaviour
 
 
     // RESTART GAME
-    public void RestartGame()
+    // Calls ResetGame coroutine, called by main menu button at the end of the match
+    public void ResetGame()
     {
-        StartCoroutine(RestartGameCoroutine());
+        StartCoroutine(ResetGameCoroutine());
     }
-
-    IEnumerator RestartGameCoroutine()
+    
+    // Resets the match settings and values for a next match
+    IEnumerator ResetGameCoroutine()
     {
         gameStarted = false;
         playerDead = false;
@@ -391,7 +384,7 @@ public class GameManager : MonoBehaviour
         menuManager.mainMenu.SetActive(true);
 
         audioManager.ResetBattleMusicPhase();
-        audioManager.MenuMusicOn();
+        audioManager.ActivateMenuMusic();
         ResetPlayers();
         ResetScore();
     }
@@ -403,7 +396,7 @@ public class GameManager : MonoBehaviour
 
 
     // SCORE
-    // Display the current score for a given amount of time
+    // Displays the current score for a given amount of time
     IEnumerator ShowScore()
     {
         scoreObject.SetActive(true);
@@ -411,10 +404,9 @@ public class GameManager : MonoBehaviour
         scoreObject.SetActive(false);
     }
 
-    // Update score
-    IEnumerator Score(int playerNum)
+    // Updates players' scores and checks if one has reached the win score
+    IEnumerator UpdatePlayersScores(int playerNum)
     {
-        
         score[playerNum - 1] += 1;
        
         yield return new WaitForSecondsRealtime(0f);
@@ -430,7 +422,7 @@ public class GameManager : MonoBehaviour
             */
 
 
-            audioManager.WindOn();
+            audioManager.ActivateWind();
             yield return new WaitForSecondsRealtime(2f);
 
             gameStarted = false;
