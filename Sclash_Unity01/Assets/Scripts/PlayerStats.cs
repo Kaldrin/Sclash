@@ -99,6 +99,16 @@ public class PlayerStats : MonoBehaviour
 
 
 
+
+
+
+
+
+
+
+
+
+
     // BASE FUNCTIONS
     void Awake()
     {
@@ -147,6 +157,7 @@ public class PlayerStats : MonoBehaviour
             deathFX.transform.localEulerAngles = new Vector3(deathFXbaseAngles.x, deathFXbaseAngles.y, deathFXbaseAngles.z);
     }
 
+    // LateUpdate is called last at each frame
     void LateUpdate()
     {
         if (!dead)

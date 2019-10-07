@@ -5,7 +5,7 @@ using UnityEngine;
 public class MapLoader : MonoBehaviour
 {
     [SerializeField] GameObject mapContainer = null;
-    [SerializeField] MapsDatabase mapsData = null;
+    [SerializeField] MapsDataBase mapsData = null;
 
     // Start is called before the first frame update
     void Start()

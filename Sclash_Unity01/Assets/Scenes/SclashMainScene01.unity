@@ -1091,7 +1091,7 @@ GameObject:
   - component: {fileID: 37698152}
   - component: {fileID: 37698153}
   m_Layer: 0
-  m_Name: Ground collider (1)
+  m_Name: GroundCollider2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1108,8 +1108,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -44.636, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1479083794}
-  m_RootOrder: 3
+  m_Father: {fileID: 494579915}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &37698153
 BoxCollider2D:
@@ -7276,7 +7276,7 @@ GameObject:
   m_Component:
   - component: {fileID: 113741091}
   m_Layer: 5
-  m_Name: Menus
+  m_Name: MENUS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15830,6 +15830,39 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &494579914
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 494579915}
+  m_Layer: 0
+  m_Name: BUG MAP
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &494579915
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494579914}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 37698152}
+  - {fileID: 1242152443}
+  - {fileID: 833287652}
+  m_Father: {fileID: 1479083794}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &505133640
 GameObject:
   m_ObjectHideFlags: 0
@@ -22458,7 +22491,7 @@ GameObject:
   - component: {fileID: 818367647}
   - component: {fileID: 818367651}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: CANVAS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22640,7 +22673,7 @@ GameObject:
   - component: {fileID: 833287652}
   - component: {fileID: 833287653}
   m_Layer: 0
-  m_Name: WallColliderRight (1)
+  m_Name: WallColliderRight2D
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22657,8 +22690,8 @@ Transform:
   m_LocalPosition: {x: 21.46, y: -43.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1479083794}
-  m_RootOrder: 5
+  m_Father: {fileID: 494579915}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &833287653
 BoxCollider2D:
@@ -26507,7 +26540,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1008748516}
   m_Layer: 0
-  m_Name: Culling
+  m_Name: CULLING
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30945,7 +30978,7 @@ GameObject:
   - component: {fileID: 1242152443}
   - component: {fileID: 1242152444}
   m_Layer: 0
-  m_Name: WallColliderLeft (1)
+  m_Name: WallColliderLeft2D
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30962,8 +30995,8 @@ Transform:
   m_LocalPosition: {x: -20.67, y: -43.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1479083794}
-  m_RootOrder: 4
+  m_Father: {fileID: 494579915}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1242152444
 BoxCollider2D:
@@ -32374,7 +32407,7 @@ PrefabInstance:
     - target: {fileID: 8615812617494039649, guid: 35c915b42d677b5409603355b575b40d,
         type: 3}
       propertyPath: m_Name
-      value: playerSpawn02
+      value: PlayerSpawn02
       objectReference: {fileID: 0}
     - target: {fileID: 8615812617494039649, guid: 35c915b42d677b5409603355b575b40d,
         type: 3}
@@ -33196,7 +33229,7 @@ GameObject:
   - component: {fileID: 1371339144}
   - component: {fileID: 1371339145}
   m_Layer: 0
-  m_Name: WallColliderLeft
+  m_Name: WallColliderLeft2D
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33213,7 +33246,7 @@ Transform:
   m_LocalPosition: {x: -21.035, y: -1.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1479083794}
+  m_Father: {fileID: 1725892386}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1371339145
@@ -35191,7 +35224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1479083794}
   m_Layer: 0
-  m_Name: Colliders
+  m_Name: COLLIDERS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35208,12 +35241,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1817123487}
-  - {fileID: 1371339144}
-  - {fileID: 1984874869}
-  - {fileID: 37698152}
-  - {fileID: 1242152443}
-  - {fileID: 833287652}
+  - {fileID: 1725892386}
+  - {fileID: 494579915}
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -40814,6 +40843,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1721744387}
   m_CullTransparentMesh: 0
+--- !u!1 &1725892385
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1725892386}
+  m_Layer: 0
+  m_Name: MAIN MAP
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1725892386
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1725892385}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1817123487}
+  - {fileID: 1371339144}
+  - {fileID: 1984874869}
+  m_Father: {fileID: 1479083794}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1733074616
 GameObject:
   m_ObjectHideFlags: 0
@@ -42215,7 +42277,7 @@ GameObject:
   - component: {fileID: 1817123487}
   - component: {fileID: 1817123488}
   m_Layer: 0
-  m_Name: Ground collider
+  m_Name: GroundCollider2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42232,7 +42294,7 @@ Transform:
   m_LocalPosition: {x: 0, y: -2.846, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1479083794}
+  m_Father: {fileID: 1725892386}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1817123488
@@ -43369,7 +43431,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1877547281}
   m_Layer: 0
-  m_Name: Map / Esthetics
+  m_Name: MAP / ESTHETICS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43939,7 +44001,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1894212901}
   m_Layer: 0
-  m_Name: playerSpawns
+  m_Name: PLAYERS SPAWNS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45507,7 +45569,7 @@ GameObject:
   - component: {fileID: 1984874869}
   - component: {fileID: 1984874870}
   m_Layer: 0
-  m_Name: WallColliderRight
+  m_Name: WallColliderRight2D
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45524,7 +45586,7 @@ Transform:
   m_LocalPosition: {x: 21.35, y: -1.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1479083794}
+  m_Father: {fileID: 1725892386}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1984874870
@@ -47664,7 +47726,7 @@ PrefabInstance:
     - target: {fileID: 8615812617494039649, guid: 35c915b42d677b5409603355b575b40d,
         type: 3}
       propertyPath: m_Name
-      value: playerSpawn01
+      value: PlayerSpawn01
       objectReference: {fileID: 0}
     - target: {fileID: 8615812617494039649, guid: 35c915b42d677b5409603355b575b40d,
         type: 3}
