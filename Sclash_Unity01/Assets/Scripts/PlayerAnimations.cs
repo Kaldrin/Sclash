@@ -49,6 +49,10 @@ public class PlayerAnimations : MonoBehaviour
         lightAttackColor = Color.blue,
         heavyAttackColor = Color.red;
 
+    [SerializeField] ParticleSystem
+        walkLeavesFront = null,
+        walkLeavesBack = null;
+
 
 
 
@@ -64,6 +68,10 @@ public class PlayerAnimations : MonoBehaviour
     // ANIMATION OBJECTS
     [Header("ANIMATION OBJECTS")]
     [SerializeField] public GameObject legsMask = null;
+
+
+
+
 
 
 
@@ -132,11 +140,30 @@ public class PlayerAnimations : MonoBehaviour
             
 
 
-
-        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > minSpeedForWalkAnim && gameManager.gameStarted)
+        // If the player is in fact moving fast enough
+        if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && gameManager.gameStarted)
+        {
             animator.SetFloat("Move", Mathf.Abs(Mathf.Sign((Input.GetAxis("Horizontal" + playerStats.playerNum)))));
+
+            if ((rigid.velocity.x * -transform.localScale.x) < 0)
+            {
+                walkLeavesFront.Stop();
+                walkLeavesBack.Play();
+            }
+            else
+            {
+                walkLeavesFront.Play();
+                walkLeavesBack.Stop();
+            }
+
+        }
+        // If the player isn't really moving
         else
+        {
             animator.SetFloat("Move", 0);
+            walkLeavesBack.Stop();
+            walkLeavesFront.Stop();
+        }
     }
 
     // Update FX's parameters in Update

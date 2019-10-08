@@ -176,6 +176,7 @@ public class PlayerAttack : MonoBehaviour
     // CLASH
     [Header("CLASH")]
     [SerializeField] float clashKnockback = 2;
+    [SerializeField] public float clashKnockbackSpeed;
     bool clashed = false;
     
 
@@ -242,8 +243,8 @@ public class PlayerAttack : MonoBehaviour
 
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
+    [SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
     [SerializeField] KeyCode
-        clashCheatKey = KeyCode.Alpha1,
         deathCheatKey = KeyCode.Alpha2,
         drawCheatKey = KeyCode.Alpha3;
 
@@ -1045,8 +1046,16 @@ public class PlayerAttack : MonoBehaviour
     {
         playerCollider.isTrigger = true;
 
-        time += Time.deltaTime * dashSpeed;
+
+        if (clashed)
+            time += Time.deltaTime * clashKnockbackSpeed;
+        else
+            time += Time.deltaTime * dashSpeed;
+
+
         transform.position = Vector3.Lerp(initPos, targetPos, time);
+
+
         if (time >= 1.0f)
         {
             EndDash();

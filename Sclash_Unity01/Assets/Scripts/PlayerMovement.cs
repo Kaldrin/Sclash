@@ -184,6 +184,8 @@ public class PlayerMovement : MonoBehaviour
         {
             if (rb.simulated == false)
                 rb.simulated = true;
+
+
             //rb.velocity = new Vector2(Input.GetAxis("Horizontal" + playerStats.playerNum) * movementsMultiplier, rb.velocity.y);
             rb.velocity = new Vector2(inputManager.playerInputs[playerStats.playerNum - 1].horizontal * movementsMultiplier, rb.velocity.y);
         }

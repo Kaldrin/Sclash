@@ -269,7 +269,7 @@ public class GameManager : MonoBehaviour
 
             playerAnimations.spriteRenderer.color = playersColors[i];
             playerAnimations.legsSpriteRenderer.color = playersColors[i];
-            playerAnimations.spriteRenderer.sortingOrder += 10 * i;
+            playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
             playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
             ParticleSystem attackSignParticles = playerAttack.attackSign.GetComponent<ParticleSystem>();
@@ -323,6 +323,7 @@ public class GameManager : MonoBehaviour
     void ResetPlayers()
     {
         GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+
 
         for (int i = 0; i < playersList.Count; i++)
         {
@@ -481,11 +482,20 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SlowMoCoroutine(slownMoDuration, slowMoTimeScale, fadeSpeed));
     }
 
-    // Slow motion for a given duration
+    // Slow motion and zoom for a given duration
     IEnumerator SlowMoCoroutine(float slowMoDuration, float slowMoTimeScale, float fadeSpeed)
     {
         actualTimeScaleUpdateSmoothness = fadeSpeed;
         timeScaleObjective = slowMoTimeScale;
+
+
+        for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
+        {
+            audioManager.battleMusicPhaseSources[i].pitch = slowMoTimeScale;
+            audioManager.battleMusicStrikesSources[i].pitch = slowMoTimeScale;
+        }
+        
+
         cameraManager.cameraState = "Event";
 
 
@@ -494,6 +504,14 @@ public class GameManager : MonoBehaviour
 
         actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
         timeScaleObjective = baseTimeScale;
+
+
+        for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
+        {
+            audioManager.battleMusicPhaseSources[i].pitch = 1;
+            audioManager.battleMusicStrikesSources[i].pitch = 1;
+        }
+
         cameraManager.cameraState = "Battle";
 
 

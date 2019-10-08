@@ -6,6 +6,7 @@ using UnityEngine;
 public struct Stem
 {
     public AudioClip stemAudio;
+    public AudioClip stemStrikesAudio;
     public List<int> stemsThatConnect;
 }
 

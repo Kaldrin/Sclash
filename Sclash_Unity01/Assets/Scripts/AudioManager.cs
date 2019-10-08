@@ -47,28 +47,44 @@ public class AudioManager : MonoBehaviour
     [Header("MUSIC")]
     [SerializeField] AudioSource menuMusicAudioSource = null;
     [SerializeField] AudioSource windAudioSource = null;
-    [SerializeField] AudioSource[] battleMusicPhaseSources = null;
+    [SerializeField] public AudioSource[]
+        battleMusicPhaseSources = null,
+        battleMusicStrikesSources = null;
 
     [SerializeField] float
         musicVolumeFadeSpeed = 0.05f,
         menuMusicMaxVolume = 0.7f,
         battleMusicMaxVolume = 1f,
-        windMaxVolume = 1f;
+        windMaxVolume = 1f,
+        battleMusicStrikesMaxVolume = 0.7f,
+        decreaseBattleIntensityEveryDuration = 5f;
     float
         menuMusicVolumeObjective = 0.7f,
         windVolumeObjective = 0,
-        volumeDifferenceToleranceToFinishVolumeInterp = 0.1f;
-    float[] battleMusicsVolumeObjectives = { 0, 0, 0 };
+        volumeDifferenceToleranceToFinishVolumeInterp = 0.1f,
+        decreaseBattleIntensityLoopStartTime = 0f;
+    float[]
+        battleMusicsVolumeObjectives = { 0, 0, 0 },
+        battleMusicsStrikesVolumeObjectives = { 0, 0, 0 };
 
     [HideInInspector] public bool
         adjustBattleMusicVolumeDepdendingOnPlayersDistance = true,
         battleMusicOn = false;
     bool shouldChangeMusicPhase = false;
 
+    [SerializeField]
+    int
+        battleIntensityLevelForPhase2 = 3,
+        battleIntensityLevelForPhase3 = 6;
+    public int currentPhase = 0;
     int
         chosenMusic = 0,
-        currentPhase = 0,
-        currentStem = 0;
+        currentStem = 0,
+        battleIntensity = 0,
+        lastIntensityLevel = 0;
+
+    
+        
 
     [SerializeField] Vector2 playersDistanceForVolumeLimits = new Vector2(25, 10);
 
@@ -102,7 +118,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] Vector2 battleMusicVolumeBounds = new Vector2(1, 0);
 
     GameObject[] players;
-    int intensity = 0;
     //float distanceBetweenPlayers = 0;
 
 
@@ -147,6 +162,10 @@ public class AudioManager : MonoBehaviour
         battleMusicPhaseSources[1].clip = musicDataBase.musicsList[chosenMusic].phases[1].stems[0].stemAudio;
         battleMusicPhaseSources[2].clip = musicDataBase.musicsList[chosenMusic].phases[2].stems[0].stemAudio;
 
+        battleMusicStrikesSources[0].clip = musicDataBase.musicsList[chosenMusic].phases[0].stems[0].stemStrikesAudio;
+        battleMusicStrikesSources[1].clip = musicDataBase.musicsList[chosenMusic].phases[1].stems[0].stemStrikesAudio;
+        battleMusicStrikesSources[2].clip = musicDataBase.musicsList[chosenMusic].phases[2].stems[0].stemStrikesAudio;
+
         // Sets the menu music volume objective at its max
         menuMusicVolumeObjective = menuMusicMaxVolume;
 
@@ -174,13 +193,12 @@ public class AudioManager : MonoBehaviour
         }
 
 
-        // Adjusts phase 1 volume depnding on players' distance from each other
-        
+        // Adjusts phase 1 volume depending on players' distance from each other
         if (battleMusicOn)
         {
             if (currentPhase < 1)
             {
-                Debug.Log(adjustBattleMusicVolumeDepdendingOnPlayersDistance);
+                //Debug.Log(adjustBattleMusicVolumeDepdendingOnPlayersDistance);
                 AdjustBattleMusicVolumeDependingOnPlayersDistance();
             }
         }
@@ -188,6 +206,16 @@ public class AudioManager : MonoBehaviour
 
         // Fades musics' volumes between them for a smooth audio rather than clear cut on / off
         InterpMusicsVolumesSmoothly();
+
+
+        // If no battle event increases intensity in a laps of time, decreases the music's intensity
+        DecreaseIntensityWithTime();
+
+
+        /*
+        Debug.Log(battleMusicsVolumeObjectives[0]);
+        Debug.Log(battleMusicsStrikesVolumeObjectives[0]);
+        */
     }
 
 
@@ -242,8 +270,19 @@ public class AudioManager : MonoBehaviour
         soundFunctions.SetAudioActiveFromSource(menuMusicAudioSource, true, true);
 
         battleMusicOn = false;
+        adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
         menuMusicVolumeObjective = menuMusicMaxVolume;
-        battleMusicsVolumeObjectives[0] = 0;
+
+
+        for (int i = 0; i < battleMusicsVolumeObjectives.Length; i++)
+        {
+            battleMusicsVolumeObjectives[i] = 0;
+            battleMusicsStrikesVolumeObjectives[i] = 0;
+        }
+
+        
+        
+
         windVolumeObjective = 0;
     }  
 
@@ -251,12 +290,17 @@ public class AudioManager : MonoBehaviour
     public void ActivateBattleMusic()
     {
         soundFunctions.SetAudioActiveFromSource(battleMusicPhaseSources[0], true, false);
+        soundFunctions.SetAudioActiveFromSource(battleMusicStrikesSources[0], true, false);
 
         battleMusicOn = true;
         adjustBattleMusicVolumeDepdendingOnPlayersDistance = true;
 
+        windVolumeObjective = 0;
         menuMusicVolumeObjective = 0;
+
+
         battleMusicsVolumeObjectives[0] = battleMusicMaxVolume;
+        battleMusicsStrikesVolumeObjectives[0] = battleMusicStrikesMaxVolume;
     }
 
     // Activates wind and deactivates other musics
@@ -277,6 +321,7 @@ public class AudioManager : MonoBehaviour
         for (int i = 0; i < battleMusicsVolumeObjectives.Length; i++)
         {
             battleMusicsVolumeObjectives[i] = 0;
+            battleMusicsStrikesVolumeObjectives[i] = 0;
         }
     }
 
@@ -323,10 +368,8 @@ public class AudioManager : MonoBehaviour
 
 
 
-
         // BATTLE MUSIC
         // Adjusts smoothly the battle music volume depending on its volume objective and checks if it's done modifying it, for each of the battle musuc audio sources
-        
         for (int i = 0; i < battleMusicPhaseSources.Length; i++)
         {
             if (battleMusicPhaseSources[i].volume != battleMusicsVolumeObjectives[i])
@@ -356,6 +399,44 @@ public class AudioManager : MonoBehaviour
                 else if (Mathf.Abs(battleMusicPhaseSources[i].volume - battleMusicsVolumeObjectives[i]) < volumeDifferenceToleranceToFinishVolumeInterp)
                 {
                     battleMusicPhaseSources[i].volume = battleMusicsVolumeObjectives[i];
+                }
+            }
+        }
+
+
+
+
+        // BATTLE MUSIC STRIKES AUDIO
+        // Adjusts smoothly the battle music strikes audio volume depending on its volume objective and checks if it's done modifying it, for each of the battle musuc audio sources
+        for (int i = 0; i < battleMusicPhaseSources.Length; i++)
+        {
+            if (battleMusicStrikesSources[i].volume != battleMusicsStrikesVolumeObjectives[i])
+            {
+                // If the current volume of the battle music audio source is superior to its volume objective
+                if (battleMusicStrikesSources[i].volume > battleMusicsStrikesVolumeObjectives[i])
+                {
+                    battleMusicStrikesSources[i].volume += -musicVolumeFadeSpeed;
+
+
+                    if (battleMusicStrikesSources[i].volume <= battleMusicsVolumeObjectives[i])
+                    {
+                        battleMusicStrikesSources[i].volume = battleMusicsStrikesVolumeObjectives[i];
+                    }
+                }
+                // If the current volume of the battle music audio source is inferior to its volume objective
+                else if (battleMusicStrikesSources[i].volume < battleMusicsStrikesVolumeObjectives[i])
+                {
+                    battleMusicStrikesSources[i].volume += musicVolumeFadeSpeed;
+
+
+                    if (battleMusicStrikesSources[i].volume >= battleMusicsStrikesVolumeObjectives[i])
+                    {
+                        battleMusicStrikesSources[i].volume = battleMusicsStrikesVolumeObjectives[i];
+                    }
+                }
+                else if (Mathf.Abs(battleMusicStrikesSources[i].volume - battleMusicsStrikesVolumeObjectives[i]) < volumeDifferenceToleranceToFinishVolumeInterp)
+                {
+                    battleMusicStrikesSources[i].volume = battleMusicsStrikesVolumeObjectives[i];
                 }
             }
         }
@@ -401,19 +482,42 @@ public class AudioManager : MonoBehaviour
     {
         if (adjustBattleMusicVolumeDepdendingOnPlayersDistance)
         {
-            
             if (currentPhase == 0)
             {
-                //battleMusicsVolumeObjectives[0] = ((cameraManager.distanceBetweenPlayers - playersDistanceForVolumeLimits.y) / (playersDistanceForVolumeLimits.x - playersDistanceForVolumeLimits.y)) * battleMusicMaxVolume;
-                windVolumeObjective = windMaxVolume - battleMusicsVolumeObjectives[0];
-                Debug.Log(battleMusicsVolumeObjectives[0]);
-            }   
+                battleMusicsVolumeObjectives[0] = ((cameraManager.distanceBetweenPlayers - playersDistanceForVolumeLimits.y) / (playersDistanceForVolumeLimits.x - playersDistanceForVolumeLimits.y)) * battleMusicMaxVolume;
+
+
+                if (battleMusicsVolumeObjectives[0] > battleMusicMaxVolume)
+                    battleMusicsVolumeObjectives[0] = battleMusicMaxVolume;
+                else if (battleMusicsVolumeObjectives[0] < 0)
+                    battleMusicsVolumeObjectives[0] = 0;
+
+
+                //windVolumeObjective = windMaxVolume - battleMusicsVolumeObjectives[0];
+                //Debug.Log(battleMusicsVolumeObjectives[0]);
+            }
+            
+
+            for (int i = 0; i < battleMusicsStrikesVolumeObjectives.Length; i++)
+            {
+                float tempVolume = ((cameraManager.distanceBetweenPlayers - playersDistanceForVolumeLimits.y) / (playersDistanceForVolumeLimits.x - playersDistanceForVolumeLimits.y)) * battleMusicMaxVolume;
+                
+
+                if (tempVolume < 0)
+                    tempVolume = 0;
+                else if (tempVolume > battleMusicStrikesMaxVolume)
+                    tempVolume = battleMusicStrikesMaxVolume;
+
+
+                battleMusicsStrikesVolumeObjectives[i] = battleMusicStrikesMaxVolume - tempVolume;
+            }
         }
     }
 
     // Update music parameters depending on score, called by game manager on new round
     public void UpdateMusicPhaseThatShouldPlayDependingOnScore()
     {
+        
         // Compares the scores of the players to get the highest
         int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
 
@@ -421,20 +525,46 @@ public class AudioManager : MonoBehaviour
         // Modifies the phase tha will play at the next stem dependng on the score' proximity to the win score
         if (gameManager.scoreToWin <= currentMaxScore + 1)
         {
-            ModifyMusicPhaseToPlayParameters(2, 0);
+            ModifyMusicPhaseToPlayParameters(2, 0, true);
         }
+        /*
         else if (gameManager.scoreToWin <= currentMaxScore + Mathf.FloorToInt(gameManager.scoreToWin / 2))
         {
             ModifyMusicPhaseToPlayParameters(1, 0);
         }
+        */
+        
     }
 
     // Called when there's a hit, parry, etc to count the fight's intensity
     public void BattleEventIncreaseIntensity()
     {
-        intensity++;
-        Debug.Log(intensity);
+        lastIntensityLevel = battleIntensity;
+        battleIntensity++;
+
+
         UpdateMusicPhaseImmediatlyDependingOnBattleIntensity();
+
+
+        decreaseBattleIntensityLoopStartTime = Time.time;
+    }
+
+    void DecreaseIntensityWithTime()
+    {
+        if (battleIntensity > 0)
+        {
+            if (Time.time - decreaseBattleIntensityLoopStartTime >= decreaseBattleIntensityEveryDuration)
+            {
+                lastIntensityLevel = battleIntensity;
+                battleIntensity--;
+
+
+                UpdateMusicPhaseImmediatlyDependingOnBattleIntensity();
+
+
+                decreaseBattleIntensityLoopStartTime = Time.time;
+            }
+        }
     }
 
     // Updates immediatly the currently playing music phase depending on the level of intensity in the battle
@@ -442,27 +572,43 @@ public class AudioManager : MonoBehaviour
     {
         int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
 
-
-        // Modifies the phase that will play at the next stem dependng on the score' proximity to the win score
-        if (intensity > 5)
+        if (currentMaxScore < gameManager.scoreToWin - 1)
         {
-            ImmediatlySwitchChosenPhase(2);
-            Debug.Log("Phase 3");
-        }
-        if (intensity > 1)
-        {
-            ImmediatlySwitchChosenPhase(1);
-        }
-        else
-        {
-            //ModifyMusicPhaseToPlayParameters(0, 0);
+            // Modifies the phase that will play at the next stem depending on the battle intensity
+            if (currentPhase == 2)
+            {
+                if (battleIntensity < battleIntensityLevelForPhase3)
+                {
+                    ModifyMusicPhaseToPlayParameters(1, 0, true);
+                    //ImmediatlySwitchChosenPhase(1);
+                }
+            }
+            else if (currentPhase == 1)
+            {
+                if (battleIntensity < battleIntensityLevelForPhase2)
+                {
+                    ModifyMusicPhaseToPlayParameters(0, 0, true);
+                    //ImmediatlySwitchChosenPhase(0);
+                }
+                else if (battleIntensity >= battleIntensityLevelForPhase3)
+                {
+                    ImmediatlySwitchChosenPhase(2);
+                }
+            }
+            else if (currentPhase == 0)
+            {
+                if (battleIntensity >= battleIntensityLevelForPhase2)
+                {
+                    ImmediatlySwitchChosenPhase(1);
+                }
+            }
         }
     }
 
     // Modifies music parameters for next music change
-    public void ModifyMusicPhaseToPlayParameters(int phase, int stem)
+    public void ModifyMusicPhaseToPlayParameters(int phase, int stem, bool shouldPlayAfter)
     {
-        shouldChangeMusicPhase = true;
+        shouldChangeMusicPhase = shouldPlayAfter;
         currentPhase = phase;
         currentStem = stem;
     }
@@ -479,7 +625,7 @@ public class AudioManager : MonoBehaviour
                 float stemTime = battleMusicPhaseSources[0].time;
 
                 // Increases phase number
-                ModifyMusicPhaseToPlayParameters(currentPhase + 1, currentStem);
+                ModifyMusicPhaseToPlayParameters(currentPhase + 1, currentStem, true);
                 shouldChangeMusicPhase = true;
                 UpdateCurrentlyPlayingMusicImmediatly();
                 Debug.Log("Phase up");
@@ -506,7 +652,7 @@ public class AudioManager : MonoBehaviour
                 float stemTime = battleMusicPhaseSources[0].time;
 
 
-                ModifyMusicPhaseToPlayParameters(currentPhase - 1, currentStem);
+                ModifyMusicPhaseToPlayParameters(currentPhase - 1, currentStem, true);
                 shouldChangeMusicPhase = true;
                 UpdateCurrentlyPlayingMusicImmediatly();
                 Debug.Log("Phase down");
@@ -533,7 +679,7 @@ public class AudioManager : MonoBehaviour
         float stemTime = battleMusicPhaseSources[0].time;
 
         // Increases phase number
-        ModifyMusicPhaseToPlayParameters(phase, currentStem);
+        ModifyMusicPhaseToPlayParameters(phase, currentStem, true);
         shouldChangeMusicPhase = true;
         UpdateCurrentlyPlayingMusicImmediatly();
 
@@ -542,6 +688,7 @@ public class AudioManager : MonoBehaviour
         for (int i = 0; i < battleMusicPhaseSources.Length; i++)
         {
             battleMusicPhaseSources[i].time = stemTime;
+            battleMusicStrikesSources[i].time = stemTime;
         }
     }
 
@@ -555,18 +702,19 @@ public class AudioManager : MonoBehaviour
             shouldChangeMusicPhase = false;
 
             //battleMusicPhase1Source.clip = nextPhaseMusic;
-            Debug.Log(currentPhase);
             battleMusicsVolumeObjectives[currentPhase] = battleMusicMaxVolume;
+            battleMusicsStrikesVolumeObjectives[currentPhase] = battleMusicMaxVolume;
 
             for (int i = 0; i < battleMusicPhaseSources.Length; i++)
             {
                 
                 battleMusicPhaseSources[i].clip = musicDataBase.musicsList[chosenMusic].phases[i].stems[currentStem].stemAudio;
-                
+                battleMusicStrikesSources[i].clip = musicDataBase.musicsList[chosenMusic].phases[i].stems[currentStem].stemStrikesAudio;
 
                 if ( i != currentPhase)
                 {
                     battleMusicsVolumeObjectives[i] = 0;
+                    battleMusicsStrikesVolumeObjectives[i] = 0;
                 }
             }
         }
@@ -589,12 +737,16 @@ public class AudioManager : MonoBehaviour
 
             currentStem = nextStem;
             battleMusicPhaseSources[currentPhase].clip = musicDataBase.musicsList[chosenMusic].phases[currentPhase].stems[currentStem].stemAudio;
+            battleMusicStrikesSources[currentPhase].clip = musicDataBase.musicsList[chosenMusic].phases[currentPhase].stems[currentStem].stemStrikesAudio;
         }
 
         for (int i = 0; i < battleMusicPhaseSources.Length; i++)
         {
             battleMusicPhaseSources[i].Play();
             battleMusicPhaseSources[i].time = 0;
+
+            battleMusicStrikesSources[i].Play();
+            battleMusicStrikesSources[i].time = 0;
         }
     }
 
@@ -602,7 +754,7 @@ public class AudioManager : MonoBehaviour
     public void ResetBattleMusicPhase()
     {
         // Resets phase and stem to 0
-        ModifyMusicPhaseToPlayParameters(0, 0);
+        ModifyMusicPhaseToPlayParameters(0, 0, false);
 
         int randomMusicChoice = Random.Range(0, musicDataBase.musicsList.Count);
         chosenMusic = randomMusicChoice;

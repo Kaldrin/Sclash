@@ -242,7 +242,7 @@ public class PlayerStats : MonoBehaviour
         // DETECT STAMINA CHARGE UP
         if (Mathf.FloorToInt(oldStamina) < Mathf.FloorToInt(stamina))
         {
-            if (!gameManager.playerDead)
+            if (!gameManager.playerDead && gameManager.gameStarted)
                 staminaBarCharged.Play();
         }
 
