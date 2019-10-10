@@ -325,12 +325,14 @@ public class PlayerAttack : MonoBehaviour
             }
 
 
+            /*
             if (!hasDrawn && !isDrawing)
                 drawText.SetActive(true);
             else
                 drawText.SetActive(false);
+            */
 
-
+            // Changes the draw text indication's scale so that it's, well, readable for a human being
             drawText.transform.localScale = new Vector3(drawTextScale.x * transform.localScale.x, drawTextScale.y, drawTextScale.z);
 
 
@@ -378,10 +380,14 @@ public class PlayerAttack : MonoBehaviour
         {
             Clash();
         }
+
+
         if (Input.GetKeyDown(deathCheatKey))
         {
             playerStats.TakeDamage(gameObject, 1);
         }
+
+
         if (Input.GetKeyDown(drawCheatKey))
         {
             hasDrawn = true;

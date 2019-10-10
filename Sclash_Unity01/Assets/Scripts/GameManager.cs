@@ -349,11 +349,17 @@ public class GameManager : MonoBehaviour
     // Calls ResetGame coroutine, called by main menu button at the end of the match
     public void ResetGame()
     {
-        StartCoroutine(ResetGameCoroutine());
+        StartCoroutine(ResetGameCoroutine(false));
     }
-    
+
+    // Calls ResetGame coroutine, called by main menu button at the end of the match
+    public void ResetGameAndRematch()
+    {
+        StartCoroutine(ResetGameCoroutine(true));
+    }
+
     // Resets the match settings and values for a next match
-    IEnumerator ResetGameCoroutine()
+    IEnumerator ResetGameCoroutine(bool remathRightAfter)
     {
         gameStarted = false;
         playerDead = false;
@@ -362,7 +368,12 @@ public class GameManager : MonoBehaviour
         menuManager.pauseMenu.SetActive(false);
         menuManager.winScreen.SetActive(false);
         scoreObject.SetActive(false);
-        blurPanel.SetActive(true);
+
+
+        // Activates the menu blur panel if it is not supposed to start a new match right after
+        if (!remathRightAfter)
+            blurPanel.SetActive(true);
+
 
         roundLeaves.Play();
 
@@ -375,6 +386,7 @@ public class GameManager : MonoBehaviour
             playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
             playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
         }
+        
 
         cameraManager.cameraState = "Inactive";
         cameraManager.actualSmoothMovementsMultiplier = cameraManager.cinematicSmoothMovementsMultiplier;
@@ -382,12 +394,25 @@ public class GameManager : MonoBehaviour
         cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
         cameraManager.cam.transform.position = cameraManager.cameraBasePos;
 
-        menuManager.mainMenu.SetActive(true);
+
+        // Activates the main menu if it is not supposed to start a new match right after
+        if (!remathRightAfter)
+        {
+            audioManager.ActivateMenuMusic();
+            menuManager.mainMenu.SetActive(true);
+        }
+
 
         audioManager.ResetBattleMusicPhase();
-        audioManager.ActivateMenuMusic();
+
+        
         ResetPlayers();
         ResetScore();
+
+
+        // Restarts a new match right after it it finished being set up
+        if (remathRightAfter)
+            StartMatch();
     }
 
 

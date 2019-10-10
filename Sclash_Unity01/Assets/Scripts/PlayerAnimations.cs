@@ -53,6 +53,8 @@ public class PlayerAnimations : MonoBehaviour
         walkLeavesFront = null,
         walkLeavesBack = null;
 
+    [SerializeField] public Animator drawTextAnimator = null;
+
 
 
 
@@ -83,11 +85,16 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
+
+
+
+
     // BASE FUNCTIONS
     void Awake()
     {
         // Get managers
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+
 
         // Get player's components
         playerAttack = GetComponent<PlayerAttack>();
@@ -139,11 +146,11 @@ public class PlayerAnimations : MonoBehaviour
         }
             
 
-
         // If the player is in fact moving fast enough
         if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && gameManager.gameStarted)
         {
             animator.SetFloat("Move", Mathf.Abs(Mathf.Sign((Input.GetAxis("Horizontal" + playerStats.playerNum)))));
+
 
             if ((rigid.velocity.x * -transform.localScale.x) < 0)
             {
@@ -155,7 +162,6 @@ public class PlayerAnimations : MonoBehaviour
                 walkLeavesFront.Play();
                 walkLeavesBack.Stop();
             }
-
         }
         // If the player isn't really moving
         else
@@ -171,7 +177,6 @@ public class PlayerAnimations : MonoBehaviour
     {
         //Debug.Log(playerAttack.actualAttackRange);
         swordTrail.startWidth = playerAttack.actualAttackRange;
-
 
 
         // Trail color and width depending on attack range
@@ -192,10 +197,9 @@ public class PlayerAnimations : MonoBehaviour
                 lightAttackColor.g + (heavyAttackColor.g - lightAttackColor.g) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange,
                 lightAttackColor.b + (heavyAttackColor.b - lightAttackColor.b) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange);
 
-            swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange;
 
+            swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange;
         }
-            
     }
 
 
@@ -229,6 +233,7 @@ public class PlayerAnimations : MonoBehaviour
     public void TriggerDraw()
     {
         animator.SetTrigger("Draw");
+        drawTextAnimator.SetTrigger("Draw");
     }
 
     public void TriggerSneath()
