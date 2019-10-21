@@ -7846,7 +7846,7 @@ RectTransform:
   m_GameObject: {fileID: 335762532}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 29}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0524, y: 1.0524, z: 1.0524}
   m_Children: []
   m_Father: {fileID: 113741091}
   m_RootOrder: 0
@@ -28432,7 +28432,7 @@ MonoBehaviour:
   battleMusicMaxVolume: 1
   windMaxVolume: 1
   battleMusicStrikesMaxVolume: 0.5
-  decreaseBattleIntensityEveryDuration: 3
+  decreaseBattleIntensityEveryDuration: 5
   adjustBattleMusicVolumeDepdendingOnPlayersDistance: 0
   battleMusicOn: 0
   battleIntensityLevelForPhase2: 2

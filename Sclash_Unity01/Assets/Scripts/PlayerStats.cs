@@ -386,13 +386,14 @@ public class PlayerStats : MonoBehaviour
             // UNTOUCHABLE FRAMES
             else if (untouchable)
             {
-
+                audioManager.BattleEventIncreaseIntensity();
             }
             // TOUCHED
             else
             {
                 hit = true;
                 Touched();
+                audioManager.BattleEventIncreaseIntensity();
             }
 
 

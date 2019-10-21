@@ -249,6 +249,10 @@ public class PlayerAttack : MonoBehaviour
         drawCheatKey = KeyCode.Alpha3;
 
 
+   
+
+
+
 
 
 
@@ -977,7 +981,7 @@ public class PlayerAttack : MonoBehaviour
 
             }
             // Dash is validated, the player is gonna dash
-            else if (dashStep == 2 && dashDirection == tempDashDirection && playerStats.stamina >= playerStats.staminaCostForMoves && !isAttacking && !activeFrame && !parrying)
+            else if (dashStep == 2 && dashDirection == tempDashDirection && playerStats.stamina >= playerStats.staminaCostForMoves && !isAttacking && !activeFrame)
             {
                 TriggerBasicDash();
             }
