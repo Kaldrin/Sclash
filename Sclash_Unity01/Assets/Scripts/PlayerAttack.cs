@@ -233,6 +233,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public GameObject
         clash = null,
         clashKana = null,
+        kickKanas = null,
         kickedFX = null;
     [SerializeField] public GameObject chargeFX = null;
     [SerializeField] Slider chargeSlider = null;
@@ -697,12 +698,17 @@ public class PlayerAttack : MonoBehaviour
     // Start the parry coroutine
     public void Parry()
     {
+        //StopAllCoroutines();
         StartCoroutine(ParryCoroutine());
     }
 
     // Parry coroutine
     IEnumerator ParryCoroutine()
     {
+        Debug.Log("Parry");
+        Debug.Log(parryDuration);
+
+
         // Cancel charge
         if (charging)
         {
@@ -713,15 +719,20 @@ public class PlayerAttack : MonoBehaviour
             playerAnimations.CancelCharge();
         }
 
+
         isAttacking = false;
         canParry = false;
 
+
         // Stamina cost
         playerStats.StaminaCost(playerStats.staminaCostForMoves);
-
         playerAnimations.TriggerParry(true);
 
+
         yield return new WaitForSeconds(parryDuration);
+
+
+        Debug.Log("End parry");
         playerAnimations.TriggerParry(false);
     }
 
@@ -755,6 +766,7 @@ public class PlayerAttack : MonoBehaviour
     // Start the kick coroutine
     void Kick()
     {
+        StopAllCoroutines();
         StartCoroutine(KickCoroutine());
     }
 
@@ -830,8 +842,10 @@ public class PlayerAttack : MonoBehaviour
         if (!kickFrame)
         {
             // FX
+            kickKanas.SetActive(false);
             kickedFX.SetActive(false);
             kickedFX.SetActive(true);
+            kickKanas.SetActive(true);
 
             charging = false;
             isAttackRecovering = false;
@@ -1010,6 +1024,9 @@ public class PlayerAttack : MonoBehaviour
     // Triggers the dash (Not the clash or attack dash) for it to run
     void TriggerBasicDash()
     {
+        StopAllCoroutines();
+
+
         dashStep = 3;
         shortcutDashStep = -1;
         chargeLevel = 1;
@@ -1017,6 +1034,9 @@ public class PlayerAttack : MonoBehaviour
 
         charging = false;
         isDashing = true;
+        parrying = false;
+        canKick = true;
+        kicking = false;
         isAttackRecovering = false;
         maxChargeLevelReached = false;
 
@@ -1029,8 +1049,9 @@ public class PlayerAttack : MonoBehaviour
         {
             actualDashDistance = backwardsDashDistance;
         }
-           
 
+
+        playerAnimations.ResetParryTriggers();
         playerAnimations.Dash(dashDirection * transform.localScale.x);
         playerStats.StaminaCost(playerStats.staminaCostForMoves);
         playerMovement.Charging(false);

@@ -154,6 +154,7 @@ public class PlayerAnimations : MonoBehaviour
 
             if ((rigid.velocity.x * -transform.localScale.x) < 0)
             {
+                Debug.Log("leaves");
                 walkLeavesFront.Stop();
                 walkLeavesBack.Play();
             }
@@ -210,6 +211,7 @@ public class PlayerAnimations : MonoBehaviour
 
 
     // STAMINA ANIMATIONS STATES
+    // Updates the idle animation state of the player depending on its current stamina
     void UpdateAnimStamina(float stamina)
     {
         float blendTreeStamina = 0;
@@ -229,13 +231,14 @@ public class PlayerAnimations : MonoBehaviour
 
 
     // DRAW ANIMATION
-    // Trigger draw animation
+    // Triggers the draw animation
     public void TriggerDraw()
     {
         animator.SetTrigger("Draw");
         drawTextAnimator.SetTrigger("Draw");
     }
 
+    // Triggers the sneath animation
     public void TriggerSneath()
     {
         animator.SetTrigger("Sneath");
@@ -248,9 +251,18 @@ public class PlayerAnimations : MonoBehaviour
     public void TriggerParry(bool state)
     {
         if (state)
+        {
             animator.SetTrigger("ParryOn");
+        }
         else
             animator.SetTrigger("ParryOff");
+    }
+
+    // Resets the parry animation triggers
+    public void ResetParryTriggers()
+    {
+        animator.ResetTrigger("ParryOn");
+        animator.ResetTrigger("ParryOff");
     }
 
 
@@ -268,6 +280,7 @@ public class PlayerAnimations : MonoBehaviour
         else
             animator.SetTrigger("KickOff");
     }
+
     // Trigger on / off kicked animation
     public void TriggerKicked(bool state)
     {
@@ -414,9 +427,8 @@ public class PlayerAnimations : MonoBehaviour
         else
             blendTreeValue = 1;
 
+
         animator.SetTrigger("DashOn");
-
-
         animator.SetFloat("DashDirection", blendTreeValue);
     }
 
