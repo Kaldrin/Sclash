@@ -484,6 +484,8 @@ public class PlayerAttack : MonoBehaviour
             //Debug.Log(isAttacking);
             if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying && !clashed && !isDrawing)
             {
+                Debug.Log("Attack !");
+
                 charging = true;
                 canCharge = false;
                 isAttackRecovering = false;
@@ -494,6 +496,10 @@ public class PlayerAttack : MonoBehaviour
                 playerMovement.Charging(true);
 
                 //Debug.Log("Charge");
+            }
+            else
+            {
+                Debug.Log("Attack denied");
             }
         }
 
@@ -624,6 +630,15 @@ public class PlayerAttack : MonoBehaviour
 
         // STAMINA COST
          playerStats.StaminaCost(playerStats.staminaCostForMoves);
+
+        StartCoroutine(AttackFailSafe());
+
+    }
+
+    IEnumerator AttackFailSafe()
+    {
+        yield return new WaitForSeconds(1); //Adapter la durée en fonction de celle de l'animation d'attaque
+        isAttacking = false;
     }
 
     // Hits with a phantom collider to apply the attack's damage during active frames
