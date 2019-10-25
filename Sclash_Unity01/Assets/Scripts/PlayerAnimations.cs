@@ -51,7 +51,8 @@ public class PlayerAnimations : MonoBehaviour
 
     [SerializeField] ParticleSystem
         walkLeavesFront = null,
-        walkLeavesBack = null;
+        walkLeavesBack = null,
+        slashFX = null;
 
     [SerializeField] public Animator drawTextAnimator = null;
 
@@ -59,9 +60,11 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
-    // SPRITE COLORS
-    [Header("SPRITE COLORS")]
+    // COLORS
+    [Header("COLORS")]
     [SerializeField] float untouchableFrameOpacity = 0.4f;
+
+    [SerializeField] public Light playerLight = null;
 
 
 
@@ -154,12 +157,13 @@ public class PlayerAnimations : MonoBehaviour
 
             if ((rigid.velocity.x * -transform.localScale.x) < 0)
             {
-                Debug.Log("leaves");
+                Debug.Log("Leaves back");
                 walkLeavesFront.Stop();
                 walkLeavesBack.Play();
             }
             else
             {
+                Debug.Log("Leaves front");
                 walkLeavesFront.Play();
                 walkLeavesBack.Stop();
             }
@@ -360,6 +364,7 @@ public class PlayerAnimations : MonoBehaviour
         //animator.SetTrigger("Dead");
         animator.SetBool("Dead", true);
         animator.SetTrigger("DeathOn");
+        slashFX.Play();
     }
 
 
@@ -380,9 +385,10 @@ public class PlayerAnimations : MonoBehaviour
         if (attackDir == 1)
             attackDirection = 0f;
         else if (attackDir == -1)
-            attackDirection = 0.5f;
+            attackDirection = 1f;
         else
             attackDirection = 0.5f;
+
 
         //canAttack = false;
         animator.SetBool("Attack", true);

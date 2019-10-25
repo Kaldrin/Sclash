@@ -10,9 +10,9 @@ using UnityEngine.EventSystems;
 public class MenuBrowser : MonoBehaviour
 {
     // BROWSING
-    [Header("Browsing")]
-    [SerializeField] GameObject[] elements = null;
-    [SerializeField] GameObject backElement = null;
+    [Header("BROWSING")]
+    [SerializeField] public GameObject[] elements = null;
+    [SerializeField] public GameObject backElement = null;
 
     [SerializeField] int browseIndex;
     int sens = 1;

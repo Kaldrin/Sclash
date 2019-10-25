@@ -12,7 +12,7 @@ public class MapLoader : MonoBehaviour
     {
         int randomIndex = Random.Range(0, mapsData.mapsList.Count);
 
-        Instantiate(mapsData.mapsList[randomIndex], new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+        Instantiate(mapsData.mapsList[randomIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
     }
 
     // Update is called once per frame

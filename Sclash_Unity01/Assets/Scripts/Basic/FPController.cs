@@ -4,21 +4,44 @@ using UnityEngine;
 
 public class FPController : MonoBehaviour {
 
-    //Camera controls
-    public new GameObject camera;
+    // CAMERA CONTROLS
+    [Header("CAMERA CONTROLS")]
+    public new GameObject camera = null;
     public Vector2 cameraControlSpeed = new Vector2(1, 1);
 
-    //Player base controls
-    Rigidbody playerRigidBody;
-    public Vector2
+
+
+
+
+    // BASE CONTROLS
+    [Header("BASE CONTROLS")]
+    Rigidbody playerRigidBody = null;
+
+    [SerializeField] Vector2
         playerWalkSpeed = new Vector2(4, 4),
         playerRunSpeed = new Vector2(9, 9);
     Vector2 actualPlayerSpeed;
-    public Vector3 jumpForce;
-    public int jumpNumber;
+
+    [SerializeField] Vector3 jumpForce = new Vector3(0, 1000, 0);
+
+    [SerializeField] int jumpNumber = 0;
     int actualJumpNumber;
     
 
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    // BASE FUNCTIONS
     // Use this for initialization
     void Start () {
         playerRigidBody = GetComponent<Rigidbody>();
@@ -28,11 +51,12 @@ public class FPController : MonoBehaviour {
         CreateStaminaBar();
     }
 	
-	// Update is called once per frame
+	// Update is called once per graphic frame
 	void Update () {
         Run();
     }
 
+    // FixedUpdate is called 50 times per frame
     void FixedUpdate()
     {
         CameraRotate();
@@ -41,13 +65,26 @@ public class FPController : MonoBehaviour {
     }
 
 
-    //Collisions
+
+
+
+
+
+
+    // COLLISIONS
     void OnTriggerEnter(Collider triggerCollider)
     {
         actualJumpNumber = jumpNumber;
     }
 
-    //Move the player
+
+
+
+
+
+
+    // MOVE
+    // Rotates the camera with the player's inputs
     void CameraRotate()
     {
         float
@@ -61,6 +98,7 @@ public class FPController : MonoBehaviour {
         transform.Rotate(0, Input.GetAxis("Mouse X") * cameraControlSpeed.x, 0);
     }
 
+    // Gives the player physical movements depending on their inputs
     void MovePlayer()
     {
         Vector3 playerVelocity;
@@ -74,6 +112,7 @@ public class FPController : MonoBehaviour {
         transform.Translate(playerVelocity * Time.deltaTime, Space.Self);
     }
 
+    // Manages the player's jump
     void Jump()
     {
         if (Input.GetButtonDown("Jump") && actualJumpNumber > 0)
@@ -86,6 +125,7 @@ public class FPController : MonoBehaviour {
         }
     }
 
+    // Manages the player's sprint
     void Run()
     {
         if (Input.GetButtonDown("Run"))
@@ -106,8 +146,13 @@ public class FPController : MonoBehaviour {
     }
 
 
-    //Stamina
 
+
+
+
+
+    //STAMINA
+    // Manages the stamina cost and regen
     void CreateStaminaBar()
     {
         Transform camTransform = camera.transform;

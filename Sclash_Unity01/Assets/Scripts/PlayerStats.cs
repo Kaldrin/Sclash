@@ -66,14 +66,19 @@ public class PlayerStats : MonoBehaviour
     
     [SerializeField] Color
         staminaBaseColor = Color.green,
+        staminaLowColor = Color.yellow,
         staminaDeadColor = Color.red;
+
+
 
 
 
     // FX
     [Header("FX")]
-    [SerializeField] GameObject staminaFX = null;
-    [SerializeField] GameObject deathFX = null;
+    [SerializeField] GameObject staminaLossFX = null;
+    [SerializeField] GameObject
+        staminaGainFX = null,
+        deathFX = null;
 
     [SerializeField] float deathFXRotationForDirectionChange = 70;
 
@@ -227,8 +232,9 @@ public class PlayerStats : MonoBehaviour
         stamina -= cost;
         PauseStaminaRegen();
 
-        staminaFX.SetActive(true);
-        staminaFX.GetComponent<ParticleSystem>().Play();
+        staminaLossFX.SetActive(false);
+        staminaLossFX.SetActive(true);
+        staminaLossFX.GetComponent<ParticleSystem>().Play();
 
         if (stamina <= 0)
         {
@@ -243,14 +249,22 @@ public class PlayerStats : MonoBehaviour
         if (Mathf.FloorToInt(oldStamina) < Mathf.FloorToInt(stamina))
         {
             if (!gameManager.playerDead && gameManager.gameStarted)
+            {
                 staminaBarCharged.Play();
+
+                staminaGainFX.SetActive(false);
+                staminaGainFX.SetActive(true);
+                staminaGainFX.GetComponent<ParticleSystem>().Play();
+            }
+                
         }
 
         oldStamina = stamina;
 
 
         staminaSliders[0].value = Mathf.Clamp(stamina, 0, 1);
-        staminaFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina + 0.5f), 0, maxStamina - 1)].transform.position;
+        staminaLossFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina + 0.5f), 0, maxStamina - 1)].transform.position;
+        staminaGainFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina - 0.5f), 0, maxStamina - 1)].transform.position + new Vector3(0.2f, 0, 0) * Mathf.Sign(transform.localScale.x);
 
 
         for (int i = 1; i < staminaSliders.Count; i++)
@@ -299,6 +313,10 @@ public class PlayerStats : MonoBehaviour
         if (stamina < staminaCostForMoves)
         {
             SetStaminaColor(staminaDeadColor);
+        }
+        if (stamina < staminaCostForMoves * 2)
+        {
+            SetStaminaColor(staminaLowColor);
         }
         else
         {
@@ -364,12 +382,14 @@ public class PlayerStats : MonoBehaviour
 
         if (!dead)
         { 
+            /*
             if (!playerAttack.hasDrawn)
             {
                 instigator.GetComponent<PlayerStats>().Touched();
             }
+            */
             // CLASH
-            else if (playerAttack.activeFrame || playerAttack.clashFrames)
+            if (playerAttack.activeFrame || playerAttack.clashFrames)
             {
                 playerAttack.Clash();
                 instigator.GetComponent<PlayerAttack>().Clash();
@@ -404,6 +424,7 @@ public class PlayerStats : MonoBehaviour
                 playerAnimation.Dead();
                 dead = true;
                 playerAttack.chargeFX.SetActive(false);
+                
 
                 StaminaBarsOpacity(0);
             }

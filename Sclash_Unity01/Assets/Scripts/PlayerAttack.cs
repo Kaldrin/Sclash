@@ -230,7 +230,8 @@ public class PlayerAttack : MonoBehaviour
     // FX
     [Header("FX")]
     [SerializeField] public GameObject attackSign = null;
-    [SerializeField] public GameObject
+    [SerializeField]
+    public GameObject
         clash = null,
         clashKana = null,
         kickKanas = null,
@@ -579,18 +580,25 @@ public class PlayerAttack : MonoBehaviour
         Vector3 attackSignPos = attackSign.transform.localPosition;
         attackSign.transform.localPosition = new Vector3(- actualAttackRange, attackSignPos.y, attackSignPos.z);
 
-        // Check if player has enough remaining stamina and attack if so
+
         if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
             actualDashDistance = forwardAttackDashDistance;
         else
             actualDashDistance = backwardsAttackDashDistance;
 
 
-        float direction = Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) * transform.localScale.x;
+        float direction = 0;
+
+
+        if (Mathf.Abs(inputManager.playerInputs[playerStats.playerNum - 1].horizontal) > 0.2f)
+            direction = Mathf.Sign(inputManager.playerInputs[playerStats.playerNum - 1].horizontal) * transform.localScale.x;
+        
+
         Vector3 dir = new Vector3(0, 0, 0);
 
 
-        if (Mathf.Abs(Input.GetAxis("Horizontal" + playerStats.playerNum)) > 0.2)
+        
+        if (Mathf.Abs(inputManager.playerInputs[playerStats.playerNum - 1].horizontal) > 0.2)
             dir = new Vector3(Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)), 0, 0);
 
 
@@ -705,10 +713,6 @@ public class PlayerAttack : MonoBehaviour
     // Parry coroutine
     IEnumerator ParryCoroutine()
     {
-        Debug.Log("Parry");
-        Debug.Log(parryDuration);
-
-
         // Cancel charge
         if (charging)
         {
@@ -732,7 +736,6 @@ public class PlayerAttack : MonoBehaviour
         yield return new WaitForSeconds(parryDuration);
 
 
-        Debug.Log("End parry");
         playerAnimations.TriggerParry(false);
     }
 

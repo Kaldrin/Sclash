@@ -269,6 +269,7 @@ public class GameManager : MonoBehaviour
 
             playerAnimations.spriteRenderer.color = playersColors[i];
             playerAnimations.legsSpriteRenderer.color = playersColors[i];
+            playerAnimations.playerLight.color = playersColors[i];
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
             playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
@@ -466,6 +467,8 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
 
+            audioManager.ActivateWinMusic();
+            
             blurPanel.SetActive(false);
             menuManager.winScreen.SetActive(true);
         }

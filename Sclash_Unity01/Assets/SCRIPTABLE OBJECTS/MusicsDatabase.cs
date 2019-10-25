@@ -20,6 +20,7 @@ public struct Phase
 public struct Music
 {
     public List<Phase> phases;
+    public AudioClip winAudio;
 }
 
 

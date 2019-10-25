@@ -46,7 +46,9 @@ public class AudioManager : MonoBehaviour
     // MUSIC
     [Header("MUSIC")]
     [SerializeField] AudioSource menuMusicAudioSource = null;
-    [SerializeField] AudioSource windAudioSource = null;
+    [SerializeField] AudioSource
+        windAudioSource = null,
+        winAudioSource = null;
     [SerializeField] public AudioSource[]
         battleMusicPhaseSources = null,
         battleMusicStrikesSources = null;
@@ -166,6 +168,9 @@ public class AudioManager : MonoBehaviour
         battleMusicStrikesSources[1].clip = musicDataBase.musicsList[chosenMusic].phases[1].stems[0].stemStrikesAudio;
         battleMusicStrikesSources[2].clip = musicDataBase.musicsList[chosenMusic].phases[2].stems[0].stemStrikesAudio;
 
+        winAudioSource.clip = musicDataBase.musicsList[chosenMusic].winAudio;
+
+
         // Sets the menu music volume objective at its max
         menuMusicVolumeObjective = menuMusicMaxVolume;
 
@@ -268,6 +273,7 @@ public class AudioManager : MonoBehaviour
     public void ActivateMenuMusic()
     {
         soundFunctions.SetAudioActiveFromSource(menuMusicAudioSource, true, true);
+        soundFunctions.SetAudioActiveFromSource(winAudioSource, false, false);
 
         battleMusicOn = false;
         adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
@@ -325,6 +331,27 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void ActivateWinMusic()
+    {
+        soundFunctions.SetAudioActiveFromSource(winAudioSource, true, true);
+
+        battleMusicOn = false;
+        adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
+
+
+        // Set the volume objective of the wind track to its max
+        //windVolumeObjective = windMaxVolume;
+        // Sets the volume objectives of other tracks to 0
+        menuMusicVolumeObjective = 0;
+
+
+
+        for (int i = 0; i < battleMusicsVolumeObjectives.Length; i++)
+        {
+            battleMusicsVolumeObjectives[i] = 0;
+            battleMusicsStrikesVolumeObjectives[i] = 0;
+        }
+    }
 
 
 

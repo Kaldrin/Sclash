@@ -47,16 +47,15 @@ public class InputManager : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        
-    }
-
-    // FixedUpdate is called 30 times per second
-    private void FixedUpdate()
-    {
         score = Input.GetButton("Score");
-        ManageHorizontalInput();
         ManageKick();
         ManageAnyKey();
+    }
+
+    // FixedUpdate is called 50 times per second
+    private void FixedUpdate()
+    {
+        ManageHorizontalInput();
     }
 
 
@@ -84,6 +83,7 @@ public class InputManager : MonoBehaviour
         for (int i = 0; i < playerInputs.Length; i++)
         {
             playerInputs[i].kick = Input.GetButton("Kick" + (i + 1));
+
             playerInputs[i].kickDown = Input.GetButtonDown("Kick" + (i + 1));    
         }
     }
