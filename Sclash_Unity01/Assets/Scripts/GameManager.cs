@@ -8,6 +8,8 @@ using TMPro;
 // Created for Unity 2019.1.1f1
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     // MANAGERS
     [Header("MANAGERS")]
     // Audio manager
@@ -128,6 +130,10 @@ public class GameManager : MonoBehaviour
 
 
 
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // BASE FUNCTIONS
     // Start is called before the first frame update

@@ -484,8 +484,6 @@ public class PlayerAttack : MonoBehaviour
             //Debug.Log(isAttacking);
             if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying && !clashed && !isDrawing)
             {
-                Debug.Log("Attack !");
-
                 charging = true;
                 canCharge = false;
                 isAttackRecovering = false;
@@ -494,12 +492,9 @@ public class PlayerAttack : MonoBehaviour
                 chargeStartTime = Time.time;
                 playerAnimations.TriggerCharge();
                 playerMovement.Charging(true);
-
-                //Debug.Log("Charge");
             }
             else
             {
-                Debug.Log("Attack denied");
             }
         }
 
