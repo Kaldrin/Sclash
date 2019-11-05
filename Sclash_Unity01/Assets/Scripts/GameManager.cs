@@ -165,13 +165,6 @@ public class GameManager : MonoBehaviour
     }
 
 
-
-
-
-
-
-
-
     // BEGIN GAME
     // Setup the game before it starts
     IEnumerator SetupGame()
@@ -196,9 +189,7 @@ public class GameManager : MonoBehaviour
     {
         audioManager.FindPlayers();
 
-
         yield return new WaitForSeconds(0.1f);
-    
       
         paused = false;
         gameStarted = true;
