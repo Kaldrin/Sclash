@@ -8,6 +8,8 @@ using TMPro;
 // Created for Unity 2019.1.1f1
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     // MANAGERS
     [Header("MANAGERS")]
     // Audio manager
@@ -129,6 +131,10 @@ public class GameManager : MonoBehaviour
 
 
 
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // BASE FUNCTIONS
     // Start is called before the first frame update
@@ -160,13 +166,6 @@ public class GameManager : MonoBehaviour
     }
 
 
-
-
-
-
-
-
-
     // BEGIN GAME
     // Setup the game before it starts
     IEnumerator SetupGame()
@@ -191,9 +190,7 @@ public class GameManager : MonoBehaviour
     {
         audioManager.FindPlayers();
 
-
         yield return new WaitForSeconds(0.1f);
-    
       
         paused = false;
         gameStarted = true;

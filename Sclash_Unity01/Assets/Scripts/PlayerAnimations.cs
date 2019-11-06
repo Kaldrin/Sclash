@@ -4,29 +4,26 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
 {
-    // MANAGER
-    [Header("MANAGERS")]
-    [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager;
-
 
 
 
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [SerializeField] Rigidbody2D rigid = null;
-    [SerializeField] Animator
-        animator = null,
-        legsAnimator = null;
+    [SerializeField]
+    Animator
+        animator = null;
+        //legsAnimator = null;
 
-    [SerializeField] public SpriteRenderer
+    [SerializeField]
+    public SpriteRenderer
         spriteRenderer = null,
         legsSpriteRenderer = null;
 
     PlayerAttack playerAttack = null;
     PlayerStats playerStats = null;
     PlayerMovement playerMovements = null;
-    
+
 
 
 
@@ -41,15 +38,18 @@ public class PlayerAnimations : MonoBehaviour
     // FX
     [Header("FX")]
     [SerializeField] public TrailRenderer swordTrail = null;
-    [SerializeField] float
+    [SerializeField]
+    float
         lightAttackSwordTrailWidth = 1.3f,
         heavyAttackSwordTrailWidth = 2.3f;
 
-    [SerializeField] Color
+    [SerializeField]
+    Color
         lightAttackColor = Color.blue,
         heavyAttackColor = Color.red;
 
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         walkLeavesFront = null,
         walkLeavesBack = null,
         slashFX = null;
@@ -95,10 +95,6 @@ public class PlayerAnimations : MonoBehaviour
     // BASE FUNCTIONS
     void Awake()
     {
-        // Get managers
-        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
-
-
         // Get player's components
         playerAttack = GetComponent<PlayerAttack>();
         playerStats = GetComponent<PlayerStats>();
@@ -111,7 +107,10 @@ public class PlayerAnimations : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        UpdateAnims();
+        if (GameManager.Instance.gameStarted)
+        {
+            UpdateAnims();
+        }
         UpdateFX();
         UpdateAnimStamina(playerStats.stamina);
         UpdateChargeWalk();
@@ -132,6 +131,7 @@ public class PlayerAnimations : MonoBehaviour
     // Update the animator's parameters in Update
     void UpdateAnims()
     {
+
         animator.SetFloat("Level", playerAttack.chargeLevel - 1);
         animator.SetBool("Charging", playerAttack.charging);
         animator.SetBool("Dashing", playerAttack.isDashing);
@@ -140,17 +140,17 @@ public class PlayerAnimations : MonoBehaviour
         if ((rigid.velocity.x * -transform.localScale.x) < 0)
         {
             animator.SetFloat("WalkDirection", 0);
-            legsAnimator.SetFloat("WalkDirection", 0);
+            //legsAnimator.SetFloat("WalkDirection", 0);
         }
         else
         {
             animator.SetFloat("WalkDirection", 1);
-            legsAnimator.SetFloat("WalkDirection", 1);
+            //legsAnimator.SetFloat("WalkDirection", 1);
         }
-            
+
 
         // If the player is in fact moving fast enough
-        if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && gameManager.gameStarted)
+        if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && GameManager.Instance.gameStarted)
         {
             animator.SetFloat("Move", Mathf.Abs(Mathf.Sign((Input.GetAxis("Horizontal" + playerStats.playerNum)))));
 
@@ -189,12 +189,12 @@ public class PlayerAnimations : MonoBehaviour
         {
             swordTrail.startColor = lightAttackColor;
             swordTrail.startWidth = lightAttackSwordTrailWidth;
-        }     
+        }
         else if (playerAttack.chargeLevel == playerAttack.maxChargeLevel)
         {
             swordTrail.startColor = heavyAttackColor;
             swordTrail.startWidth = heavyAttackSwordTrailWidth;
-        }     
+        }
         else
         {
             swordTrail.startColor = new Color(
@@ -403,7 +403,7 @@ public class PlayerAnimations : MonoBehaviour
     {
         StartCoroutine(EndAttackCoroutine());
     }
-    
+
     // Attack's end coroutine
     IEnumerator EndAttackCoroutine()
     {
