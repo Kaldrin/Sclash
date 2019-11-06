@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class MapMenuLoader : MonoBehaviour
 {
+    // MAP LOADER
+    [Header("MAP LOADER")]
+    [SerializeField] string mapLoaderName = "GlobalManager";
+    MapLoader mapLoader = null;
+
+
 
     // MENU ELEMENTS
     [Header("MENU ELEMENTS")]
@@ -17,6 +23,8 @@ public class MapMenuLoader : MonoBehaviour
 
     [SerializeField] MapsDataBase mapsDatabase01 = null;
     [SerializeField] MenuBrowser mapsMenuBrowser = null;
+
+    [SerializeField] Button randomMapButton = null;
 
 
 
@@ -32,7 +40,10 @@ public class MapMenuLoader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Get the map loader
+        mapLoader = GameObject.Find(mapLoaderName).GetComponent<MapLoader>();
         menuBrowserButtonsList.Add(backButton);
+
 
         for (int i = 0; i < mapsDatabase01.mapsList.Count; i++)
         {
@@ -47,6 +58,8 @@ public class MapMenuLoader : MonoBehaviour
             newMapMenuObject.name = mapsDatabase01.mapsList[i].mapName;
 
             menuBrowserButtonsList.Add(newMapMenuObjectScript.mapButtonObject);
+            newMapMenuObjectScript.mapButtonObject.GetComponent<Button>().onClick.AddListener(delegate {mapLoader.LoadNewMapInGame(i);});
+            Debug.Log(i);
         }
 
 
@@ -59,5 +72,14 @@ public class MapMenuLoader : MonoBehaviour
     void Update()
     {
         
+    }
+
+
+
+
+
+    void LoadMapWithMapLoader(int mapIndex)
+    {
+        mapLoader.LoadNewMapInGame(mapIndex);
     }
 }

@@ -47,7 +47,6 @@ public class GameManager : MonoBehaviour
     // ROUND
     [Header("ROUND")]
     [SerializeField] float timeBeforeNextRound = 3;
-    [SerializeField] ParticleSystem roundLeaves = null;
     public bool gameStarted = false;
 
 
@@ -88,6 +87,8 @@ public class GameManager : MonoBehaviour
     float
         baseTimeScale = 1,
         timeScaleObjective = 1;
+
+    [SerializeField] public ParticleSystem roundLeaves = null;
 
 
 
@@ -365,6 +366,7 @@ public class GameManager : MonoBehaviour
         gameStarted = false;
         playerDead = false;
 
+        roundLeaves.gameObject.SetActive(false);
         roundLeaves.gameObject.SetActive(true);
         menuManager.pauseMenu.SetActive(false);
         menuManager.winScreen.SetActive(false);
