@@ -6,8 +6,16 @@ public class MapLoader : MonoBehaviour
 {
     // MANAGERS
     [Header("MANAGERS")]
-    [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager = null;
+    [Tooltip("The reference for the unique game manager script of the scene")]
+    [SerializeField] GameManager gameManager = null;
+
+
+
+
+    // MAPS MENU
+    [Header("MAPS MENU")]
+    [Tooltip("The MenuBrowser script that browses through the map elements")]
+    [SerializeField] MenuBrowser mapsMenuBrowser;
 
 
 
@@ -15,10 +23,24 @@ public class MapLoader : MonoBehaviour
 
     // MAPS DATA
     [Header("MAPS DATA")]
+    [Tooltip("Parent object of the currently instantiated map")]
     [SerializeField] GameObject mapContainer = null;
+    [Tooltip("Currently instantiated map, visible in game")]
     [HideInInspector] public GameObject currentMap = null;
 
+    [Tooltip("Scriptable object data reference containing the maps objects, their image and names")]
     [SerializeField] MapsDataBase mapsData = null;
+
+
+
+
+    /*
+    // MAPS MENU
+    [Header("MAPS MENU")]
+    [Tooltip("Parent object of the instantiated selectable map menu objects")]
+    [SerializeField] GameObject mapMenuObjectsParent = null;
+    */
+
 
 
 
@@ -45,7 +67,7 @@ public class MapLoader : MonoBehaviour
     void Start()
     {
         // Get the managers
-        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+        //gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
 
 
         // Load map
@@ -79,26 +101,42 @@ public class MapLoader : MonoBehaviour
     // Starts the LoadNewMap coroutine, launched by the play in the maps menu
     public void LoadNewMapInGame(int newMapIndex)
     {
-        StartCoroutine(LoadNewMapInGameCoroutine(newMapIndex));
+        StartCoroutine(LoadNewMapInGameCoroutine(newMapIndex, false));
     }
 
     // Loads a new map with the transition FX
-    IEnumerator LoadNewMapInGameCoroutine(int newMapIndex)
+    IEnumerator LoadNewMapInGameCoroutine(int newMapIndex, bool randomIndex)
     {
         if (canLoadNewMap)
         {
+            int index = 0;
+
+
+            if (!randomIndex)
+                index = mapsMenuBrowser.browseIndex - 1;
+            else
+                index = newMapIndex;
+
+
+
             gameManager.roundLeaves.gameObject.SetActive(false);
             gameManager.roundLeaves.gameObject.SetActive(true);
             gameManager.roundLeaves.Play();
             canLoadNewMap = false;
+            //mapMenuObjectsParent.SetActive(false);
+
 
             yield return new WaitForSeconds(1.5f);
 
 
-            SetMap(newMapIndex);
+            SetMap(index);
             Debug.Log(newMapIndex);
 
+
             yield return new WaitForSeconds(2f);
+
+
+            //mapMenuObjectsParent.SetActive(true);
             canLoadNewMap = true;
         }
     }
@@ -106,6 +144,6 @@ public class MapLoader : MonoBehaviour
     public void LoadRandomMap()
     {
         int randomIndex = Random.Range(0, mapsData.mapsList.Count);
-        StartCoroutine(LoadNewMapInGameCoroutine(randomIndex));
+        StartCoroutine(LoadNewMapInGameCoroutine(randomIndex, true));
     }
 }

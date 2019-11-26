@@ -926,6 +926,7 @@ public class PlayerAttack : MonoBehaviour
         tempDashDirection = transform.localScale.x;
         actualDashDistance = clashKnockback;
 
+        StopAllCoroutines();
         initPos = transform.position;
         targetPos = transform.position + new Vector3(actualDashDistance * tempDashDirection, 0, 0);
 
@@ -1038,6 +1039,8 @@ public class PlayerAttack : MonoBehaviour
     void TriggerBasicDash()
     {
         StopAllCoroutines();
+        playerAnimations.slashFX.gameObject.SetActive(false);
+        playerAnimations.slashFX.gameObject.SetActive(true);
 
 
         dashStep = 3;
@@ -1094,7 +1097,7 @@ public class PlayerAttack : MonoBehaviour
         if (clashed)
             time += Time.deltaTime * clashKnockbackSpeed;
         else
-            time += Time.deltaTime * dashSpeed;
+            time += Time.fixedUnscaledDeltaTime * dashSpeed;
 
 
         transform.position = Vector3.Lerp(initPos, targetPos, time);

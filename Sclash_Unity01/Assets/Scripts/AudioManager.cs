@@ -192,9 +192,10 @@ public class AudioManager : MonoBehaviour
     private void FixedUpdate()
     {
         // Applies music changes when stem finished playing
-        if (!battleMusicPhaseSources[currentPhase].isPlaying)
+        if (!battleMusicPhaseSources[currentPhase].isPlaying && gameManager.gameStarted)
         {
             UpdateCurrentlyPlayingMusicImmediatly();
+            Debug.Log("music");
         }
 
 
@@ -333,7 +334,8 @@ public class AudioManager : MonoBehaviour
 
     public void ActivateWinMusic()
     {
-        soundFunctions.SetAudioActiveFromSource(winAudioSource, true, true);
+        //soundFunctions.SetAudioActiveFromSource(winAudioSource, true, true);
+        soundFunctions.PlaySoundFromSource(winAudioSource);
 
         battleMusicOn = false;
         adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;

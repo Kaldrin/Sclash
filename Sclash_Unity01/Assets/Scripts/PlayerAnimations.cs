@@ -48,11 +48,11 @@ public class PlayerAnimations : MonoBehaviour
         lightAttackColor = Color.blue,
         heavyAttackColor = Color.red;
 
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         walkLeavesFront = null,
-        walkLeavesBack = null,
-        slashFX = null;
+        walkLeavesBack = null;
+
+    [SerializeField] public ParticleSystem slashFX = null;
 
     [SerializeField] public Animator drawTextAnimator = null;
 
@@ -157,13 +157,11 @@ public class PlayerAnimations : MonoBehaviour
 
             if ((rigid.velocity.x * -transform.localScale.x) < 0)
             {
-                Debug.Log("Leaves back");
                 walkLeavesFront.Stop();
                 walkLeavesBack.Play();
             }
             else
             {
-                Debug.Log("Leaves front");
                 walkLeavesFront.Play();
                 walkLeavesBack.Stop();
             }
@@ -364,7 +362,8 @@ public class PlayerAnimations : MonoBehaviour
         //animator.SetTrigger("Dead");
         animator.SetBool("Dead", true);
         animator.SetTrigger("DeathOn");
-        slashFX.Play();
+        slashFX.gameObject.SetActive(false);
+        slashFX.gameObject.SetActive(true);
     }
 
 

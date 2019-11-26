@@ -11,20 +11,32 @@ public class MenuBrowser : MonoBehaviour
 {
     // BROWSING
     [Header("BROWSING")]
+    [Tooltip("The list of elements to browse in this menu page")]
     [SerializeField] public GameObject[] elements = null;
+    [Tooltip("The back element of this menu page that allows for ")]
     [SerializeField] public GameObject backElement = null;
 
-    [SerializeField] int browseIndex;
+    [Tooltip("The index of the selected menu element in the elements list")]
+    [SerializeField] public int browseIndex;
     int sens = 1;
 
-    bool vAxisInUse = false;
     [SerializeField] bool invert = false;
     [SerializeField] bool canBack = false;
+    bool
+        vAxisInUse = false,
+        hAxisInUse = false;
 
+    [Tooltip("Names of the inputs axis created in the input settings")]
     [SerializeField] string
         horizontalAxis = "Horizontal",
         verticalAxis = "Vertical",
         backButton = "Back";
+
+    [SerializeField] float
+        verticalInputDetectionZone = 0.5f,
+        verticalInputRestZone = 0.1f,
+        horizontalInputDetectionZone = 0.5f,
+        horizontalRestZone = 0.1f;
 
 
 
@@ -32,14 +44,19 @@ public class MenuBrowser : MonoBehaviour
 
     // VISUAL
     [Header("VISUAL")]
+    [Tooltip("Default color of an unselected menu element")]
     [SerializeField] Color defaultColor = Color.black;
+    [Tooltip("Color of an selected menu element")]
     [SerializeField] Color selectedColor = Color.white;
+
+
 
 
 
 
     // SOUND
     [Header("Sound")]
+    [Tooltip("The PlayRandomSoundInList script to play a random sound from the given source on it whenever browsing through menu elements")]
     [SerializeField] PlayRandomSoundInList hoverSound = null;
 
 
@@ -69,77 +86,89 @@ public class MenuBrowser : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        // Move sliders with horizontal
-        if (Input.GetAxisRaw(horizontalAxis) > 0)
+        if (elements.Length > 0)
         {
-            if (elements[browseIndex].GetComponent<SliderToVolume>())
+            // H AXIS
+            // Move sliders with horizontal
+            if (Input.GetAxisRaw(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
             {
-                elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
+                if (elements[browseIndex].GetComponent<SliderToVolume>())
+                {
+                    elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
+                    hAxisInUse = true;
+                }
             }
-        }
-
-
-        if (Input.GetAxisRaw(horizontalAxis) < 0)
-        {
-            if (elements[browseIndex].GetComponent<SliderToVolume>())
+            else if (Input.GetAxisRaw(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
             {
-                elements[browseIndex].GetComponent<SliderToVolume>().slider.value--;
+                if (elements[browseIndex].GetComponent<SliderToVolume>())
+                {
+                    elements[browseIndex].GetComponent<SliderToVolume>().slider.value--;
+                    hAxisInUse = true;
+                }
             }
-        }
 
-
-        // V AXIS
-        // Detects V axis let go
-        if (Input.GetAxisRaw(verticalAxis) == 0)
-        {
-            vAxisInUse = false;
-        }
-
-
-        // Detects positive V axis input
-        if (Input.GetAxisRaw(verticalAxis) > 0)
-        {
-            if (vAxisInUse == false)
+            // Detects H axis let ho
+            if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
             {
-                browseIndex += sens;
-                vAxisInUse = true;
-                hoverSound.Play();
+                hAxisInUse = false;
             }
-        }
 
 
-        // Detects negative V axis input
-        if (Input.GetAxisRaw(verticalAxis) < 0)
-        {
-            if (vAxisInUse == false)
+
+
+
+
+            // V AXIS
+            // Detects V axis let go
+            if (Mathf.Abs(Input.GetAxisRaw(verticalAxis)) <= verticalInputRestZone)
             {
-                browseIndex -= sens;
-                vAxisInUse = true;
-                hoverSound.Play();
+                vAxisInUse = false;
             }
-        }
 
 
-        // Loop index navigation
-        if (browseIndex > elements.Length - 1)
-        {
-            browseIndex = 0;
-        }
-        else if (browseIndex < 0)
-        {
-            browseIndex = elements.Length - 1;
-        }
+            // Detects positive V axis input
+            if (Input.GetAxisRaw(verticalAxis) > verticalInputDetectionZone)
+            {
+                if (vAxisInUse == false)
+                {
+                    browseIndex += sens;
+                    vAxisInUse = true;
+                    hoverSound.Play();
+                }
+            }
 
 
-        if (elements[browseIndex].GetComponent<Button>())
-        {
-            elements[browseIndex].GetComponent<Button>().Select();
-            ResetColor();
-        }
-        else
-        {
-            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
-            ColorSwap();
+            // Detects negative V axis input
+            if (Input.GetAxisRaw(verticalAxis) < -verticalInputDetectionZone)
+            {
+                if (vAxisInUse == false)
+                {
+                    browseIndex -= sens;
+                    vAxisInUse = true;
+                    hoverSound.Play();
+                }
+            }
+
+
+            // Loop index navigation
+            if (browseIndex > elements.Length - 1)
+            {
+                browseIndex = 0;
+            }
+            else if (browseIndex < 0)
+            {
+                browseIndex = elements.Length - 1;
+            }
+
+
+            if (elements[browseIndex].GetComponent<Button>())
+            {
+                Select(true);
+            }
+            else
+            {
+                Select(false);
+            }
         }
 
 
@@ -149,11 +178,101 @@ public class MenuBrowser : MonoBehaviour
             if (Input.GetButtonUp(backButton))
             {
                 backElement.GetComponent<Button>().onClick.Invoke();
+                
+            }
+        }
+    }
+
+    // Deselects the currently selected element
+    
+
+    // OnEnable is called each time the object is set from inactive to active
+    void OnEnable()
+    {
+        if (elements.Length > 0)
+        {
+            browseIndex = 0;
+
+
+            if (elements[browseIndex].GetComponent<Button>())
+            {
+                Select(true);
+            }
+            else
+            {
+                Select(false);
             }
         }
     }
 
 
+
+
+
+
+    // SELECTION
+    // Selects or unselects not the specified object
+    public void Select(bool state)
+    {
+        if (!state)
+        {
+            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
+            ColorSwap();
+        }
+        else
+        {
+            elements[browseIndex].GetComponent<Button>().Select();
+            ResetColor();
+        }
+    }
+    
+    // Sets the browse index to the mouse hovered element
+    public void SelectHoveredElement(GameObject hoveredObject)
+    {
+        if (ArrayContainsGameObject(hoveredObject, elements))
+        {
+            browseIndex = IndexOfGameObjectInArray(hoveredObject, elements);
+        }
+
+        
+        if (elements[browseIndex].GetComponent<Button>())
+        {
+            Select(true);
+        }
+        else
+        {
+            Select(false);
+        }
+    }
+
+    // Returns true if element is contained in referenced array
+    bool ArrayContainsGameObject(GameObject objectToCheck, GameObject[] array)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (objectToCheck == array[i])
+            {
+                return true;
+            }
+        }
+
+
+        return false;
+    }
+
+    int IndexOfGameObjectInArray(GameObject objectToCheck, GameObject[] array)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (objectToCheck == array[i])
+            {
+                return i;
+            }
+        }
+
+
+        return 0;
+    }
 
 
 
@@ -194,4 +313,6 @@ public class MenuBrowser : MonoBehaviour
             }
         }
     }
+
+    
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2728478402684331709}
   - component: {fileID: 2728478402684331708}
   m_Layer: 0
-  m_Name: Bloodticles
+  m_Name: P_KillBlood01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,8 +168,8 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 15
-      minScalar: 3
+      scalar: 30
+      minScalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -549,7 +549,7 @@ ParticleSystem:
     startRotation:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 6.283185
+      scalar: 3.1415925
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -865,7 +865,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 1000
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1048,7 +1048,7 @@ ParticleSystem:
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
-          time: 0.015538782
+          time: 0.0036064088
           value: 1
           inSlope: -0.04474003
           outSlope: -0.04474003
@@ -1057,14 +1057,23 @@ ParticleSystem:
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
-          time: 0.10288773
-          value: 0.23622465
+          time: 0.026620485
+          value: 0.2106967
           inSlope: -0.09644785
           outSlope: -0.09644785
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
           outWeight: 0.22885278
+        - serializedVersion: 3
+          time: 0.8293242
+          value: 0
+          inSlope: 0.1308088
+          outSlope: 0.1308088
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.14378756
+          outWeight: 0.60528415
         - serializedVersion: 3
           time: 1
           value: 0
@@ -2643,7 +2652,7 @@ ParticleSystem:
     inWorldSpace: 0
     multiplyDragByParticleSize: 0
     multiplyDragByParticleVelocity: 0
-    dampen: 0.05
+    dampen: 0.2
     drag:
       serializedVersion: 2
       minMaxState: 0

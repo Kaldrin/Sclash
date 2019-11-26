@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour
         public bool kickDown;
         public bool anyKeyDown;
         public bool anyKey;
+        public bool pauseUp;
     }
 
     [HideInInspector] public PlayerInputs[] playerInputs = new PlayerInputs[2];
@@ -50,6 +51,7 @@ public class InputManager : MonoBehaviour
         score = Input.GetButton("Score");
         ManageKick();
         ManageAnyKey();
+        ManagePause();
     }
 
     // FixedUpdate is called 50 times per second
@@ -104,6 +106,18 @@ public class InputManager : MonoBehaviour
                 || Input.GetAxis("Parry" + (i + 1)) < - 0.1f
                 || Input.GetButtonDown("Kick" + (i + 1)));
             //playerInputs[i].anyKey = Input.GetButtonDown("Kick" + (i + 1));
+        }
+    }
+
+
+
+
+    // PAUSE
+    void ManagePause()
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].pauseUp = Input.GetButtonUp("Pause" + (i + 1));
         }
     }
 }

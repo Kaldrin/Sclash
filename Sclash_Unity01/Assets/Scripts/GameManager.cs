@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
     public Vector2 score = new Vector2(0, 0);
     [SerializeField] float scoreShowDuration = 4f;
     [SerializeField] public int scoreToWin = 10;
-    [SerializeField] DynamicValueTMP scoreToWinMenuValue = null;
+    [SerializeField] Slider scoreToWinSlider = null;
 
 
 
@@ -162,7 +162,8 @@ public class GameManager : MonoBehaviour
         // EFFECTS
         RunTimeScaleUpdate();
 
-        scoreToWin = scoreToWinMenuValue.value;
+
+        scoreToWin = Mathf.FloorToInt(scoreToWinSlider.value);
     }
 
 
@@ -199,6 +200,8 @@ public class GameManager : MonoBehaviour
         mainMenu.SetActive(false);
         blurPanel.SetActive(false);
         audioManager.ActivateWind();
+
+        Cursor.visible = false;
 
         
         yield return new WaitForSeconds(0.5f);
@@ -448,28 +451,7 @@ public class GameManager : MonoBehaviour
             */
 
 
-            audioManager.ActivateWind();
-            yield return new WaitForSecondsRealtime(2f);
-
-            gameStarted = false;
-            menuManager.winMessage.SetActive(true);
-            menuManager.winName.text = playerNames[playerNum - 1];
-            menuManager.winName.color = playersColors[playerNum - 1];
-            audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
-
-            for (int i = 0; i < playersList.Count; i++)
-            {
-                playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
-            }
-
-            playersList[playerNum - 1].GetComponent<PlayerAnimations>().TriggerSneath();
-
-            yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
-
-            audioManager.ActivateWinMusic();
-            
-            blurPanel.SetActive(false);
-            menuManager.winScreen.SetActive(true);
+            StartCoroutine(Won(playerNum));
         }
         else
         {
@@ -491,6 +473,39 @@ public class GameManager : MonoBehaviour
     {
         score = new Vector2(0, 0);
         scoreText.text = ScoreBuilder();
+    }
+
+
+
+
+
+
+    // END GAME
+    IEnumerator Won(int playerNum)
+    {
+        audioManager.ActivateWind();
+        yield return new WaitForSecondsRealtime(2f);
+
+        gameStarted = false;
+        menuManager.winMessage.SetActive(true);
+        menuManager.winName.text = playerNames[playerNum - 1];
+        menuManager.winName.color = playersColors[playerNum - 1];
+        audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
+        }
+
+        playersList[playerNum - 1].GetComponent<PlayerAnimations>().TriggerSneath();
+
+        yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
+
+        audioManager.ActivateWinMusic();
+
+        blurPanel.SetActive(false);
+        menuManager.winScreen.SetActive(true);
+        Cursor.visible = true;
     }
 
     

@@ -314,7 +314,7 @@ public class PlayerStats : MonoBehaviour
         {
             SetStaminaColor(staminaDeadColor);
         }
-        if (stamina < staminaCostForMoves * 2)
+        else if (stamina < staminaCostForMoves * 2)
         {
             SetStaminaColor(staminaLowColor);
         }

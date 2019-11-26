@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class MapMenuLoader : MonoBehaviour
+public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
 {
     // MAP LOADER
     [Header("MAP LOADER")]
@@ -17,14 +18,13 @@ public class MapMenuLoader : MonoBehaviour
     [SerializeField] GameObject mapMenuObjectsParent = null;
     [SerializeField] GameObject
         mapMenuObject = null,
-        backButton = null;
+        backButton = null,
+        randomMapElement = null;
 
     List<GameObject> menuBrowserButtonsList = new List<GameObject>();
 
     [SerializeField] MapsDataBase mapsDatabase01 = null;
     [SerializeField] MenuBrowser mapsMenuBrowser = null;
-
-    [SerializeField] Button randomMapButton = null;
 
 
 
@@ -42,7 +42,8 @@ public class MapMenuLoader : MonoBehaviour
     {
         // Get the map loader
         mapLoader = GameObject.Find(mapLoaderName).GetComponent<MapLoader>();
-        menuBrowserButtonsList.Add(backButton);
+        //menuBrowserButtonsList.Add(backButton);
+        menuBrowserButtonsList.Add(randomMapElement);
 
 
         for (int i = 0; i < mapsDatabase01.mapsList.Count; i++)
@@ -72,6 +73,11 @@ public class MapMenuLoader : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+
     }
 
 

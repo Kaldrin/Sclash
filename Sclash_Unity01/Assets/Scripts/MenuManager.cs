@@ -16,7 +16,7 @@ public class MenuManager : MonoBehaviour
         musicVolume = null,
         fxVolume = null,
         voiceVolume = null;
-    [SerializeField] DynamicValueTMP roundToWin = null;
+    [SerializeField] Slider roundsToWinSlider = null;
 
 
 
@@ -37,13 +37,21 @@ public class MenuManager : MonoBehaviour
         mainMenuButton = null,
         pauseOptionMenuBrowser = null,
         mainOptionMenuBrowser = null,
-        winOptionMenuBrower = null;
+        changeMapButton = null,
+        backIndicator = null;
+
+    int playerWhoPaused = 0;
+
+    [SerializeField] float pauseCooldownDuration = 0.1f;
+    float pauseCooldownStartTime = 0f;
+
+    bool pauseCooldownOn = false;
 
 
 
 
     // WIN
-    [Header("WIN MENU")] [SerializeField] GameObject backToWinScreenButton = null;
+    [Header("WIN MENU")]
     [SerializeField] public GameObject winMessage = null;
     [SerializeField] public TextMeshProUGUI winName = null;
 
@@ -52,6 +60,7 @@ public class MenuManager : MonoBehaviour
 
     // MANAGERS
     [Header("MANAGERS")]
+
     // Game managers
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
@@ -90,13 +99,51 @@ public class MenuManager : MonoBehaviour
     // Update is called once per grahic frame
     void Update()
     {
+        /*
         if (Input.GetButtonUp("Pause"))
         {
             if (gameManager.gameStarted && !gameManager.playerDead)
             {
-                TriggerPause(!gameManager.paused);
+                
             }
         }
+        */
+
+
+        if (gameManager.gameStarted)
+        {
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                if (!pauseCooldownOn)
+                {
+                    if (gameManager.paused && inputManager.playerInputs[playerWhoPaused].pauseUp)
+                    {
+                        TriggerPause(!gameManager.paused);
+                        Debug.Log("Unpause");
+                        pauseCooldownOn = true;
+                        pauseCooldownStartTime = Time.time;
+                    }
+                    else if (!gameManager.paused && inputManager.playerInputs[i].pauseUp)
+                    {
+                        TriggerPause(!gameManager.paused);
+                        playerWhoPaused = i;
+                        Debug.Log("Pause");
+                        pauseCooldownOn = true;
+                        pauseCooldownStartTime = Time.time;
+                    }
+                }
+            }
+
+            if (pauseCooldownOn && Time.time - pauseCooldownStartTime > pauseCooldownDuration)
+            {
+                pauseCooldownOn = false;
+            }
+        }
+        
+
+
+        Debug.Log(playerWhoPaused);
+
 
         UpdateScoreDisplay();
     }
@@ -146,8 +193,7 @@ public class MenuManager : MonoBehaviour
         voiceVolume.slider.value = menuParametersSave.voiceVolume;
         voiceVolume.UpdateVolume();
 
-        roundToWin.value = menuParametersSave.roundToWin;
-
+        roundsToWinSlider.value = menuParametersSave.roundToWin;
 
 
 
@@ -167,7 +213,7 @@ public class MenuManager : MonoBehaviour
         voiceVolume.slider.value = save.voiceVolume;
         voiceVolume.UpdateVolume();
 
-        roundToWin.value = save.roundsToWin;
+        roundsToWinSlider.value = save.roundsToWin;
     }
 
     // Save menu parameters
@@ -184,11 +230,12 @@ public class MenuManager : MonoBehaviour
         // Save forever
         JsonSave save = SaveGameManager.GetCurrentSave();
 
+
         save.masterVolume = masterVolume.slider.value;
         save.musicVolume = musicVolume.slider.value;
         save.fxVolume = fxVolume.slider.value;
         save.voiceVolume = voiceVolume.slider.value;
-        save.roundsToWin = roundToWin.value;
+        save.roundsToWin = Mathf.FloorToInt(roundsToWinSlider.value);
 
         SaveGameManager.Save();
     }
@@ -216,13 +263,14 @@ public class MenuManager : MonoBehaviour
         quitButton.SetActive(state);
         mainMenuButton.SetActive(state);
         gameManager.scoreObject.SetActive(state);
-        backToWinScreenButton.SetActive(false);
+        changeMapButton.SetActive(false);
+        //backIndicator.SetActive(state);
 
         pauseOptionMenuBrowser.SetActive(state);
         mainOptionMenuBrowser.SetActive(false);
-        winOptionMenuBrower.SetActive(false);
 
         gameManager.paused = state;
+        Cursor.visible = state;
 
         /*
         for (int i = 0; i < gameManager.playersList.Count; i++)

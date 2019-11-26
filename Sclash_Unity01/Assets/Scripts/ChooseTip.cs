@@ -5,34 +5,45 @@ using TMPro;
 
 public class ChooseTip : MonoBehaviour
 {
-    [SerializeField] TipsDatabase tips = null;
+    // TIPS
+    [Header("TIPS")]
+    [Tooltip("Reference to the scriptable object containing the list of the tips to display")]
+    [SerializeField] TipsDatabase tipsData = null;
+    [Tooltip("Reference to the text box object where to display the tips")]
     [SerializeField] TextMeshProUGUI tipsTextBox = null;
-    [SerializeField] float tipUpdateDuration = 20;
+
+
+
 
 
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(ChangeTip());
+        
     }
 
-    // Update is called once per frame
+    // OnEnable is called when the object is enabled
+    void OnEnable()
+    {
+        ChangeTip();
+    }
+
+    // Update is called once per graphic frame
     void Update()
     {
     }
 
-    IEnumerator ChangeTip()
+
+
+
+
+    // TIP CHANGE
+    // Changes the displayed tip immediatly
+    void ChangeTip()
     {
-        while (true)
-        {
-            int randomIndex = Random.Range(0, tips.tipsList.Count);
+        int randomIndex = Random.Range(0, tipsData.tipsList.Count);
 
-
-            tipsTextBox.text = tips.tipsList[randomIndex];
-
-
-            yield return new WaitForSecondsRealtime(tipUpdateDuration);
-        }
+        tipsTextBox.text = tipsData.tipsList[randomIndex];
     }
 }
