@@ -229,15 +229,19 @@ public class PlayerAttack : MonoBehaviour
 
     // FX
     [Header("FX")]
+    [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public GameObject attackSign = null;
-    [SerializeField]
-    public GameObject
+    [SerializeField] public GameObject
         clash = null,
         clashKana = null,
         kickKanas = null,
-        kickedFX = null;
+        kickedFX = null,
+        chargeFullFX = null;
     [SerializeField] public GameObject chargeFX = null;
+
     [SerializeField] Slider chargeSlider = null;
+
+    [SerializeField] float chargeFXFillingSpeed = 0.005f;
 
 
 
@@ -485,6 +489,7 @@ public class PlayerAttack : MonoBehaviour
             if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying && !clashed && !isDrawing)
             {
                 charging = true;
+                chargeFX.SetActive(true);
                 canCharge = false;
                 isAttackRecovering = false;
                 currentChargeFramesPressed = 0;
@@ -515,11 +520,13 @@ public class PlayerAttack : MonoBehaviour
         //When the player is charging the attack
         if (charging)
         {
-            chargeFX.SetActive(true);
             
-
+            
+            // Charge slider
+            
             if (chargeSlider.value > 0)
-                chargeSlider.value -= 0.007f;
+                chargeSlider.value -= chargeFXFillingSpeed;
+            
 
 
             // If the player has wiated too long charging
@@ -537,9 +544,16 @@ public class PlayerAttack : MonoBehaviour
                 if (chargeLevel < maxChargeLevel)
                 {
                     chargeLevel++;
+                    chargeSlider.value = (chargeSlider.value / maxChargeLevel) * chargeLevel;
                 }
                 else if (chargeLevel >= maxChargeLevel)
                 {
+                    // FX
+                    chargeFullFX.SetActive(false);
+                    chargeFullFX.SetActive(true);
+                    chargeFX.SetActive(false);
+
+                    chargeSlider.value = 0;
                     chargeLevel = maxChargeLevel;
                     maxChargeLevelStartTime = Time.time;
                     maxChargeLevelReached = true;
@@ -799,6 +813,7 @@ public class PlayerAttack : MonoBehaviour
         kicking = true;
         parrying = false;
         isAttacking = false;
+        playerStats.PauseStaminaRegen();
 
         //activeKickInput = 0;
         playerAnimations.TriggerKick(true);
@@ -854,12 +869,23 @@ public class PlayerAttack : MonoBehaviour
     {
         if (!kickFrame)
         {
+            
+
+
+            // Stamina
+            if (parrying || isAttacking)
+                playerStats.StaminaCost(kickedStaminaLoss);
+
+
+
             // FX
             kickKanas.SetActive(false);
             kickedFX.SetActive(false);
             kickedFX.SetActive(true);
             kickKanas.SetActive(true);
 
+
+            // States
             charging = false;
             isAttackRecovering = false;
             isAttacking = false;
@@ -873,15 +899,21 @@ public class PlayerAttack : MonoBehaviour
 
             chargeLevel = 1;
 
+            StopAllCoroutines();
+
+
+            // Dash knockback
             dashDirection = transform.localScale.x;
             actualDashDistance = kickKnockbackDistance;
             initPos = transform.position;
             targetPos = transform.position + new Vector3(actualDashDistance * dashDirection, 0, 0);
 
+
+            // Animation
             playerAnimations.CancelCharge();
             playerAnimations.Clashed(clashed);
 
-            playerStats.StaminaCost(kickedStaminaLoss);
+            
 
             // Sound
             audioManager.Clash();
@@ -1039,8 +1071,6 @@ public class PlayerAttack : MonoBehaviour
     void TriggerBasicDash()
     {
         StopAllCoroutines();
-        playerAnimations.slashFX.gameObject.SetActive(false);
-        playerAnimations.slashFX.gameObject.SetActive(true);
 
 
         dashStep = 3;

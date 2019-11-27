@@ -48,13 +48,14 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] public Slider staminaSlider = null;
     List<Slider> staminaSliders = new List<Slider>();
 
-    [SerializeField] public float staminaCostForMoves = 1;
+    [Tooltip("The amount of stamina each move will cost when executed")] [SerializeField] public float staminaCostForMoves = 1;
     [SerializeField] float
         maxStamina = 3f,
         durationBeforeStaminaRegen = 0.2f,
         staminaGainOverTimeMultiplier = 0.1f,
         idleStaminaGainOverTimeMultiplier = 0.5f,
-        backWalkingStaminaGainOverTime = 0.5f;
+        backWalkingStaminaGainOverTime = 0.5f,
+        staminaBarBaseOpacity = 0.8f;
     [HideInInspector] public float stamina = 0;
     float
         currentTimeBeforeStaminaRegen = 0,
@@ -98,6 +99,9 @@ public class PlayerStats : MonoBehaviour
     // SOUND
     [Header("SOUND")]
     [SerializeField] AudioSource staminaBarCharged = null;
+
+
+
 
 
 
@@ -195,9 +199,9 @@ public class PlayerStats : MonoBehaviour
             else
             {
                 stamina += Time.deltaTime * staminaGainOverTimeMultiplier;
-                
             }
         }
+
 
         // Small duration before the player can regen stamina again after a move
         if (currentTimeBeforeStaminaRegen <= 0 && !canRegenStamina)
@@ -259,6 +263,7 @@ public class PlayerStats : MonoBehaviour
                 
         }
 
+
         oldStamina = stamina;
 
 
@@ -278,9 +283,9 @@ public class PlayerStats : MonoBehaviour
             if (staminaBarsOpacity > 0)
                 staminaBarsOpacity -= 0.05f;
         }
-        else
+        else if (staminaBarsOpacity != staminaBarBaseOpacity)
         {
-            staminaBarsOpacity = 1;
+            staminaBarsOpacity = staminaBarBaseOpacity;
         }
     }
 
@@ -380,6 +385,12 @@ public class PlayerStats : MonoBehaviour
         bool hit = false;
 
 
+        if (playerAttack.kicking)
+        {
+            playerAttack.StopAllCoroutines();
+        }
+
+
         if (!dead)
         { 
             /*
@@ -407,6 +418,7 @@ public class PlayerStats : MonoBehaviour
             else if (untouchable)
             {
                 audioManager.BattleEventIncreaseIntensity();
+                gameManager.SlowMo(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
             }
             // TOUCHED
             else

@@ -3261,7 +3261,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &122426127
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5266,7 +5266,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 25.4, y: -26.9}
+  m_AnchoredPosition: {x: 22.6, y: -26.9}
   m_SizeDelta: {x: 29.97, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &176906436
@@ -33357,11 +33357,11 @@ MonoBehaviour:
   battleMusicMaxVolume: 1
   windMaxVolume: 1
   battleMusicStrikesMaxVolume: 0.5
-  decreaseBattleIntensityEveryDuration: 5
+  decreaseBattleIntensityEveryDuration: 3
   adjustBattleMusicVolumeDepdendingOnPlayersDistance: 0
   battleMusicOn: 0
-  battleIntensityLevelForPhase2: 2
-  battleIntensityLevelForPhase3: 5
+  battleIntensityLevelForPhase2: 3
+  battleIntensityLevelForPhase3: 8
   currentPhase: 0
   playersDistanceForVolumeLimits: {x: 8, y: 15}
   musicDataBase: {fileID: 11400000, guid: 3f178c74fc023034c8fbf3fbffb1a4ad, type: 2}
@@ -38424,7 +38424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1520278790
 RectTransform:
   m_ObjectHideFlags: 0
@@ -47397,7 +47397,7 @@ PrefabInstance:
     - target: {fileID: 2989385763825353732, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8036874675632634083, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
@@ -47457,27 +47457,27 @@ PrefabInstance:
     - target: {fileID: 1834513463833290367, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1834513465043651912, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1834513465073123598, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4537346143977487940, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4537346144247448885, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4537346144391227104, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
