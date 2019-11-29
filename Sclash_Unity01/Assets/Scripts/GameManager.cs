@@ -271,9 +271,12 @@ public class GameManager : MonoBehaviour
             playerAnimations.spriteRenderer.color = playersColors[i];
             playerAnimations.legsSpriteRenderer.color = playersColors[i];
             playerAnimations.playerLight.color = playersColors[i];
+
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
+            playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
             playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
+
             ParticleSystem attackSignParticles = playerAttack.attackSign.GetComponent<ParticleSystem>();
             ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
             attackSignParticlesMain.startColor = attackSignColors[i];

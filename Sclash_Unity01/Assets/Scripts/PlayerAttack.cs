@@ -577,6 +577,9 @@ public class PlayerAttack : MonoBehaviour
     // Triggers the attck
     void ReleaseAttack()
     {
+        StopAllCoroutines();
+
+
         // Charge
         playerMovement.Charging(false);
         charging = false;
@@ -638,7 +641,7 @@ public class PlayerAttack : MonoBehaviour
 
 
         // STAMINA COST
-         playerStats.StaminaCost(playerStats.staminaCostForMoves);
+        playerStats.StaminaCost(playerStats.staminaCostForMoves);
 
         StartCoroutine(AttackFailSafe());
 

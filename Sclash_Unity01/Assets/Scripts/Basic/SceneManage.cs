@@ -94,7 +94,13 @@ public class SceneManage : MonoBehaviour {
 
     void LoadScene(Scene scene)
     {
-        SceneManager.LoadScene(scene.name);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Scene2");
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 
     // Set which scene should be loaded after the close scene anim

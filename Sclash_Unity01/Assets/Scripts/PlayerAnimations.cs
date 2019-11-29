@@ -12,8 +12,8 @@ public class PlayerAnimations : MonoBehaviour
     [SerializeField] Rigidbody2D rigid = null;
     [SerializeField]
     Animator
-        animator = null;
-        //legsAnimator = null;
+        animator = null,
+        legsAnimator = null;
 
     [SerializeField]
     public SpriteRenderer
@@ -140,12 +140,12 @@ public class PlayerAnimations : MonoBehaviour
         if ((rigid.velocity.x * -transform.localScale.x) < 0)
         {
             animator.SetFloat("WalkDirection", 0);
-            //legsAnimator.SetFloat("WalkDirection", 0);
+            legsAnimator.SetFloat("WalkDirection", 0);
         }
         else
         {
             animator.SetFloat("WalkDirection", 1);
-            //legsAnimator.SetFloat("WalkDirection", 1);
+            legsAnimator.SetFloat("WalkDirection", 1);
         }
 
 
@@ -320,8 +320,10 @@ public class PlayerAnimations : MonoBehaviour
     // Update charge walking anim
     void UpdateChargeWalk()
     {
+        
         if (playerAttack.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
+            Debug.Log("Charge");
             legsMask.SetActive(true);
         }
         else
