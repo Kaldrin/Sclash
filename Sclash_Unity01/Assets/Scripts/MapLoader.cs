@@ -15,7 +15,7 @@ public class MapLoader : MonoBehaviour
     // MAPS MENU
     [Header("MAPS MENU")]
     [Tooltip("The MenuBrowser script that browses through the map elements")]
-    [SerializeField] MenuBrowser mapsMenuBrowser;
+    [SerializeField] MenuBrowser mapsMenuBrowser = null;
 
 
 

@@ -103,7 +103,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] bool isDrawing = false;
     [SerializeField] public bool hasDrawn = false;
 
-    [SerializeField] GameObject drawText = null;
+    [SerializeField] public GameObject drawText = null;
     Vector3 drawTextScale = new Vector3(0, 0, 0);
 
 
@@ -188,6 +188,7 @@ public class PlayerAttack : MonoBehaviour
     // DASH
     [Header("DASH")]
     [SerializeField] public Collider2D playerCollider;
+    [SerializeField] public Collider2D[] playerColliders = null;
     [HideInInspector] public bool isDashing;
 
     int dashStep = -1;
@@ -252,7 +253,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
     [SerializeField] KeyCode
         deathCheatKey = KeyCode.Alpha2,
-        drawCheatKey = KeyCode.Alpha3;
+        drawCheatKey = KeyCode.Alpha3,
+        staminaCheatKey = KeyCode.Alpha4;
 
 
    
@@ -402,6 +404,11 @@ public class PlayerAttack : MonoBehaviour
         {
             hasDrawn = true;
         }
+
+        if (Input.GetKeyDown(staminaCheatKey))
+        {
+            playerStats.stamina = playerStats.maxStamina;
+        }
     }
 
 
@@ -480,6 +487,8 @@ public class PlayerAttack : MonoBehaviour
     // Manages the detection of attack charge inputs
     void ManageCharge()
     {
+        Debug.Log(Input.GetAxis("Fire" + playerStats.playerNum));
+
         //Player presses attack button
         if (Input.GetButtonDown("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) > 0.1)
         {
@@ -596,7 +605,7 @@ public class PlayerAttack : MonoBehaviour
             actualAttackRange = lightAttackRange + (heavyAttackRange - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
 
         Vector3 attackSignPos = attackSign.transform.localPosition;
-        attackSign.transform.localPosition = new Vector3(- actualAttackRange, attackSignPos.y, attackSignPos.z);
+        attackSign.transform.localPosition = new Vector3(- (actualAttackRange + 0.1f), attackSignPos.y, attackSignPos.z);
 
 
         if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
@@ -1113,7 +1122,17 @@ public class PlayerAttack : MonoBehaviour
             kicked = false;
             playerAnimations.Clashed(clashed);
             time = 0;
+
+
+
+
             playerCollider.isTrigger = false;
+
+
+            for (int i = 0; i < playerColliders.Length; i++)
+            {
+                playerColliders[i].isTrigger = false;
+            }
         }
 
  
@@ -1125,6 +1144,12 @@ public class PlayerAttack : MonoBehaviour
     void RunDash()
     {
         playerCollider.isTrigger = true;
+
+
+        for (int i = 0; i < playerColliders.Length; i++)
+        {
+            playerColliders[i].isTrigger = true;
+        }
 
 
         if (clashed)
@@ -1149,6 +1174,12 @@ public class PlayerAttack : MonoBehaviour
         isDashing = false;
 
         // Player can cross up, collider is deactivated during dash but it can still be hit
+        for (int i = 0; i < playerColliders.Length; i++)
+        {
+            playerColliders[i].isTrigger = false;
+        }
+
+
         playerCollider.isTrigger = false;
 
 

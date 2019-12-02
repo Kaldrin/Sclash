@@ -119,7 +119,6 @@ public class MenuManager : MonoBehaviour
                     if (gameManager.paused && inputManager.playerInputs[playerWhoPaused].pauseUp)
                     {
                         TriggerPause(!gameManager.paused);
-                        Debug.Log("Unpause");
                         pauseCooldownOn = true;
                         pauseCooldownStartTime = Time.time;
                     }
@@ -127,7 +126,6 @@ public class MenuManager : MonoBehaviour
                     {
                         TriggerPause(!gameManager.paused);
                         playerWhoPaused = i;
-                        Debug.Log("Pause");
                         pauseCooldownOn = true;
                         pauseCooldownStartTime = Time.time;
                     }
@@ -139,10 +137,6 @@ public class MenuManager : MonoBehaviour
                 pauseCooldownOn = false;
             }
         }
-        
-
-
-        Debug.Log(playerWhoPaused);
 
 
         UpdateScoreDisplay();

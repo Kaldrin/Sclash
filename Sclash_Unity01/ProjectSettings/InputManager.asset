@@ -7,7 +7,7 @@ InputManager:
   m_Axes:
   - serializedVersion: 3
     m_Name: Horizontal1
-    descriptiveName: Keyboard horizontal 1.0
+    descriptiveName: Movements player 1 (1)
     descriptiveNegativeName: 
     negativeButton: q
     positiveButton: d
@@ -23,7 +23,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Horizontal1
-    descriptiveName: Horizontal 1.1
+    descriptiveName: Movements player 1 (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -39,7 +39,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Horizontal1
-    descriptiveName: Horizontal 1.2
+    descriptiveName: Movements player 1 (3)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -55,7 +55,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Horizontal2
-    descriptiveName: Horizontal 2.0
+    descriptiveName: Movements player 2 (1)
     descriptiveNegativeName: 
     negativeButton: left
     positiveButton: right
@@ -71,7 +71,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Horizontal2
-    descriptiveName: Horizontal 2.1
+    descriptiveName: Movements player 2 (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -87,7 +87,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Horizontal2
-    descriptiveName: Horizontal 2.2
+    descriptiveName: Movements player 2 (3)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -103,7 +103,23 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Fire1
-    descriptiveName: Fire 1.0
+    descriptiveName: Attack player 1 (1)
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: f
+    altNegativeButton: 
+    altPositiveButton: joystick 1 button 2
+    gravity: 1000
+    dead: 0.001
+    sensitivity: 1000
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 1
+  - serializedVersion: 3
+    m_Name: Fire1
+    descriptiveName: Attack player 1 (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: f
@@ -119,39 +135,23 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Fire1
-    descriptiveName: Fire 1.0
-    descriptiveNegativeName: 
-    negativeButton: 
-    positiveButton: f
-    altNegativeButton: 
-    altPositiveButton: joystick 1 button 5
-    gravity: 1000
-    dead: 0.001
-    sensitivity: 1000
-    snap: 0
-    invert: 0
-    type: 0
-    axis: 0
-    joyNum: 1
-  - serializedVersion: 3
-    m_Name: Fire1
-    descriptiveName: Fire 1.1
+    descriptiveName: Attack player 1 (3)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 1 button 2
     altNegativeButton: 
     altPositiveButton: 
-    gravity: 1000
+    gravity: 1
     dead: 0.001
-    sensitivity: 1000
+    sensitivity: 1
     snap: 0
     invert: 0
-    type: 0
-    axis: 0
+    type: 2
+    axis: 2
     joyNum: 1
   - serializedVersion: 3
     m_Name: Kick1
-    descriptiveName: Kick 1.0
+    descriptiveName: Pommel player 1 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: h
@@ -167,7 +167,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Kick1
-    descriptiveName: Kick 1.1
+    descriptiveName: Pommel player 1 (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 1 button 3
@@ -183,7 +183,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Kick2
-    descriptiveName: Kick 2.0
+    descriptiveName: Pommel player 2 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: '[3]'
@@ -199,7 +199,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Kick2
-    descriptiveName: Kick 2.1
+    descriptiveName: Pommel player 2 (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 2 button 3
@@ -215,7 +215,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Fire2
-    descriptiveName: Fire 2.0
+    descriptiveName: Attack player 2 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 2 button 5
@@ -231,7 +231,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Fire2
-    descriptiveName: Fire 2.1
+    descriptiveName: Attack player 2 (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 2 button 2
@@ -247,7 +247,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Fire2
-    descriptiveName: Fire 2.2
+    descriptiveName: Attack player 2 (3)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -259,11 +259,11 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 3
+    axis: 2
     joyNum: 2
   - serializedVersion: 3
     m_Name: Parry1
-    descriptiveName: Parry 1.0
+    descriptiveName: Parry player 1 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: g
@@ -279,7 +279,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Parry1
-    descriptiveName: Keybpard & Xbox bumper parry 1
+    descriptiveName: Parry player 1 (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 1 button 0
@@ -295,7 +295,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Parry1
-    descriptiveName: Parry 1.2
+    descriptiveName: Parry player 1 (3)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 1 button 0
@@ -311,7 +311,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Parry2
-    descriptiveName: Parry 2.0
+    descriptiveName: Parry player 2 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 2 button 4
@@ -327,7 +327,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Parry2
-    descriptiveName: Parry 2.1
+    descriptiveName: Parry player 2 (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick 2 button 0
@@ -343,7 +343,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Parry2
-    descriptiveName: Parry 2.2
+    descriptiveName: Parry player 2 (3)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -359,7 +359,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Jump
-    descriptiveName: Jump 0.0
+    descriptiveName: None
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: space
@@ -375,7 +375,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Jump
-    descriptiveName: Jump 0.1
+    descriptiveName: None
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 3
@@ -391,7 +391,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Mouse X
-    descriptiveName: 
+    descriptiveName: Mouse X movements
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -407,7 +407,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Mouse Y
-    descriptiveName: 
+    descriptiveName: Mouse Y movements
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -423,7 +423,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Mouse ScrollWheel
-    descriptiveName: 
+    descriptiveName: Mouse scrollwheel
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -439,7 +439,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Vertical1
-    descriptiveName: Keyboard vertical 1
+    descriptiveName: Vertical browsing (1)
     descriptiveNegativeName: 
     negativeButton: s
     positiveButton: z
@@ -455,7 +455,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Vertical2
-    descriptiveName: Keyboard vertical 2
+    descriptiveName: Vertical browsing (2)
     descriptiveNegativeName: 
     negativeButton: down
     positiveButton: up
@@ -471,7 +471,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Submit
-    descriptiveName: Submit 1.0
+    descriptiveName: Validate / Submit (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -487,7 +487,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Submit
-    descriptiveName: Submit 1.1
+    descriptiveName: Validate / Submit (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: return
@@ -503,7 +503,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Back
-    descriptiveName: Back 1.0
+    descriptiveName: Back
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: escape
@@ -519,7 +519,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Cancel
-    descriptiveName: Keyboard & Xbox controller cancel
+    descriptiveName: Cancel
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: escape
@@ -535,7 +535,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Dash1
-    descriptiveName: Dash 1.0
+    descriptiveName: Dash player 1 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -551,7 +551,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Dash2
-    descriptiveName: Dash 2.0
+    descriptiveName: Dash player 2 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -567,7 +567,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Pause1
-    descriptiveName: Xbox controller & keyboard pause
+    descriptiveName: Pause player 1 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 7
@@ -583,7 +583,7 @@ InputManager:
     joyNum: 1
   - serializedVersion: 3
     m_Name: Pause2
-    descriptiveName: Xbox controller & keyboard pause
+    descriptiveName: Pause player 2 (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 7
@@ -599,7 +599,7 @@ InputManager:
     joyNum: 2
   - serializedVersion: 3
     m_Name: Horizontal
-    descriptiveName: Horizontal menu 0.0
+    descriptiveName: Horizontal browsing (1)
     descriptiveNegativeName: 
     negativeButton: left
     positiveButton: right
@@ -615,7 +615,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Horizontal
-    descriptiveName: Horizontal menu 0.1
+    descriptiveName: Horizontal browsing (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -631,7 +631,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Horizontal
-    descriptiveName: Horizontal menu 0.2
+    descriptiveName: Horizontal browsing (3)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -647,7 +647,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Vertical
-    descriptiveName: Vertical menu 0.0
+    descriptiveName: Vertical browsing (1)
     descriptiveNegativeName: 
     negativeButton: down
     positiveButton: up
@@ -663,7 +663,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Vertical
-    descriptiveName: Vertical menu 0.1
+    descriptiveName: Vertical browsing (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -679,7 +679,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Vertical
-    descriptiveName: Vertical menu 0.2
+    descriptiveName: Vertical browsing (3)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
@@ -695,7 +695,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Score
-    descriptiveName: Score 1.0
+    descriptiveName: Score display (1)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 6
@@ -711,7 +711,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Score
-    descriptiveName: Score 1.0
+    descriptiveName: Score display (2)
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 6

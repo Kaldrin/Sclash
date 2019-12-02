@@ -48,9 +48,11 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] public Slider staminaSlider = null;
     List<Slider> staminaSliders = new List<Slider>();
 
-    [Tooltip("The amount of stamina each move will cost when executed")] [SerializeField] public float staminaCostForMoves = 1;
+    [Tooltip("The amount of stamina each move will cost when executed")]
+    [SerializeField] public float staminaCostForMoves = 1;
+    [Tooltip("The maximum amount of stamina one player can have")]
+    [SerializeField] public float maxStamina = 3f;
     [SerializeField] float
-        maxStamina = 3f,
         durationBeforeStaminaRegen = 0.2f,
         staminaGainOverTimeMultiplier = 0.1f,
         idleStaminaGainOverTimeMultiplier = 0.5f,
@@ -360,7 +362,12 @@ public class PlayerStats : MonoBehaviour
         playerAttack.canParry = true;
         playerAttack.canKick = true;
         playerAttack.enemyDead = false;
+
         playerAttack.playerCollider.isTrigger = false;
+        for (int i = 0; i < playerAttack.playerColliders.Length; i++)
+        {
+            playerAttack.playerColliders[i].isTrigger = false;
+        }
 
         rigid.gravityScale = 1;
         rigid.simulated = true;
@@ -464,6 +471,12 @@ public class PlayerStats : MonoBehaviour
 
 
         playerAttack.playerCollider.isTrigger = true;
+        for (int i = 0; i < playerAttack.playerColliders.Length; i++)
+        {
+            playerAttack.playerColliders[i].isTrigger = true;
+        }
+
+
         gameManager.SlowMo(gameManager.rounEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
     }
 }

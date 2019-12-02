@@ -32,6 +32,7 @@ public class MenuBrowser : MonoBehaviour
         verticalAxis = "Vertical",
         backButton = "Back";
 
+    [Tooltip("Dead zones for joystick browsing so that it's more comfortable")]
     [SerializeField] float
         verticalInputDetectionZone = 0.5f,
         verticalInputRestZone = 0.1f,
@@ -44,10 +45,17 @@ public class MenuBrowser : MonoBehaviour
 
     // VISUAL
     [Header("VISUAL")]
-    [Tooltip("Default color of an unselected menu element")]
-    [SerializeField] Color defaultColor = Color.black;
-    [Tooltip("Color of an selected menu element")]
-    [SerializeField] Color selectedColor = Color.white;
+    [Tooltip("Default color of an unselected menu element's text")]
+    [SerializeField] Color textDefaultColor = Color.black;
+    [Tooltip("Color of an selected menu element's text")]
+    [SerializeField] Color textSelectedColor = Color.white;
+    [Tooltip("Color of an selected menu element's button")]
+    [SerializeField] Color buttonSelectedColor = Color.white;
+    [Tooltip("Color of an selected menu element's button")]
+    [SerializeField] Color buttonDefaultColor = Color.black;
+
+    [Tooltip("For each menu element, should use the script's button color change or let the button's default one ?")]
+    [SerializeField] bool[] shouldUseButtonColorSwitch;
 
 
 
@@ -61,6 +69,9 @@ public class MenuBrowser : MonoBehaviour
 
 
     
+
+
+
 
 
 
@@ -89,8 +100,15 @@ public class MenuBrowser : MonoBehaviour
         if (elements.Length > 0)
         {
             // H AXIS
+            // Detects H axis let go
+            if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
+            {
+                hAxisInUse = false;
+            }
+
+
             // Move sliders with horizontal
-            if (Input.GetAxisRaw(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
+            if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
             {
                 if (elements[browseIndex].GetComponent<SliderToVolume>())
                 {
@@ -98,7 +116,7 @@ public class MenuBrowser : MonoBehaviour
                     hAxisInUse = true;
                 }
             }
-            else if (Input.GetAxisRaw(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
+            else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
             {
                 if (elements[browseIndex].GetComponent<SliderToVolume>())
                 {
@@ -107,11 +125,8 @@ public class MenuBrowser : MonoBehaviour
                 }
             }
 
-            // Detects H axis let ho
-            if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
-            {
-                hAxisInUse = false;
-            }
+
+            
 
 
 
@@ -169,6 +184,11 @@ public class MenuBrowser : MonoBehaviour
             {
                 Select(false);
             }
+
+
+
+
+            ResetColor();
         }
 
 
@@ -178,7 +198,6 @@ public class MenuBrowser : MonoBehaviour
             if (Input.GetButtonUp(backButton))
             {
                 backElement.GetComponent<Button>().onClick.Invoke();
-                
             }
         }
     }
@@ -189,6 +208,10 @@ public class MenuBrowser : MonoBehaviour
     // OnEnable is called each time the object is set from inactive to active
     void OnEnable()
     {
+        Debug.Log("Enable");
+
+
+
         if (elements.Length > 0)
         {
             browseIndex = 0;
@@ -217,12 +240,14 @@ public class MenuBrowser : MonoBehaviour
         if (!state)
         {
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
-            ColorSwap();
+            //ColorSwap();
+            ResetColor();
         }
         else
         {
             elements[browseIndex].GetComponent<Button>().Select();
-            ResetColor();
+            //ResetColor();
+            ColorSwap();
         }
     }
     
@@ -284,11 +309,24 @@ public class MenuBrowser : MonoBehaviour
     {
         for (int i = 0; i < elements.Length; i++)
         {
+            Debug.Log("Reset");
             GameObject g = elements[i];
 
-            if (g.transform.GetChild(0).GetComponent<TextMeshProUGUI>())
+
+            if (i != browseIndex)
             {
-                g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = defaultColor;
+                if (shouldUseButtonColorSwitch[browseIndex])
+                {
+                    if (g.GetComponent<Button>())
+                    {
+                        g.GetComponent<Image>().color = buttonDefaultColor;
+                    }
+                }
+
+                if (g.transform.GetChild(0).GetComponent<TextMeshProUGUI>())
+                {
+                    g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = textDefaultColor;
+                }
             }
         }
     }
@@ -300,15 +338,30 @@ public class MenuBrowser : MonoBehaviour
             GameObject g = elements[i];
 
 
-            if (g.transform.GetChild(0).GetComponent<TextMeshProUGUI>())
+            if (i == browseIndex)
             {
-                if (g == elements[browseIndex])
+                if (shouldUseButtonColorSwitch[browseIndex])
                 {
-                    g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = selectedColor;
+                    if (g.GetComponent<Button>())
+                    {
+                        g.GetComponent<Image>().color = buttonSelectedColor;
+                    }
                 }
-                else
+            }
+
+
+            for (int j = 0; j < g.transform.childCount; j++)
+            {
+                if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
                 {
-                    g.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = defaultColor;
+                    if (g == elements[browseIndex])
+                    {
+                        g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textSelectedColor;
+                    }
+                    else
+                    {
+                        g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textDefaultColor;
+                    }
                 }
             }
         }

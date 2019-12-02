@@ -9,14 +9,17 @@ public class PlayerMovement : MonoBehaviour
     // MANAGERS
     [Header("MANAGERS")]
     // Game manager
+    [Tooltip("The name of the game manager's object the find in the scene")]
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager = null;
 
     // Audio manager
+    [Tooltip("The name of the audio manager's object the find in the scene")]
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
 
     // Input manager
+    [Tooltip("The name of the input manager's object the find in the scene")]
     [SerializeField] string inputManagerName = "GlobalManager";
     InputManager inputManager = null;
 
@@ -24,7 +27,10 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
+
     // PLAYER'S COMPONENTS
+    [Header("PLAYER'S COMPONENTS")]
     PlayerStats playerStats = null;
     PlayerAttack playerAttack = null;
     Rigidbody2D rb = null;
@@ -44,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
 
     // MOVEMENTS
     [Header("MOVEMENTS")]
+    [Tooltip("The default movement speed of the player")]
     [SerializeField] float baseMovementsSpeed = 10f;
     [SerializeField] float
         chargeMovementsSpeed = 5f,
@@ -64,6 +71,8 @@ public class PlayerMovement : MonoBehaviour
         lowJumpMultiplier = 2f,
         jumpHeight = 10f;
     */
+
+
 
 
 
@@ -115,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
 
         // ORIENTATION IF PLAYER CAN ORIENT
         if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.isAttackRecovering && !playerAttack.enemyDead && !playerAttack.isAttacking && !playerAttack.isDashing)
-            OrientTowardsEnemy();
+            ManageOrientation();
     }
 
     // Fixed update is called 30 times per second
@@ -167,7 +176,7 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator ExecOnAwake()
     {
         yield return new WaitForSeconds(0.2f);
-        OrientTowardsEnemy();
+        ManageOrientation();
     }
 
 
@@ -239,13 +248,14 @@ public class PlayerMovement : MonoBehaviour
 
 
     // ORIENTATION CALLED IN UPDATE
-    void OrientTowardsEnemy()
+    void ManageOrientation()
     {
         // Orient towards the enemy if player can in their current state
         if (canOrientTowardsEnemy)
         {
             GameObject p1 = null, p2 = null, self = null, other = null;
             PlayerStats[] stats = FindObjectsOfType<PlayerStats>();
+
 
             foreach (PlayerStats stat in stats)
             {
@@ -280,14 +290,20 @@ public class PlayerMovement : MonoBehaviour
             float sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
 
 
-            if (sign > 0)
-            {
-                transform.localScale = new Vector3(1, 1, 1);
-            }
-            else
-            {
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
+            ApplyOrientation(sign);
+        }
+    }
+
+
+    void ApplyOrientation(float sign)
+    {
+        if (sign > 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
         }
     }
 }

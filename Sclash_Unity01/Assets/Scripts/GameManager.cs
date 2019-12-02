@@ -130,13 +130,12 @@ public class GameManager : MonoBehaviour
 
 
 
-
+    // BASE FUNCTIONS
     private void Awake()
     {
         Instance = this;
     }
 
-    // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
@@ -165,6 +164,12 @@ public class GameManager : MonoBehaviour
 
         scoreToWin = Mathf.FloorToInt(scoreToWinSlider.value);
     }
+
+
+
+
+
+
 
 
     // BEGIN GAME
@@ -389,7 +394,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < playersList.Count; i++)
         {
-            playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
+            playersList[i].GetComponent<PlayerAnimations>().TriggerSneath(true);
             playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
         }
         
@@ -495,12 +500,17 @@ public class GameManager : MonoBehaviour
         menuManager.winName.color = playersColors[playerNum - 1];
         audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
 
+
+        if (paused)
+            menuManager.SwitchPause();
+
+
         for (int i = 0; i < playersList.Count; i++)
         {
             playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
         }
 
-        playersList[playerNum - 1].GetComponent<PlayerAnimations>().TriggerSneath();
+        playersList[playerNum - 1].GetComponent<PlayerAnimations>().TriggerSneath(false);
 
         yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
 

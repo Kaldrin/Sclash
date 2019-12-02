@@ -241,9 +241,13 @@ public class PlayerAnimations : MonoBehaviour
     }
 
     // Triggers the sneath animation
-    public void TriggerSneath()
+    public void TriggerSneath(bool reactivateDrawText)
     {
         animator.SetTrigger("Sneath");
+
+
+        if (reactivateDrawText)
+            drawTextAnimator.SetTrigger("ResetDraw");
     }
 
 
@@ -320,8 +324,7 @@ public class PlayerAnimations : MonoBehaviour
     // Update charge walking anim
     void UpdateChargeWalk()
     {
-        
-        if (playerAttack.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
+        if (playerAttack.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && !playerStats.dead)
         {
             Debug.Log("Charge");
             legsMask.SetActive(true);
