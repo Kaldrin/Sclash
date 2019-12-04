@@ -39,8 +39,16 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
+
     // ORIENTATION
+    [Header("ORIENTATION")]
+    [Tooltip("The duration before the player can orient again towards the enemy if they need to once they applied the orientation")]
+    [SerializeField] float orientationCooldown = 0.1f;
+    float orientationCooldownStartTime = 0;
     float initialXScale = 0;
+
+    bool orientationCooldownFinished = true;
     bool canOrientTowardsEnemy = true;
 
 
@@ -290,7 +298,18 @@ public class PlayerMovement : MonoBehaviour
             float sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
 
 
-            ApplyOrientation(sign);
+            
+
+
+            if (orientationCooldownFinished)
+                ApplyOrientation(sign);
+        }
+
+
+
+        if (Time.time >= orientationCooldown + orientationCooldownStartTime)
+        {
+            orientationCooldownFinished = true;
         }
     }
 
@@ -305,5 +324,9 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.localScale = new Vector3(-1, 1, 1);
         }
+
+
+        orientationCooldownStartTime = Time.time;
+        orientationCooldownFinished = false;
     }
 }

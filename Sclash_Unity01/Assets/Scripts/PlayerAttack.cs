@@ -553,7 +553,9 @@ public class PlayerAttack : MonoBehaviour
                 if (chargeLevel < maxChargeLevel)
                 {
                     chargeLevel++;
-                    chargeSlider.value = (chargeSlider.value / maxChargeLevel) * chargeLevel;
+                    chargeSlider.value = chargeSlider.maxValue - (chargeSlider.maxValue / maxChargeLevel) * chargeLevel;
+                    chargeFullFX.SetActive(false);
+                    chargeFullFX.SetActive(true);
                 }
                 else if (chargeLevel >= maxChargeLevel)
                 {

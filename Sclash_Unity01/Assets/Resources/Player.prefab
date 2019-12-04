@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7133636337196508442}
   - component: {fileID: 3492263117739833109}
   m_Layer: 8
-  m_Name: CharfeFullFX
+  m_Name: ChargedFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,7 +112,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -10336,7 +10336,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 0f0294ba3604b434380055a0d4f21c1e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -33283,6 +33283,7 @@ MonoBehaviour:
   gameManagerName: GlobalManager
   audioManagerName: GlobalManager
   inputManagerName: GlobalManager
+  orientationCooldown: 0.1
   baseMovementsSpeed: 2.5
   chargeMovementsSpeed: 1.2
   clampY: -1.3
@@ -33302,7 +33303,7 @@ MonoBehaviour:
   gameManagerName: GlobalManager
   inputManagerName: GlobalManager
   lightAttackRange: 2.2
-  heavyAttackRange: 3.5
+  heavyAttackRange: 3.6
   attackRangeDisjoint: 0.2
   actualAttackRange: 0
   activeFrame: 0
@@ -33312,9 +33313,9 @@ MonoBehaviour:
   maxRecoveryDuration: 0.6
   attackRecoveryStart: 0
   isAttackRecovering: 0
-  maxChargeLevel: 3
+  maxChargeLevel: 4
   chargeLevel: 1
-  durationToNextChargeLevel: 1
+  durationToNextChargeLevel: 0.7
   maxHoldDurationAtMaxCharge: 2
   charging: 0
   canCharge: 1
