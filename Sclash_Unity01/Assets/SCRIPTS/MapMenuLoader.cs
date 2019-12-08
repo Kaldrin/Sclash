@@ -8,6 +8,7 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
 {
     // MAP LOADER
     [Header("MAP LOADER")]
+    [Tooltip("The name of the game object to find in scene where the MapLoader script is")]
     [SerializeField] string mapLoaderName = "GlobalManager";
     MapLoader mapLoader = null;
 
@@ -15,6 +16,7 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
 
     // MENU ELEMENTS
     [Header("MENU ELEMENTS")]
+    [Tooltip("The reference to the game object in which all the menu elements of the maps to choose it will be instantiated")]
     [SerializeField] GameObject mapMenuObjectsParent = null;
     [SerializeField] GameObject
         mapMenuObject = null,
@@ -23,8 +25,11 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
 
     List<GameObject> menuBrowserButtonsList = new List<GameObject>();
 
+    [Tooltip("The reference to the scriptable object data containing all the maps")]
     [SerializeField] MapsDataBase mapsDatabase01 = null;
+    [Tooltip("The reference to the MenuBrowser script managing the map selection screen")]
     [SerializeField] MenuBrowser mapsMenuBrowser = null;
+
 
 
 
@@ -60,13 +65,13 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
 
             menuBrowserButtonsList.Add(newMapMenuObjectScript.mapButtonObject);
             newMapMenuObjectScript.mapButtonObject.GetComponent<Button>().onClick.AddListener(delegate {mapLoader.LoadNewMapInGame(i);});
-            Debug.Log(i);
         }
 
 
         mapMenuObject.SetActive(false);
         mapsMenuBrowser.elements = menuBrowserButtonsList.ToArray();
         mapsMenuBrowser.backElement = backButton;
+        mapsMenuBrowser.FixButtonColorUsageList();
     }
 
     // Update is called once per graphic frame
