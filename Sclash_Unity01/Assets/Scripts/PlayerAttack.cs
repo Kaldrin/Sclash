@@ -127,7 +127,6 @@ public class PlayerAttack : MonoBehaviour
 
     // KICK
     [Header("KICK")]
-    [Tooltip("Is currently applying the pommel effect to what they touches ?")]
     [SerializeField] public bool kickFrame = false;
     [HideInInspector] public bool
         kicking = false,
@@ -145,9 +144,7 @@ public class PlayerAttack : MonoBehaviour
 
     // KICKED
     [Header("KICKED")]
-    [Tooltip("The distance the player will be pushed on when pommeled")]
     [SerializeField] float kickKnockbackDistance = 1f;
-    [Tooltip("The amount of stamina the player will lose when pommeled during an attack or parry")]
     [SerializeField] float kickedStaminaLoss = 1;
 
     [HideInInspector] public bool kicked = false;
@@ -162,11 +159,9 @@ public class PlayerAttack : MonoBehaviour
 
     // PARRY
     [Header("PARRY")]
-    [Tooltip("Is currently parrying any attack that will touch them ?")]
     [SerializeField] public bool parrying = false;
     [HideInInspector] public bool canParry = true;
 
-    [Tooltip("How much time will last the parry state")]
     [SerializeField] float parryDuration = 0.4f;
     
     //[SerializeField] int numberOfFramesToDetectParryInput = 3;
@@ -180,9 +175,7 @@ public class PlayerAttack : MonoBehaviour
 
     // CLASH
     [Header("CLASH")]
-    [Tooltip("The distance the player will be pushed on when clashed")]
     [SerializeField] float clashKnockback = 2;
-    [Tooltip("The speed at which the knockback distance will be covered")]
     [SerializeField] public float clashKnockbackSpeed;
     bool clashed = false;
     
@@ -194,9 +187,7 @@ public class PlayerAttack : MonoBehaviour
 
     // DASH
     [Header("DASH")]
-    [Tooltip("The basic collider of the player")]
     [SerializeField] public Collider2D playerCollider;
-    [Tooltip("All of the player's 2D colliders")]
     [SerializeField] public Collider2D[] playerColliders = null;
     [HideInInspector] public bool isDashing;
 
@@ -247,13 +238,10 @@ public class PlayerAttack : MonoBehaviour
         kickKanas = null,
         kickedFX = null,
         chargeFullFX = null;
-    [Tooltip("The katana charging FX game object reference")]
     [SerializeField] public GameObject chargeFX = null;
 
-    [Tooltip("The slider component reference to move the charging FX on the katana")]
     [SerializeField] Slider chargeSlider = null;
 
-    [Tooltip("The amount the charging FX will move per frame through the slider between each charge level")]
     [SerializeField] float chargeFXFillingSpeed = 0.005f;
 
 
@@ -262,9 +250,7 @@ public class PlayerAttack : MonoBehaviour
 
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
-    [Tooltip("The cheat key to trigger a clash for the player")]
     [SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
-    [Tooltip("The other cheat keys for other effects")]
     [SerializeField] KeyCode
         deathCheatKey = KeyCode.Alpha2,
         drawCheatKey = KeyCode.Alpha3,
@@ -501,12 +487,13 @@ public class PlayerAttack : MonoBehaviour
     // Manages the detection of attack charge inputs
     void ManageCharge()
     {
+        Debug.Log(Input.GetAxis("Fire" + playerStats.playerNum));
+
         //Player presses attack button
         if (Input.GetButtonDown("Fire" + playerStats.playerNum) || Input.GetAxis("Fire" + playerStats.playerNum) > 0.1)
         {
             currentChargeFramesPressed++;
 
-            
             //Debug.Log(isAttacking);
             if (canCharge && !isAttackRecovering && !isAttacking && !charging && playerStats.stamina >= playerStats.staminaCostForMoves && !kicking && !parrying && !clashed && !isDrawing)
             {
@@ -546,10 +533,8 @@ public class PlayerAttack : MonoBehaviour
             
             // Charge slider
             
-            /*
             if (chargeSlider.value > 0)
                 chargeSlider.value -= chargeFXFillingSpeed;
-                */
             
 
 
@@ -1001,14 +986,6 @@ public class PlayerAttack : MonoBehaviour
         yield return new WaitForSeconds(0f);
     }
 
-    IEnumerator EndClashed()
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        clashed = false;
-        playerAnimations.Clashed(clashed);
-    }
-
 
 
 
@@ -1188,7 +1165,6 @@ public class PlayerAttack : MonoBehaviour
 
         if (time >= 1.0f)
         {
-            Debug.Log("End dash");
             EndDash();
         }
     } 
@@ -1212,7 +1188,8 @@ public class PlayerAttack : MonoBehaviour
         // If the player was clashed / countered and has finished their knockback
         if (clashed)
         {
-            StartCoroutine(EndClashed());
+            clashed = false;
+            playerAnimations.Clashed(clashed);
         }
 
         if (kicked)

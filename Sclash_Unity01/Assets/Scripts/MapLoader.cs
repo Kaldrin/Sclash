@@ -130,6 +130,7 @@ public class MapLoader : MonoBehaviour
 
 
             SetMap(index);
+            Debug.Log(newMapIndex);
 
 
             yield return new WaitForSeconds(2f);
