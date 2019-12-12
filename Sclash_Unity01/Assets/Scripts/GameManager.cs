@@ -624,14 +624,16 @@ public class GameManager : MonoBehaviour
         }
         for (int i = 0; i < particleSystems.Length; i++)
         {
+            /*
             if (!particleSystems[i].CompareTag("NonBlackFX"))
             {
-                /*
+                
                 ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
                 particleSystemsColors.Add(particleSystemMain.startColor.color);
                 particleSystemMain.startColor = Color.black;
-                */
+                
             }
+        */
         }
         for (int i = 0; i < lights.Length; i++)
         {
@@ -670,13 +672,15 @@ public class GameManager : MonoBehaviour
         }
         for (int i = 0; i < particleSystems.Length; i++)
         {
+            /*
             if (!particleSystems[i].CompareTag("NonBlackFX"))
             {
-                /*
+                
                 ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
                 particleSystemMain.startColor = particleSystemsColors[i];
-                */
-            }
+                
+             }
+             */
         }
         for (int i = 0; i < lights.Length; i++)
         {
