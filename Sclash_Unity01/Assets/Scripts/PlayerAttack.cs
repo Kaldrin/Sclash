@@ -260,6 +260,8 @@ public class PlayerAttack : MonoBehaviour
         attackDashLeavesBack = null,
         attackNeutralLeaves = null;
 
+    [SerializeField] float attackSignDisjoint = 0.2f;
+
 
 
 
@@ -626,7 +628,7 @@ public class PlayerAttack : MonoBehaviour
             actualAttackRange = lightAttackRange + (heavyAttackRange - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
 
         Vector3 attackSignPos = attackSign.transform.localPosition;
-        attackSign.transform.localPosition = new Vector3(- (actualAttackRange + 0.1f), attackSignPos.y, attackSignPos.z);
+        attackSign.transform.localPosition = new Vector3(- (actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
 
 
 

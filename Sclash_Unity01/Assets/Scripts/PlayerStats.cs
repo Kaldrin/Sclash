@@ -489,7 +489,7 @@ public class PlayerStats : MonoBehaviour
             playerAttack.playerColliders[i].isTrigger = true;
         }
 
-
+        gameManager.StartDeathVFXCoroutine();
         gameManager.cameraShake.shakeDuration = gameManager.deathCameraShakeDuration;
         gameManager.SlowMo(gameManager.rounEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
     }

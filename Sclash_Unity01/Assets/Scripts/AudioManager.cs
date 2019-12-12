@@ -687,7 +687,6 @@ public class AudioManager : MonoBehaviour
                 ModifyMusicPhaseToPlayParameters(currentPhase - 1, currentStem, true);
                 shouldChangeMusicPhase = true;
                 UpdateCurrentlyPlayingMusicImmediatly();
-                Debug.Log("Phase down");
 
 
                 // Keeps the current time of the stem
@@ -699,7 +698,6 @@ public class AudioManager : MonoBehaviour
             // There's no previous phase
             else
             {
-                Debug.Log("Can't phase down");
             }
         }
     }

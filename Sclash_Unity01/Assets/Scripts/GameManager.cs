@@ -12,19 +12,17 @@ public class GameManager : MonoBehaviour
 
     // MANAGERS
     [Header("MANAGERS")]
-    // Audio manager
-    [Tooltip("The name of the game object on which the AudioManager is attached to find its reference in the scene")]
-    [SerializeField] string audioManagerName = "GlobalManager";
-    AudioManager audioManager = null;
+    [Tooltip("The AudioManager script instance reference")]
+    [SerializeField] AudioManager audioManager = null;
 
-    // Menu manager
-    [Tooltip("The name of the game object on which the GlobalManager is attached to find its reference in the scene")]
-    [SerializeField] string menuManagerName = "GlobalManager";
-    MenuManager menuManager = null;
+    [Tooltip("The MenuManager script instance reference")]
+    [SerializeField]  MenuManager menuManager = null;
 
-    // Camera manager
     [Tooltip("The CameraManager script instance reference")]
     [SerializeField] CameraManager cameraManager = null;
+
+    [Tooltip("The MapLoader script instance reference")]
+    [SerializeField] MapLoader mapLoader = null;
 
 
 
@@ -88,8 +86,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public CameraShake cameraShake = null;
     [Tooltip("The level of time slow down that is activated when a player dies")]
     [SerializeField] public float roundEndSlowMoTimeScale = 0.3f;
-    [SerializeField]
-    public float
+    [SerializeField] public float
         minTimeScale = 0.05f,
         rounEndSlowMoDuration = 2f,
         roundEndTimeScaleFadeSpeed = 0.05f,
@@ -100,16 +97,19 @@ public class GameManager : MonoBehaviour
         parrySlowMoDuration = 2f,
         parryTimeScaleFadeSpeed = 0.2f,
         deathCameraShakeDuration = 0.3f;
+    [SerializeField] float
+        deathVFXFilterDuration = 4f;
     float
         actualTimeScaleUpdateSmoothness = 0.05f,
         baseTimeScale = 1,
         timeScaleObjective = 1;
 
     bool runTimeScaleUpdate = true;
-        
 
     [Tooltip("The round transition leaves effect object reference")]
     [SerializeField] public ParticleSystem roundTransitionLeavesFX = null;
+
+    [SerializeField] Material deathFXSpriteMaterial = null;
 
 
 
@@ -162,6 +162,9 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
+
     // BASE FUNCTIONS
     private void Awake()
     {
@@ -171,12 +174,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Get audio
-        audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
-
-        // Get menu manager
-        menuManager = GameObject.Find(menuManagerName).GetComponent<MenuManager>();
-
         // Set variables
         score = new Vector2(0, 0);
         baseTimeScale = Time.timeScale;
@@ -583,6 +580,116 @@ public class GameManager : MonoBehaviour
 
 
     // EFFECTS
+    public void StartDeathVFXCoroutine()
+    {
+        StartCoroutine(DeathVisualEffect());
+    }
+
+    IEnumerator DeathVisualEffect()
+    {
+        // List of all renderers
+        SpriteRenderer[] spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
+        MeshRenderer[] meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
+        ParticleSystem[] particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
+        Light[] lights = GameObject.FindObjectsOfType<Light>();
+
+
+        // All renderers' original properties storage
+        List<Color> spriteRenderersColors = new List<Color>();
+        List<Material> spriteRenderersMaterials = new List<Material>();
+        List<Color> meshRenderersColors = new List<Color>();
+        List<Color> particleSystemsColors = new List<Color>();
+        List<float> lightsIntensities = new List<float>();
+
+
+        // Sets all black
+        for (int i = 0; i < spriteRenderers.Length; i++)
+        {
+            if (!spriteRenderers[i].CompareTag("NonBlackFX"))
+            {
+                spriteRenderersColors.Add(spriteRenderers[i].color);
+                spriteRenderers[i].color = Color.black;
+
+                spriteRenderersMaterials.Add(spriteRenderers[i].material);
+                spriteRenderers[i].material = deathFXSpriteMaterial;
+            }
+        }
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            if (!meshRenderers[i].CompareTag("NonBlackFX"))
+            {
+                meshRenderersColors.Add(meshRenderers[i].material.color);
+                meshRenderers[i].material.color = Color.black;
+            }
+        }
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            if (!particleSystems[i].CompareTag("NonBlackFX"))
+            {
+                /*
+                ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
+                particleSystemsColors.Add(particleSystemMain.startColor.color);
+                particleSystemMain.startColor = Color.black;
+                */
+            }
+        }
+        for (int i = 0; i < lights.Length; i++)
+        {
+            if (!lights[i].CompareTag("NonBlackFX"))
+            {
+                lightsIntensities.Add(lights[i].intensity);
+                lights[i].intensity = 0;
+            }
+        }
+
+
+        // Deactivates background elements for only orange color
+        mapLoader.currentMap.transform.Find("DECORS & BIG ELEMENTS").Find("NON BATTLE SCENE").gameObject.SetActive(false);
+
+
+
+        yield return new WaitForSeconds(deathVFXFilterDuration);
+
+
+
+        // Resets all
+        for (int i = 0; i < spriteRenderers.Length; i++)
+        {
+            if (!spriteRenderers[i].CompareTag("NonBlackFX"))
+            {
+                spriteRenderers[i].color = spriteRenderersColors[i];
+                spriteRenderers[i].material = spriteRenderersMaterials[i];
+            }
+        }
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            if (!meshRenderers[i].CompareTag("NonBlackFX"))
+            {
+                meshRenderers[i].material.color = meshRenderersColors[i];
+            }
+        }
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            if (!particleSystems[i].CompareTag("NonBlackFX"))
+            {
+                /*
+                ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
+                particleSystemMain.startColor = particleSystemsColors[i];
+                */
+            }
+        }
+        for (int i = 0; i < lights.Length; i++)
+        {
+            if (!lights[i].CompareTag("NonBlackFX"))
+            {
+                lights[i].intensity = lightsIntensities[i];
+            }
+        }
+
+
+        mapLoader.currentMap.transform.Find("DECORS & BIG ELEMENTS").Find("NON BATTLE SCENE").gameObject.SetActive(true);
+    }
+
     // Start the SlowMo coroutine
     public void SlowMo(float slownMoDuration, float slowMoTimeScale, float fadeSpeed)
     {

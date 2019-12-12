@@ -338,7 +338,6 @@ public class PlayerAnimations : MonoBehaviour
     {
         if (playerAttack.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && !playerStats.dead)
         {
-            Debug.Log("Charge");
             legsMask.SetActive(true);
         }
         else

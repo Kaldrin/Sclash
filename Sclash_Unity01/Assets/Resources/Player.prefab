@@ -12575,7 +12575,7 @@ GameObject:
   - component: {fileID: 1049950962390874361}
   m_Layer: 8
   m_Name: SlashFX
-  m_TagString: Untagged
+  m_TagString: NonBlackFX
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23799,8 +23799,8 @@ MonoBehaviour:
   audioManagerName: GlobalManager
   gameManagerName: GlobalManager
   inputManagerName: GlobalManager
-  lightAttackRange: 2.2
-  heavyAttackRange: 3.6
+  lightAttackRange: 1.8
+  heavyAttackRange: 3.2
   attackRangeDisjoint: 0.2
   actualAttackRange: 0
   activeFrame: 0
@@ -23861,6 +23861,7 @@ MonoBehaviour:
   attackDashLeavesFront: {fileID: 6350844126138699622}
   attackDashLeavesBack: {fileID: 4874362261357250992}
   attackNeutralLeaves: {fileID: 643542288854731180}
+  attackSignDisjoint: 0.4
   clashCheatKey: 49
   deathCheatKey: 50
   drawCheatKey: 51
@@ -23930,7 +23931,7 @@ MonoBehaviour:
   walkLeavesBack: {fileID: 2514813130466024621}
   slashFX: {fileID: 4919656430989789100}
   drawTextAnimator: {fileID: 9163605804612958320}
-  untouchableFrameOpacity: 0.4
+  untouchableFrameOpacity: 0.3
   playerLight: {fileID: 6902625456972674454}
   legsMask: {fileID: 4627427731864077842}
 --- !u!95 &6065618468900711097
@@ -27555,6 +27556,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WalkLeavesBack
       objectReference: {fileID: 0}
+    - target: {fileID: 1264825085473419286, guid: 9d59dac83e316bf478337838c53d0001,
+        type: 3}
+      propertyPath: CollisionModule.quality
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8991012400236129513, guid: 9d59dac83e316bf478337838c53d0001,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -27610,11 +27616,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.515
       objectReference: {fileID: 0}
-    - target: {fileID: 1264825085473419286, guid: 9d59dac83e316bf478337838c53d0001,
-        type: 3}
-      propertyPath: CollisionModule.quality
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2201790910913519541, guid: 9d59dac83e316bf478337838c53d0001,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -27645,6 +27646,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AttackDashLeavesBack
+      objectReference: {fileID: 0}
+    - target: {fileID: 9187352917662229050, guid: 5aac5a6b3a37ecf4f92f2b8d6df0577b,
+        type: 3}
+      propertyPath: CollisionModule.quality
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2696442920204617483, guid: 5aac5a6b3a37ecf4f92f2b8d6df0577b,
         type: 3}
@@ -27700,11 +27706,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.51199
-      objectReference: {fileID: 0}
-    - target: {fileID: 9187352917662229050, guid: 5aac5a6b3a37ecf4f92f2b8d6df0577b,
-        type: 3}
-      propertyPath: CollisionModule.quality
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7684937677139683688, guid: 5aac5a6b3a37ecf4f92f2b8d6df0577b,
         type: 3}
@@ -28076,12 +28077,12 @@ PrefabInstance:
     - target: {fileID: 2728478402684331651, guid: 4d20ba921a630344abfa588dd6bb3c30,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.032
+      value: 0.022
       objectReference: {fileID: 0}
     - target: {fileID: 2728478402684331651, guid: 4d20ba921a630344abfa588dd6bb3c30,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.465
+      value: 0.425
       objectReference: {fileID: 0}
     - target: {fileID: 2728478402684331651, guid: 4d20ba921a630344abfa588dd6bb3c30,
         type: 3}
@@ -28137,6 +28138,81 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.gravityModifier.scalar
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startColor.minMaxState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startSize.minScalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startSizeY.minScalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.rotation3D
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startSizeZ.minScalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startSizeZ.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startSizeY.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: ClampVelocityModule.dampen
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: ClampVelocityModule.drag.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728478402684331709, guid: 4d20ba921a630344abfa588dd6bb3c30,
+        type: 3}
+      propertyPath: ClampVelocityModule.magnitude.scalar
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d20ba921a630344abfa588dd6bb3c30, type: 3}
@@ -28310,6 +28386,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DashLeavesBack
       objectReference: {fileID: 0}
+    - target: {fileID: 3030425812647120883, guid: 4c13d961f5aefb84690fed07226f6834,
+        type: 3}
+      propertyPath: CollisionModule.quality
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8135053958844492482, guid: 4c13d961f5aefb84690fed07226f6834,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -28364,11 +28445,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.479
-      objectReference: {fileID: 0}
-    - target: {fileID: 3030425812647120883, guid: 4c13d961f5aefb84690fed07226f6834,
-        type: 3}
-      propertyPath: CollisionModule.quality
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4550982995146392737, guid: 4c13d961f5aefb84690fed07226f6834,
         type: 3}
