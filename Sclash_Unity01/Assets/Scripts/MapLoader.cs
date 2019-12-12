@@ -70,6 +70,13 @@ public class MapLoader : MonoBehaviour
         //gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
 
 
+        // Deactivates all activated in editor maps before loading the game's one
+        for (int i = 0; i < mapContainer.transform.childCount; i++)
+        {
+            mapContainer.transform.GetChild(i).gameObject.SetActive(false);
+        }
+
+
         // Load map
         int randomIndex = Random.Range(0, mapsData.mapsList.Count);
         SetMap(randomIndex);
@@ -119,9 +126,9 @@ public class MapLoader : MonoBehaviour
 
 
 
-            gameManager.roundLeaves.gameObject.SetActive(false);
-            gameManager.roundLeaves.gameObject.SetActive(true);
-            gameManager.roundLeaves.Play();
+            gameManager.roundTransitionLeavesFX.gameObject.SetActive(false);
+            gameManager.roundTransitionLeavesFX.gameObject.SetActive(true);
+            gameManager.roundTransitionLeavesFX.Play();
             canLoadNewMap = false;
             //mapMenuObjectsParent.SetActive(false);
 

@@ -13,14 +13,17 @@ public class GameManager : MonoBehaviour
     // MANAGERS
     [Header("MANAGERS")]
     // Audio manager
+    [Tooltip("The name of the game object on which the AudioManager is attached to find its reference in the scene")]
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager = null;
 
     // Menu manager
+    [Tooltip("The name of the game object on which the GlobalManager is attached to find its reference in the scene")]
     [SerializeField] string menuManagerName = "GlobalManager";
     MenuManager menuManager = null;
 
     // Camera manager
+    [Tooltip("The CameraManager script instance reference")]
     [SerializeField] CameraManager cameraManager = null;
 
 
@@ -30,7 +33,8 @@ public class GameManager : MonoBehaviour
 
     // START
     [Header("START")]
-    [SerializeField] float timeBeforeBattleCamera = 2f;
+    [Tooltip("The delay before the battle camera values are entered in the camera parameters to make it reactive for battle once the game started, because the smooth camera values stay some time to smooth the zoom towards the scene")]
+    [SerializeField] float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
 
 
 
@@ -38,7 +42,9 @@ public class GameManager : MonoBehaviour
 
     // MENU
     [Header("MENU")]
+    [Tooltip("The main menu object reference")]
     [SerializeField] GameObject mainMenu = null;
+    [Tooltip("The blur panel object reference")]
     [SerializeField] GameObject blurPanel = null;
     [HideInInspector] public bool paused = false;
 
@@ -48,6 +54,7 @@ public class GameManager : MonoBehaviour
 
     // ROUND
     [Header("ROUND")]
+    [Tooltip("The delay before a new round starts when one has finished and players are waiting")]
     [SerializeField] float timeBeforeNextRound = 3;
     public bool gameStarted = false;
 
@@ -58,11 +65,15 @@ public class GameManager : MonoBehaviour
 
     // PLAYERS
     [Header("PLAYERS")]
+    [Tooltip("The player prefab reference")]
     [SerializeField] GameObject player = null;
     [HideInInspector] public List<GameObject> playersList = new List<GameObject>();
+    [Tooltip("The colors to identify the players")]
     [SerializeField] Color[]
         playersColors = null,
-        attackSignColors = null;
+        attackSignColors = null,
+        playerLightsColors = null;
+    [Tooltip("The names to identify the players")]
     [SerializeField] string[] playerNames = {"Red samuraï", "Blue samuraï"};
     [HideInInspector] public bool playerDead = false;
 
@@ -71,8 +82,11 @@ public class GameManager : MonoBehaviour
 
 
 
-    // EFFECTS
-    [Header("EFFECTS")]
+    // FX
+    [Header("FX")]
+    [Tooltip("The CameraShake script instance reference in the scene")]
+    [SerializeField] public CameraShake cameraShake = null;
+    [Tooltip("The level of time slow down that is activated when a player dies")]
     [SerializeField] public float roundEndSlowMoTimeScale = 0.3f;
     [SerializeField]
     public float
@@ -84,13 +98,18 @@ public class GameManager : MonoBehaviour
         clashTimeScaleFadeSpeed = 0.2f,
         parrySlowMoTimeScale = 0.2f,
         parrySlowMoDuration = 2f,
-        parryTimeScaleFadeSpeed = 0.2f;
-    float actualTimeScaleUpdateSmoothness = 0.05f;
+        parryTimeScaleFadeSpeed = 0.2f,
+        deathCameraShakeDuration = 0.3f;
     float
+        actualTimeScaleUpdateSmoothness = 0.05f,
         baseTimeScale = 1,
         timeScaleObjective = 1;
 
-    [SerializeField] public ParticleSystem roundLeaves = null;
+    bool runTimeScaleUpdate = true;
+        
+
+    [Tooltip("The round transition leaves effect object reference")]
+    [SerializeField] public ParticleSystem roundTransitionLeavesFX = null;
 
 
 
@@ -98,11 +117,17 @@ public class GameManager : MonoBehaviour
 
 
     // SCORE
-    [Header("SCORE")] [SerializeField] public Text scoreText = null;
+    [Header("SCORE")]
+    [Tooltip("The score display text mesh pro component reference")]
+    [SerializeField] public Text scoreText = null;
+    [Tooltip("The score display game object reference")]
     [SerializeField] public GameObject scoreObject = null;
     public Vector2 score = new Vector2(0, 0);
+    [Tooltip("The duration the score lasts on screen when a round has finished")]
     [SerializeField] float scoreShowDuration = 4f;
+    [Tooltip("The score to reach to win")]
     [SerializeField] public int scoreToWin = 10;
+    [Tooltip("The slider component reference in the options menu to change the number of rounds to win")]
     [SerializeField] Slider scoreToWinSlider = null;
 
 
@@ -110,6 +135,7 @@ public class GameManager : MonoBehaviour
 
     // WIN
     [Header("WIN")]
+    [Tooltip("The delay before the win menu screen appears when a player has won")]
     [SerializeField] float timeBeforeWinScreenAppears = 2f;
 
 
@@ -117,7 +143,13 @@ public class GameManager : MonoBehaviour
 
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
+    [Tooltip("Use cheat codes ?")]
     [SerializeField] public bool cheatCodes = false;
+    bool slowedDownTime = false;
+
+    [Tooltip("The key to activate the slow motion cheat")]
+    [SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
+    
 
 
 
@@ -155,7 +187,27 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SetupGame());
     }
 
-    // FixedUpdate is called 30 times per second
+    // Update is called once per graphic frame
+    private void Update()
+    {
+        if (Input.GetKeyUp(slowTimeKey))
+        {
+            if (!slowedDownTime)
+            {
+                Time.timeScale = 0.2f;
+                slowedDownTime = true;
+                runTimeScaleUpdate = false;
+            }
+            else
+            {
+                Time.timeScale = 1;
+                slowedDownTime = false;
+                runTimeScaleUpdate = true;
+            }
+        }
+    }
+
+    // FixedUpdate is called 50 times per second
     private void FixedUpdate()
     {
         // EFFECTS
@@ -216,7 +268,7 @@ public class GameManager : MonoBehaviour
         cameraManager.FindPlayers();
 
 
-        yield return new WaitForSeconds(timeBeforeBattleCamera);
+        yield return new WaitForSeconds(timeBeforeBattleCameraActivationWhenGameStarts);
 
 
         cameraManager.actualSmoothMovementsMultiplier = cameraManager.battleSmoothMovementsMultiplier;
@@ -275,7 +327,7 @@ public class GameManager : MonoBehaviour
 
             playerAnimations.spriteRenderer.color = playersColors[i];
             playerAnimations.legsSpriteRenderer.color = playersColors[i];
-            playerAnimations.playerLight.color = playersColors[i];
+            playerAnimations.playerLight.color = playerLightsColors[i];
 
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
@@ -306,8 +358,8 @@ public class GameManager : MonoBehaviour
     IEnumerator NextRoundCoroutine()
     {
         StartCoroutine(ShowScore());
-        roundLeaves.gameObject.SetActive(true);
-        roundLeaves.Play();
+        roundTransitionLeavesFX.gameObject.SetActive(true);
+        roundTransitionLeavesFX.Play();
         audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = true;
 
         yield return new WaitForSeconds(1.5f);
@@ -374,8 +426,8 @@ public class GameManager : MonoBehaviour
         gameStarted = false;
         playerDead = false;
 
-        roundLeaves.gameObject.SetActive(false);
-        roundLeaves.gameObject.SetActive(true);
+        roundTransitionLeavesFX.gameObject.SetActive(false);
+        roundTransitionLeavesFX.gameObject.SetActive(true);
         menuManager.pauseMenu.SetActive(false);
         menuManager.winScreen.SetActive(false);
         scoreObject.SetActive(false);
@@ -386,7 +438,7 @@ public class GameManager : MonoBehaviour
             blurPanel.SetActive(true);
 
 
-        roundLeaves.Play();
+        roundTransitionLeavesFX.Play();
 
 
         yield return new WaitForSecondsRealtime(1.5f);
@@ -577,14 +629,17 @@ public class GameManager : MonoBehaviour
     // Update the timescale smoothly for smooth slow mo effects in FixedUpdate
     void RunTimeScaleUpdate()
     {
-        if (FastApproximately(Time.timeScale, timeScaleObjective, 0.06f) || timeScaleObjective == Time.timeScale)
-            Time.timeScale = timeScaleObjective;
-        else
-            Time.timeScale += actualTimeScaleUpdateSmoothness * Mathf.Sign(timeScaleObjective - Time.timeScale);
+        if (runTimeScaleUpdate)
+        {
+            if (FastApproximately(Time.timeScale, timeScaleObjective, 0.06f) || timeScaleObjective == Time.timeScale)
+                Time.timeScale = timeScaleObjective;
+            else
+                Time.timeScale += actualTimeScaleUpdateSmoothness * Mathf.Sign(timeScaleObjective - Time.timeScale);
 
 
-        if (Time.timeScale <= minTimeScale)
-            Time.timeScale = minTimeScale;
+            if (Time.timeScale <= minTimeScale)
+                Time.timeScale = minTimeScale;
+        }
     }
 
 
