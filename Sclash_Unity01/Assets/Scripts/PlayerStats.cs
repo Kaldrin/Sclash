@@ -80,6 +80,7 @@ public class PlayerStats : MonoBehaviour
     [Header("FX")]
     [SerializeField] GameObject staminaLossFX = null;
     [SerializeField] GameObject
+        clashFXPrefabRef = null,
         staminaGainFX = null,
         deathFX = null;
 
@@ -411,12 +412,22 @@ public class PlayerStats : MonoBehaviour
             {
                 playerAttack.Clash();
                 instigator.GetComponent<PlayerAttack>().Clash();
+
+
+                // FX
+                Vector3 fxPos = new Vector3((gameManager.playersList[0].transform.position.x + gameManager.playersList[1].transform.position.x) / 2, playerAttack.clash.transform.position.y, playerAttack.clash.transform.position.z);
+                Instantiate(clashFXPrefabRef, fxPos, playerAttack.clash.transform.rotation, null).GetComponent<ParticleSystem>().Play();
             }
             // PARRY
             else if (playerAttack.parrying)
             {
                 stamina += staminaCostForMoves;
                 instigator.GetComponent<PlayerAttack>().Clash();
+
+
+                // FX
+                playerAttack.clash.GetComponent<ParticleSystem>().Play();
+
 
                 // Sound
                 audioManager.Parried();
@@ -471,12 +482,15 @@ public class PlayerStats : MonoBehaviour
 
 
         playerAttack.playerCollider.isTrigger = true;
+
+
         for (int i = 0; i < playerAttack.playerColliders.Length; i++)
         {
             playerAttack.playerColliders[i].isTrigger = true;
         }
 
-
+        gameManager.StartDeathVFXCoroutine();
+        gameManager.cameraShake.shakeDuration = gameManager.deathCameraShakeDuration;
         gameManager.SlowMo(gameManager.rounEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
     }
 }

@@ -93,12 +93,18 @@ public class PlayerAnimations : MonoBehaviour
 
 
     // BASE FUNCTIONS
+    private void Start()
+    {
+        //walkLeavesFront.Play();
+    }
+
     void Awake()
     {
         // Get player's components
         playerAttack = GetComponent<PlayerAttack>();
         playerStats = GetComponent<PlayerStats>();
         playerMovements = GetComponent<PlayerMovement>();
+
 
 
         //canAttack = true;
@@ -158,11 +164,17 @@ public class PlayerAnimations : MonoBehaviour
             if ((rigid.velocity.x * -transform.localScale.x) < 0)
             {
                 walkLeavesFront.Stop();
-                walkLeavesBack.Play();
+
+
+                if (!walkLeavesBack.isPlaying)
+                    walkLeavesBack.Play();
             }
             else
             {
-                walkLeavesFront.Play();
+                //Debug.Log("Leaves");
+                if (!walkLeavesFront.isPlaying)
+                    walkLeavesFront.Play();
+
                 walkLeavesBack.Stop();
             }
         }
@@ -326,7 +338,6 @@ public class PlayerAnimations : MonoBehaviour
     {
         if (playerAttack.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && !playerStats.dead)
         {
-            Debug.Log("Charge");
             legsMask.SetActive(true);
         }
         else
@@ -349,6 +360,7 @@ public class PlayerAnimations : MonoBehaviour
     public void Clashed(bool state)
     {
         animator.SetBool("Clash", state);
+
 
         if (state)
             animator.SetTrigger("Clashed");

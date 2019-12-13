@@ -68,6 +68,11 @@ public class CameraManager : MonoBehaviour
 
 
 
+
+
+
+
+
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
@@ -260,5 +265,9 @@ public class CameraManager : MonoBehaviour
 
         //cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, newPos, Time.unscaledDeltaTime * zoomSpeed);
         cam.transform.localPosition = Vector3.SmoothDamp(cam.transform.localPosition, newPos, ref currentZoomSpeed, actualZoomSmoothDuration, actualZoomSpeed, Time.unscaledDeltaTime);
+    }
+
+    void CameraShake()
+    {
     }
 }

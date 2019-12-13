@@ -253,8 +253,14 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("The slider component reference to move the charging FX on the katana")]
     [SerializeField] Slider chargeSlider = null;
 
-    [Tooltip("The amount the charging FX will move per frame through the slider between each charge level")]
-    [SerializeField] float chargeFXFillingSpeed = 0.005f;
+    [SerializeField] ParticleSystem
+        dashLeavesFront = null,
+        dashLeavesBack = null,
+        attackDashLeavesFront = null,
+        attackDashLeavesBack = null,
+        attackNeutralLeaves = null;
+
+    [SerializeField] float attackSignDisjoint = 0.2f;
 
 
 
@@ -622,13 +628,33 @@ public class PlayerAttack : MonoBehaviour
             actualAttackRange = lightAttackRange + (heavyAttackRange - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
 
         Vector3 attackSignPos = attackSign.transform.localPosition;
-        attackSign.transform.localPosition = new Vector3(- (actualAttackRange + 0.1f), attackSignPos.y, attackSignPos.z);
+        attackSign.transform.localPosition = new Vector3(- (actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
 
 
+
+        // Dash direction and distance
         if (Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)) == -Mathf.Sign(transform.localScale.x))
+        {
             actualDashDistance = forwardAttackDashDistance;
+
+
+            // FX
+            if (Mathf.Abs(inputManager.playerInputs[playerStats.playerNum - 1].horizontal) > 0.2f)
+                attackDashLeavesFront.Play();
+            else
+                attackNeutralLeaves.Play();
+        }
         else
+        {
             actualDashDistance = backwardsAttackDashDistance;
+
+
+            // FX
+            if (Mathf.Abs(inputManager.playerInputs[playerStats.playerNum - 1].horizontal) > 0.2f)
+                attackDashLeavesBack.Play();
+            else
+                attackNeutralLeaves.Play();
+        }
 
 
         float direction = 0;
@@ -641,7 +667,6 @@ public class PlayerAttack : MonoBehaviour
         Vector3 dir = new Vector3(0, 0, 0);
 
 
-        
         if (Mathf.Abs(inputManager.playerInputs[playerStats.playerNum - 1].horizontal) > 0.2)
             dir = new Vector3(Mathf.Sign(Input.GetAxis("Horizontal" + playerStats.playerNum)), 0, 0);
 
@@ -965,9 +990,7 @@ public class PlayerAttack : MonoBehaviour
     // The player have been clashed / parried
     IEnumerator ClashCoroutine()
     {
-        clash.SetActive(false);
         clashKana.SetActive(false);
-        clash.SetActive(true);
         clashKana.SetActive(true);
         gameManager.SlowMo(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
 
@@ -994,9 +1017,11 @@ public class PlayerAttack : MonoBehaviour
         playerAnimations.CancelCharge();
         playerAnimations.Clashed(clashed);
 
+
         // Sound
         audioManager.Clash();
         audioManager.BattleEventIncreaseIntensity();
+
 
         yield return new WaitForSeconds(0f);
     }
@@ -1127,10 +1152,12 @@ public class PlayerAttack : MonoBehaviour
         if (dashDirection == - transform.localScale.x)
         {
             actualDashDistance = forwardDashDistance;
+            dashLeavesFront.Play();
         }
         else
         {
             actualDashDistance = backwardsDashDistance;
+            dashLeavesBack.Play();
         }
 
 
@@ -1147,8 +1174,6 @@ public class PlayerAttack : MonoBehaviour
             kicked = false;
             playerAnimations.Clashed(clashed);
             time = 0;
-
-
 
 
             playerCollider.isTrigger = false;
@@ -1188,7 +1213,6 @@ public class PlayerAttack : MonoBehaviour
 
         if (time >= 1.0f)
         {
-            Debug.Log("End dash");
             EndDash();
         }
     } 
@@ -1220,5 +1244,12 @@ public class PlayerAttack : MonoBehaviour
             kicked = false;
             playerAnimations.TriggerKicked(false);
         }
+
+
+        // FX
+        dashLeavesFront.Stop();
+        dashLeavesBack.Stop();
+        attackDashLeavesFront.Stop();
+        attackDashLeavesBack.Stop();
     }
 }
