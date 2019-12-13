@@ -4,25 +4,29 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-
+    # region MANAGERS
     // MANAGERS
     [Header("MANAGERS")]
+    [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
     // Name of the GameManager to find it in the scene
     [SerializeField] GameManager gameManager;
     // Name of the CameraManager to find it in the scene
     [SerializeField] CameraManager cameraManager;
+    # endregion
 
 
 
+    # region SOUND FUNCTIONS
     // SOUND FUNCTIONS
     [Header("SOUND FUNCTIONS")]
     // A script that provides premade sound functions to play a little more easily with audio sources
     [SerializeField] SoundFunctions soundFunctions = null;
+    # endregion
 
 
 
 
-
+    # region SOUND FX
     // SOUND FX
     [Header("SOUND FX")]
     // Sound FXs audio sources
@@ -35,12 +39,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public PlayRandomSoundInList
         matchBeginsRandomSoundSource = null,
         roundBeginsRandomSoundSource = null;
+    #endregion
 
 
 
 
-
-
+    # region MUSIC
     // MUSIC
     [Header("MUSIC")]
     [SerializeField] AudioSource menuMusicAudioSource = null;
@@ -48,16 +52,16 @@ public class AudioManager : MonoBehaviour
         windAudioSource = null,
         winAudioSource = null;
     [SerializeField] public AudioSource[]
-        battleMusicPhaseSources = null,
-        battleMusicStrikesSources = null;
+        battleMusicPhaseSources = {null, null, null },
+        battleMusicStrikesSources = {null, null, null };
 
     [SerializeField] float
         musicVolumeFadeSpeed = 0.05f,
-        menuMusicMaxVolume = 0.7f,
+        menuMusicMaxVolume = 0.3f,
         battleMusicMaxVolume = 1f,
-        windMaxVolume = 1f,
-        battleMusicStrikesMaxVolume = 0.7f,
-        decreaseBattleIntensityEveryDuration = 5f;
+        windMaxVolume = 0.65f,
+        battleMusicStrikesMaxVolume = 0.9f,
+        decreaseBattleIntensityEveryDuration = 3f;
     float
         menuMusicVolumeObjective = 0.7f,
         windVolumeObjective = 0,
@@ -72,10 +76,9 @@ public class AudioManager : MonoBehaviour
         battleMusicOn = false;
     bool shouldChangeMusicPhase = false;
 
-    [SerializeField]
-    int
+    [SerializeField] int
         battleIntensityLevelForPhase2 = 3,
-        battleIntensityLevelForPhase3 = 6;
+        battleIntensityLevelForPhase3 = 8;
     public int currentPhase = 0;
     int
         chosenMusic = 0,
@@ -83,52 +86,50 @@ public class AudioManager : MonoBehaviour
         battleIntensity = 0,
         lastIntensityLevel = 0;
 
-    
-        
-
-    [SerializeField] Vector2 playersDistanceForVolumeLimits = new Vector2(25, 10);
-
-    
+    [SerializeField] Vector2 playersDistanceForVolumeLimits = new Vector2(6, 15);
+    #endregion
 
 
 
 
+
+    # region MUSIC DATA
     // MUSIC DATA
     [SerializeField] MusicsDatabase musicDataBase = null;
+    # endregion
 
 
 
 
 
 
-
+    # region VOICE
     // VOICE
     [Header("VOICE")]
     [SerializeField] AudioSource deathVoice;
     [SerializeField] AudioSource introVoice;
+    # endregion
 
 
 
 
 
-
+    # region PLAYERS
     // PLAYERS
-    [Header("PLAYERS")]
-    [SerializeField] Vector2 battleMusicVolumeDistanceBounds = new Vector2(5, 20);
-    [SerializeField] Vector2 battleMusicVolumeBounds = new Vector2(1, 0);
-
     GameObject[] players;
     //float distanceBetweenPlayers = 0;
+    # endregion
 
 
 
 
-
+    # region CHEATS FOR DEVELOPMENT PURPOSES
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
-    [SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha1;
-    [SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha2;
-    
+    [SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha8;
+    [SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha7;
+    # endregion
+
 
 
 

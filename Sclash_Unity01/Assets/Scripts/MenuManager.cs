@@ -9,27 +9,53 @@ using TMPro;
 // Created for Unity 2019.1.1f1
 public class MenuManager : MonoBehaviour
 {
+    # region MANAGERS
+    // MANAGERS
+    [Header("MANAGERS")]
+    // Game managers
+    [Tooltip("The references to the GameManager script instance component")]
+    [SerializeField] GameManager gameManager = null;
+
+    // Input manager
+    [Tooltip("The references to the InputManager script instance component")]
+    [SerializeField] InputManager inputManager = null;
+    # endregion
+
+
+
+
+
+
+    # region SAVE PARAMETERS
     // SAVE PARAMETERS
     [Header("SAVE PARAMETERS")] [SerializeField] MenuParameters menuParametersSave = null;
+    [Tooltip("The references to the Sliders components in the options menu controlling the volumes of the different tracks of the game")]
     [SerializeField] SliderToVolume
         masterVolume = null,
         musicVolume = null,
         fxVolume = null,
         voiceVolume = null;
+    [Tooltip("The reference to the Slider component in the options menu controlling the number of rounds needed to win the game")]
     [SerializeField] Slider roundsToWinSlider = null;
+    # endregion
 
 
 
 
 
+
+    # region PAUSE
     // PAUSE
     [Header("PAUSE MENU")]
+    [Tooltip("The reference to the menu's blur panel game object")]
     [SerializeField] GameObject
         blurPanel = null;
+    [Tooltip("Menu elements references")]
     [SerializeField] public GameObject
         pauseMenu = null,
         mainMenu = null,
         winScreen = null;
+    [Tooltip("Menu elements references")]
     [SerializeField] GameObject
         backButton = null,
         resumeButton = null,
@@ -42,32 +68,28 @@ public class MenuManager : MonoBehaviour
 
     int playerWhoPaused = 0;
 
+    [Tooltip("The duration during which the players can't input the pause again when they already input it")]
     [SerializeField] float pauseCooldownDuration = 0.1f;
     float pauseCooldownStartTime = 0f;
 
     bool pauseCooldownOn = false;
+    # endregion
 
 
 
 
+    # region WIN
     // WIN
     [Header("WIN MENU")]
+    [Tooltip("The reference to the game object containing the win text")]
     [SerializeField] public GameObject winMessage = null;
+    [Tooltip("The reference to the TextMeshProUGUI component containing the name of the winner")]
     [SerializeField] public TextMeshProUGUI winName = null;
+    # endregion
 
 
 
 
-    // MANAGERS
-    [Header("MANAGERS")]
-
-    // Game managers
-    [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager;
-
-    // Input manager
-    [SerializeField] string inputManagerName = "GlobalManager";
-    InputManager inputManager = null;
 
 
 
@@ -86,13 +108,6 @@ public class MenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // MANAGER
-        // Get the input manager
-        inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
-        // Get game manager to use in the script
-        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
-
-        //DefaultMain();
         LoadParameters();
     }
 

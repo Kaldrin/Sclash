@@ -6,6 +6,7 @@ using UnityEngine;
 // Created for Unity 2019.1.1f1
 public class PlayerMovement : MonoBehaviour
 {
+    # region MANAGERS
     // MANAGERS
     [Header("MANAGERS")]
     // Game manager
@@ -22,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("The name of the input manager's object the find in the scene")]
     [SerializeField] string inputManagerName = "GlobalManager";
     InputManager inputManager = null;
+    # endregion
 
 
 
@@ -29,11 +31,13 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+    # region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     PlayerStats playerStats = null;
     PlayerAttack playerAttack = null;
     Rigidbody2D rb = null;
+    # endregion
 
 
 
@@ -41,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+    # region ORIENTATION
     // ORIENTATION
     [Header("ORIENTATION")]
     [Tooltip("The duration before the player can orient again towards the enemy if they need to once they applied the orientation")]
@@ -50,21 +55,23 @@ public class PlayerMovement : MonoBehaviour
 
     bool orientationCooldownFinished = true;
     bool canOrientTowardsEnemy = true;
+    # endregion
 
 
 
 
 
 
+    # region MOVEMENTS
     // MOVEMENTS
     [Header("MOVEMENTS")]
     [Tooltip("The default movement speed of the player")]
-    [SerializeField] float baseMovementsSpeed = 10f;
+    [SerializeField] float baseMovementsSpeed = 2.5f;
     [SerializeField] float
-        chargeMovementsSpeed = 5f,
-        clampY = 2f;
+        chargeMovementsSpeed = 1.2f,
+        clampY = -1.3f;
     float movementsMultiplier = 0;
-    
+    # endregion
 
 
 

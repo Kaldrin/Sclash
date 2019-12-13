@@ -8,9 +8,9 @@ using TMPro;
 // Created for Unity 2019.1.1f1
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
-
+    #region MANAGERS
     // MANAGERS
+    public static GameManager Instance;
     [Header("MANAGERS")]
     [Tooltip("The AudioManager script instance reference")]
     [SerializeField] AudioManager audioManager = null;
@@ -23,21 +23,25 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("The MapLoader script instance reference")]
     [SerializeField] MapLoader mapLoader = null;
+    # endregion
 
 
 
 
 
 
+    #region START
     // START
     [Header("START")]
     [Tooltip("The delay before the battle camera values are entered in the camera parameters to make it reactive for battle once the game started, because the smooth camera values stay some time to smooth the zoom towards the scene")]
     [SerializeField] float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
+    # endregion
 
 
 
 
 
+    # region MENU
     // MENU
     [Header("MENU")]
     [Tooltip("The main menu object reference")]
@@ -45,56 +49,62 @@ public class GameManager : MonoBehaviour
     [Tooltip("The blur panel object reference")]
     [SerializeField] GameObject blurPanel = null;
     [HideInInspector] public bool paused = false;
+    # endregion
 
 
 
 
 
+    # region ROUND
     // ROUND
     [Header("ROUND")]
     [Tooltip("The delay before a new round starts when one has finished and players are waiting")]
     [SerializeField] float timeBeforeNextRound = 3;
     public bool gameStarted = false;
+    # endregion
 
 
 
 
 
 
+    # region PLAYERS
     // PLAYERS
     [Header("PLAYERS")]
     [Tooltip("The player prefab reference")]
     [SerializeField] GameObject player = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
-    [SerializeField] public GameObject[] playerSpawns = null;
-    [HideInInspector] public List<GameObject> playersList = new List<GameObject>();
+    [SerializeField] public GameObject[] playerSpawns = {null, null};
+    [HideInInspector] public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
     [SerializeField] Color[]
-        playersColors = null,
-        attackSignColors = null,
-        playerLightsColors = null;
+        playersColors = { Color.red, Color.yellow},
+        attackSignColors = { Color.red, Color.yellow},
+        playerLightsColors = { Color.red, Color.yellow};
     [Tooltip("The names to identify the players")]
-    [SerializeField] string[] playerNames = {"Red samuraï", "Blue samuraï"};
+    [SerializeField] string[] playerNames = {"Aka", "Ao"};
     [HideInInspector] public bool playerDead = false;
+    # endregion
 
 
 
 
 
 
+    # region FX
     // FX
     [Header("FX")]
     [Tooltip("The CameraShake script instance reference in the scene")]
     [SerializeField] public CameraShake cameraShake = null;
     [Tooltip("The level of time slow down that is activated when a player dies")]
-    [SerializeField] public float roundEndSlowMoTimeScale = 0.3f;
+    [SerializeField] public float roundEndSlowMoTimeScale = 0.2f;
     [SerializeField] public float
         minTimeScale = 0.05f,
-        rounEndSlowMoDuration = 2f,
+        rounEndSlowMoDuration = 1.3f,
         roundEndTimeScaleFadeSpeed = 0.05f,
-        clashSlowMoTimeScale = 0.2f,
-        clashSlowMoDuration = 2f,
+        clashSlowMoTimeScale = 0.1f,
+        clashSlowMoDuration = 0.5f,
         clashTimeScaleFadeSpeed = 0.2f,
         parrySlowMoTimeScale = 0.2f,
         parrySlowMoDuration = 2f,
@@ -110,6 +120,7 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("The round transition leaves effect object reference")]
     [SerializeField] public ParticleSystem roundTransitionLeavesFX = null;
+    # endregion
 
 
 
@@ -117,6 +128,7 @@ public class GameManager : MonoBehaviour
 
 
 
+    # region DEATH VFX
     // DEATH VFX
     [Header("DEATH VFX")]
     [Tooltip("The duration of the death VFX black & orange screen before it comes back to normal")]
@@ -130,44 +142,52 @@ public class GameManager : MonoBehaviour
     ParticleSystem[] particleSystems = null;
     Light[] lights = null;
 
-
     // All renderers' original properties storage for the death VFX reset
     List<Color> spriteRenderersColors = new List<Color>();
     List<Material> spriteRenderersMaterials = new List<Material>();
     List<Color> meshRenderersColors = new List<Color>();
     List<Color> particleSystemsColors = new List<Color>();
     List<float> lightsIntensities = new List<float>();
+    # endregion
 
 
 
 
 
-
+    # region SCORE
     // SCORE
     [Header("SCORE")]
     [Tooltip("The score display text mesh pro component reference")]
     [SerializeField] public Text scoreText = null;
     [Tooltip("The score display game object reference")]
     [SerializeField] public GameObject scoreObject = null;
-    public Vector2 score = new Vector2(0, 0);
+    [HideInInspector] public Vector2 score = new Vector2(0, 0);
     [Tooltip("The duration the score lasts on screen when a round has finished")]
     [SerializeField] float scoreShowDuration = 4f;
     [Tooltip("The score to reach to win")]
     [SerializeField] public int scoreToWin = 10;
     [Tooltip("The slider component reference in the options menu to change the number of rounds to win")]
     [SerializeField] Slider scoreToWinSlider = null;
+    # endregion
 
 
 
 
+
+
+    # region WIN
     // WIN
     [Header("WIN")]
     [Tooltip("The delay before the win menu screen appears when a player has won")]
     [SerializeField] float timeBeforeWinScreenAppears = 2f;
+    # endregion
 
 
 
 
+
+
+    # region CHEATS FOR DEVELOPMENT PURPOSES
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
     [Tooltip("Use cheat codes ?")]
@@ -176,7 +196,8 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("The key to activate the slow motion cheat")]
     [SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
-    
+    #endregion
+
 
 
 

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
+    # region MANAGERS
     // MANAGERS
     [Header("MANAGERS")]
     // Audio manager
@@ -16,12 +17,13 @@ public class PlayerStats : MonoBehaviour
     [Tooltip("The name of the object holding the GameManager script component in the scene to find its reference")]
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
+    # endregion
 
 
 
 
 
-
+    # region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [Tooltip("The reference to the PlayerAttack script component attached the player")]
@@ -32,25 +34,31 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] PlayerMovement playerMovements;
     [Tooltip("The reference to the Rigidbody2D component attached the player")]
     [SerializeField] Rigidbody2D rigid;
+    # endregion
+
+
+    
 
 
 
-
-
+    # region HEALTH
     // HEALTH
     [Header("HEALTH")]
     [Tooltip("The maximum health of the player")]
-    [SerializeField] float maxHealth = 0;
+    [SerializeField] float maxHealth = 1;
     float currentHealth;
 
     [Tooltip("Can the player be hit in the current frames ?")]
     [SerializeField] public bool untouchable = false;
     [HideInInspector] public bool dead = false;
+    # endregion
 
 
 
 
 
+
+    # region STAMINA
     //STAMINA
     [Header("STAMINA")]
     [Tooltip("The reference to the base stamina slider attached to the player to create the other sliders")]
@@ -60,13 +68,13 @@ public class PlayerStats : MonoBehaviour
     [Tooltip("The amount of stamina each move will cost when executed")]
     [SerializeField] public float staminaCostForMoves = 1;
     [Tooltip("The maximum amount of stamina one player can have")]
-    [SerializeField] public float maxStamina = 3f;
+    [SerializeField] public float maxStamina = 4f;
     [Tooltip("Stamina parameters")]
     [SerializeField] float
-        durationBeforeStaminaRegen = 0.2f,
-        staminaGainOverTimeMultiplier = 0.1f,
-        idleStaminaGainOverTimeMultiplier = 0.5f,
-        backWalkingStaminaGainOverTime = 0.5f,
+        durationBeforeStaminaRegen = 0.8f,
+        staminaGainOverTimeMultiplier = 0.4f,
+        idleStaminaGainOverTimeMultiplier = 0.8f,
+        backWalkingStaminaGainOverTime = 0.4f,
         staminaBarBaseOpacity = 0.8f;
     [HideInInspector] public float stamina = 0;
     float
@@ -81,11 +89,12 @@ public class PlayerStats : MonoBehaviour
         staminaBaseColor = Color.green,
         staminaLowColor = Color.yellow,
         staminaDeadColor = Color.red;
+    # endregion
 
 
 
 
-
+    # region FX
     // FX
     [Header("FX")]
     [Tooltip("The reference to the game object holding the stamina loss FX")]
@@ -97,26 +106,27 @@ public class PlayerStats : MonoBehaviour
         deathBloodFX = null;
 
     [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
-    [SerializeField] float deathBloodFXRotationForDirectionChange = 70;
+    [SerializeField] float deathBloodFXRotationForDirectionChange = 240;
 
     Vector3 deathFXbaseAngles = new Vector3(0, 0, 0);
+    # endregion
 
 
 
-
+    # region PLAYER IDENTIFICATION
     // PLAYER IDENTIFICATION
     [HideInInspector] public int playerNum;
+    # endregion
 
 
 
 
-
-
+    # region SOUND
     // SOUND
     [Header("SOUND")]
     [Tooltip("The reference to the stamina charged audio FX AudioSource")]
     [SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
-
+    # endregion
 
 
 

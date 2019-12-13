@@ -3,23 +3,26 @@ using System.Collections;
 
 public class CameraShake : MonoBehaviour
 {
-    [Header("Components")]
+    # region COMPONENTS
+    [Header("COMPONENTS")]
     // Transform of the camera to shake. Grabs the gameObject's transform
     // if null.
     [SerializeField] Transform camTransform = null;
     [SerializeField] Rigidbody cameRigidBody = null;
+    # endregion
 
 
 
 
 
+    #region SHAKE PARAMETERS
     [Header("SHAKE PARAMETERS")]
     // How long the object should shake for.
     [SerializeField] public float shakeDuration = 0f;
     // Amplitude of the shake. A larger value shakes the camera harder.
     [SerializeField] float
-        shakeAmount = 0.7f,
-        decreaseFactor = 1.0f;
+        shakeAmount = 0.5f,
+        decreaseFactor = 1.5f;
 
     [SerializeField] Vector3 axisInfluence = new Vector3(1, 1, 0);
 
@@ -30,6 +33,10 @@ public class CameraShake : MonoBehaviour
     Vector3
         originalPos = new Vector3(0, 0, 0),
         beforeShakePos = new Vector3(0, 0, 0);
+    # endregion
+
+
+
 
 
 

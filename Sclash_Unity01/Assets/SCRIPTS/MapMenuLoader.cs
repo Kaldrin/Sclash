@@ -6,14 +6,19 @@ using UnityEngine.EventSystems;
 
 public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
 {
+    # region MAP LOADER
     // MAP LOADER
     [Header("MAP LOADER")]
     [Tooltip("The name of the game object to find in scene where the MapLoader script is")]
     [SerializeField] string mapLoaderName = "GlobalManager";
     MapLoader mapLoader = null;
+    # endregion
 
 
 
+
+
+    #region MAP LOADER
     // MENU ELEMENTS
     [Header("MENU ELEMENTS")]
     [Tooltip("The reference to the game object in which all the menu elements of the maps to choose it will be instantiated")]
@@ -29,6 +34,8 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
     [SerializeField] MapsDataBase mapsDatabase01 = null;
     [Tooltip("The reference to the MenuBrowser script managing the map selection screen")]
     [SerializeField] MenuBrowser mapsMenuBrowser = null;
+    # endregion
+
 
 
 

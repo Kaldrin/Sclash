@@ -6,24 +6,28 @@ public class MapLoader : MonoBehaviour
 {
 
 
-
+    # region MANAGERS
     // MANAGERS
     [Header("MANAGERS")]
     [Tooltip("The reference for the unique game manager script of the scene")]
     [SerializeField] GameManager gameManager = null;
+    # endregion
 
 
 
 
+    # region MAPS MENU
     // MAPS MENU
     [Header("MAPS MENU")]
     [Tooltip("The MenuBrowser script that browses through the map elements")]
     [SerializeField] MenuBrowser mapsMenuBrowser = null;
+    # endregion
 
 
 
 
 
+    # region MAPS DATA
     // MAPS DATA
     [Header("MAPS DATA")]
     [Tooltip("Parent object of the currently instantiated map")]
@@ -33,6 +37,10 @@ public class MapLoader : MonoBehaviour
 
     [Tooltip("Scriptable object data reference containing the maps objects, their image and names")]
     [SerializeField] MapsDataBase mapsData = null;
+    # endregion
+
+
+
 
 
     [SerializeField] bool loadNewMap = true;
@@ -42,9 +50,10 @@ public class MapLoader : MonoBehaviour
 
 
 
+    # region MAP LOADING
     // MAP LOADING
     bool canLoadNewMap = true;
-
+    # endregion
 
 
 

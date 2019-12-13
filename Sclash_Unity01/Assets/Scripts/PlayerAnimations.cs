@@ -4,75 +4,91 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
 {
-
-
-
+    # region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
+    [Tooltip("The reference to the player's Rigidbody component")]
     [SerializeField] Rigidbody2D rigid = null;
-    [SerializeField]
-    Animator
+    [Tooltip("The reference to the player's Animators components for the character and their legs")]
+    [SerializeField] Animator
         animator = null,
         legsAnimator = null;
 
-    [SerializeField]
-    public SpriteRenderer
+    [Tooltip("The reference to the player's SpriteRenderers components for the character and their legs")]
+    [SerializeField] public SpriteRenderer
         spriteRenderer = null,
         legsSpriteRenderer = null;
 
     PlayerAttack playerAttack = null;
     PlayerStats playerStats = null;
     PlayerMovement playerMovements = null;
+    # endregion
 
 
 
 
 
+
+    #region ANIMATION VALUES
     // ANIMATION VALUES
     [Header("ANIMATION VALUES")]
+    [Tooltip("The minimum speed required for the walk anim to trigger")]
     [SerializeField] float minSpeedForWalkAnim = 0.05f;
+    # endregion
 
 
 
 
+
+    # region FX
     // FX
     [Header("FX")]
+    [Tooltip("The reference to the TrailRenderer component of the saber")]
     [SerializeField] public TrailRenderer swordTrail = null;
-    [SerializeField]
-    float
-        lightAttackSwordTrailWidth = 1.3f,
-        heavyAttackSwordTrailWidth = 2.3f;
+    [Tooltip("The width of the attack trail depending on the range of the attack")]
+    [SerializeField] float
+        lightAttackSwordTrailWidth = 20f,
+        heavyAttackSwordTrailWidth = 65f;
 
-    [SerializeField]
-    Color
-        lightAttackColor = Color.blue,
+    [Tooltip("The colors of the attack trail depending on the range of the attack")]
+    [SerializeField] Color
+        lightAttackColor = Color.yellow,
         heavyAttackColor = Color.red;
 
+    [SerializeField] public ParticleSystem slashFX = null;
+    [Tooltip("The references to the particle systems components used for the walk leaves FX")]
     [SerializeField] ParticleSystem
         walkLeavesFront = null,
         walkLeavesBack = null;
 
-    [SerializeField] public ParticleSystem slashFX = null;
-
+    [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
     [SerializeField] public Animator drawTextAnimator = null;
+    # endregion
 
 
 
 
 
+    # region COLORS
     // COLORS
     [Header("COLORS")]
-    [SerializeField] float untouchableFrameOpacity = 0.4f;
+    [Tooltip("The opacity amount of the player's sprite when in untouchable frames")]
+    [SerializeField] float untouchableFrameOpacity = 0.3f;
 
+    [Tooltip("The reference to the light component which lits the player with their color")]
     [SerializeField] public Light playerLight = null;
+    # endregion
 
 
 
 
 
+    # region ANIMATION OBJECTS
     // ANIMATION OBJECTS
     [Header("ANIMATION OBJECTS")]
+    [Tooltip("The reference to the game object containing the sprite mask of the player's legs")]
     [SerializeField] public GameObject legsMask = null;
+    # endregion
 
 
 

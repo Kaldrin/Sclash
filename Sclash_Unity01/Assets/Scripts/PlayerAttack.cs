@@ -5,66 +5,82 @@ using UnityEngine.UI;
 
 public class PlayerAttack : MonoBehaviour
 {
+    # region MANAGERS
     // MANAGERS
     [Header("MANAGERS")]
     // Audio manager
+    [Tooltip("The name of the object in the scene containing the AudioManager script component, to find its reference")]
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
     // Game manager
+    [Tooltip("The name of the object in the scene containing the GlobalManager script component, to find its reference")]
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
 
     // Input manager
+    [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
     [SerializeField] string inputManagerName = "GlobalManager";
     InputManager inputManager = null;
+    # endregion
 
 
 
 
+   
 
-
+    # region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
-    Rigidbody2D rb = null;
-    PlayerStats playerStats = null;
-    PlayerAnimations playerAnimations = null;
-    PlayerMovement playerMovement = null;
+    [SerializeField] Rigidbody2D rb = null;
+    [SerializeField] PlayerStats playerStats = null;
+    [SerializeField] PlayerAnimations playerAnimations = null;
+    [SerializeField] PlayerMovement playerMovement = null;
+    #endregion
 
 
 
 
 
 
+    # region ATTACK
     // ATTACK
     [Header("ATTACK")]
-    [SerializeField] public float lightAttackRange = 1.5f;
+    [Tooltip("Attack range parameters")]
+    [SerializeField] public float lightAttackRange = 1.8f;
+    [Tooltip("Attack range parameters")]
     [SerializeField] public float
-        heavyAttackRange = 2.5f,
-        attackRangeDisjoint = 0.5f;
+        heavyAttackRange = 3.2f,
+        attackRangeDisjoint = 0.2f;
     [HideInInspector] public float actualAttackRange = 0;
 
-    [SerializeField]
-    public bool
+    [Tooltip("Frame parameters for the attack")]
+    [SerializeField] public bool
         activeFrame = false,
         clashFrames = false;
     [HideInInspector] public bool isAttacking = false;
+    # endregion
 
 
 
 
 
 
+    # region ATTACK RECOVERY
     // ATTACK RECOVERY
     [Header("ATTACK RECOVERY")]
-    [SerializeField] float minRecoveryDuration = 0.4f;
-    [SerializeField] float maxRecoveryDuration = 1;
+    [Tooltip("The attack lagg duration at the lowest charge level")]
+    [SerializeField] float minRecoveryDuration = 0.1f;
+    [Tooltip("The attack lagg duration at the max charge level")]
+    [SerializeField] float maxRecoveryDuration = 0.6f;
     float
         attackRecoveryStartTime = 0,
         attackRecoveryDuration = 0;
 
+    [Tooltip("Has the attack lagg started for this player ?")]
     [SerializeField] public bool attackRecoveryStart = false;
     [HideInInspector] public bool isAttackRecovering = false;
+    # endregion
 
 
 
@@ -72,16 +88,19 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region CHARGE
     // CHARGE
     [Header("CHARGE")]
-    [SerializeField] public int maxChargeLevel = 2;
+    [Tooltip("The number of charge levels for the attack, so the number of range subdivisions")]
+    [SerializeField] public int maxChargeLevel = 4;
     [HideInInspector] public int chargeLevel = 1;
     //[SerializeField] int numberOfFramesToDetectChargeInput = 3;
     int currentChargeFramesPressed = 0;
 
+    [Tooltip("Charge duration parameters")]
     [SerializeField] float
-        durationToNextChargeLevel = 1.5f,
-        maxHoldDurationAtMaxCharge = 3;
+        durationToNextChargeLevel = 0.7f,
+        maxHoldDurationAtMaxCharge = 2;
     float
         maxChargeLevelStartTime = 0,
         chargeStartTime = 0;
@@ -89,6 +108,7 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public bool charging = false;
     bool maxChargeLevelReached = false;
     [HideInInspector] public bool canCharge = true;
+    # endregion
 
 
 
@@ -96,15 +116,21 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region DRAW
     // DRAW
     [Header("DRAW")]
+    [Tooltip("The duration the draw animation takes to switch to drawn state")]
     [SerializeField] public float drawDuration = 2f;
 
+    [Tooltip("Is the player currently drawing during these frames ?")]
     [SerializeField] bool isDrawing = false;
+    [Tooltip("Has the player drawn their saber ?")]
     [SerializeField] public bool hasDrawn = false;
 
+    [Tooltip("The reference to the game object containing the text component telling the players to draw their sabers")]
     [SerializeField] public GameObject drawText = null;
     Vector3 drawTextScale = new Vector3(0, 0, 0);
+    # endregion
 
 
 
@@ -113,9 +139,11 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region OTHER PLAYER
     // OTHER PLAYER
     [Header("OTHER PLAYER")]
     [HideInInspector] public bool enemyDead = false;
+    # endregion
 
 
 
@@ -125,6 +153,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region KICK
     // KICK
     [Header("KICK")]
     [Tooltip("Is currently applying the pommel effect to what they touches ?")]
@@ -134,8 +163,9 @@ public class PlayerAttack : MonoBehaviour
         canKick = true;
 
     [SerializeField] float
-        kickRange = 1.3f,
-        kickDuration = 0.2f;
+        kickRange = 0.88f,
+        kickDuration = 0.5f;
+    # endregion
 
 
 
@@ -143,6 +173,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region KICKED
     // KICKED
     [Header("KICKED")]
     [Tooltip("The distance the player will be pushed on when pommeled")]
@@ -151,6 +182,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] float kickedStaminaLoss = 1;
 
     [HideInInspector] public bool kicked = false;
+    # endregion
 
 
 
@@ -160,6 +192,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region PARRY
     // PARRY
     [Header("PARRY")]
     [Tooltip("Is currently parrying any attack that will touch them ?")]
@@ -167,10 +200,11 @@ public class PlayerAttack : MonoBehaviour
     [HideInInspector] public bool canParry = true;
 
     [Tooltip("How much time will last the parry state")]
-    [SerializeField] float parryDuration = 0.4f;
+    [SerializeField] float parryDuration = 0.3f;
     
     //[SerializeField] int numberOfFramesToDetectParryInput = 3;
     int currentParryFramesPressed = 0;
+    # endregion
 
 
 
@@ -178,20 +212,23 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region CLASH
     // CLASH
     [Header("CLASH")]
     [Tooltip("The distance the player will be pushed on when clashed")]
     [SerializeField] float clashKnockback = 2;
     [Tooltip("The speed at which the knockback distance will be covered")]
-    [SerializeField] public float clashKnockbackSpeed;
+    [SerializeField] public float clashKnockbackSpeed = 2;
     bool clashed = false;
-    
+    # endregion
 
 
 
 
 
 
+
+    #region DASH
     // DASH
     [Header("DASH")]
     [Tooltip("The basic collider of the player")]
@@ -220,23 +257,25 @@ public class PlayerAttack : MonoBehaviour
         actualDashDistance,
         time;
     [SerializeField] public float
-        dashSpeed,
-        forwardDashDistance,
-        backwardsDashDistance;
+        dashSpeed = 3,
+        forwardDashDistance = 3,
+        backwardsDashDistance = 2.5f;
     [SerializeField] float
         dashAllowanceDuration = 0.3f,
-        forwardAttackDashDistance = 3,
-        backwardsAttackDashDistance = 3,
+        forwardAttackDashDistance = 2.5f,
+        backwardsAttackDashDistance = 1.5f,
         dashDeadZone = 0.5f,
         shortcutDashDeadZone = 0.5f;
 
     Vector3 initPos;
     Vector3 targetPos;
+    # endregion
 
 
 
 
 
+    # region FX
     // FX
     [Header("FX")]
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
@@ -260,12 +299,14 @@ public class PlayerAttack : MonoBehaviour
         attackDashLeavesBack = null,
         attackNeutralLeaves = null;
 
-    [SerializeField] float attackSignDisjoint = 0.2f;
+    [SerializeField] float attackSignDisjoint = 0.4f;
+    # endregion
 
 
 
 
 
+    # region CHEATS FOR DEVELOPMENT PURPOSES
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
     [Tooltip("The cheat key to trigger a clash for the player")]
@@ -275,9 +316,9 @@ public class PlayerAttack : MonoBehaviour
         deathCheatKey = KeyCode.Alpha2,
         drawCheatKey = KeyCode.Alpha3,
         staminaCheatKey = KeyCode.Alpha4;
+    # endregion
 
 
-   
 
 
 
@@ -308,12 +349,6 @@ public class PlayerAttack : MonoBehaviour
         // Get input manager
         inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
 
-
-        // Get player's components to use in the script
-        rb = GetComponent<Rigidbody2D>();
-        playerStats = GetComponent<PlayerStats>();
-        playerAnimations = GetComponent<PlayerAnimations>();
-        playerMovement = GetComponent<PlayerMovement>();
 
 
         drawTextScale = drawText.transform.localScale;

@@ -23891,6 +23891,10 @@ MonoBehaviour:
   audioManagerName: GlobalManager
   gameManagerName: GlobalManager
   inputManagerName: GlobalManager
+  rb: {fileID: 7003620522291499887}
+  playerStats: {fileID: 7566831144946873117}
+  playerAnimations: {fileID: 1250708261086219519}
+  playerMovement: {fileID: 7003620522291499872}
   lightAttackRange: 1.8
   heavyAttackRange: 3.2
   attackRangeDisjoint: 0.2
@@ -23997,7 +24001,7 @@ MonoBehaviour:
     type: 3}
   staminaGainFX: {fileID: 4657290050820478637}
   deathBloodFX: {fileID: 8922935468861387414}
-  deathBloodFXRotationForDirectionChange: 70
+  deathBloodFXRotationForDirectionChange: 240
   playerNum: 0
   staminaBarChargedAudioEffectSource: {fileID: 8878461485478829187}
 --- !u!114 &1250708261086219519
@@ -24023,9 +24027,9 @@ MonoBehaviour:
   heavyAttackSwordTrailWidth: 65
   lightAttackColor: {r: 1, g: 0.9635534, b: 0, a: 1}
   heavyAttackColor: {r: 0.9056604, g: 0, b: 0.1197052, a: 1}
+  slashFX: {fileID: 4919656430989789100}
   walkLeavesFront: {fileID: 2277645056859823393}
   walkLeavesBack: {fileID: 2514813130466024621}
-  slashFX: {fileID: 4919656430989789100}
   drawTextAnimator: {fileID: 9163605804612958320}
   untouchableFrameOpacity: 0.3
   playerLight: {fileID: 6902625456972674454}
@@ -27918,7 +27922,7 @@ PrefabInstance:
     - target: {fileID: 1789423751830008074, guid: aa7d534097e03ed4586ef65a34884e9a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1789423751830008073, guid: aa7d534097e03ed4586ef65a34884e9a,
         type: 3}
