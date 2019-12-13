@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MapLoader : MonoBehaviour
 {
+
+
+
     // MANAGERS
     [Header("MANAGERS")]
     [Tooltip("The reference for the unique game manager script of the scene")]
@@ -32,14 +35,7 @@ public class MapLoader : MonoBehaviour
     [SerializeField] MapsDataBase mapsData = null;
 
 
-
-
-    /*
-    // MAPS MENU
-    [Header("MAPS MENU")]
-    [Tooltip("Parent object of the instantiated selectable map menu objects")]
-    [SerializeField] GameObject mapMenuObjectsParent = null;
-    */
+    [SerializeField] bool loadNewMap = true;
 
 
 
@@ -71,15 +67,31 @@ public class MapLoader : MonoBehaviour
 
 
         // Deactivates all activated in editor maps before loading the game's one
-        for (int i = 0; i < mapContainer.transform.childCount; i++)
-        {
-            mapContainer.transform.GetChild(i).gameObject.SetActive(false);
-        }
+        
 
 
         // Load map
-        int randomIndex = Random.Range(0, mapsData.mapsList.Count);
-        SetMap(randomIndex);
+        if (loadNewMap)
+        {
+            for (int i = 0; i < mapContainer.transform.childCount; i++)
+            {
+                mapContainer.transform.GetChild(i).gameObject.SetActive(false);
+            }
+
+
+            int randomIndex = Random.Range(0, mapsData.mapsList.Count);
+            SetMap(randomIndex);
+        }
+        else
+        {
+            for (int i = 0; i < mapContainer.transform.childCount; i++)
+            {
+                if (mapContainer.transform.GetChild(i).gameObject.activeInHierarchy)
+                {
+                    currentMap = mapContainer.transform.GetChild(i).gameObject;
+                }
+            }
+        }
     }
 
     // Update is called once per graphic frame

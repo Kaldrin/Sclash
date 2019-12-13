@@ -8,10 +8,12 @@ public class PlayerStats : MonoBehaviour
     // MANAGERS
     [Header("MANAGERS")]
     // Audio manager
+    [Tooltip("The name of the object holding the AudioManager script component in the scene to find its reference")]
     [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
     // Game manager
+    [Tooltip("The name of the object holding the GameManager script component in the scene to find its reference")]
     [SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
 
@@ -22,10 +24,14 @@ public class PlayerStats : MonoBehaviour
 
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
-    PlayerAttack playerAttack;
-    PlayerAnimations playerAnimation;
-    PlayerMovement playerMovements;
-    Rigidbody2D rigid;
+    [Tooltip("The reference to the PlayerAttack script component attached the player")]
+    [SerializeField] PlayerAttack playerAttack;
+    [Tooltip("The reference to the PlayerAnimations script component attached the player")]
+    [SerializeField] PlayerAnimations playerAnimation;
+    [Tooltip("The reference to the PlayerMovement script component attached the player")]
+    [SerializeField] PlayerMovement playerMovements;
+    [Tooltip("The reference to the Rigidbody2D component attached the player")]
+    [SerializeField] Rigidbody2D rigid;
 
 
 
@@ -33,9 +39,11 @@ public class PlayerStats : MonoBehaviour
 
     // HEALTH
     [Header("HEALTH")]
+    [Tooltip("The maximum health of the player")]
     [SerializeField] float maxHealth = 0;
     float currentHealth;
 
+    [Tooltip("Can the player be hit in the current frames ?")]
     [SerializeField] public bool untouchable = false;
     [HideInInspector] public bool dead = false;
 
@@ -45,6 +53,7 @@ public class PlayerStats : MonoBehaviour
 
     //STAMINA
     [Header("STAMINA")]
+    [Tooltip("The reference to the base stamina slider attached to the player to create the other sliders")]
     [SerializeField] public Slider staminaSlider = null;
     List<Slider> staminaSliders = new List<Slider>();
 
@@ -52,6 +61,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] public float staminaCostForMoves = 1;
     [Tooltip("The maximum amount of stamina one player can have")]
     [SerializeField] public float maxStamina = 3f;
+    [Tooltip("Stamina parameters")]
     [SerializeField] float
         durationBeforeStaminaRegen = 0.2f,
         staminaGainOverTimeMultiplier = 0.1f,
@@ -66,7 +76,7 @@ public class PlayerStats : MonoBehaviour
 
     [HideInInspector] public bool canRegenStamina = true;
 
-    
+    [Tooltip("Stamina colors depending on how much there is left")]
     [SerializeField] Color
         staminaBaseColor = Color.green,
         staminaLowColor = Color.yellow,
@@ -78,13 +88,16 @@ public class PlayerStats : MonoBehaviour
 
     // FX
     [Header("FX")]
+    [Tooltip("The reference to the game object holding the stamina loss FX")]
     [SerializeField] GameObject staminaLossFX = null;
+    [Tooltip("The references to the game objects holding the different FXs")]
     [SerializeField] GameObject
         clashFXPrefabRef = null,
         staminaGainFX = null,
-        deathFX = null;
+        deathBloodFX = null;
 
-    [SerializeField] float deathFXRotationForDirectionChange = 70;
+    [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
+    [SerializeField] float deathBloodFXRotationForDirectionChange = 70;
 
     Vector3 deathFXbaseAngles = new Vector3(0, 0, 0);
 
@@ -101,7 +114,10 @@ public class PlayerStats : MonoBehaviour
 
     // SOUND
     [Header("SOUND")]
-    [SerializeField] AudioSource staminaBarCharged = null;
+    [Tooltip("The reference to the stamina charged audio FX AudioSource")]
+    [SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
+
+
 
 
 
@@ -147,7 +163,7 @@ public class PlayerStats : MonoBehaviour
 
         // Begin by reseting all the player's values and variable to start fresh
 
-        deathFXbaseAngles = deathFX.transform.localEulerAngles;
+        deathFXbaseAngles = deathBloodFX.transform.localEulerAngles;
         ResetValues();
     }
     
@@ -164,18 +180,21 @@ public class PlayerStats : MonoBehaviour
 
 
         if (transform.localScale.x < 0)
-            deathFX.transform.localEulerAngles = new Vector3(deathFXbaseAngles.x, deathFXbaseAngles.y, deathFXRotationForDirectionChange);
+            deathBloodFX.transform.localEulerAngles = new Vector3(deathFXbaseAngles.x, deathFXbaseAngles.y, deathBloodFXRotationForDirectionChange);
         else
-            deathFX.transform.localEulerAngles = new Vector3(deathFXbaseAngles.x, deathFXbaseAngles.y, deathFXbaseAngles.z);
+            deathBloodFX.transform.localEulerAngles = new Vector3(deathFXbaseAngles.x, deathFXbaseAngles.y, deathFXbaseAngles.z);
+
+
+        if (!dead)
+            UpdateStaminaSlidersValue();
+
+
+        UpdateStaminaColor();
     }
 
     // LateUpdate is called last at each frame
     void LateUpdate()
     {
-        if (!dead)
-            UpdateStaminaSlidersValue();
-
-        UpdateStaminaColor();
     }
 
 
@@ -257,7 +276,7 @@ public class PlayerStats : MonoBehaviour
         {
             if (!gameManager.playerDead && gameManager.gameStarted)
             {
-                staminaBarCharged.Play();
+                staminaBarChargedAudioEffectSource.Play();
 
                 staminaGainFX.SetActive(false);
                 staminaGainFX.SetActive(true);
@@ -489,7 +508,11 @@ public class PlayerStats : MonoBehaviour
             playerAttack.playerColliders[i].isTrigger = true;
         }
 
-        gameManager.StartDeathVFXCoroutine();
+
+        if (gameManager.score[0] + 1 == gameManager.scoreToWin || gameManager.score[1] + 1 == gameManager.scoreToWin)
+            gameManager.StartDeathVFXCoroutine();
+
+
         gameManager.cameraShake.shakeDuration = gameManager.deathCameraShakeDuration;
         gameManager.SlowMo(gameManager.rounEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
     }

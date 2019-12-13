@@ -8,11 +8,9 @@ public class AudioManager : MonoBehaviour
     // MANAGERS
     [Header("MANAGERS")]
     // Name of the GameManager to find it in the scene
-    [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager;
+    [SerializeField] GameManager gameManager;
     // Name of the CameraManager to find it in the scene
-    [SerializeField] string cameraManagerName = "CameraArm";
-    CameraManager cameraManager;
+    [SerializeField] CameraManager cameraManager;
 
 
 
@@ -151,10 +149,6 @@ public class AudioManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Get managers
-        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
-        cameraManager = GameObject.Find(cameraManagerName).GetComponent<CameraManager>();
-
         // Chooses a music for the current session
         int randomMusicChoice = Random.Range(0, musicDataBase.musicsList.Count);
         chosenMusic = randomMusicChoice;

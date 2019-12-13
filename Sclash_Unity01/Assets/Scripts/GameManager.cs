@@ -65,7 +65,10 @@ public class GameManager : MonoBehaviour
     [Header("PLAYERS")]
     [Tooltip("The player prefab reference")]
     [SerializeField] GameObject player = null;
+    [Tooltip("The references to the spawn objects of the players in the scene")]
+    [SerializeField] public GameObject[] playerSpawns = null;
     [HideInInspector] public List<GameObject> playersList = new List<GameObject>();
+
     [Tooltip("The colors to identify the players")]
     [SerializeField] Color[]
         playersColors = null,
@@ -97,8 +100,7 @@ public class GameManager : MonoBehaviour
         parrySlowMoDuration = 2f,
         parryTimeScaleFadeSpeed = 0.2f,
         deathCameraShakeDuration = 0.3f;
-    [SerializeField] float
-        deathVFXFilterDuration = 4f;
+    
     float
         actualTimeScaleUpdateSmoothness = 0.05f,
         baseTimeScale = 1,
@@ -109,7 +111,32 @@ public class GameManager : MonoBehaviour
     [Tooltip("The round transition leaves effect object reference")]
     [SerializeField] public ParticleSystem roundTransitionLeavesFX = null;
 
+
+
+
+
+
+
+    // DEATH VFX
+    [Header("DEATH VFX")]
+    [Tooltip("The duration of the death VFX black & orange screen before it comes back to normal")]
+    [SerializeField] float deathVFXFilterDuration = 3.5f;
+    [Tooltip("The material that is put on the sprites when the death VFX orange & black screen appears")]
     [SerializeField] Material deathFXSpriteMaterial = null;
+
+    // List of all renderers for the death VFX
+    SpriteRenderer[] spriteRenderers = null;
+    MeshRenderer[] meshRenderers = null;
+    ParticleSystem[] particleSystems = null;
+    Light[] lights = null;
+
+
+    // All renderers' original properties storage for the death VFX reset
+    List<Color> spriteRenderersColors = new List<Color>();
+    List<Material> spriteRenderersMaterials = new List<Material>();
+    List<Color> meshRenderersColors = new List<Color>();
+    List<Color> particleSystemsColors = new List<Color>();
+    List<float> lightsIntensities = new List<float>();
 
 
 
@@ -306,8 +333,6 @@ public class GameManager : MonoBehaviour
     // Spawn the players
     void SpawnPlayers()
     {
-        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
-
         for (int i = 0; i < playerSpawns.Length; i++)
         {
             PlayerStats playerStats;
@@ -587,19 +612,19 @@ public class GameManager : MonoBehaviour
 
     IEnumerator DeathVisualEffect()
     {
-        // List of all renderers
-        SpriteRenderer[] spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
-        MeshRenderer[] meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
-        ParticleSystem[] particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
-        Light[] lights = GameObject.FindObjectsOfType<Light>();
+        // List of all renderers for the death VFX
+        spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
+        meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
+        particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
+        lights = GameObject.FindObjectsOfType<Light>();
 
 
-        // All renderers' original properties storage
-        List<Color> spriteRenderersColors = new List<Color>();
-        List<Material> spriteRenderersMaterials = new List<Material>();
-        List<Color> meshRenderersColors = new List<Color>();
-        List<Color> particleSystemsColors = new List<Color>();
-        List<float> lightsIntensities = new List<float>();
+        // All renderers' original properties storage for the death VFX reset
+        spriteRenderersColors = new List<Color>();
+        spriteRenderersMaterials = new List<Material>();
+        meshRenderersColors = new List<Color>();
+        particleSystemsColors = new List<Color>();
+        lightsIntensities = new List<float>();
 
 
         // Sets all black
@@ -655,38 +680,45 @@ public class GameManager : MonoBehaviour
 
 
         // Resets all
-        for (int i = 0; i < spriteRenderers.Length; i++)
+        
+
+
+        for (int j = 0; j < 100; j++)
         {
-            if (!spriteRenderers[i].CompareTag("NonBlackFX"))
+            for (int i = 0; i < spriteRenderers.Length; i++)
             {
-                spriteRenderers[i].color = spriteRenderersColors[i];
-                spriteRenderers[i].material = spriteRenderersMaterials[i];
+                if (!spriteRenderers[i].CompareTag("NonBlackFX"))
+                {
+                    //spriteRenderers[i].color = Color.Lerp(spriteRenderers[i].color, spriteRenderersColors[i], (1 / 100 * j));
+                    spriteRenderers[i].color = spriteRenderersColors[i];
+                    spriteRenderers[i].material = spriteRenderersMaterials[i];
+                }
             }
-        }
-        for (int i = 0; i < meshRenderers.Length; i++)
-        {
-            if (!meshRenderers[i].CompareTag("NonBlackFX"))
+            for (int i = 0; i < meshRenderers.Length; i++)
             {
-                meshRenderers[i].material.color = meshRenderersColors[i];
+                if (!meshRenderers[i].CompareTag("NonBlackFX"))
+                {
+                    meshRenderers[i].material.color = meshRenderersColors[i];
+                }
             }
-        }
-        for (int i = 0; i < particleSystems.Length; i++)
-        {
-            /*
-            if (!particleSystems[i].CompareTag("NonBlackFX"))
+            for (int i = 0; i < particleSystems.Length; i++)
             {
+                /*
+                if (!particleSystems[i].CompareTag("NonBlackFX"))
+                {
                 
-                ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
-                particleSystemMain.startColor = particleSystemsColors[i];
+                    ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
+                    particleSystemMain.startColor = particleSystemsColors[i];
                 
-             }
-             */
-        }
-        for (int i = 0; i < lights.Length; i++)
-        {
-            if (!lights[i].CompareTag("NonBlackFX"))
+                 }
+                 */
+            }
+            for (int i = 0; i < lights.Length; i++)
             {
-                lights[i].intensity = lightsIntensities[i];
+                if (!lights[i].CompareTag("NonBlackFX"))
+                {
+                    lights[i].intensity = lightsIntensities[i];
+                }
             }
         }
 
