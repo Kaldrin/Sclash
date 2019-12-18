@@ -158,17 +158,24 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetBool("Charging", playerAttack.charging);
         animator.SetBool("Dashing", playerAttack.isDashing);
 
+        try
+        {
+            if ((rigid.velocity.x * -transform.localScale.x) < 0)
+            {
+                animator.SetFloat("WalkDirection", 0);
+                legsAnimator.SetFloat("WalkDirection", 0);
+            }
+            else
+            {
+                animator.SetFloat("WalkDirection", 1);
+                legsAnimator.SetFloat("WalkDirection", 1);
+            }
+        }
+        catch
+        {
 
-        if ((rigid.velocity.x * -transform.localScale.x) < 0)
-        {
-            animator.SetFloat("WalkDirection", 0);
-            legsAnimator.SetFloat("WalkDirection", 0);
         }
-        else
-        {
-            animator.SetFloat("WalkDirection", 1);
-            legsAnimator.SetFloat("WalkDirection", 1);
-        }
+        
 
 
         // If the player is in fact moving fast enough

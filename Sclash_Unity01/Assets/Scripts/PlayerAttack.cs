@@ -26,7 +26,6 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
    
 
     # region PLAYER'S COMPONENTS
@@ -37,7 +36,6 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] PlayerAnimations playerAnimations = null;
     [SerializeField] PlayerMovement playerMovement = null;
     #endregion
-
 
 
 
@@ -65,7 +63,6 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
     # region ATTACK RECOVERY
     // ATTACK RECOVERY
     [Header("ATTACK RECOVERY")]
@@ -81,8 +78,6 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public bool attackRecoveryStart = false;
     [HideInInspector] public bool isAttackRecovering = false;
     # endregion
-
-
 
 
 
@@ -114,8 +109,6 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
-
     # region DRAW
     // DRAW
     [Header("DRAW")]
@@ -136,18 +129,11 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
-
-
     # region OTHER PLAYER
     // OTHER PLAYER
     [Header("OTHER PLAYER")]
     [HideInInspector] public bool enemyDead = false;
     # endregion
-
-
-
-
 
 
 
@@ -171,8 +157,6 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
-
     # region KICKED
     // KICKED
     [Header("KICKED")]
@@ -183,10 +167,6 @@ public class PlayerAttack : MonoBehaviour
 
     [HideInInspector] public bool kicked = false;
     # endregion
-
-
-
-
 
 
 
@@ -210,8 +190,6 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
-
     # region CLASH
     // CLASH
     [Header("CLASH")]
@@ -221,8 +199,6 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public float clashKnockbackSpeed = 2;
     bool clashed = false;
     # endregion
-
-
 
 
 
@@ -280,6 +256,7 @@ public class PlayerAttack : MonoBehaviour
     [Header("FX")]
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public GameObject attackSign = null;
+    [Tooltip("Different FX objects references")]
     [SerializeField] public GameObject
         clash = null,
         clashKana = null,
@@ -306,6 +283,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
     # region CHEATS FOR DEVELOPMENT PURPOSES
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
@@ -316,7 +294,7 @@ public class PlayerAttack : MonoBehaviour
         deathCheatKey = KeyCode.Alpha2,
         drawCheatKey = KeyCode.Alpha3,
         staminaCheatKey = KeyCode.Alpha4;
-    # endregion
+    #endregion
 
 
 
@@ -337,6 +315,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     void Start()
     {
@@ -433,6 +412,7 @@ public class PlayerAttack : MonoBehaviour
             RunDash();
         }
     }
+    # endregion
 
 
 
@@ -440,6 +420,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region CHEATS
     // CHEATS
     void Cheats()
     {
@@ -465,6 +446,7 @@ public class PlayerAttack : MonoBehaviour
             playerStats.stamina = playerStats.maxStamina;
         }
     }
+    # endregion
 
 
 
@@ -472,6 +454,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region RECOVERIES
     // RECOVERIES
     void ManageRecoveries()
     {
@@ -496,6 +479,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+    # endregion
 
 
 
@@ -504,6 +488,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region DRAW
     // DRAW
     // Detects draw input
     void ManageDraw()
@@ -530,6 +515,7 @@ public class PlayerAttack : MonoBehaviour
         hasDrawn = true;
         isDrawing = false;
     }
+    # endregion
 
 
 
@@ -537,7 +523,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
+    # region CHARGE
     //CHARGE
     // Manages the detection of attack charge inputs
     void ManageCharge()
@@ -634,12 +620,14 @@ public class PlayerAttack : MonoBehaviour
             chargeSlider.value = 1;
         }
     }
+    # endregion
 
 
 
 
 
 
+    # region ATTACK
     // ATTACK
     // Triggers the attck
     void ReleaseAttack()
@@ -664,6 +652,7 @@ public class PlayerAttack : MonoBehaviour
 
         Vector3 attackSignPos = attackSign.transform.localPosition;
         attackSign.transform.localPosition = new Vector3(- (actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
+        attackSign.GetComponent<ParticleSystem>().Play();
 
 
 
@@ -783,6 +772,7 @@ public class PlayerAttack : MonoBehaviour
         if (kickFrame)
             Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
     }
+    # endregion
 
 
 
@@ -792,6 +782,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region PARRY
     // PARRY
     // Detect parry inputs
     void ManageParry()
@@ -851,6 +842,7 @@ public class PlayerAttack : MonoBehaviour
 
         playerAnimations.TriggerParry(false);
     }
+    # endregion
 
 
 
@@ -860,6 +852,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region KICK
     // KICK
     // Detect kick inputs
     void ManageKick()
@@ -943,6 +936,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+    # endregion
 
 
 
@@ -951,7 +945,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
+    # region KICKED
     // KICKED
     // The player have been kicked
     public void Kicked()
@@ -1009,12 +1003,14 @@ public class PlayerAttack : MonoBehaviour
             audioManager.BattleEventIncreaseIntensity();
         }
     }
+    # endregion
 
 
 
 
 
 
+    # region CLASHED
     //CLASHED
     // Start the clash coroutine
     public void Clash()
@@ -1068,6 +1064,7 @@ public class PlayerAttack : MonoBehaviour
         clashed = false;
         playerAnimations.Clashed(clashed);
     }
+    # endregion
 
 
 
@@ -1076,6 +1073,7 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    # region DASH
     //DASH
     // Functions to detect the dash input etc
     void ManageDash()
@@ -1287,4 +1285,5 @@ public class PlayerAttack : MonoBehaviour
         attackDashLeavesFront.Stop();
         attackDashLeavesBack.Stop();
     }
+    # endregion
 }

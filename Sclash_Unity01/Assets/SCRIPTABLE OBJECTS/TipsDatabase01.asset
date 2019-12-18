@@ -20,7 +20,8 @@ MonoBehaviour:
   - You can cancel the charging of an attack with any other move
   - You can change the number of rounds needed to win the game in the options (But
     the official number is 10)
-  - The pommel move doesn't cost any stamina
+  - The pommel move doesn't cost any stamina and interrupts any action your opponent
+    might be doing by pushing them, given you're close enough to touch them.
   - If your guard successfully blocks a hit you immediatly regain 1 stamina bar
   - You can cancel a parry or a kick with a dash
   - You can connect the dash with any move
@@ -29,3 +30,4 @@ MonoBehaviour:
   - You can dash by double tapping the directional input
   - Read carefully the tips when you see a new one, they may make you discovers mechanics
     you forgot or didn't notice !
+  - You can cancel a dash with an attack.

@@ -34,7 +34,7 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
     [SerializeField] MapsDataBase mapsDatabase01 = null;
     [Tooltip("The reference to the MenuBrowser script managing the map selection screen")]
     [SerializeField] MenuBrowser mapsMenuBrowser = null;
-    # endregion
+    #endregion
 
 
 
@@ -47,7 +47,7 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
 
 
 
-
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
@@ -91,13 +91,17 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
     {
 
     }
+    # endregion
 
 
 
 
 
+    # region MAP LOADING
+    // MAP LOADING
     void LoadMapWithMapLoader(int mapIndex)
     {
         mapLoader.LoadNewMapInGame(mapIndex);
     }
+    # endregion
 }

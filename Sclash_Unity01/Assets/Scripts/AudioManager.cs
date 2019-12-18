@@ -16,12 +16,15 @@ public class AudioManager : MonoBehaviour
 
 
 
+
+
     # region SOUND FUNCTIONS
     // SOUND FUNCTIONS
     [Header("SOUND FUNCTIONS")]
     // A script that provides premade sound functions to play a little more easily with audio sources
     [SerializeField] SoundFunctions soundFunctions = null;
     # endregion
+
 
 
 
@@ -40,6 +43,7 @@ public class AudioManager : MonoBehaviour
         matchBeginsRandomSoundSource = null,
         roundBeginsRandomSoundSource = null;
     #endregion
+
 
 
 
@@ -102,7 +106,6 @@ public class AudioManager : MonoBehaviour
 
 
 
-
     # region VOICE
     // VOICE
     [Header("VOICE")]
@@ -119,6 +122,7 @@ public class AudioManager : MonoBehaviour
     GameObject[] players;
     //float distanceBetweenPlayers = 0;
     # endregion
+
 
 
 
@@ -146,6 +150,7 @@ public class AudioManager : MonoBehaviour
 
 
 
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
@@ -217,13 +222,14 @@ public class AudioManager : MonoBehaviour
         Debug.Log(battleMusicsStrikesVolumeObjectives[0]);
         */
     }
+    # endregion
 
 
 
 
 
 
-
+    # region CHEATS
     // CHEATS
     // Cheats keys to modify music for development test purposes
     void AudioCheats()
@@ -241,28 +247,28 @@ public class AudioManager : MonoBehaviour
             ImmediatlySwitchPhase("Down");
         }
     }
+    # endregion
 
 
 
 
 
 
-
-
+    # region PLAYERS
     // PLAYERS
     // Finds the players on the scene to use their data for music modification
     public void FindPlayers()
     {
         players = GameObject.FindGameObjectsWithTag("Player");
     }
+    # endregion
 
 
 
 
 
 
-
-
+    # region MUSIC ACTIVATION
     // MUSICS ACTIVATION
     // Activates menu music
     public void ActivateMenuMusic()
@@ -349,13 +355,14 @@ public class AudioManager : MonoBehaviour
             battleMusicPhaseSources[i].Stop();
         }
     }
+    # endregion
 
 
 
 
 
 
-
+    # region BATTLE MUSIC
     // BATTLE MUSIC
     // Fades musics volumes smothly for soft transitions
     void InterpMusicsVolumesSmoothly()
@@ -783,14 +790,14 @@ public class AudioManager : MonoBehaviour
         chosenMusic = randomMusicChoice;
         battleMusicPhaseSources[0].clip = musicDataBase.musicsList[chosenMusic].phases[currentPhase].stems[currentStem].stemAudio;
     }
+    #endregion
 
 
 
 
 
 
-
-
+    # region SOUND FX
     // SOUND FX
     // Plays clash sound FX
     public void Clash()
@@ -818,4 +825,5 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSeconds(0f);
         soundFunctions.PlaySoundFromSource(deathSoundFXAudioSource);
     }
+    #endregion
 }

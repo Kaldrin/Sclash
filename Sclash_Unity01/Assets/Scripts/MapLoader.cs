@@ -26,7 +26,6 @@ public class MapLoader : MonoBehaviour
 
 
 
-
     # region MAPS DATA
     // MAPS DATA
     [Header("MAPS DATA")]
@@ -42,10 +41,7 @@ public class MapLoader : MonoBehaviour
 
 
 
-
     [SerializeField] bool loadNewMap = true;
-
-
 
 
 
@@ -53,7 +49,7 @@ public class MapLoader : MonoBehaviour
     # region MAP LOADING
     // MAP LOADING
     bool canLoadNewMap = true;
-    # endregion
+    #endregion
 
 
 
@@ -66,7 +62,7 @@ public class MapLoader : MonoBehaviour
 
 
 
-
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
@@ -106,15 +102,15 @@ public class MapLoader : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        
+
     }
+    # endregion
 
 
 
 
 
-
-
+    # region MAP LOADING
     // MAP LOADING
     // Immediatly changes the map
     void SetMap(int mapIndex)
@@ -173,4 +169,5 @@ public class MapLoader : MonoBehaviour
         int randomIndex = Random.Range(0, mapsData.mapsList.Count);
         StartCoroutine(LoadNewMapInGameCoroutine(randomIndex, true));
     }
+    # endregion
 }

@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
 
 
 
+
     # region MENU
     // MENU
     [Header("MENU")]
@@ -50,6 +51,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject blurPanel = null;
     [HideInInspector] public bool paused = false;
     # endregion
+
 
 
 
@@ -79,9 +81,9 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("The colors to identify the players")]
     [SerializeField] Color[]
-        playersColors = { Color.red, Color.yellow},
-        attackSignColors = { Color.red, Color.yellow},
-        playerLightsColors = { Color.red, Color.yellow};
+        playersColors = {Color.red, Color.yellow},
+        attackSignColors = {Color.red, Color.yellow},
+        playerLightsColors = {Color.red, Color.yellow};
     [Tooltip("The names to identify the players")]
     [SerializeField] string[] playerNames = {"Aka", "Ao"};
     [HideInInspector] public bool playerDead = false;
@@ -127,7 +129,6 @@ public class GameManager : MonoBehaviour
 
 
 
-
     # region DEATH VFX
     // DEATH VFX
     [Header("DEATH VFX")]
@@ -149,6 +150,7 @@ public class GameManager : MonoBehaviour
     List<Color> particleSystemsColors = new List<Color>();
     List<float> lightsIntensities = new List<float>();
     # endregion
+
 
 
 
@@ -213,6 +215,7 @@ public class GameManager : MonoBehaviour
 
 
 
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     private void Awake()
     {
@@ -261,14 +264,15 @@ public class GameManager : MonoBehaviour
 
         scoreToWin = Mathf.FloorToInt(scoreToWinSlider.value);
     }
+    # endregion
 
 
 
+    
 
 
 
-
-
+    # region BEGIN GAME
     // BEGIN GAME
     // Setup the game before it starts
     IEnumerator SetupGame()
@@ -382,6 +386,7 @@ public class GameManager : MonoBehaviour
             attackSignParticlesMain.startColor = attackSignColors[i];
         }
     }
+    # endregion
 
 
 
@@ -389,7 +394,7 @@ public class GameManager : MonoBehaviour
 
 
 
-
+    # region END & NEXT ROUND
     // END & NEXT ROUND
     // Start NextRoundCoroutine
     public void NextRound()
@@ -443,6 +448,7 @@ public class GameManager : MonoBehaviour
 
         playerDead = false;
     }
+    # endregion
 
 
 
@@ -450,6 +456,7 @@ public class GameManager : MonoBehaviour
 
 
 
+    # region RESTART GAME
     // RESTART GAME
     // Calls ResetGame coroutine, called by main menu button at the end of the match
     public void ResetGame()
@@ -481,6 +488,7 @@ public class GameManager : MonoBehaviour
             blurPanel.SetActive(true);
 
 
+        Cursor.visible = false;
         roundTransitionLeavesFX.Play();
 
 
@@ -506,6 +514,7 @@ public class GameManager : MonoBehaviour
         {
             audioManager.ActivateMenuMusic();
             menuManager.mainMenu.SetActive(true);
+            Cursor.visible = true;
         }
 
 
@@ -520,6 +529,7 @@ public class GameManager : MonoBehaviour
         if (remathRightAfter)
             StartMatch();
     }
+    # endregion
 
 
 
@@ -527,6 +537,7 @@ public class GameManager : MonoBehaviour
 
 
 
+    # region SCORE
     // SCORE
     // Displays the current score for a given amount of time
     IEnumerator ShowScore()
@@ -577,12 +588,15 @@ public class GameManager : MonoBehaviour
         score = new Vector2(0, 0);
         scoreText.text = ScoreBuilder();
     }
+    # endregion
 
 
 
 
 
 
+
+    # region END GAME
     // END GAME
     IEnumerator Won(int playerNum)
     {
@@ -615,9 +629,7 @@ public class GameManager : MonoBehaviour
         menuManager.winScreen.SetActive(true);
         Cursor.visible = true;
     }
-
-    
-
+    # endregion
 
 
 
@@ -625,6 +637,7 @@ public class GameManager : MonoBehaviour
 
 
 
+    # region EFFECTS
     // EFFECTS
     public void StartDeathVFXCoroutine()
     {
@@ -805,16 +818,20 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = minTimeScale;
         }
     }
+    # endregion
 
 
 
 
 
 
+
+    # region SECONDARY FUNCTIONS
     // SECONDARY FUNCTIONS
     // Compares 2 floats with a range of tolerance
     public static bool FastApproximately(float a, float b, float threshold)
     {
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
     }
+    # endregion
 }

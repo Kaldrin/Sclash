@@ -22,7 +22,6 @@ public class PlayerStats : MonoBehaviour
 
 
 
-
     # region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
@@ -37,8 +36,6 @@ public class PlayerStats : MonoBehaviour
     # endregion
 
 
-    
-
 
 
     # region HEALTH
@@ -52,8 +49,6 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] public bool untouchable = false;
     [HideInInspector] public bool dead = false;
     # endregion
-
-
 
 
 
@@ -113,9 +108,11 @@ public class PlayerStats : MonoBehaviour
 
 
 
-    # region PLAYER IDENTIFICATION
-    // PLAYER IDENTIFICATION
-    [HideInInspector] public int playerNum;
+
+    # region PLAYERS IDENTIFICATION
+    // PLAYERS IDENTIFICATION
+    [HideInInspector] public int playerNum = 0;
+    int otherPlayerNum = 0;
     # endregion
 
 
@@ -147,6 +144,7 @@ public class PlayerStats : MonoBehaviour
 
 
 
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     void Awake()
     {
@@ -176,7 +174,12 @@ public class PlayerStats : MonoBehaviour
         deathFXbaseAngles = deathBloodFX.transform.localEulerAngles;
         ResetValues();
     }
-    
+
+    void Start()
+    {
+        StartCoroutine(GetOtherPlayerNum());
+    }
+
     // FixedUpdate is called 50 times per second
     void FixedUpdate()
     {
@@ -206,6 +209,22 @@ public class PlayerStats : MonoBehaviour
     void LateUpdate()
     {
     }
+    # endregion
+
+
+    IEnumerator GetOtherPlayerNum()
+    {
+        yield return new WaitForSeconds(0.2f);
+
+
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            if (i + 1 != playerNum)
+            {
+                otherPlayerNum = i + 1;
+            }
+        }
+    }
 
 
 
@@ -213,6 +232,8 @@ public class PlayerStats : MonoBehaviour
 
 
 
+
+    # region STAMINA
     // STAMINA
     // Manage stamina regeneration, executed in FixedUpdate
     void StaminaRegen()
@@ -368,12 +389,16 @@ public class PlayerStats : MonoBehaviour
             staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color = Color.Lerp(staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color, color, Time.deltaTime * 10);
         }
     }
+    # endregion
 
 
 
 
 
 
+
+
+    # region RESET VALUES
     // RESET VALUES
     public void ResetValues()
     {
@@ -407,6 +432,7 @@ public class PlayerStats : MonoBehaviour
 
         playerMovements.Charging(false);
     }
+    # endregion
 
 
 
@@ -415,7 +441,7 @@ public class PlayerStats : MonoBehaviour
 
 
 
-
+    # region RECEIVE AN ATTACK
     // RECEIVE AN ATTACK
     public bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
@@ -491,6 +517,7 @@ public class PlayerStats : MonoBehaviour
 
         return hit;
     }
+    # endregion
 
 
 
@@ -499,7 +526,7 @@ public class PlayerStats : MonoBehaviour
 
 
 
-
+    # region TOUCHED
     // TOUCHED
     void Touched()
     {
@@ -518,14 +545,16 @@ public class PlayerStats : MonoBehaviour
             playerAttack.playerColliders[i].isTrigger = true;
         }
 
-
-        if (gameManager.score[0] + 1 == gameManager.scoreToWin || gameManager.score[1] + 1 == gameManager.scoreToWin)
+        //Debug.Log(gameManager.score[otherPlayerNum]);
+        Debug.Log(playerNum);
+        if (gameManager.score[otherPlayerNum - 1] + 1 >= gameManager.scoreToWin)
             gameManager.StartDeathVFXCoroutine();
 
 
         gameManager.cameraShake.shakeDuration = gameManager.deathCameraShakeDuration;
         gameManager.SlowMo(gameManager.rounEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
     }
+    # endregion
 }
 
 

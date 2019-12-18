@@ -13,11 +13,12 @@ public class SetCustomCursor : MonoBehaviour
 
 
 
-
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
         Cursor.SetCursor(cursor, cursorHotspot, CursorMode.Auto);
     }
+    # endregion
 }

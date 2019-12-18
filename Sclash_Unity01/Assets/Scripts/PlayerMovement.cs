@@ -30,7 +30,6 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
     # region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
@@ -38,7 +37,6 @@ public class PlayerMovement : MonoBehaviour
     PlayerAttack playerAttack = null;
     Rigidbody2D rb = null;
     # endregion
-
 
 
 
@@ -71,12 +69,14 @@ public class PlayerMovement : MonoBehaviour
         chargeMovementsSpeed = 1.2f,
         clampY = -1.3f;
     float movementsMultiplier = 0;
-    # endregion
+    #endregion
 
 
 
 
 
+
+    #region JUMP
     // JUMP
     //bool jumpRequest = false;
 
@@ -86,6 +86,7 @@ public class PlayerMovement : MonoBehaviour
         lowJumpMultiplier = 2f,
         jumpHeight = 10f;
     */
+    #endregion
 
 
 
@@ -100,6 +101,9 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
+
+    # region BASIC FUNCTIONS
     // BASIC FUNCTIONS
     // Start is called before the first frame update
     void Awake()
@@ -179,6 +183,7 @@ public class PlayerMovement : MonoBehaviour
         }
         */
     }
+    # endregion
 
 
 
@@ -186,13 +191,14 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
+    # region TO EXECUTE A FEW FRAMES AFTER THE AWAKE FUNCTION
     // TO EXECUTE A FEW FRAMES AFTER THE AWAKE FUNCTION
     IEnumerator ExecOnAwake()
     {
         yield return new WaitForSeconds(0.2f);
         ManageOrientation();
     }
+    # endregion
 
 
 
@@ -200,6 +206,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+    # region MOVEMENTS
     // MOVEMENTS
     void ManageMovements()
     {
@@ -239,6 +246,7 @@ public class PlayerMovement : MonoBehaviour
             transform.position = new Vector3(playerPos.x, clampY, playerPos.z);
         }
     }
+    # endregion
 
 
 
@@ -246,6 +254,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+    # region CHANGE SPEED IF CHARGING / NOT CHARGING
     // CHANGE SPEED IF CHARGING / NOT CHARGING
     public void Charging(bool on)
     {
@@ -254,6 +263,7 @@ public class PlayerMovement : MonoBehaviour
         else
             movementsMultiplier = baseMovementsSpeed;
     }
+    # endregion
 
 
 
@@ -261,7 +271,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
+    # region ORIENTATION CALLED IN UPDATE
     // ORIENTATION CALLED IN UPDATE
     void ManageOrientation()
     {
@@ -320,7 +330,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
+    // Immediatly rotates the player
     void ApplyOrientation(float sign)
     {
         if (sign > 0)
@@ -336,4 +346,5 @@ public class PlayerMovement : MonoBehaviour
         orientationCooldownStartTime = Time.time;
         orientationCooldownFinished = false;
     }
+    # endregion
 }
