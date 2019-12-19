@@ -705,7 +705,12 @@ public class GameManager : MonoBehaviour
 
 
         // Deactivates background elements for only orange color
-        mapLoader.currentMap.transform.Find("DECORS & BIG ELEMENTS").Find("NON BATTLE SCENE").gameObject.SetActive(false);
+        //mapLoader.currentMap.transform.Find("DECORS & BIG ELEMENTS").Find("NON BATTLE SCENE").gameObject.SetActive(false);
+
+        for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+        {
+            mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
+        }
 
 
 
@@ -757,7 +762,12 @@ public class GameManager : MonoBehaviour
         }
 
 
-        mapLoader.currentMap.transform.Find("DECORS & BIG ELEMENTS").Find("NON BATTLE SCENE").gameObject.SetActive(true);
+        //mapLoader.currentMap.transform.Find("DECORS & BIG ELEMENTS").Find("NON BATTLE SCENE").gameObject.SetActive(false);
+
+        for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+        {
+            mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
+        }
     }
 
     // Start the SlowMo coroutine

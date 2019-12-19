@@ -339,9 +339,16 @@ public class MenuBrowser : MonoBehaviour
 
             if (i == browseIndex)
             {
-                if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
+                try
                 {
-                    g.GetComponent<Image>().color = buttonSelectedColor;
+                    if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
+                    {
+                        g.GetComponent<Image>().color = buttonSelectedColor;
+                    }
+                }
+                catch
+                {
+
                 }
 
 
@@ -355,9 +362,16 @@ public class MenuBrowser : MonoBehaviour
             }
             else
             {
-                if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
+                try
                 {
-                    g.GetComponent<Image>().color = buttonDefaultColor;
+                    if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
+                    {
+                        g.GetComponent<Image>().color = buttonDefaultColor;
+                    }
+                }
+                catch
+                {
+
                 }
 
 

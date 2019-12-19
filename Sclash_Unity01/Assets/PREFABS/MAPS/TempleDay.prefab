@@ -15976,6 +15976,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8036874675632634083}
+  - component: {fileID: 5429534751393932918}
   m_Layer: 0
   m_Name: TempleDay
   m_TagString: Untagged
@@ -16002,6 +16003,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5429534751393932918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2989385763825353732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adb3357c222b6454c89c7b541f664164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundElements:
+  - {fileID: 6645724859435115981}
+  - {fileID: 6920766636717074915}
+  - {fileID: 7611235243818947667}
+  - {fileID: 6125075694895965301}
+  - {fileID: 4271145735287528243}
+  - {fileID: 5426836358549218718}
+  - {fileID: 3923375584839852621}
+  - {fileID: 7437785424697394075}
 --- !u!1 &3201832939130027716
 GameObject:
   m_ObjectHideFlags: 0

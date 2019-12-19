@@ -16,6 +16,7 @@ public class InputManager : MonoBehaviour
         public bool anyKeyDown;
         public bool anyKey;
         public bool pauseUp;
+        public bool jumpDown;
     }
 
     [HideInInspector] public PlayerInputs[] playerInputs = new PlayerInputs[2];
@@ -29,6 +30,7 @@ public class InputManager : MonoBehaviour
 
 
 
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS   
     // Start is called before the first frame update
     void Start()
@@ -59,6 +61,7 @@ public class InputManager : MonoBehaviour
     {
         ManageHorizontalInput();
     }
+    # endregion
 
 
 
@@ -66,6 +69,9 @@ public class InputManager : MonoBehaviour
 
 
 
+
+
+    # region HORIZONTAL
     // HORIZONTAL
     void ManageHorizontalInput()
     {
@@ -74,11 +80,17 @@ public class InputManager : MonoBehaviour
             playerInputs[i].horizontal = Input.GetAxis("Horizontal" + (i + 1));
         }
     }
+    # endregion
 
 
 
 
 
+
+
+
+
+    # region KICK
     // KICK
     void ManageKick()
     {
@@ -89,11 +101,17 @@ public class InputManager : MonoBehaviour
             playerInputs[i].kickDown = Input.GetButtonDown("Kick" + (i + 1));    
         }
     }
+    # endregion
 
 
 
 
 
+
+
+
+
+    # region ANY KEY
     // ANY KEY
     void ManageAnyKey()
     {
@@ -108,10 +126,17 @@ public class InputManager : MonoBehaviour
             //playerInputs[i].anyKey = Input.GetButtonDown("Kick" + (i + 1));
         }
     }
+    # endregion
 
 
 
 
+
+
+
+
+
+    # region PAUSE
     // PAUSE
     void ManagePause()
     {
@@ -120,4 +145,5 @@ public class InputManager : MonoBehaviour
             playerInputs[i].pauseUp = Input.GetButtonUp("Pause" + (i + 1));
         }
     }
+    # endregion
 }
