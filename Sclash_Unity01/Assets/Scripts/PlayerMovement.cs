@@ -76,33 +76,21 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    #region JUMP
-    // JUMP
-    //bool jumpRequest = false;
+   
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
-    [SerializeField] float
-        fallMultiplier = 2.5f,
-        lowJumpMultiplier = 2f,
-        jumpHeight = 10f;
-    */
-    #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     # region BASIC FUNCTIONS
     // BASIC FUNCTIONS
     // Start is called before the first frame update
@@ -135,18 +123,12 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        // JUMP INPUT
-        if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.1f)
-        {
-            //jumpRequest = true;
-        }
-
         // ORIENTATION IF PLAYER CAN ORIENT
         if (!playerStats.dead && !playerAttack.charging && !playerAttack.activeFrame && !playerAttack.isAttackRecovering && !playerAttack.enemyDead && !playerAttack.isAttacking && !playerAttack.isDashing)
             ManageOrientation();
     }
 
-    // Fixed update is called 30 times per second
+    // Fixed update is called 50 times per second
     void FixedUpdate()
     {
         // MOVEMENTS INPUTS
@@ -154,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
 
 
         // CLAMP
-        ClampY();
+        //ClampY();
 
 
         /*
@@ -181,7 +163,7 @@ public class PlayerMovement : MonoBehaviour
                 rb.gravityScale = 1f;
             }
         }
-        */
+        
     }
     # endregion
 
@@ -236,6 +218,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Prevents the player from rising up, caled in FIxedUpdate
     void ClampY()
     {
         Vector3 playerPos = transform.position;
@@ -248,6 +231,14 @@ public class PlayerMovement : MonoBehaviour
     }
     # endregion
 
+
+
+
+
+    void ManageJump()
+    {
+        //if (inputManager)
+    }
 
 
 
@@ -347,4 +338,5 @@ public class PlayerMovement : MonoBehaviour
         orientationCooldownFinished = false;
     }
     # endregion
+    */
 }

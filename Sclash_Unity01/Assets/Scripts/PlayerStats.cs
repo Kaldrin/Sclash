@@ -143,7 +143,7 @@ public class PlayerStats : MonoBehaviour
 
 
 
-
+    /*
     # region BASE FUNCTIONS
     // BASE FUNCTIONS
     void Awake()
@@ -266,14 +266,6 @@ public class PlayerStats : MonoBehaviour
         {
             currentTimeBeforeStaminaRegen -= Time.deltaTime;
         }
-
-        /*
-        // If the player recovered at least half of his stamina he can parry again
-        if (stamina >= maxStamina / 2)
-        {
-            parryBroke = false;
-        }
-        */
     }
 
     // Trigger the stamina regen pause duration
@@ -456,12 +448,6 @@ public class PlayerStats : MonoBehaviour
 
         if (!dead)
         { 
-            /*
-            if (!playerAttack.hasDrawn)
-            {
-                instigator.GetComponent<PlayerStats>().Touched();
-            }
-            */
             // CLASH
             if (playerAttack.activeFrame || playerAttack.clashFrames)
             {
@@ -555,6 +541,7 @@ public class PlayerStats : MonoBehaviour
         gameManager.SlowMo(gameManager.rounEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
     }
     # endregion
+*/
 }
 
 

@@ -5,21 +5,29 @@ using TMPro;
 
 public class InputManager : MonoBehaviour
 {
-    [HideInInspector] public bool score = false;
-    //[SerializeField] TextMeshPro[] controllersText = null;
-
     public struct PlayerInputs
     {
-        public float horizontal;
-        public bool kick;
-        public bool kickDown;
-        public bool anyKeyDown;
-        public bool anyKey;
         public bool pauseUp;
-        public bool jumpDown;
+        public bool anyKey;
+        public float horizontal;
+        public float dash;
+        public bool attack;
+        public bool kick;
+        public bool parry;
+        public bool jump;
     }
 
+    [SerializeField] float
+        axisDeadZone = 0.1f,
+        dashDeadZone = 0.5f;
+
     [HideInInspector] public PlayerInputs[] playerInputs = new PlayerInputs[2];
+
+    [HideInInspector] public bool scoreInput = false;
+
+    
+
+    
 
 
 
@@ -35,31 +43,64 @@ public class InputManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        /*
-        if (Input.GetJoystickNames().Length > 1)
-        {
-            for (int i = 0; i < Input.GetJoystickNames().Length; i++)
-            {
-                Debug.Log(Input.GetJoystickNames()[i]);
-                controllersText[i].text = Input.GetJoystickNames()[i];
-            }
-        }
-        */
     }
 
     // Update is called once per graphic frame
     void Update()
     {
-        score = Input.GetButton("Score");
-        ManageKick();
-        ManageAnyKey();
-        ManagePause();
+        scoreInput = Input.GetButton("Score");
+        ManageHorizontalInput();
+        ManageDashInput();
+        ManageKickInput();
+        ManageAnyKeyInput();
+        ManagePauseInput();
+        ManageJumpInput();
+        ManageParryInput();
+        ManageAttackInput();
+        
     }
 
     // FixedUpdate is called 50 times per second
     private void FixedUpdate()
     {
-        ManageHorizontalInput();
+        
+    }
+    # endregion
+
+
+
+
+
+
+
+
+
+    #region ANY KEY
+    // ANY KEY
+    void ManageAnyKeyInput()
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone);
+        }
+    }
+    # endregion
+
+
+
+
+
+
+
+
+    # region PAUSE
+    // PAUSE
+    void ManagePauseInput()
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].pauseUp = Input.GetButtonUp("Pause" + i);
+        }
     }
     # endregion
 
@@ -77,11 +118,44 @@ public class InputManager : MonoBehaviour
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
-            playerInputs[i].horizontal = Input.GetAxis("Horizontal" + (i + 1));
+            playerInputs[i].horizontal = Input.GetAxis("Horizontal" + i);
         }
     }
     # endregion
 
+
+
+
+
+
+    # region DASH
+    // DASH
+    void ManageDashInput()
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].dash = Input.GetAxis("Dash" + i);
+        }
+    }
+    # endregion
+
+
+
+
+
+
+
+
+    #region ATTACK
+    // KICK
+    void ManageAttackInput()
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].attack = Input.GetButton("Fire" + i) || Input.GetAxis("Fire" + i) > axisDeadZone;
+        }
+    }
+    # endregion
 
 
 
@@ -92,13 +166,27 @@ public class InputManager : MonoBehaviour
 
     # region KICK
     // KICK
-    void ManageKick()
+    void ManageKickInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
-            playerInputs[i].kick = Input.GetButton("Kick" + (i + 1));
+            playerInputs[i].kick = Input.GetButton("Kick" + i);
+        }
+    }
+    # endregion
 
-            playerInputs[i].kickDown = Input.GetButtonDown("Kick" + (i + 1));    
+
+
+
+
+
+    # region PARRY
+    // KICK
+    void ManageParryInput()
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].parry = Input.GetButton("Parry" + i) || Input.GetAxis("Parry" + i) < - axisDeadZone;
         }
     }
     # endregion
@@ -110,39 +198,13 @@ public class InputManager : MonoBehaviour
 
 
 
-
-    # region ANY KEY
-    // ANY KEY
-    void ManageAnyKey()
+    #region JUMP
+    // JUMP
+    void ManageJumpInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
-            playerInputs[i].anyKeyDown = (Input.GetButtonDown("Kick" + (i + 1))
-                || Input.GetButtonDown("Parry" + (i + 1))
-                || Input.GetButtonDown("Fire" + (i + 1))
-                || Input.GetAxis("Fire" + (i + 1)) > 0.1
-                || Input.GetAxis("Parry" + (i + 1)) < - 0.1f
-                || Input.GetButtonDown("Kick" + (i + 1)));
-            //playerInputs[i].anyKey = Input.GetButtonDown("Kick" + (i + 1));
-        }
-    }
-    # endregion
-
-
-
-
-
-
-
-
-
-    # region PAUSE
-    // PAUSE
-    void ManagePause()
-    {
-        for (int i = 0; i < playerInputs.Length; i++)
-        {
-            playerInputs[i].pauseUp = Input.GetButtonUp("Pause" + (i + 1));
+            playerInputs[i].jump = Input.GetButtonDown("Jump" + i);
         }
     }
     # endregion

@@ -9,6 +9,7 @@ using TMPro;
 // Created for Unity 2019.1.1f1
 public class MenuManager : MonoBehaviour
 {
+    # region FUNCTIONS
     # region MANAGERS
     // MANAGERS
     [Header("MANAGERS")]
@@ -86,6 +87,7 @@ public class MenuManager : MonoBehaviour
     [Tooltip("The reference to the TextMeshProUGUI component containing the name of the winner")]
     [SerializeField] public TextMeshProUGUI winName = null;
     # endregion
+    # endregion
 
 
 
@@ -102,8 +104,8 @@ public class MenuManager : MonoBehaviour
 
 
 
-
-
+    # region FUNCTIONS
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
@@ -114,81 +116,152 @@ public class MenuManager : MonoBehaviour
     // Update is called once per grahic frame
     void Update()
     {
-        /*
-        if (Input.GetButtonUp("Pause"))
+        switch(gameManager.gameState)
         {
-            if (gameManager.gameStarted && !gameManager.playerDead)
-            {
-                
-            }
-        }
-        */
+            case GameManager.GAMESTATE.game:
+                ManagePauseOnInput();
+                ManageScoreDisplayInput();
+                break;
 
-
-        if (gameManager.gameStarted)
-        {
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-            {
-                if (!pauseCooldownOn)
-                {
-                    if (gameManager.paused && inputManager.playerInputs[playerWhoPaused].pauseUp)
-                    {
-                        TriggerPause(!gameManager.paused);
-                        pauseCooldownOn = true;
-                        pauseCooldownStartTime = Time.time;
-                    }
-                    else if (!gameManager.paused && inputManager.playerInputs[i].pauseUp)
-                    {
-                        TriggerPause(!gameManager.paused);
-                        playerWhoPaused = i;
-                        pauseCooldownOn = true;
-                        pauseCooldownStartTime = Time.time;
-                    }
-                }
-            }
-
-            if (pauseCooldownOn && Time.time - pauseCooldownStartTime > pauseCooldownDuration)
-            {
-                pauseCooldownOn = false;
-            }
+            case GameManager.GAMESTATE.paused:
+                ManagePauseOutInput();
+                break;
         }
 
 
-        UpdateScoreDisplay();
+        if (pauseCooldownOn && Time.time - pauseCooldownStartTime > pauseCooldownDuration)
+        {
+            pauseCooldownOn = false;
+        }
     }
+    # endregion
 
 
 
 
 
 
+    # region SCORE
     // SCORE
     //Update score display
-    void UpdateScoreDisplay()
+    void ManageScoreDisplayInput()
     {
         bool playerDead = false;
 
+
         for (int i = 0; i < gameManager.playersList.Count; i++)
         {
-            if (gameManager.playersList[i].GetComponent<PlayerStats>().dead)
+            if (gameManager.playersList[i].GetComponent<Player>().playerState == Player.STATE.dead)
             {
                 playerDead = true;
             }
         }
 
-        if (!playerDead && !gameManager.paused && gameManager.gameStarted)
-            gameManager.scoreObject.SetActive(inputManager.score);
+
+        if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game && gameManager.gameState == GameManager.GAMESTATE.game)
+            gameManager.scoreObject.SetActive(inputManager.scoreInput);
+    }
+    # endregion
+
+
+
+
+
+
+    # region PAUSE
+    // PAUSE
+    // Input to activate pause
+    void ManagePauseOnInput()
+    {
+        if (!pauseCooldownOn)
+        {
+            for (int i = 0; i < inputManager.playerInputs.Length; i++)
+            {
+                if (inputManager.playerInputs[i].pauseUp)
+                {
+                    playerWhoPaused = i;
+                    pauseCooldownOn = true;
+                    pauseCooldownStartTime = Time.time;
+                    TriggerPause(true);
+                }
+            }
+        }
     }
 
+    // Input to deactivate pause by the player who activated it only
+    void ManagePauseOutInput()
+    {
+        if (!pauseCooldownOn)
+        {
+            if (inputManager.playerInputs[playerWhoPaused].pauseUp)
+            {
+                pauseCooldownOn = true;
+                pauseCooldownStartTime = Time.time;
+                TriggerPause(false);
+            }
+        }
+    }
+
+    public void SwitchPause()
+    {
+        if (gameManager.gameState == GameManager.GAMESTATE.paused)
+            TriggerPause(false);
+        else
+            TriggerPause(true);
+    }
+
+    void TriggerPause(bool state)
+    {
+        if (state)
+            gameManager.SwitchState(GameManager.GAMESTATE.paused);
+        else
+            gameManager.SwitchState(GameManager.GAMESTATE.game);
+
+
+        blurPanel.SetActive(state);
+        pauseMenu.SetActive(state);
+        gameManager.scoreObject.SetActive(state);
+
+        backButton.SetActive(!state);
+        resumeButton.SetActive(state);
+        quitButton.SetActive(state);
+        mainMenuButton.SetActive(state);
+        changeMapButton.SetActive(false);
+        //backIndicator.SetActive(state);
+
+        pauseOptionMenuBrowser.SetActive(state);
+        mainOptionMenuBrowser.SetActive(false);
+        
+
+        Cursor.visible = state;
+
+
+        /*
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            if (state)
+                gameManager.playersList[i].GetComponent<Animator>().speed = 0;
+            else
+                gameManager.playersList[i].GetComponent<Animator>().speed = 1;
+        }
+        */
+
+
+        SaveParameters();
+    }
+    # endregion
 
 
 
 
 
+
+    # region SAVE
     // SAVE / LOAD PARAMETERS
     // Load menu parameters
     void LoadParameters()
     {
+        
         // Save from current session saves
         masterVolume.slider.value = menuParametersSave.masterVolume;
         masterVolume.UpdateVolume();
@@ -203,7 +276,7 @@ public class MenuManager : MonoBehaviour
         voiceVolume.UpdateVolume();
 
         roundsToWinSlider.value = menuParametersSave.roundToWin;
-
+        
 
 
         // Loads actual saves
@@ -248,49 +321,9 @@ public class MenuManager : MonoBehaviour
 
         SaveGameManager.Save();
     }
+    #endregion
 
 
 
-
-
-
-
-
-
-    // PAUSE
-    public void SwitchPause()
-    {
-        TriggerPause(!gameManager.paused);
-    }
-
-    void TriggerPause(bool state)
-    {
-        blurPanel.SetActive(state);
-        pauseMenu.SetActive(state);
-        backButton.SetActive(!state);
-        resumeButton.SetActive(state);
-        quitButton.SetActive(state);
-        mainMenuButton.SetActive(state);
-        gameManager.scoreObject.SetActive(state);
-        changeMapButton.SetActive(false);
-        //backIndicator.SetActive(state);
-
-        pauseOptionMenuBrowser.SetActive(state);
-        mainOptionMenuBrowser.SetActive(false);
-
-        gameManager.paused = state;
-        Cursor.visible = state;
-
-        /*
-        for (int i = 0; i < gameManager.playersList.Count; i++)
-        {
-            if (state)
-                gameManager.playersList[i].GetComponent<Animator>().speed = 0;
-            else
-                gameManager.playersList[i].GetComponent<Animator>().speed = 1;
-        }
-        */
-
-        SaveParameters();
-    }
+    # endregion
 }

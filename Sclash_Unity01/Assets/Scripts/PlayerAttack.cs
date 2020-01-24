@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -283,7 +284,6 @@ public class PlayerAttack : MonoBehaviour
 
 
 
-
     # region CHEATS FOR DEVELOPMENT PURPOSES
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
@@ -315,6 +315,8 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+    /*
     # region BASE FUNCTIONS
     // BASE FUNCTIONS
     void Start()
@@ -364,19 +366,12 @@ public class PlayerAttack : MonoBehaviour
                         ManageParry();
                     }
                 }
-                else if (!hasDrawn && gameManager.gameStarted && !enemyDead)
+                else if (!hasDrawn && gameManager.gameState == GameManager.GAMESTATE.game && !enemyDead)
                 {
                     ManageDraw();
                 }
             }
 
-
-            /*
-            if (!hasDrawn && !isDrawing)
-                drawText.SetActive(true);
-            else
-                drawText.SetActive(false);
-            */
 
             // Changes the draw text indication's scale so that it's, well, readable for a human being
             drawText.transform.localScale = new Vector3(drawTextScale.x * transform.localScale.x, drawTextScale.y, drawTextScale.z);
@@ -392,7 +387,7 @@ public class PlayerAttack : MonoBehaviour
             Cheats();
     }
 
-    // FixedUpdate is called 30 times per second
+    // FixedUpdate is called 50 times per second
     void FixedUpdate()
     {
         // Apply damages if the current attack animation has entered active frame, thus activating the bool in the animation
@@ -447,6 +442,7 @@ public class PlayerAttack : MonoBehaviour
         }
     }
     # endregion
+
 
 
 
@@ -523,6 +519,18 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+    IEnumerator JumpCoroutine()
+    {
+        yield return new WaitForSeconds(0);
+    }
+
+
+
+
+
+
+
+
     # region CHARGE
     //CHARGE
     // Manages the detection of attack charge inputs
@@ -569,17 +577,6 @@ public class PlayerAttack : MonoBehaviour
         //When the player is charging the attack
         if (charging)
         {
-            
-            
-            // Charge slider
-            
-            /*
-            if (chargeSlider.value > 0)
-                chargeSlider.value -= chargeFXFillingSpeed;
-                */
-            
-
-
             // If the player has wiated too long charging
             if (maxChargeLevelReached)
             {
@@ -621,6 +618,9 @@ public class PlayerAttack : MonoBehaviour
         }
     }
     # endregion
+
+
+
 
 
 
@@ -1010,6 +1010,8 @@ public class PlayerAttack : MonoBehaviour
 
 
 
+
+
     # region CLASHED
     //CLASHED
     // Start the clash coroutine
@@ -1286,4 +1288,5 @@ public class PlayerAttack : MonoBehaviour
         attackDashLeavesBack.Stop();
     }
     # endregion
+    */
 }

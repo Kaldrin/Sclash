@@ -4,24 +4,40 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
 {
-    # region PLAYER'S COMPONENTS
+    #region MANAGERS
+    // MANAGERS
+    [Header("HEADER")]
+    [SerializeField] string inputManagerName = "GlobalManager";
+
+    InputManager inputManager = null;
+    #endregion
+
+
+
+
+
+
+    #region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [Tooltip("The reference to the player's Rigidbody component")]
     [SerializeField] Rigidbody2D rigid = null;
+
     [Tooltip("The reference to the player's Animators components for the character and their legs")]
-    [SerializeField] Animator
-        animator = null,
-        legsAnimator = null;
+    [SerializeField] public Animator animator = null;
+    [SerializeField] Animator legsAnimator = null;
+    [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
+    [SerializeField] Animator drawTextAnimator = null;
+
+    [Tooltip("The reference to the game object containing the sprite mask of the player's legs")]
+    [SerializeField] public GameObject legsMask = null;
 
     [Tooltip("The reference to the player's SpriteRenderers components for the character and their legs")]
     [SerializeField] public SpriteRenderer
         spriteRenderer = null,
         legsSpriteRenderer = null;
 
-    PlayerAttack playerAttack = null;
-    PlayerStats playerStats = null;
-    PlayerMovement playerMovements = null;
+    [SerializeField] Player playerScript = null;
     # endregion
 
 
@@ -34,60 +50,49 @@ public class PlayerAnimations : MonoBehaviour
     [Header("ANIMATION VALUES")]
     [Tooltip("The minimum speed required for the walk anim to trigger")]
     [SerializeField] float minSpeedForWalkAnim = 0.05f;
-    # endregion
+    [HideInInspector] public float
+        animatorBaseSpeed = 0,
+        legsAnimatorBaseSpeed = 0;
+    #endregion
 
 
 
 
 
-    # region FX
-    // FX
-    [Header("FX")]
-    [Tooltip("The reference to the TrailRenderer component of the saber")]
-    [SerializeField] public TrailRenderer swordTrail = null;
-    [Tooltip("The width of the attack trail depending on the range of the attack")]
-    [SerializeField] float
-        lightAttackSwordTrailWidth = 20f,
-        heavyAttackSwordTrailWidth = 65f;
+    #region ANIMATOR PARAMETERS
+    // ANIMATOR PARAMETERS
+    [Header("PLAYER ANIMATOR PARAMETERS")]
+    [SerializeField] string Walk = "Walk";
+    [SerializeField] string
+        playerWalkDirection = "WalkDirection",
+        moving = "Moving",
+        stamina = "Stamina",
+        attackOn = "AttackOn",
+        maxCharge = "MaxCharge",
+        chargeOn = "ChargeOn",
+        chargeOff = "ChargeOff",
+        attackDirection = "AttackDirection",
+        parryOn = "ParryOn",
+        clashedOn = "ClashedOn",
+        clashedOff = "ClashedOff",
+        deathOn = "DeathOn",
+        dead = "Dead",
+        dashOn = "DashOn",
+        dashing = "Dashing",
+        dashDirection = "DashDirection",
+        pommelOn = "PommelOn",
+        pommeledOn = "PommeledOn",
+        draw = "Draw",
+        sneath = "Sneath";
 
-    [Tooltip("The colors of the attack trail depending on the range of the attack")]
-    [SerializeField] Color
-        lightAttackColor = Color.yellow,
-        heavyAttackColor = Color.red;
+    // LEG ANIMATOR PARAMETERS
+    [Header("LEG ANIMATOR PARAMETERS")]
+    [SerializeField] string legsWalkDirection = "WalkDirection";
 
-    [SerializeField] public ParticleSystem slashFX = null;
-    [Tooltip("The references to the particle systems components used for the walk leaves FX")]
-    [SerializeField] ParticleSystem
-        walkLeavesFront = null,
-        walkLeavesBack = null;
-
-    [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
-    [SerializeField] public Animator drawTextAnimator = null;
-    # endregion
-
-
-
-
-
-    # region COLORS
-    // COLORS
-    [Header("COLORS")]
-    [Tooltip("The opacity amount of the player's sprite when in untouchable frames")]
-    [SerializeField] float untouchableFrameOpacity = 0.3f;
-
-    [Tooltip("The reference to the light component which lits the player with their color")]
-    [SerializeField] public Light playerLight = null;
-    # endregion
-
-
-
-
-
-    # region ANIMATION OBJECTS
-    // ANIMATION OBJECTS
-    [Header("ANIMATION OBJECTS")]
-    [Tooltip("The reference to the game object containing the sprite mask of the player's legs")]
-    [SerializeField] public GameObject legsMask = null;
+    // DRAW TEXT ANIMATOR PARAMETERS
+    [Header("DRAW TEXT ANIMATOR PARAMETERS")]
+    [SerializeField] string textDrawOn = "DrawOn";
+    [SerializeField] string resetDrawText = "ResetDraw";
     # endregion
 
 
@@ -108,258 +113,79 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+    #region BASE FUNCTIONS
     // BASE FUNCTIONS
     private void Start()
     {
-        //walkLeavesFront.Play();
-    }
-
-    void Awake()
-    {
-        // Get player's components
-        playerAttack = GetComponent<PlayerAttack>();
-        playerStats = GetComponent<PlayerStats>();
-        playerMovements = GetComponent<PlayerMovement>();
-
-
-
-        //canAttack = true;
+        animatorBaseSpeed = animator.speed;
+        inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
     }
 
     // Update is called once per graphic frame
     void Update()
     {
-        if (GameManager.Instance.gameStarted)
-        {
-            UpdateAnims();
-        }
-        UpdateFX();
-        UpdateAnimStamina(playerStats.stamina);
-        UpdateChargeWalk();
+        //Debug.Log(animatorBaseSpeed);
     }
 
     // FixedUpdate is called 30 times per second
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        ManageUntouchableFramesVisual();
+        /*
+        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
+        {
+            UpdateAnims();
+        }
+        */
+
+        UpdateAnims();
+        UpdateWalkDirection();
+        //UpdateFX();
+        UpdateIdleStateDependingOnStamina(playerScript.stamina);
+        //UpdateChargeWalk();
     }
+    #endregion
 
 
 
 
 
 
+    #region UPDATE VISUALS
     // UPDATE VISUALS
     // Update the animator's parameters in Update
     void UpdateAnims()
     {
-
-        animator.SetFloat("Level", playerAttack.chargeLevel - 1);
-        animator.SetBool("Charging", playerAttack.charging);
-        animator.SetBool("Dashing", playerAttack.isDashing);
-
-        try
-        {
-            if ((rigid.velocity.x * -transform.localScale.x) < 0)
-            {
-                animator.SetFloat("WalkDirection", 0);
-                legsAnimator.SetFloat("WalkDirection", 0);
-            }
-            else
-            {
-                animator.SetFloat("WalkDirection", 1);
-                legsAnimator.SetFloat("WalkDirection", 1);
-            }
-        }
-        catch
-        {
-
-        }
+        // DASHING STATE
+        animator.SetBool(dashing, playerScript.playerState == Player.STATE.dashing);
         
 
-
+        // WALK ANIM
         // If the player is in fact moving fast enough
-        if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && GameManager.Instance.gameStarted)
+        if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
-            animator.SetFloat("Move", Mathf.Abs(Mathf.Sign((Input.GetAxis("Horizontal" + playerStats.playerNum)))));
-
-
-            if ((rigid.velocity.x * -transform.localScale.x) < 0)
-            {
-                walkLeavesFront.Stop();
-
-
-                if (!walkLeavesBack.isPlaying)
-                    walkLeavesBack.Play();
-            }
-            else
-            {
-                //Debug.Log("Leaves");
-                if (!walkLeavesFront.isPlaying)
-                    walkLeavesFront.Play();
-
-                walkLeavesBack.Stop();
-            }
+            animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(inputManager.playerInputs[playerScript.playerNum].horizontal)));
         }
         // If the player isn't really moving
         else
         {
-            animator.SetFloat("Move", 0);
-            walkLeavesBack.Stop();
-            walkLeavesFront.Stop();
+            animator.SetFloat(moving, 0);
         }
-    }
-
-    // Update FX's parameters in Update
-    void UpdateFX()
-    {
-        //Debug.Log(playerAttack.actualAttackRange);
-        swordTrail.startWidth = playerAttack.actualAttackRange;
 
 
-        // Trail color and width depending on attack range
-        if (playerAttack.chargeLevel == 1)
-        {
-            swordTrail.startColor = lightAttackColor;
-            swordTrail.startWidth = lightAttackSwordTrailWidth;
-        }
-        else if (playerAttack.chargeLevel == playerAttack.maxChargeLevel)
-        {
-            swordTrail.startColor = heavyAttackColor;
-            swordTrail.startWidth = heavyAttackSwordTrailWidth;
-        }
-        else
-        {
-            swordTrail.startColor = new Color(
-                lightAttackColor.r + (heavyAttackColor.r - lightAttackColor.r) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange,
-                lightAttackColor.g + (heavyAttackColor.g - lightAttackColor.g) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange,
-                lightAttackColor.b + (heavyAttackColor.b - lightAttackColor.b) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange);
-
-
-            swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * ((float)playerAttack.actualAttackRange - playerAttack.lightAttackRange) / (float)playerAttack.heavyAttackRange;
-        }
-    }
-
-
-
-
-
-
-
-
-    // STAMINA ANIMATIONS STATES
-    // Updates the idle animation state of the player depending on its current stamina
-    void UpdateAnimStamina(float stamina)
-    {
-        float blendTreeStamina = 0;
-
-
-        if (stamina < playerStats.staminaCostForMoves)
-            blendTreeStamina = 0;
-        else
-            blendTreeStamina = 1;
-
-
-        animator.SetFloat("Stamina", blendTreeStamina);
-    }
-
-
-
-
-
-    // DRAW ANIMATION
-    // Triggers the draw animation
-    public void TriggerDraw()
-    {
-        animator.SetTrigger("Draw");
-        drawTextAnimator.SetTrigger("Draw");
-    }
-
-    // Triggers the sneath animation
-    public void TriggerSneath(bool reactivateDrawText)
-    {
-        animator.SetTrigger("Sneath");
-
-
-        if (reactivateDrawText)
-            drawTextAnimator.SetTrigger("ResetDraw");
-    }
-
-
-
-    // PARRY ANIMATION
-    // Triggers on / off parry animation
-    public void TriggerParry(bool state)
-    {
-        if (state)
-        {
-            animator.SetTrigger("ParryOn");
-        }
-        else
-            animator.SetTrigger("ParryOff");
-    }
-
-    // Resets the parry animation triggers
-    public void ResetParryTriggers()
-    {
-        animator.ResetTrigger("ParryOn");
-        animator.ResetTrigger("ParryOff");
-    }
-
-
-
-
-
-
-
-    // KICK ANIMATION
-    // Trigger on / off kick animation
-    public void TriggerKick(bool state)
-    {
-        if (state)
-            animator.SetTrigger("KickOn");
-        else
-            animator.SetTrigger("KickOff");
-    }
-
-    // Trigger on / off kicked animation
-    public void TriggerKicked(bool state)
-    {
-        if (state)
-            animator.SetTrigger("KickedOn");
-        else
-            animator.SetTrigger("KickedOff");
-    }
-
-
-
-
-
-
-
-    // CHARGE ANIMATIONS
-    // Trigger charge animation
-    public void TriggerCharge()
-    {
-        animator.SetTrigger("ChargeOn");
-    }
-
-    // Trigger max charge reached animation
-    public void TriggerMaxCharge()
-    {
-        animator.SetTrigger("MaxCharge");
-    }
-
-    // Cancel charge animation
-    public void CancelCharge()
-    {
-        animator.SetBool("Charging", false);
-    }
-
-    // Update charge walking anim
-    void UpdateChargeWalk()
-    {
-        if (playerAttack.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim && !playerStats.dead)
+        // CHARGE WALK ANIM
+        if (playerScript.playerState == Player.STATE.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
             legsMask.SetActive(true);
         }
@@ -368,6 +194,7 @@ public class PlayerAnimations : MonoBehaviour
             legsMask.SetActive(false);
         }
     }
+    # endregion
 
 
 
@@ -375,37 +202,319 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
-
-
-
-    // CLASHED ANIMATION
-    // Trigger on / off clashed animation
-    public void Clashed(bool state)
+    #region RESET ANIMATION STATES
+    // RESET ANIMATION STATES
+    public void ResetAnimsForNextRound()
     {
-        animator.SetBool("Clash", state);
+        ResetWalkDirecton();
 
 
-        if (state)
-            animator.SetTrigger("Clashed");
+        animator.SetFloat(moving, 0);
+        animator.SetFloat(stamina, 1f);
+        animator.SetFloat(dashDirection, 0f);
+
+
+        animator.SetFloat(attackDirection, 0f);
+        animator.ResetTrigger(parryOn);
+        animator.ResetTrigger(clashedOn);
+        animator.ResetTrigger(clashedOff);
+        animator.ResetTrigger(deathOn);
+        animator.ResetTrigger(attackOn);
+        animator.ResetTrigger(maxCharge);
+        animator.ResetTrigger(chargeOn);
+        animator.ResetTrigger(chargeOff);
+        animator.ResetTrigger(pommelOn);
+        animator.ResetTrigger(pommeledOn);
+        animator.ResetTrigger(draw);
+        animator.ResetTrigger(sneath);
+        animator.ResetTrigger(dashOn);
+
+
+        animator.SetBool(dead, false);
+        animator.SetBool(dashing, false);
+
+
+        drawTextAnimator.ResetTrigger(textDrawOn);
+        drawTextAnimator.ResetTrigger(resetDrawText);
     }
 
+    public void ResetAnimsForNextMatch()
+    {
+        ResetWalkDirecton();
+
+
+        animator.SetFloat(moving, 0);
+        animator.SetFloat(stamina, 1f);
+        animator.SetFloat(dashDirection, 0f);
+
+
+        animator.SetFloat(attackDirection, 0f);
+        animator.ResetTrigger(parryOn);
+        animator.ResetTrigger(clashedOn);
+        animator.ResetTrigger(clashedOff);
+        animator.ResetTrigger(deathOn);
+        animator.ResetTrigger(attackOn);
+        animator.ResetTrigger(maxCharge);
+        animator.ResetTrigger(chargeOn);
+        animator.ResetTrigger(chargeOff);
+        animator.ResetTrigger(pommelOn);
+        animator.ResetTrigger(pommeledOn);
+        animator.ResetTrigger(draw);
+        animator.ResetTrigger(sneath);
+        animator.ResetTrigger(dashOn);
+
+
+        animator.SetBool(dead, false);
+        animator.SetBool(dashing, false);
+        
+
+        animator.speed = 1;
+
+
+        drawTextAnimator.ResetTrigger(textDrawOn);
+        drawTextAnimator.ResetTrigger(resetDrawText);
+
+        TriggerSneath();
+    }
+    #endregion
 
 
 
 
 
 
+
+    # region WALK DIRECTION
+    // WALK DIRECTION
+    void UpdateWalkDirection()
+    {
+        // WALK DIRECTION
+        try
+        {
+            if ((rigid.velocity.x * -transform.localScale.x) < 0)
+            {
+                animator.SetFloat(playerWalkDirection, 0);
+
+
+                if (legsAnimator.isActiveAndEnabled)
+                    legsAnimator.SetFloat(legsWalkDirection, 0);
+            }
+            else
+            {
+                animator.SetFloat(playerWalkDirection, 1);
+
+
+                if (legsAnimator.isActiveAndEnabled)
+                    legsAnimator.SetFloat(legsWalkDirection, 1);
+            }
+        }
+        catch
+        {
+
+        }
+    }
+
+    void ResetWalkDirecton()
+    {
+        try
+        {
+            if (legsAnimator.enabled && legsAnimator.gameObject.activeInHierarchy)
+            {
+                legsAnimator.SetFloat(legsWalkDirection, 0);
+                animator.SetFloat(playerWalkDirection, 0f);
+            }
+        }
+        catch
+        {
+        }
+    }
+    # endregion
+
+
+
+
+
+
+
+    #region IDLE STAMINA STATE / EXHAUSTED
+    // IDLE STAMINA STATE / EXHAUSTED
+    // Updates the idle animation state of the player depending on its current stamina
+    public void UpdateIdleStateDependingOnStamina(float playerStamina)
+    {
+        float blendTreeStamina = 0;
+
+
+        if (playerStamina < playerScript.staminaCostForMoves)
+            blendTreeStamina = 0;
+        else
+            blendTreeStamina = 1;
+
+
+        animator.SetFloat(stamina, blendTreeStamina);
+    }
+    # endregion
+
+
+
+
+
+
+
+    #region DRAW ANIMATION
+    // DRAW ANIMATION
+    // Triggers the draw animation
+    public void TriggerDraw()
+    {
+        animator.SetTrigger(draw);
+    }
+
+    // Triggers the sneath animation
+    public void TriggerSneath()
+    {
+        animator.SetTrigger(sneath);      
+    }
+
+    public void TriggerDrawText()
+    {
+        drawTextAnimator.SetTrigger(textDrawOn);
+        drawTextAnimator.ResetTrigger(resetDrawText);
+    }
+
+    public void ResetDrawText()
+    {
+        drawTextAnimator.SetTrigger(resetDrawText);
+        drawTextAnimator.ResetTrigger(textDrawOn);
+    }
+    # endregion
+
+
+
+
+
+
+
+    # region PARRY ANIMATION
+    // PARRY ANIMATION
+    // Triggers on / off parry animation
+    public void TriggerParry()
+    {
+        animator.SetTrigger(parryOn);
+    }
+
+    // Resets the parry animation triggers
+    public void ResetParry()
+    {
+        animator.ResetTrigger(parryOn);
+    }
+    #endregion
+
+
+
+
+
+
+
+    # region POMMEL ANIMATION
+    // POMMEL ANIMATION
+    // Trigger on pommel animation
+    public void TriggerPommel()
+    {
+        animator.SetTrigger(pommelOn);
+    }
+
+    public void ResetPommelTrigger()
+    {
+        animator.ResetTrigger(pommelOn);
+    }
+
+    // Trigger on pommeled animation
+    public void TriggerPommeled()
+    {
+        animator.SetTrigger(pommeledOn);
+    }
+
+    public void ResetPommeledTrigger()
+    {
+        animator.ResetTrigger(pommeledOn);
+    }
+    #endregion POMMEL ANIMATION
+
+
+
+
+
+
+
+    # region CHARGE ANIMATIONS
+    // CHARGE ANIMATIONS
+    // Trigger charge animation
+    public void TriggerCharge(bool state)
+    {
+        if (state)
+            animator.SetTrigger(chargeOn);
+        else
+            animator.ResetTrigger(chargeOn);
+    }
+
+    // Trigger max charge reached animation
+    public void TriggerMaxCharge()
+    {
+        animator.SetTrigger(maxCharge);
+    }
+
+    // Cancel charge animation
+    public void CancelCharge(bool state)
+    {
+        if (state)
+            animator.SetTrigger(chargeOff);
+        else
+            animator.ResetTrigger(chargeOff);
+    }
+    # endregion
+
+
+
+
+
+
+
+    # region  CLASHED
+    // CLASHED ANIMATION
+    // Trigger on clashed animation
+    public void TriggerClashed(bool state)
+    {
+        if (state)
+            animator.SetTrigger(clashedOn);
+        else
+            animator.SetTrigger(clashedOff);
+    }
+
+    public void ResetClashedTrigger()
+    {
+        animator.ResetTrigger(clashedOn);
+        animator.ResetTrigger(clashedOff);
+    }
+    # endregion
+
+
+
+
+
+
+
+    # region DEATH ANIMATION
     // DEATH ANIMATION
     // Trigger death animation
-    public void Dead()
+    public void TriggerDeath()
     {
-        //animator.SetTrigger("Dead");
-        animator.SetBool("Dead", true);
-        animator.SetTrigger("DeathOn");
-        slashFX.gameObject.SetActive(false);
-        slashFX.gameObject.SetActive(true);
+        animator.SetTrigger(deathOn);
     }
 
+    public void DeathActivated(bool state)
+    {
+        animator.SetBool(dead, state);
+    }
+    # endregion
 
 
 
@@ -413,43 +522,26 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
+    # region ATTACK ANIMATIONS
     // ATTACK ANIMATIONS
     // Trigger attack depending on the intended direction
     public void TriggerAttack(float attackDir)
     {
-
-        float attackDirection;
+        float tempAttackDirectionStock;
 
 
         if (attackDir == 1)
-            attackDirection = 0f;
+            tempAttackDirectionStock = 0f;
         else if (attackDir == -1)
-            attackDirection = 1f;
+            tempAttackDirectionStock = 1f;
         else
-            attackDirection = 0.5f;
+            tempAttackDirectionStock = 0.5f;
 
 
-        //canAttack = false;
-        animator.SetBool("Attack", true);
-        animator.SetTrigger("AttackOn");
-        animator.SetBool("Charging", false);
-
-        animator.SetFloat("AttackDirection", attackDirection);
+        animator.SetTrigger(attackOn);
+        animator.SetFloat(attackDirection, tempAttackDirectionStock);
     }
-
-    // Trigger attack's end animation
-    public void EndAttack()
-    {
-        StartCoroutine(EndAttackCoroutine());
-    }
-
-    // Attack's end coroutine
-    IEnumerator EndAttackCoroutine()
-    {
-        yield return new WaitForSeconds(0.05f);
-        animator.SetBool("Attack", false);
-        //canAttack = true;
-    }
+    # endregion
 
 
 
@@ -457,65 +549,22 @@ public class PlayerAnimations : MonoBehaviour
 
 
 
-
-
-
+    # region DASH ANIMATIONS
     // DASH ANIMATIONS
     // Trigger dash animation depending on dash intended direction
-    public void Dash(float dashDirection)
+    public void TriggerDash(float playerDashDirection)
     {
         float blendTreeValue = 0;
 
 
-        if (dashDirection < 0)
+        if (playerDashDirection < 0)
             blendTreeValue = 0;
         else
             blendTreeValue = 1;
 
 
-        animator.SetTrigger("DashOn");
-        animator.SetFloat("DashDirection", blendTreeValue);
+        animator.SetTrigger(dashOn);
+        animator.SetFloat(dashDirection, blendTreeValue);
     }
-
-
-
-
-
-
-
-
-    // UNTOUCHABLE FRAMES
-    void ManageUntouchableFramesVisual()
-    {
-        if (playerStats.untouchable)
-        {
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
-        }
-        else
-        {
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-    // RESET ANIMATION STATES
-    public void ResetAnims()
-    {
-        animator.SetBool("Attack", false);
-        //animator.ResetTrigger("Dead");
-        animator.SetBool("Dead", false);
-        animator.ResetTrigger("Clashed");
-        animator.SetBool("Clash", false);
-        animator.SetBool("Charging", false);
-        animator.ResetTrigger("AttackOn");
-        animator.SetBool("Parry", false);
-    }
+    # endregion
 }

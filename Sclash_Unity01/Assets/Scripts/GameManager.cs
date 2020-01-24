@@ -8,6 +8,7 @@ using TMPro;
 // Created for Unity 2019.1.1f1
 public class GameManager : MonoBehaviour
 {
+    #region VARIABLES
     #region MANAGERS
     // MANAGERS
     public static GameManager Instance;
@@ -23,8 +24,32 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("The MapLoader script instance reference")]
     [SerializeField] MapLoader mapLoader = null;
-    # endregion
 
+    [Tooltip("The CameraShake script instance reference in the scene")]
+    [SerializeField] public CameraShake cameraShake = null;
+    #endregion
+
+
+
+
+
+    # region GAME STATE
+    public enum GAMESTATE
+    {
+        menu,
+        loading,
+        intro,
+        game,
+        paused,
+        roundFinished,
+        finished,
+    }
+
+    [Header("GAME STATE")]
+    [SerializeField] public GAMESTATE gameState = GAMESTATE.menu;
+    [HideInInspector] public GAMESTATE oldState = GAMESTATE.menu;
+    [HideInInspector] public bool gameStarted;
+    # endregion
 
 
 
@@ -41,7 +66,6 @@ public class GameManager : MonoBehaviour
 
 
 
-
     # region MENU
     // MENU
     [Header("MENU")]
@@ -49,28 +73,56 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject mainMenu = null;
     [Tooltip("The blur panel object reference")]
     [SerializeField] GameObject blurPanel = null;
-    [HideInInspector] public bool paused = false;
     # endregion
 
 
 
 
 
+    # region SCORE
+    // SCORE
+    [Header("SCORE")]
+    [Tooltip("The score display text mesh pro component reference")]
+    [SerializeField] public Text scoreTextComponent = null;
+    [Tooltip("The score display game object reference")]
+    [SerializeField] public GameObject scoreObject = null;
+    [HideInInspector] public Vector2 score = new Vector2(0, 0);
+    [Tooltip("The duration the score lasts on screen when a round has finished")]
+    [SerializeField] float betweenRoundsScoreShowDuration = 4f;
+    [Tooltip("The score to reach to win")]
+    [SerializeField] public int scoreToWin = 10;
+    [Tooltip("The slider component reference in the options menu to change the number of rounds to win")]
+    [SerializeField] Slider scoreToWinSliderComponent = null;
+    # endregion
 
-    # region ROUND
+
+
+
+
+    # region ROUNDS & MATCH
     // ROUND
-    [Header("ROUND")]
+    [Header("ROUND & MATCH")]
     [Tooltip("The delay before a new round starts when one has finished and players are waiting")]
-    [SerializeField] float timeBeforeNextRound = 3;
-    public bool gameStarted = false;
+    [SerializeField] float timeBeforeNextRoundTransitionTriggers = 3;
+    [SerializeField] float resetGameDelay = 1.5f;
+    #endregion
+
+
+
+
+
+    # region WIN
+    // WIN
+    [Header("WIN")]
+    [Tooltip("The delay before the win menu screen appears when a player has won")]
+    [SerializeField] float timeBeforeWinScreenAppears = 2f;
     # endregion
 
 
 
 
 
-
-    # region PLAYERS
+    #region PLAYERS
     // PLAYERS
     [Header("PLAYERS")]
     [Tooltip("The player prefab reference")]
@@ -93,24 +145,27 @@ public class GameManager : MonoBehaviour
 
 
 
-
     # region FX
     // FX
     [Header("FX")]
-    [Tooltip("The CameraShake script instance reference in the scene")]
-    [SerializeField] public CameraShake cameraShake = null;
     [Tooltip("The level of time slow down that is activated when a player dies")]
     [SerializeField] public float roundEndSlowMoTimeScale = 0.2f;
     [SerializeField] public float
         minTimeScale = 0.05f,
-        rounEndSlowMoDuration = 1.3f,
+        roundEndSlowMoDuration = 1.3f,
         roundEndTimeScaleFadeSpeed = 0.05f,
+        gameEndSlowMoTimeScale = 0.1f,
+        gameEndSlowMoDuration = 0.5f,
+        gameEndTimeScaleFadeSpeed = 0.2f,
         clashSlowMoTimeScale = 0.1f,
         clashSlowMoDuration = 0.5f,
         clashTimeScaleFadeSpeed = 0.2f,
         parrySlowMoTimeScale = 0.2f,
         parrySlowMoDuration = 2f,
         parryTimeScaleFadeSpeed = 0.2f,
+        dodgeSlowMoTimeScale = 0.2f,
+        dodgeSlowMoDuration = 2f,
+        dodgeTimeScaleFadeSpeed = 0.2f,
         deathCameraShakeDuration = 0.3f;
     
     float
@@ -128,7 +183,6 @@ public class GameManager : MonoBehaviour
 
 
 
-
     # region DEATH VFX
     // DEATH VFX
     [Header("DEATH VFX")]
@@ -136,6 +190,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] float deathVFXFilterDuration = 3.5f;
     [Tooltip("The material that is put on the sprites when the death VFX orange & black screen appears")]
     [SerializeField] Material deathFXSpriteMaterial = null;
+    [SerializeField] Color deathVFXElementsColor = Color.black;
+    [SerializeField] Gradient deathVFXGradientForParticles = null;
 
     // List of all renderers for the death VFX
     SpriteRenderer[] spriteRenderers = null;
@@ -144,46 +200,14 @@ public class GameManager : MonoBehaviour
     Light[] lights = null;
 
     // All renderers' original properties storage for the death VFX reset
-    List<Color> spriteRenderersColors = new List<Color>();
-    List<Material> spriteRenderersMaterials = new List<Material>();
-    List<Color> meshRenderersColors = new List<Color>();
-    List<Color> particleSystemsColors = new List<Color>();
-    List<float> lightsIntensities = new List<float>();
+    List<Color> originalSpriteRenderersColors = new List<Color>();
+    List<Material> originalSpriteRenderersMaterials = new List<Material>();
+    List<Color> originalMeshRenderersColors = new List<Color>();
+    List<Color> originalParticleSystemsColors = new List<Color>();
+    List<Gradient> originalParticleSystemsGradients = new List<Gradient>();
+    List<float> originalLightsIntensities = new List<float>();
     # endregion
-
-
-
-
-
-
-    # region SCORE
-    // SCORE
-    [Header("SCORE")]
-    [Tooltip("The score display text mesh pro component reference")]
-    [SerializeField] public Text scoreText = null;
-    [Tooltip("The score display game object reference")]
-    [SerializeField] public GameObject scoreObject = null;
-    [HideInInspector] public Vector2 score = new Vector2(0, 0);
-    [Tooltip("The duration the score lasts on screen when a round has finished")]
-    [SerializeField] float scoreShowDuration = 4f;
-    [Tooltip("The score to reach to win")]
-    [SerializeField] public int scoreToWin = 10;
-    [Tooltip("The slider component reference in the options menu to change the number of rounds to win")]
-    [SerializeField] Slider scoreToWinSlider = null;
-    # endregion
-
-
-
-
-
-
-    # region WIN
-    // WIN
-    [Header("WIN")]
-    [Tooltip("The delay before the win menu screen appears when a player has won")]
-    [SerializeField] float timeBeforeWinScreenAppears = 2f;
-    # endregion
-
+    
 
 
 
@@ -196,8 +220,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] public bool cheatCodes = false;
     bool slowedDownTime = false;
 
+    int timeSlowDownLevel = 0;
+
+    [SerializeField] float[] timeSlowDownSteps = null;
+    
     [Tooltip("The key to activate the slow motion cheat")]
     [SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
+    #endregion
     #endregion
 
 
@@ -215,6 +244,12 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
+
+
+
+    # region FUNCTIONS
     # region BASE FUNCTIONS
     // BASE FUNCTIONS
     private void Awake()
@@ -238,19 +273,50 @@ public class GameManager : MonoBehaviour
     // Update is called once per graphic frame
     private void Update()
     {
-        if (Input.GetKeyUp(slowTimeKey))
+        switch (gameState)
         {
-            if (!slowedDownTime)
+            case GAMESTATE.menu:
+                break;
+
+            case GAMESTATE.loading:
+                break;
+
+            case GAMESTATE.intro:
+                break;
+
+            case GAMESTATE.game:
+                break;
+
+            case GAMESTATE.paused:
+                break;
+
+            case GAMESTATE.finished:
+                break;
+        }
+
+
+        if (cheatCodes)
+        {
+            if (Input.GetKeyUp(slowTimeKey))
             {
-                Time.timeScale = 0.2f;
-                slowedDownTime = true;
-                runTimeScaleUpdate = false;
-            }
-            else
-            {
-                Time.timeScale = 1;
-                slowedDownTime = false;
-                runTimeScaleUpdate = true;
+                if (timeSlowDownSteps != null)
+                {
+                    timeSlowDownLevel++;
+                    runTimeScaleUpdate = false;
+
+
+                    if (timeSlowDownLevel >= timeSlowDownSteps.Length)
+                    {
+                        timeSlowDownLevel = -1;
+                        runTimeScaleUpdate = true;
+                    }
+
+
+                    if (timeSlowDownLevel >= 0)
+                        Time.timeScale = timeSlowDownSteps[timeSlowDownLevel];
+                    else
+                        Time.timeScale = 1;
+                }
             }
         }
     }
@@ -262,17 +328,81 @@ public class GameManager : MonoBehaviour
         RunTimeScaleUpdate();
 
 
-        scoreToWin = Mathf.FloorToInt(scoreToWinSlider.value);
+        scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
+    }
+    #endregion
+
+
+
+
+
+
+
+
+    #region GAME STATE
+    // GAMESTATE
+    public void SwitchState(GAMESTATE newState)
+    {
+        oldState = gameState;
+        gameState = newState;
+
+
+        switch (gameState)
+        {
+            case GAMESTATE.menu:
+                break;
+
+            case GAMESTATE.loading:
+                playerDead = false;
+                menuManager.pauseMenu.SetActive(false);
+                menuManager.winScreen.SetActive(false);
+                scoreObject.SetActive(false);
+                Cursor.visible = false;
+                break;
+
+            case GAMESTATE.intro:
+                break;
+
+            case GAMESTATE.game:
+                if (oldState == GAMESTATE.paused)
+                {
+                    for (int i = 0; i < playersList.Count; i++)
+                    {
+                        playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
+                    }
+                }
+                cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+                mainMenu.SetActive(false);
+                blurPanel.SetActive(false);
+                Cursor.visible = false;
+                break;
+
+            case GAMESTATE.paused:
+                for (int i = 0; i < playersList.Count; i++)
+                {
+                    playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+                    playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
+                }
+                break;
+
+            case GAMESTATE.finished:
+                menuManager.winMessage.SetActive(true);
+                if (oldState == GAMESTATE.paused)
+                    menuManager.SwitchPause();
+                break;
+        }
     }
     # endregion
 
 
 
-    
 
 
 
-    # region BEGIN GAME
+
+
+    #region BEGIN GAME
     // BEGIN GAME
     // Setup the game before it starts
     IEnumerator SetupGame()
@@ -280,6 +410,7 @@ public class GameManager : MonoBehaviour
         // SOUND
         // Set on the menu music
         audioManager.ActivateMenuMusic();
+
 
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
@@ -293,34 +424,41 @@ public class GameManager : MonoBehaviour
     }
 
     // Starts the match, activates the camera cinematic zoom and then switches to battle camera
-    IEnumerator StartMatchCoroutine()
+    public IEnumerator StartMatchCoroutine()
     {
         audioManager.FindPlayers();
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
+        }
+
 
         yield return new WaitForSeconds(0.1f);
       
-        paused = false;
-        gameStarted = true;
-        cameraManager.cameraState = "Battle";
+        
+        SwitchState(GAMESTATE.game);
+        cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
 
-        mainMenu.SetActive(false);
-        blurPanel.SetActive(false);
+
+        // AUDIO
         audioManager.ActivateWind();
 
-        Cursor.visible = false;
-
-        
+         
         yield return new WaitForSeconds(0.5f);
 
+        
+        //cameraManager.FindPlayers();
 
+
+        // AUDIO
         audioManager.matchBeginsRandomSoundSource.Play();
-        cameraManager.FindPlayers();
+        
 
 
         yield return new WaitForSeconds(timeBeforeBattleCameraActivationWhenGameStarts);
 
 
-        cameraManager.actualSmoothMovementsMultiplier = cameraManager.battleSmoothMovementsMultiplier;
+        cameraManager.actualXSmoothMovementsMultiplier = cameraManager.battleXSmoothMovementsMultiplier;
         cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
         cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
     }
@@ -334,7 +472,7 @@ public class GameManager : MonoBehaviour
     // A saber has been drawn, stores it and checks if both players have drawn
     IEnumerator SaberDrawnCoroutine(int playerNum)
     {
-        yield return new WaitForSecondsRealtime(playersList[playerNum - 1].GetComponent<PlayerAttack>().drawDuration + 0.5f);
+        yield return new WaitForSecondsRealtime(playersList[playerNum].GetComponent<Player>().drawDuration + 0.5f);
 
 
         if (!audioManager.battleMusicOn)
@@ -343,7 +481,7 @@ public class GameManager : MonoBehaviour
 
             for (int i = 0; i < playersList.Count; i++)
             {
-                if (!playersList[i].GetComponent<PlayerAttack>().hasDrawn)
+                if (playersList[i].GetComponent<Player>().playerState != Player.STATE.normal)
                     allPlayersHaveDrawn = false;
             }
 
@@ -355,82 +493,65 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Spawn the players
+
+    #endregion
+
+
+
+
+
+
+
+    #region PLAYERS
+    // PLAYERS
+    // Spawns the players
     void SpawnPlayers()
     {
         for (int i = 0; i < playerSpawns.Length; i++)
         {
-            PlayerStats playerStats;
+            //PlayerStats playerStats;
             PlayerAnimations playerAnimations;
-            PlayerAttack playerAttack;
+            //PlayerAttack playerAttack;
+            Player playerScript = null;
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-            playerStats = playersList[i].GetComponent<PlayerStats>();
+            //playerStats = playersList[i].GetComponent<PlayerStats>();
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
-            playerAttack = playersList[i].GetComponent<PlayerAttack>();
+            //playerAttack = playersList[i].GetComponent<PlayerAttack>();
+            playerScript = playersList[i].GetComponent<Player>();
 
-            playerStats.playerNum = i + 1;
-            playerStats.ResetValues();
+            //playerStats.playerNum = i + 1;
+            //playerStats.ResetValues();
+            playerScript.playerNum = i;
+            playerScript.ResetAllPlayerValuesForNextMatch();
 
+
+
+
+
+            // ANIMATIONS
             playerAnimations.spriteRenderer.color = playersColors[i];
             playerAnimations.legsSpriteRenderer.color = playersColors[i];
-            playerAnimations.playerLight.color = playerLightsColors[i];
 
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
             playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
 
-            ParticleSystem attackSignParticles = playerAttack.attackSign.GetComponent<ParticleSystem>();
+
+            // FX
+            //ParticleSystem attackSignParticles = playerAttack.attackSign.GetComponent<ParticleSystem>();
+            ParticleSystem attackSignParticles = playerScript.attackRangeFX.GetComponent<ParticleSystem>();
             ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
             attackSignParticlesMain.startColor = attackSignColors[i];
+
+
+            playerScript.playerLight.color = playerLightsColors[i];
         }
     }
-    # endregion
 
-
-
-
-
-
-
-    # region END & NEXT ROUND
-    // END & NEXT ROUND
-    // Start NextRoundCoroutine
-    public void NextRound()
-    {
-        StartCoroutine(NextRoundCoroutine());
-    }
-
-    // Start next round
-    IEnumerator NextRoundCoroutine()
-    {
-        StartCoroutine(ShowScore());
-        roundTransitionLeavesFX.gameObject.SetActive(true);
-        roundTransitionLeavesFX.Play();
-        audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = true;
-
-        yield return new WaitForSeconds(1.5f);
-
-        audioManager.UpdateMusicPhaseThatShouldPlayDependingOnScore();
-        ResetPlayers();
-
-
-        yield return new WaitForSeconds(1f);
-
-
-        audioManager.roundBeginsRandomSoundSource.Play();
-    }
-
-    // Executed when a player dies, starts the score display and next round parameters
-    public void Death(int playerNum)
-    {
-        playerDead = true;
-        StartCoroutine(UpdatePlayersScores(playerNum));
-    }
-
-    // Reset all the players' variables
-    void ResetPlayers()
+    // Reset all the players' variables for next round
+    void ResetPlayersForNextMatch()
     {
         GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
@@ -439,10 +560,45 @@ public class GameManager : MonoBehaviour
         {
             GameObject p = playersList[i];
 
+
+            playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
+            playersList[i].GetComponent<PlayerAnimations>().ResetDrawText();
+            //playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
+            //playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+
+
             p.transform.position = playerSpawns[i].transform.position;
             p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerStats>().ResetValues();
-            p.GetComponent<PlayerAnimations>().ResetAnims();
+            //p.GetComponent<PlayerStats>().ResetValues();
+            p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+
+
+            p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+        }
+
+
+        playerDead = false;
+    }
+
+    // Reset all the players' variables for next round
+    void ResetPlayersForNextRound()
+    {
+        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            GameObject p = playersList[i];
+
+
+            p.transform.position = playerSpawns[i].transform.position;
+            p.transform.rotation = playerSpawns[i].transform.rotation;
+            //p.GetComponent<PlayerStats>().ResetValues();
+            p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+            p.GetComponent<Player>().SwitchState(Player.STATE.normal);
+
+
+            p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
         }
 
 
@@ -456,7 +612,115 @@ public class GameManager : MonoBehaviour
 
 
 
-    # region RESTART GAME
+
+    #region ROUND TO ROUND & SCORE
+    // ROUND TO ROUND & SCORE
+    // Executed when a player dies, starts the score display and next round parameters
+    public void APlayerIsDead(int winningPlayerIndex)
+    {
+        playerDead = true;
+        UpdatePlayersScoreValues(winningPlayerIndex);
+        SwitchState(GAMESTATE.roundFinished);
+
+
+        if (CheckIfThePlayerWon(winningPlayerIndex))
+        {
+            StartCoroutine(APlayerWon(winningPlayerIndex));
+        }
+        else
+        {
+            StartCoroutine(NextRoundCoroutine());
+        }
+    }
+
+    void UpdatePlayersScoreValues(int winningPlayerIndex)
+    {
+        score[winningPlayerIndex] += 1;
+        scoreTextComponent.text = ScoreBuilder();
+    }
+
+    // Builds the score display message
+    string ScoreBuilder()
+    {
+        string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
+        return scoreString;
+    }
+
+    bool CheckIfThePlayerWon(int winningPlayerIndex)
+    {
+        if (score[winningPlayerIndex] >= scoreToWin)
+        {
+            return true;
+        }
+        else
+        {
+            return false;  
+        }
+    }
+
+    // Start next round
+    IEnumerator NextRoundCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(timeBeforeNextRoundTransitionTriggers);
+
+
+        StartCoroutine(ShowScoreBetweenRoundsCoroutine());
+
+
+        // FX
+        roundTransitionLeavesFX.Play();
+
+
+        // AUDIO
+        audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = true;
+
+
+        yield return new WaitForSeconds(1.5f);
+
+
+        ResetPlayersForNextRound();
+
+
+        // AUDIO
+        audioManager.UpdateMusicPhaseThatShouldPlayDependingOnScore();
+
+
+        yield return new WaitForSeconds(1f);
+
+
+        SwitchState(GAMESTATE.game);
+
+
+        // AUDIO
+        audioManager.roundBeginsRandomSoundSource.Play();
+    }
+
+
+    // SCORE
+    // Displays the current score for a given amount of time
+    IEnumerator ShowScoreBetweenRoundsCoroutine()
+    {
+        scoreObject.SetActive(true);
+        yield return new WaitForSeconds(betweenRoundsScoreShowDuration);
+        scoreObject.SetActive(false);
+    }
+
+
+    // Reset the score and its display
+    void ResetScore()
+    {
+        score = new Vector2(0, 0);
+        scoreTextComponent.text = ScoreBuilder();
+    }
+    #endregion
+
+
+
+
+
+
+
+    #region RESTART GAME
     // RESTART GAME
     // Calls ResetGame coroutine, called by main menu button at the end of the match
     public void ResetGame()
@@ -473,120 +737,51 @@ public class GameManager : MonoBehaviour
     // Resets the match settings and values for a next match
     IEnumerator ResetGameCoroutine(bool remathRightAfter)
     {
-        gameStarted = false;
-        playerDead = false;
-
-        roundTransitionLeavesFX.gameObject.SetActive(false);
-        roundTransitionLeavesFX.gameObject.SetActive(true);
-        menuManager.pauseMenu.SetActive(false);
-        menuManager.winScreen.SetActive(false);
-        scoreObject.SetActive(false);
-
+        SwitchState(GAMESTATE.loading);
+        
 
         // Activates the menu blur panel if it is not supposed to start a new match right after
         if (!remathRightAfter)
             blurPanel.SetActive(true);
 
 
-        Cursor.visible = false;
+        // FX
         roundTransitionLeavesFX.Play();
 
 
-        yield return new WaitForSecondsRealtime(1.5f);
+        yield return new WaitForSecondsRealtime(resetGameDelay);
 
-
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            playersList[i].GetComponent<PlayerAnimations>().TriggerSneath(true);
-            playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
-        }
-        
-
-        cameraManager.cameraState = "Inactive";
-        cameraManager.actualSmoothMovementsMultiplier = cameraManager.cinematicSmoothMovementsMultiplier;
-        cameraManager.actualZoomSmoothDuration = cameraManager.cinematicZoomSmoothDuration;
-        cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
-        cameraManager.cam.transform.position = cameraManager.cameraBasePos;
-
-
-        // Activates the main menu if it is not supposed to start a new match right after
-        if (!remathRightAfter)
-        {
-            audioManager.ActivateMenuMusic();
-            menuManager.mainMenu.SetActive(true);
-            Cursor.visible = true;
-        }
-
-
-        audioManager.ResetBattleMusicPhase();
-
-        
-        ResetPlayers();
+        SwitchState(GAMESTATE.menu);
+        ResetPlayersForNextMatch();
+        TriggerMatchEndFilterEffect(false);
         ResetScore();
 
 
-        // Restarts a new match right after it it finished being set up
+        // CAMERA
+        cameraManager.SwitchState(CameraManager.CAMERASTATE.inactive);
+        cameraManager.actualXSmoothMovementsMultiplier = cameraManager.cinematicXSmoothMovementsMultiplier;
+        cameraManager.actualZoomSmoothDuration = cameraManager.cinematicZoomSmoothDuration;
+        cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
+        cameraManager.cameraComponent.transform.position = cameraManager.cameraBasePos;
+
+
+        // AUDIO
+        audioManager.ResetBattleMusicPhase();  
+
+
+        // Restarts a new match right after it is finished being set up
         if (remathRightAfter)
-            StartMatch();
-    }
-    # endregion
-
-
-
-
-
-
-
-    # region SCORE
-    // SCORE
-    // Displays the current score for a given amount of time
-    IEnumerator ShowScore()
-    {
-        scoreObject.SetActive(true);
-        yield return new WaitForSeconds(scoreShowDuration);
-        scoreObject.SetActive(false);
-    }
-
-    // Updates players' scores and checks if one has reached the win score
-    IEnumerator UpdatePlayersScores(int playerNum)
-    {
-        score[playerNum - 1] += 1;
-       
-        yield return new WaitForSecondsRealtime(0f);
-        scoreText.text = ScoreBuilder();
-
-        if (score[playerNum - 1] >= scoreToWin)
-        {
-            /*
-            for (int i =0; i < playersList.Count; i++)
-            {
-                playersList[i].GetComponent<PlayerStats>().canRegenStamina = false;
-            }
-            */
-
-
-            StartCoroutine(Won(playerNum));
-        }
+            StartCoroutine(StartMatchCoroutine());
         else
         {
-            yield return new WaitForSecondsRealtime(timeBeforeNextRound);
+            // Activates the main menu if it is not supposed to start a new match right after
+            menuManager.mainMenu.SetActive(true);
+            Cursor.visible = true;
 
-            NextRound();
-        }     
-    }
 
-    // Build the score display message
-    string ScoreBuilder()
-    {
-        string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
-        return scoreString;
-    }
-
-    // Reset the score and its display
-    void ResetScore()
-    {
-        score = new Vector2(0, 0);
-        scoreText.text = ScoreBuilder();
+            // AUDIO
+            audioManager.ActivateMenuMusic();
+        }
     }
     # endregion
 
@@ -596,40 +791,54 @@ public class GameManager : MonoBehaviour
 
 
 
-    # region END GAME
-    // END GAME
-    IEnumerator Won(int playerNum)
+
+    # region MATCH END
+    // MATCH END
+    IEnumerator APlayerWon(int winningPlayerIndex)
     {
+        // AUDIO
         audioManager.ActivateWind();
+
+
         yield return new WaitForSecondsRealtime(2f);
 
-        gameStarted = false;
-        menuManager.winMessage.SetActive(true);
-        menuManager.winName.text = playerNames[playerNum - 1];
-        menuManager.winName.color = playersColors[playerNum - 1];
+
+        // GAME STATE
+        SwitchState(GAMESTATE.finished);
+
+
+        // PLAYER STATE
+        playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.sneathing);
+
+
+        // MENU
+        menuManager.winName.text = playerNames[winningPlayerIndex];
+        menuManager.winName.color = playersColors[winningPlayerIndex];
+
+
+        // AUDIO
         audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
 
 
-        if (paused)
-            menuManager.SwitchPause();
+        // ANIMATION
+        //playersList[winningPlayerIndex].GetComponent<PlayerAnimations>().TriggerSneath();
+        //playersList[winningPlayerIndex].GetComponent<PlayerAnimations>().ResetDrawText();
 
-
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
-        }
-
-        playersList[playerNum - 1].GetComponent<PlayerAnimations>().TriggerSneath(false);
 
         yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
+        
 
-        audioManager.ActivateWinMusic();
-
+        // MENU
         blurPanel.SetActive(false);
         menuManager.winScreen.SetActive(true);
         Cursor.visible = true;
+
+
+        // AUDIO
+        audioManager.ActivateWinMusic();
     }
     # endregion
+
 
 
 
@@ -639,177 +848,197 @@ public class GameManager : MonoBehaviour
 
     # region EFFECTS
     // EFFECTS
-    public void StartDeathVFXCoroutine()
+    public void TriggerMatchEndFilterEffect(bool on)
     {
-        StartCoroutine(DeathVisualEffect());
-    }
-
-    IEnumerator DeathVisualEffect()
-    {
-        // List of all renderers for the death VFX
-        spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
-        meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
-        particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
-        lights = GameObject.FindObjectsOfType<Light>();
-
-
-        // All renderers' original properties storage for the death VFX reset
-        spriteRenderersColors = new List<Color>();
-        spriteRenderersMaterials = new List<Material>();
-        meshRenderersColors = new List<Color>();
-        particleSystemsColors = new List<Color>();
-        lightsIntensities = new List<float>();
-
-
-        // Sets all black
-        for (int i = 0; i < spriteRenderers.Length; i++)
+        if (on)
         {
-            if (!spriteRenderers[i].CompareTag("NonBlackFX"))
-            {
-                spriteRenderersColors.Add(spriteRenderers[i].color);
-                spriteRenderers[i].color = Color.black;
-
-                spriteRenderersMaterials.Add(spriteRenderers[i].material);
-                spriteRenderers[i].material = deathFXSpriteMaterial;
-            }
-        }
-        for (int i = 0; i < meshRenderers.Length; i++)
-        {
-            if (!meshRenderers[i].CompareTag("NonBlackFX"))
-            {
-                meshRenderersColors.Add(meshRenderers[i].material.color);
-                meshRenderers[i].material.color = Color.black;
-            }
-        }
-        for (int i = 0; i < particleSystems.Length; i++)
-        {
-            /*
-            if (!particleSystems[i].CompareTag("NonBlackFX"))
-            {
-                
-                ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
-                particleSystemsColors.Add(particleSystemMain.startColor.color);
-                particleSystemMain.startColor = Color.black;
-                
-            }
-        */
-        }
-        for (int i = 0; i < lights.Length; i++)
-        {
-            if (!lights[i].CompareTag("NonBlackFX"))
-            {
-                lightsIntensities.Add(lights[i].intensity);
-                lights[i].intensity = 0;
-            }
-        }
+            // List of all renderers for the death VFX
+            spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
+            meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
+            particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
+            lights = GameObject.FindObjectsOfType<Light>();
 
 
-        // Deactivates background elements for only orange color
-        //mapLoader.currentMap.transform.Find("DECORS & BIG ELEMENTS").Find("NON BATTLE SCENE").gameObject.SetActive(false);
-
-        for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
-        {
-            mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
-        }
-
-
-
-        yield return new WaitForSeconds(deathVFXFilterDuration);
+            // All renderers' original properties storage for the death VFX reset
+            originalSpriteRenderersColors = new List<Color>();
+            originalSpriteRenderersMaterials = new List<Material>();
+            originalMeshRenderersColors = new List<Color>();
+            originalParticleSystemsColors = new List<Color>();
+            originalLightsIntensities = new List<float>();
+            originalParticleSystemsGradients = new List<Gradient>();
 
 
-
-        // Resets all
-        
-
-
-        for (int j = 0; j < 100; j++)
-        {
+            // Sets all black
             for (int i = 0; i < spriteRenderers.Length; i++)
             {
                 if (!spriteRenderers[i].CompareTag("NonBlackFX"))
                 {
-                    //spriteRenderers[i].color = Color.Lerp(spriteRenderers[i].color, spriteRenderersColors[i], (1 / 100 * j));
-                    spriteRenderers[i].color = spriteRenderersColors[i];
-                    spriteRenderers[i].material = spriteRenderersMaterials[i];
+                    originalSpriteRenderersColors.Add(spriteRenderers[i].color);
+                    spriteRenderers[i].color = Color.black;
+
+                    originalSpriteRenderersMaterials.Add(spriteRenderers[i].material);
+                    spriteRenderers[i].material = deathFXSpriteMaterial;
                 }
             }
             for (int i = 0; i < meshRenderers.Length; i++)
             {
                 if (!meshRenderers[i].CompareTag("NonBlackFX"))
                 {
-                    meshRenderers[i].material.color = meshRenderersColors[i];
+                    originalMeshRenderersColors.Add(meshRenderers[i].material.color);
+                    meshRenderers[i].material.color = Color.black;
                 }
             }
+            /*
             for (int i = 0; i < particleSystems.Length; i++)
             {
-                /*
                 if (!particleSystems[i].CompareTag("NonBlackFX"))
                 {
-                
                     ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
-                    particleSystemMain.startColor = particleSystemsColors[i];
-                
-                 }
-                 */
+
+                    originalParticleSystemsColors.Add(particleSystemMain.startColor.color);
+                    particleSystemMain.startColor = Color.black;
+                    originalParticleSystemsGradients.Add(particleSystemMain.startColor.gradient);
+                    particleSystemMain.startColor = deathVFXGradientForParticles; 
+                }
             }
+            */
+
+
             for (int i = 0; i < lights.Length; i++)
             {
                 if (!lights[i].CompareTag("NonBlackFX"))
                 {
-                    lights[i].intensity = lightsIntensities[i];
+                    originalLightsIntensities.Add(lights[i].intensity);
+                    lights[i].intensity = 0;
                 }
             }
+
+
+            // Deactivates background elements for only orange color
+            for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+            {
+                mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
+            }
         }
-
-
-        //mapLoader.currentMap.transform.Find("DECORS & BIG ELEMENTS").Find("NON BATTLE SCENE").gameObject.SetActive(false);
-
-        for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+        else
         {
-            mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
+            // Resets all
+            if (spriteRenderers != null && spriteRenderers.Length > 0)
+            {
+                try
+                {
+                    for (int i = 0; i < spriteRenderers.Length; i++)
+                    {
+                        if (!spriteRenderers[i].CompareTag("NonBlackFX"))
+                        {
+                            //spriteRenderers[i].color = Color.Lerp(spriteRenderers[i].color, spriteRenderersColors[i], (1 / 100 * j));
+                            spriteRenderers[i].color = originalSpriteRenderersColors[i];
+                            spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
+            if (meshRenderers != null && meshRenderers.Length > 0)
+            {
+                for (int i = 0; i < meshRenderers.Length; i++)
+                {
+                    if (!meshRenderers[i].CompareTag("NonBlackFX"))
+                    {
+                        meshRenderers[i].material.color = originalMeshRenderersColors[i];
+                    }
+                }
+            }
+            /*
+            for (int i = 0; i < particleSystems.Length; i++)
+            {
+                if (!particleSystems[i].CompareTag("NonBlackFX"))
+                {
+                    try
+                    {
+                        ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
+                        particleSystemMain.startColor = originalParticleSystemsGradients[i];
+
+
+                        particleSystemMain.startColor = originalParticleSystemsColors[i];
+                    }
+                    catch
+                    {
+                    }
+                } 
+            }
+            */
+            if (lights != null && lights.Length > 0)
+            {
+                for (int i = 0; i < lights.Length; i++)
+                {
+                    if (!lights[i].CompareTag("NonBlackFX"))
+                    {
+                        lights[i].intensity = originalLightsIntensities[i];
+                    }
+                }
+            }
+
+
+            for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+            {
+                mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
+            }
         }
     }
 
-    // Start the SlowMo coroutine
-    public void SlowMo(float slownMoDuration, float slowMoTimeScale, float fadeSpeed)
+    // Starts the SlowMo coroutine
+    public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
-        StartCoroutine(SlowMoCoroutine(slownMoDuration, slowMoTimeScale, fadeSpeed));
+        StartCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
     }
 
     // Slow motion and zoom for a given duration
-    IEnumerator SlowMoCoroutine(float slowMoDuration, float slowMoTimeScale, float fadeSpeed)
+    IEnumerator SlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
+        // CAMERA STATE
+        cameraManager.SwitchState(CameraManager.CAMERASTATE.eventcam);
+
+
+        // TIME
         actualTimeScaleUpdateSmoothness = fadeSpeed;
         timeScaleObjective = slowMoTimeScale;
 
 
+        // AUDIO
         for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
         {
             audioManager.battleMusicPhaseSources[i].pitch = slowMoTimeScale;
             audioManager.battleMusicStrikesSources[i].pitch = slowMoTimeScale;
         }
-        
-
-        cameraManager.cameraState = "Event";
 
 
-        yield return new WaitForSecondsRealtime(slowMoDuration);
+        yield return new WaitForSecondsRealtime(slowMoEffectDuration);
 
 
+        // TIME
         actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
         timeScaleObjective = baseTimeScale;
 
 
+        // CAMERA
+        cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+
+
+        // AUDIO
         for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
         {
             audioManager.battleMusicPhaseSources[i].pitch = 1;
             audioManager.battleMusicStrikesSources[i].pitch = 1;
         }
 
-        cameraManager.cameraState = "Battle";
-
 
         yield return new WaitForSecondsRealtime(0.5f);
+
+
+        // TIME
         Time.timeScale = timeScaleObjective;
     } 
 
@@ -836,6 +1065,7 @@ public class GameManager : MonoBehaviour
 
 
 
+
     # region SECONDARY FUNCTIONS
     // SECONDARY FUNCTIONS
     // Compares 2 floats with a range of tolerance
@@ -843,5 +1073,6 @@ public class GameManager : MonoBehaviour
     {
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
     }
+    #endregion
     # endregion
 }

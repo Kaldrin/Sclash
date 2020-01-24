@@ -8,7 +8,6 @@ public class CameraShake : MonoBehaviour
     // Transform of the camera to shake. Grabs the gameObject's transform
     // if null.
     [SerializeField] Transform camTransform = null;
-    [SerializeField] Rigidbody cameRigidBody = null;
     # endregion
 
 
@@ -33,7 +32,7 @@ public class CameraShake : MonoBehaviour
     Vector3
         originalPos = new Vector3(0, 0, 0),
         beforeShakePos = new Vector3(0, 0, 0);
-    # endregion
+    #endregion
 
 
 
@@ -41,7 +40,7 @@ public class CameraShake : MonoBehaviour
 
 
 
-
+    # region BASE FUNCTIONS
     // BASE FUNCTIONS
     void Awake()
     {
@@ -101,7 +100,6 @@ public class CameraShake : MonoBehaviour
 
 
             camTransform.localPosition = baseShakePos + randomShakeVector;
-            //cameRigidBody.velocity = randomShakeVector;
             hasResetPosition = false;
             shakeDuration -= Time.deltaTime * decreaseFactor;
         }
@@ -109,7 +107,6 @@ public class CameraShake : MonoBehaviour
         {
             shakeDuration = 0f;
             hasBeganShaking = false;
-            //cameRigidBody.velocity = new Vector3(0, 0, 0);
 
 
             if (!hasResetPosition)
@@ -133,4 +130,5 @@ public class CameraShake : MonoBehaviour
             }
         }
     }
+    # endregion
 }

@@ -70,7 +70,7 @@ public class MenuBrowser : MonoBehaviour
     [SerializeField] PlayRandomSoundInList hoverSound = null;
 
 
-    
+
 
 
 
@@ -170,7 +170,7 @@ public class MenuBrowser : MonoBehaviour
             }
 
 
-            if (elements[browseIndex].GetComponent<Button>())
+            if (elements[browseIndex].GetComponent<Button>() || elements[browseIndex].GetComponent<TMP_InputField>())
             {
                 Select(true);
             }
@@ -250,6 +250,15 @@ public class MenuBrowser : MonoBehaviour
         else
         {
             elements[browseIndex].GetComponent<Button>().Select();
+
+            if (elements[browseIndex].GetComponent<Button>())
+            {
+                elements[browseIndex].GetComponent<Button>().Select();
+            }
+            else if (elements[browseIndex].GetComponent<TMP_InputField>())
+            {
+                elements[browseIndex].GetComponent<TMP_InputField>().Select();
+            }
         }
 
 
@@ -265,7 +274,7 @@ public class MenuBrowser : MonoBehaviour
         }
 
         
-        if (elements[browseIndex].GetComponent<Button>())
+        if (elements[browseIndex].GetComponent<Button>() || elements[browseIndex].GetComponent<TMP_InputField>())
         {
             Select(true);
         }
