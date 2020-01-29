@@ -777,7 +777,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region STATE SWITCH
+    #region STATE SWITCH
     public void SwitchState(STATE newState)
     {
         oldState = playerState;
@@ -900,6 +900,8 @@ public class Player : MonoBehaviour
                 stamina = maxStamina;
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
+                dashFXBack.Stop();
+                dashFXFront.Stop();
                 break;
 
             case STATE.dead:
@@ -1869,7 +1871,8 @@ public class Player : MonoBehaviour
 
 
         // FX
-        clashKanasFX.Play();
+        if (gameManager.playersList.Count > 1 && !gameManager.playersList[otherPlayerNum].GetComponent<Player>().clashKanasFX.isPlaying)
+            clashKanasFX.Play();
     }
 
     IEnumerator ClashDurationAndEndCoroutine()

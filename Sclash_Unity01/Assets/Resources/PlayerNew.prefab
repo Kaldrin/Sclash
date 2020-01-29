@@ -28884,7 +28884,6 @@ MonoBehaviour:
   orientationCooldown: 0.1
   drawDuration: 2
   drawText: {fileID: 7099241763198957912}
-  hasDrawnAnimFinished: 0
   maxChargeLevel: 5
   chargeLevel: 1
   durationToNextChargeLevel: 1
@@ -28903,20 +28902,19 @@ MonoBehaviour:
   baseDashSpeed: 3
   forwardDashDistance: 3
   backwardsDashDistance: 2.5
-  dashAllowanceDuration: 0.3
+  allowanceDurationForDoubleTapDash: 0.3
   forwardAttackDashDistance: 2.5
   backwardsAttackDashDistance: 1.5
   dashDeadZone: 0.5
   shortcutDashDeadZone: 0.5
   kickFrame: 0
-  canKick: 1
+  canPommel: 1
   kickRange: 0.68
   kickKnockbackDistance: 1
   parryFrame: 0
   canParry: 1
   clashKnockback: 2
   clashKnockbackSpeed: 2
-  hasClashAnimFinished: 0
   clashFXPrefabRef: {fileID: 8556811793669562556}
   staminaGainFX: {fileID: 4657290050820478637}
   deathBloodFX: {fileID: 8922935468861387414}
@@ -31613,12 +31611,17 @@ PrefabInstance:
     - target: {fileID: 4387671893423907242, guid: 09c8c4cc8a590504eb7114de0ef61797,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6795476702882246690, guid: 09c8c4cc8a590504eb7114de0ef61797,
         type: 3}
       propertyPath: moveWithTransform
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6795476702882246690, guid: 09c8c4cc8a590504eb7114de0ef61797,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4387671893423907245, guid: 09c8c4cc8a590504eb7114de0ef61797,
         type: 3}
@@ -31740,6 +31743,11 @@ PrefabInstance:
       propertyPath: InitialModule.startLifetime.scalar
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 4387671894925362302, guid: 09c8c4cc8a590504eb7114de0ef61797,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4387671894925362303, guid: 09c8c4cc8a590504eb7114de0ef61797,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -31755,15 +31763,30 @@ PrefabInstance:
       propertyPath: moveWithTransform
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4712998842420941595, guid: 09c8c4cc8a590504eb7114de0ef61797,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4387671894356601295, guid: 09c8c4cc8a590504eb7114de0ef61797,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4387671894356601295, guid: 09c8c4cc8a590504eb7114de0ef61797,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4387671894779018363, guid: 09c8c4cc8a590504eb7114de0ef61797,
         type: 3}
       propertyPath: moveWithTransform
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4387671894779018363, guid: 09c8c4cc8a590504eb7114de0ef61797,
         type: 3}
-      propertyPath: moveWithTransform
-      value: 1
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4387671893796716524, guid: 09c8c4cc8a590504eb7114de0ef61797,
         type: 3}
@@ -31784,6 +31807,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startColor.minGradient.key0.a
       value: 0.43529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4387671893796716524, guid: 09c8c4cc8a590504eb7114de0ef61797,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09c8c4cc8a590504eb7114de0ef61797, type: 3}

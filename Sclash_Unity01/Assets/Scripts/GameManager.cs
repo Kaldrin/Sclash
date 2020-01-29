@@ -980,11 +980,15 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+            
 
-
-            for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+            // Reactivates the background of the map if it's referenced
+            if (mapLoader.currentMap.GetComponent<MapPrefab>() && mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length > 0)
             {
-                mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
+                for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+                {
+                    mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
+                }
             }
         }
     }
