@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class Player : MonoBehaviour
 {
     #region VARIABLES
@@ -23,13 +24,13 @@ public class Player : MonoBehaviour
     [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
     [SerializeField] string inputManagerName = "GlobalManager";
     InputManager inputManager = null;
-    # endregion
+    #endregion
 
 
 
-   
 
-    # region PLAYER'S COMPONENTS
+
+    #region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [SerializeField] Rigidbody2D rb = null;
@@ -74,26 +75,26 @@ public class Player : MonoBehaviour
     [HideInInspector] public STATE oldState = STATE.normal;
 
     [SerializeField] bool hasFinishedAnim = false;
-    # endregion
+    #endregion
 
 
 
 
 
 
-    # region PLAYERS
+    #region PLAYERS
     // PLAYERS
     [Header("PLAYERS")]
     [HideInInspector] public int playerNum = 0;
     int otherPlayerNum = 0;
-    # endregion
+    #endregion
 
 
 
 
 
 
-    # region HEALTH
+    #region HEALTH
     // HEALTH
     [Header("HEALTH")]
     [Tooltip("The maximum health of the player")]
@@ -105,13 +106,13 @@ public class Player : MonoBehaviour
 
     [Tooltip("The opacity amount of the player's sprite when in untouchable frames")]
     [SerializeField] float untouchableFrameOpacity = 0.3f;
-    # endregion
+    #endregion
 
 
 
 
 
-    # region STAMINA
+    #region STAMINA
     //STAMINA
     [Header("STAMINA")]
     [Tooltip("The reference to the base stamina slider attached to the player to create the other sliders")]
@@ -145,13 +146,13 @@ public class Player : MonoBehaviour
         staminaBaseColor = Color.green,
         staminaLowColor = Color.yellow,
         staminaDeadColor = Color.red;
-    # endregion
+    #endregion
 
 
 
 
 
-    # region MOVEMENTS
+    #region MOVEMENTS
     // MOVEMENTS
     [Header("MOVEMENTS")]
     [Tooltip("The default movement speed of the player")]
@@ -168,24 +169,24 @@ public class Player : MonoBehaviour
 
 
 
-    # region ORIENTATION
+    #region ORIENTATION
     // ORIENTATION
     [Header("ORIENTATION")]
     [Tooltip("The duration before the player can orient again towards the enemy if they need to once they applied the orientation")]
     [SerializeField] float orientationCooldown = 0.1f;
     float
         orientationCooldownStartTime = 0;
-    
+
     bool
         orientationCooldownFinished = true,
         canOrientTowardsEnemy = true;
-    # endregion
+    #endregion
 
 
 
 
 
-    # region DRAW
+    #region DRAW
     // DRAW
     [Header("DRAW")]
     [Tooltip("The duration the draw animation takes to switch to drawn state")]
@@ -221,7 +222,8 @@ public class Player : MonoBehaviour
     [HideInInspector] public int chargeLevel = 1;
 
     [Tooltip("Charge duration parameters")]
-    [SerializeField] float
+    [SerializeField]
+    float
         durationToNextChargeLevel = 0.7f,
         maxHoldDurationAtMaxCharge = 2f;
     [SerializeField] float attackReleaseAxisInputDeadZoneForDashAttack = 0.1f;
@@ -230,26 +232,28 @@ public class Player : MonoBehaviour
         chargeStartTime = 0;
 
     [HideInInspector] public bool canCharge = true;
-    # endregion
+    #endregion
 
 
 
 
 
-    # region ATTACK
+    #region ATTACK
     // ATTACK
     [Header("ATTACK")]
     [Tooltip("Attack range parameters")]
     [SerializeField] public float lightAttackRange = 1.8f;
     [Tooltip("Attack range parameters")]
-    [SerializeField] public float
+    [SerializeField]
+    public float
         heavyAttackRange = 3.2f,
         attackRangeDisjoint = 0.2f;
     [SerializeField] float axisDeadZoneForAttackDash = 0.2f;
     [HideInInspector] public float actualAttackRange = 0;
 
     [Tooltip("Frame parameters for the attack")]
-    [SerializeField] public bool
+    [SerializeField]
+    public bool
         activeFrame = false,
         clashFrames = false;
     [HideInInspector] public bool isAttacking = false;
@@ -260,7 +264,7 @@ public class Player : MonoBehaviour
     [Header("ATTACK RECOVERY")]
     [SerializeField] bool hasAttackRecoveryAnimFinished = false;
 
-    # endregion
+    #endregion
 
 
 
@@ -269,12 +273,15 @@ public class Player : MonoBehaviour
     #region DASH
     // DASH
     [Header("DASH")]
-    [SerializeField] public float
+    [SerializeField]
+    public float
         baseDashSpeed = 3;
-    [SerializeField] public float
+    [SerializeField]
+    public float
         forwardDashDistance = 3,
         backwardsDashDistance = 2.5f;
-    [SerializeField] float
+    [SerializeField]
+    float
         allowanceDurationForDoubleTapDash = 0.3f,
         forwardAttackDashDistance = 2.5f,
         backwardsAttackDashDistance = 1.5f,
@@ -303,13 +310,13 @@ public class Player : MonoBehaviour
         targetPos;
 
     bool isDashing = false;
-    # endregion
+    #endregion
 
 
 
 
 
-    # region KICK
+    #region KICK
     // KICK
     [Header("KICK")]
     [Tooltip("Is currently applying the pommel effect to what they touches ?")]
@@ -319,41 +326,41 @@ public class Player : MonoBehaviour
     [SerializeField]
     float
         kickRange = 0.88f;
-    # endregion
+    #endregion
 
 
 
 
 
-    # region KICKED
+    #region KICKED
     // KICKED
     [Header("KICKED")]
     [Tooltip("The distance the player will be pushed on when pommeled")]
     [SerializeField] float kickKnockbackDistance = 1f;
-    # endregion
+    #endregion
 
 
 
 
 
 
-    # region PARRY
+    #region PARRY
     // PARRY
     [Header("PARRY")]
     [Tooltip("Only editable by animator, is currently in parry frames state")]
     [SerializeField] public bool parryFrame = false;
     [HideInInspector] public bool canParry = true;
-    
+
     //[SerializeField] int numberOfFramesToDetectParryInput = 3;
     int currentParryFramesPressed = 0;
-    # endregion
+    #endregion
 
 
 
 
 
 
-    # region CLASHED
+    #region CLASHED
     // CLASHED
     [Header("CLASHED")]
     [Tooltip("The distance the player will be pushed on when clashed")]
@@ -373,13 +380,15 @@ public class Player : MonoBehaviour
     [Header("FX")]
     [Tooltip("The references to the game objects holding the different FXs")]
     [SerializeField] GameObject clashFXPrefabRef = null;
-    [SerializeField] GameObject
+    [SerializeField]
+    GameObject
         staminaGainFX = null,
         deathBloodFX = null;
 
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public ParticleSystem attackRangeFX = null;
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         chargeFlareFX = null,
         chargeFX = null,
         chargeFullFX = null,
@@ -397,7 +406,8 @@ public class Player : MonoBehaviour
     [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
     [SerializeField] float deathBloodFXRotationForDirectionChange = 240;
     [Tooltip("The width of the attack trail depending on the range of the attack")]
-    [SerializeField] float
+    [SerializeField]
+    float
         lightAttackSwordTrailWidth = 20f,
         heavyAttackSwordTrailWidth = 65f;
     [Tooltip("The minimum speed required for the walk fx to trigger")]
@@ -409,7 +419,8 @@ public class Player : MonoBehaviour
     [SerializeField] TrailRenderer swordTrail = null;
 
     [Tooltip("The colors of the attack trail depending on the range of the attack")]
-    [SerializeField] Color
+    [SerializeField]
+    Color
         lightAttackColor = Color.yellow,
         heavyAttackColor = Color.red;
 
@@ -423,28 +434,31 @@ public class Player : MonoBehaviour
 
 
 
-    # region STAGE DEPENDENT FX
+    #region STAGE DEPENDENT FX
     // STAGFE DEPENDENT FX
     [Header("STAGE DEPENDENT FX")]
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         dashFXFront = null;
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         dashFXBack = null,
         attackDashFXFront = null,
         attackDashFXBack = null,
         attackNeutralFX = null;
     [Tooltip("The references to the particle systems components used for the walk leaves FX")]
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         walkFXFront = null,
         walkFXBack = null;
-    # endregion
+    #endregion
 
 
 
 
 
 
-    # region SOUND
+    #region SOUND
     // SOUND
     [Header("SOUND")]
     [Tooltip("The reference to the stamina charged audio FX AudioSource")]
@@ -463,7 +477,8 @@ public class Player : MonoBehaviour
     [Tooltip("The cheat key to trigger a clash for the player")]
     [SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
     [Tooltip("The other cheat keys for other effects")]
-    [SerializeField] KeyCode
+    [SerializeField]
+    KeyCode
         deathCheatKey = KeyCode.Alpha2,
         staminaCheatKey = KeyCode.Alpha4;
     #endregion
@@ -496,7 +511,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region FUNCTIONS
+    #region FUNCTIONS
     #region BASE FUNCTIONS
     // BASE FUNCTIONS
     void Start()
@@ -512,7 +527,7 @@ public class Player : MonoBehaviour
 
         deathBloodFXBaseRotation = deathBloodFX.transform.localEulerAngles;
         drawTextBaseScale = drawText.transform.localScale;
-       
+
 
         // Begin by reseting all the player's values and variable to start fresh
         StartCoroutine(GetOtherPlayerNum());
@@ -921,7 +936,7 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-    # endregion
+    #endregion
 
 
 
@@ -944,7 +959,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-    # endregion
+    #endregion
 
 
 
@@ -952,7 +967,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region RESET ALL VALUES
+    #region RESET ALL VALUES
     // RESET ALL VALUES
     public void ResetAllPlayerValuesForNextMatch()
     {
@@ -980,7 +995,7 @@ public class Player : MonoBehaviour
             playerColliders[i].isTrigger = false;
         }
 
-        
+
         // ANIMATIONS
         playerAnimations.CancelCharge(true);
         playerAnimations.ResetAnimsForNextMatch();
@@ -1019,7 +1034,7 @@ public class Player : MonoBehaviour
         playerAnimations.CancelCharge(true);
         playerAnimations.ResetAnimsForNextRound();
     }
-    # endregion
+    #endregion
 
 
 
@@ -1027,7 +1042,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region RECEIVE AN ATTACK
+    #region RECEIVE AN ATTACK
     // RECEIVE AN ATTACK
     public bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
@@ -1128,7 +1143,7 @@ public class Player : MonoBehaviour
         // SOUND
         audioManager.TriggerSuccessfulAttackAudio();
         audioManager.BattleEventIncreaseIntensity();
-        
+
 
         // FX
         slashFX.Play();
@@ -1138,7 +1153,7 @@ public class Player : MonoBehaviour
         gameManager.cameraShake.shakeDuration = gameManager.deathCameraShakeDuration;
         gameManager.TriggerSlowMoCoroutine(gameManager.roundEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
     }
-    # endregion
+    #endregion
 
 
 
@@ -1298,7 +1313,7 @@ public class Player : MonoBehaviour
             staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color = Color.Lerp(staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color, color, Time.deltaTime * 10);
         }
     }
-    # endregion
+    #endregion
 
 
 
@@ -1352,7 +1367,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region DRAW
+    #region DRAW
     // DRAW
     // Detects draw input
     void ManageDraw()
@@ -1374,7 +1389,7 @@ public class Player : MonoBehaviour
         playerAnimations.TriggerDraw();
         playerAnimations.TriggerDrawText();
     }
-    # endregion
+    #endregion
 
 
 
@@ -1383,7 +1398,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region JUMP
+    #region JUMP
     // JUMP
     void ManageJump()
     {
@@ -1397,7 +1412,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(0);
     }
-    # endregion
+    #endregion
 
 
 
@@ -1432,7 +1447,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        
+
         // Player releases attack button
         if (!inputManager.playerInputs[playerNum].attack)
         {
@@ -1443,7 +1458,7 @@ public class Player : MonoBehaviour
     void ManageCharging()
     {
         //currentChargeFramesPressed++;
-        
+
 
 
         //Player releases attack button
@@ -1494,17 +1509,17 @@ public class Player : MonoBehaviour
             }
         }
     }
-    # endregion
+    #endregion
 
 
 
 
 
-    
 
 
 
-    # region ATTACK
+
+    #region ATTACK
     // ATTACK
     // Triggers the attack
     void ReleaseAttack()
@@ -1530,7 +1545,7 @@ public class Player : MonoBehaviour
 
 
             swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * (actualAttackRange - lightAttackRange) / (heavyAttackRange - lightAttackRange);
-            
+
         }
 
 
@@ -1550,7 +1565,7 @@ public class Player : MonoBehaviour
 
         // FX
         Vector3 attackSignPos = attackRangeFX.transform.localPosition;
-        attackRangeFX.transform.localPosition = new Vector3(- (actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
+        attackRangeFX.transform.localPosition = new Vector3(-(actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
         attackRangeFX.Play();
         chargeFlareFX.gameObject.SetActive(false);
         chargeFlareFX.gameObject.SetActive(true);
@@ -1574,7 +1589,7 @@ public class Player : MonoBehaviour
 
 
                 // FX
-                 attackDashFXFront.Play();
+                attackDashFXFront.Play();
             }
             else
             {
@@ -1611,7 +1626,7 @@ public class Player : MonoBehaviour
         bool enemyDead = false;
 
 
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (- actualAttackRange + attackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + attackRangeDisjoint, 1), 0);
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + attackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + attackRangeDisjoint, 1), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -1644,15 +1659,15 @@ public class Player : MonoBehaviour
                 {
                     SwitchState(STATE.enemyKilled);
                 }
-            }   
+            }
         }
     }
 
     // Draw the attack range when the player is selected
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * ( - actualAttackRange + attackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + attackRangeDisjoint, 1, 1));
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + attackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + attackRangeDisjoint, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
     }
 
     // Draw the attack range is the attack is in active frames in the scene viewer
@@ -1662,9 +1677,9 @@ public class Player : MonoBehaviour
             Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + attackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + attackRangeDisjoint, 1, 1));
 
         if (kickFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
     }
-    # endregion
+    #endregion
 
 
 
@@ -1674,7 +1689,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region PARRY
+    #region PARRY
     // PARRY
     // Detect parry inputs
     void ManageParryInput()
@@ -1706,7 +1721,7 @@ public class Player : MonoBehaviour
         // ANIMATION
         playerAnimations.TriggerParry();
     }
-    # endregion
+    #endregion
 
 
 
@@ -1715,7 +1730,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region POMMEL
+    #region POMMEL
     // POMMEL
     // Detect pommel inputs
     void ManagePommel()
@@ -1724,14 +1739,14 @@ public class Player : MonoBehaviour
         {
             canPommel = true;
         }
-        
-   
+
+
         if (inputManager.playerInputs[playerNum].kick && canPommel)
         {
             canPommel = false;
 
             TriggerPommel();
-        }     
+        }
     }
 
     // Kick coroutine
@@ -1747,7 +1762,7 @@ public class Player : MonoBehaviour
     // Apply pommel hitbox depending on kick frames
     void ApplyPommelHitbox()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * - kickRange / 2), transform.position.y), new Vector2(kickRange, 1), 0);
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y), new Vector2(kickRange, 1), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -1771,11 +1786,11 @@ public class Player : MonoBehaviour
                 if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
                 {
                     g.GetComponent<Player>().Pommeled();
-                }  
+                }
             }
         }
     }
-    # endregion
+    #endregion
 
 
 
@@ -1784,7 +1799,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region POMMELED
+    #region POMMELED
     // POMMELED
     // The player have been kicked
     public void Pommeled()
@@ -1798,7 +1813,7 @@ public class Player : MonoBehaviour
             // Stamina
             if (playerState == STATE.parrying || playerState == STATE.attacking)
                 StaminaCost(staminaCostForMoves);
-                
+
 
             canCharge = false;
             chargeLevel = 1;
@@ -1828,7 +1843,7 @@ public class Player : MonoBehaviour
             audioManager.BattleEventIncreaseIntensity();
         }
     }
-    # endregion
+    #endregion
 
 
 
@@ -1837,7 +1852,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region CLASHED
+    #region CLASHED
     //CLASHED
 
     // The player have been clashed / parried
@@ -1848,7 +1863,7 @@ public class Player : MonoBehaviour
 
         StopAllCoroutines();
         gameManager.TriggerSlowMoCoroutine(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
-        
+
 
         temporaryDashDirectionForCalculation = transform.localScale.x;
         actualUsedDashDistance = clashKnockback;
@@ -1879,7 +1894,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(0f);
     }
-    # endregion
+    #endregion
 
 
 
@@ -1888,7 +1903,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region DASH
+    #region DASH
     //DASH
     // Functions to detect the dash input etc
     void ManageDashInput()
@@ -1899,12 +1914,12 @@ public class Player : MonoBehaviour
             //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
             currentShortcutDashStep = DASHSTEP.rest;
         }
-        
+
 
         if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
         {
             dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].dash);
-            
+
 
             TriggerBasicDash();
         }
@@ -1987,7 +2002,7 @@ public class Player : MonoBehaviour
         dashTime = 0;
 
 
-        if (dashDirection == - transform.localScale.x)
+        if (dashDirection == -transform.localScale.x)
         {
             actualUsedDashDistance = forwardDashDistance;
             dashFXFront.Play();
@@ -2002,7 +2017,7 @@ public class Player : MonoBehaviour
         // ANIMATION
         playerAnimations.TriggerDash(dashDirection * transform.localScale.x);
 
- 
+
         initPos = transform.position;
         targetPos = transform.position + new Vector3(actualUsedDashDistance * dashDirection, 0, 0);
     }
@@ -2027,8 +2042,8 @@ public class Player : MonoBehaviour
                 EndDash();
             }
         }
-    } 
-    
+    }
+
     // End currently running dash
     void EndDash()
     {
@@ -2052,7 +2067,7 @@ public class Player : MonoBehaviour
         attackDashFXFront.Stop();
         attackDashFXBack.Stop();
     }
-    # endregion
+    #endregion
 
 
 
@@ -2060,7 +2075,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region ORIENTATION
+    #region ORIENTATION
     // ORIENTATION CALLED IN UPDATE
     void ManageOrientation()
     {
@@ -2130,7 +2145,7 @@ public class Player : MonoBehaviour
 
         orientationCooldownStartTime = Time.time;
         orientationCooldownFinished = false;
-        
+
 
         // FX
         Vector3 deathBloodFXRotation = deathBloodFX.gameObject.transform.localEulerAngles;
@@ -2138,12 +2153,12 @@ public class Player : MonoBehaviour
 
         if (transform.localScale.x <= 0)
         {
-            
+
             deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, deathBloodFXRotationForDirectionChange);
 
 
             // Changes the draw text indication's scale so that it's, well, readable for a human being
-            drawText.transform.localScale = new Vector3(- drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
+            drawText.transform.localScale = new Vector3(-drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
         }
         else
         {
@@ -2154,7 +2169,7 @@ public class Player : MonoBehaviour
             drawText.transform.localScale = new Vector3(drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
         }
     }
-    # endregion
+    #endregion
 
 
 
@@ -2162,7 +2177,7 @@ public class Player : MonoBehaviour
 
 
 
-    # region CHEATS
+    #region CHEATS
     // CHEATS
     void CheatsInputs()
     {
@@ -2184,5 +2199,5 @@ public class Player : MonoBehaviour
         }
     }
     #endregion
-    # endregion
+    #endregion
 }

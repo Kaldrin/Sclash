@@ -6,9 +6,15 @@ using UnityEngine;
 // Created for Unity 2019.1.1f1
 public class CameraManager : MonoBehaviour
 {
-    # region VARIABLES
+    #region VARIABLES
     #region CAMERA MAIN COMPONENTS
     // CAMERA
+
+    #region Singleton
+    // Camera instance for quicker reference
+    public static CameraManager Instance;
+    #endregion
+
     [Header("CAMERA MAIN COMPONENTS")]
     [SerializeField] public Camera cameraComponent;
     # endregion
@@ -106,6 +112,13 @@ public class CameraManager : MonoBehaviour
     # region FUNCTIONS
     #region BASE FUNCTIONS
     // BASE FUNCTIONS
+    //Awake is called before Start
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
