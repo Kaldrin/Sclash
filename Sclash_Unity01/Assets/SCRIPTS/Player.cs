@@ -715,6 +715,7 @@ public class Player : MonoBehaviour
                 break;
 
             case STATE.parrying:
+                RunDash();
                 if (hasFinishedAnim)
                 {
                     hasFinishedAnim = false;
