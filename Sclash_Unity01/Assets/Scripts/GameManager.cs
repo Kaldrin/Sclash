@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
 
-
+    
 
 
     # region GAME STATE
@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
-    [SerializeField] Color[]
+    [SerializeField] public Color[]
         playersColors = {Color.red, Color.yellow},
         attackSignColors = {Color.red, Color.yellow},
         playerLightsColors = {Color.red, Color.yellow};

@@ -87,6 +87,7 @@ public class Player : MonoBehaviour
     [Header("PLAYERS")]
     [HideInInspector] public int playerNum = 0;
     int otherPlayerNum = 0;
+    [HideInInspector] public int networkPlayerNum = 0;
     #endregion
 
 
@@ -730,6 +731,7 @@ public class Player : MonoBehaviour
                 break;
 
             case STATE.parrying:
+                RunDash();
                 if (hasFinishedAnim)
                 {
                     hasFinishedAnim = false;
@@ -2079,12 +2081,16 @@ public class Player : MonoBehaviour
     // ORIENTATION CALLED IN UPDATE
     void ManageOrientation()
     {
+
         // Orient towards the enemy if player can in their current state
         if (canOrientTowardsEnemy)
         {
             GameObject p1 = null, p2 = null, self = null, other = null;
             Player[] stats = FindObjectsOfType<Player>();
 
+            if (stats.Length < 2)
+                return;
+                
 
             foreach (Player stat in stats)
             {
