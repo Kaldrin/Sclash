@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 
 using Photon.Pun;
-using Photon.Realtime
+using Photon.Realtime;
 
 // Created for Unity 2019.1.1f1
 public class GameManager : MonoBehaviourPun

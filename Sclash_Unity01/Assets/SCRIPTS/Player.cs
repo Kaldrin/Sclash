@@ -166,6 +166,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         sneathedMovementsSpeed = 1.8f,
         attackingMovementsSpeed = 2.2f;
     float actualMovementsSpeed = 1;
+
+    Vector3 oldPos, netTargetPos = Vector3.zero;
+    float lerpValue = 0f;
+    bool lerpToTarget = false;
     #endregion
 
 
@@ -542,6 +546,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per graphic frame
     void Update()
     {
+        if (lerpToTarget)
+        {
+            if (lerpValue >= 1f)
+            {
+                lerpToTarget = false;
+                return;
+            }
+
+            lerpValue += Time.deltaTime;
+            transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
+        }
+
         // Action depending on state
         switch (playerState)
         {
@@ -2231,7 +2247,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
 
-            transform.position = new Vector3(xPos, transform.position.y, transform.position.z);
+            oldPos = transform.position;
+            netTargetPos = new Vector3(xPos, transform.position.y, transform.position.z);
+            lerpToTarget = true;
+
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
     }
