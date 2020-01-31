@@ -2080,8 +2080,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region ORIENTATION
     // ORIENTATION CALLED IN UPDATE
-    void ManageOrientation()
+    public void ManageOrientation()
     {
+        if (this.photonView != null && !this.photonView.IsMine)
+        {
+            return;
+        }
 
         // Orient towards the enemy if player can in their current state
         if (canOrientTowardsEnemy)
@@ -2139,7 +2143,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             orientationCooldownFinished = true;
         }
     }
-   
+
 
     // Immediatly rotates the player
     void ApplyOrientation(float sign)

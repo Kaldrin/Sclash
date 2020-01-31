@@ -226,8 +226,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         StartCoroutine(JoinRoomCoroutine());
     }
 
+    [PunRPC]
     void GetAllPlayers()
     {
+        Debug.Log("Get all players in room");
         if (PhotonNetwork.CurrentRoom.PlayerCount != GameManager.Instance.playersList.Count)
         {
             GameManager.Instance.playersList.Clear();
@@ -270,7 +272,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     IEnumerator WaitForInstantiation()
     {
         yield return new WaitForSeconds(0.5f);
-        GetAllPlayers();
+        photonView.RPC("GetAllPlayers", RpcTarget.All);
     }
 
     public override void OnLeftRoom()
@@ -283,14 +285,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.LogFormat("{0} joined the room", other.NickName);
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
-        /*GameObject otherPlayer = GameManager.Instance.GetOtherPlayer(localPlayer);
+        GameObject otherPlayer = GameManager.Instance.GetOtherPlayer(localPlayer);
         if (otherPlayer == null)
         {
-            GetAllPlayers();
+            photonView.RPC("GetAllPlayers", RpcTarget.All);
             return;
         }
 
-        GameManager.Instance.playersList.Add(otherPlayer);*/
+        GameManager.Instance.playersList.Add(otherPlayer);
     }
 
     public void CreateCustomRoom()

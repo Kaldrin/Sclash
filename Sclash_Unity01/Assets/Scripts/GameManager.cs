@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+using Photon.Pun;
+using Photon.Realtime
 
 // Created for Unity 2019.1.1f1
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPun
 {
     #region VARIABLES
     #region MANAGERS
@@ -17,7 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] AudioManager audioManager = null;
 
     [Tooltip("The MenuManager script instance reference")]
-    [SerializeField]  MenuManager menuManager = null;
+    [SerializeField] MenuManager menuManager = null;
 
     [Tooltip("The CameraManager script instance reference")]
     [SerializeField] CameraManager cameraManager = null;
@@ -30,10 +32,10 @@ public class GameManager : MonoBehaviour
     #endregion
 
 
-    
 
 
-    # region GAME STATE
+
+    #region GAME STATE
     public enum GAMESTATE
     {
         menu,
@@ -128,16 +130,17 @@ public class GameManager : MonoBehaviour
     [Tooltip("The player prefab reference")]
     [SerializeField] GameObject player = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
-    [SerializeField] public GameObject[] playerSpawns = {null, null};
-    [HideInInspector] public List<GameObject> playersList = new List<GameObject>(2);
+    [SerializeField] public GameObject[] playerSpawns = { null, null };
+    public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
-    [SerializeField] public Color[]
-        playersColors = {Color.red, Color.yellow},
-        attackSignColors = {Color.red, Color.yellow},
-        playerLightsColors = {Color.red, Color.yellow};
+    [SerializeField]
+    public Color[]
+        playersColors = { Color.red, Color.yellow },
+        attackSignColors = { Color.red, Color.yellow },
+        playerLightsColors = { Color.red, Color.yellow };
     [Tooltip("The names to identify the players")]
-    [SerializeField] string[] playerNames = {"Aka", "Ao"};
+    [SerializeField] string[] playerNames = { "Aka", "Ao" };
     [HideInInspector] public bool playerDead = false;
     # endregion
 
@@ -150,7 +153,8 @@ public class GameManager : MonoBehaviour
     [Header("FX")]
     [Tooltip("The level of time slow down that is activated when a player dies")]
     [SerializeField] public float roundEndSlowMoTimeScale = 0.2f;
-    [SerializeField] public float
+    [SerializeField]
+    public float
         minTimeScale = 0.05f,
         roundEndSlowMoDuration = 1.3f,
         roundEndTimeScaleFadeSpeed = 0.05f,
@@ -167,7 +171,7 @@ public class GameManager : MonoBehaviour
         dodgeSlowMoDuration = 2f,
         dodgeTimeScaleFadeSpeed = 0.2f,
         deathCameraShakeDuration = 0.3f;
-    
+
     float
         actualTimeScaleUpdateSmoothness = 0.05f,
         baseTimeScale = 1,
@@ -206,14 +210,14 @@ public class GameManager : MonoBehaviour
     List<Color> originalParticleSystemsColors = new List<Color>();
     List<Gradient> originalParticleSystemsGradients = new List<Gradient>();
     List<float> originalLightsIntensities = new List<float>();
-    # endregion
-    
+    #endregion
 
 
 
 
 
-    # region CHEATS FOR DEVELOPMENT PURPOSES
+
+    #region CHEATS FOR DEVELOPMENT PURPOSES
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
     [Tooltip("Use cheat codes ?")]
@@ -223,7 +227,7 @@ public class GameManager : MonoBehaviour
     int timeSlowDownLevel = 0;
 
     [SerializeField] float[] timeSlowDownSteps = null;
-    
+
     [Tooltip("The key to activate the slow motion cheat")]
     [SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
     #endregion
@@ -434,8 +438,8 @@ public class GameManager : MonoBehaviour
 
 
         yield return new WaitForSeconds(0.1f);
-      
-        
+
+
         SwitchState(GAMESTATE.game);
         cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
 
@@ -443,16 +447,16 @@ public class GameManager : MonoBehaviour
         // AUDIO
         audioManager.ActivateWind();
 
-         
+
         yield return new WaitForSeconds(0.5f);
 
-        
+
         //cameraManager.FindPlayers();
 
 
         // AUDIO
         audioManager.matchBeginsRandomSoundSource.Play();
-        
+
 
 
         yield return new WaitForSeconds(timeBeforeBattleCameraActivationWhenGameStarts);
@@ -492,7 +496,6 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
 
     #endregion
 
@@ -604,6 +607,20 @@ public class GameManager : MonoBehaviour
 
         playerDead = false;
     }
+
+    public GameObject GetOtherPlayer(GameObject o)
+    {
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            if (playersList[i] == o)
+            {
+                return o;
+            }
+        }
+
+        return null;
+    }
+
     # endregion
 
 
@@ -654,7 +671,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            return false;  
+            return false;
         }
     }
 
@@ -738,7 +755,7 @@ public class GameManager : MonoBehaviour
     IEnumerator ResetGameCoroutine(bool remathRightAfter)
     {
         SwitchState(GAMESTATE.loading);
-        
+
 
         // Activates the menu blur panel if it is not supposed to start a new match right after
         if (!remathRightAfter)
@@ -766,7 +783,7 @@ public class GameManager : MonoBehaviour
 
 
         // AUDIO
-        audioManager.ResetBattleMusicPhase();  
+        audioManager.ResetBattleMusicPhase();
 
 
         // Restarts a new match right after it is finished being set up
@@ -826,7 +843,7 @@ public class GameManager : MonoBehaviour
 
 
         yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
-        
+
 
         // MENU
         blurPanel.SetActive(false);
@@ -980,7 +997,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
-            
+
 
             // Reactivates the background of the map if it's referenced
             if (mapLoader.currentMap.GetComponent<MapPrefab>() && mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length > 0)
@@ -1044,7 +1061,7 @@ public class GameManager : MonoBehaviour
 
         // TIME
         Time.timeScale = timeScaleObjective;
-    } 
+    }
 
     // Update the timescale smoothly for smooth slow mo effects in FixedUpdate
     void RunTimeScaleUpdate()
@@ -1077,6 +1094,9 @@ public class GameManager : MonoBehaviour
     {
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
     }
+
     #endregion
-    # endregion
+   
+    #endregion
+
 }
