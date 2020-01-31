@@ -278,8 +278,6 @@ public class CameraManager : MonoBehaviour
 
                 for (int i = 0; i < playersList.Length; i++)
                 {
-                    Debug.Log(playersList[i], playersList[i]);
-
                     temporaryCalculationPosition.x += playersList[i].transform.position.x;
                 }
 

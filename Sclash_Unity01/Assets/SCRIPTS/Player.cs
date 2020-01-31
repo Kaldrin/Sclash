@@ -559,7 +559,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     return;
                 }
 
-                lerpValue += Time.deltaTime*5;
+                lerpValue += Time.deltaTime * 5;
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
                 Debug.Log("Lerping pos to network pos", gameObject);
             }
@@ -2105,15 +2105,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // ORIENTATION CALLED IN UPDATE
     public void ManageOrientation()
     {
-        if (this.photonView != null && !this.photonView.IsMine)
-        {
-            return;
-        }
+        /**if (this.photonView != null)
+            if (!this.photonView.IsMine)
+                return;
+        */
 
         // Orient towards the enemy if player can in their current state
         if (canOrientTowardsEnemy)
         {
-            GameObject p1 = null, p2 = null, self = null, other = null;
+            GameObject p1 = null, p2 = null;
+            Vector3 self = Vector3.zero, other = Vector3.zero;
             Player[] stats = FindObjectsOfType<Player>();
 
             foreach (Player stat in stats)
@@ -2133,28 +2134,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
 
-            if (p1 == null || p2 == null)
-            {
-                return;
-            }
-
             if (p1 == gameObject)
             {
-                self = p1;
-                other = p2;
+                self = p1.transform.position;
+                other = p2.transform.position;
             }
             else if (p2 == gameObject)
             {
-                self = p2;
-                other = p1;
+                self = p2.transform.position;
+                other = p1.transform.position;
             }
 
+            if (self == Vector3.zero || other == Vector3.zero)
+            {
 
-            float sign;
-            if (stats.Length == 2)
-                sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
-            else
-                sign = -1;
+            }
+
+            float sign = Mathf.Sign(self.x - other.x);
 
             if (orientationCooldownFinished)
                 ApplyOrientation(sign);
