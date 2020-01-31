@@ -546,16 +546,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per graphic frame
     void Update()
     {
-        if (lerpToTarget)
+        if (photonView != null && photonView.IsMine)
         {
-            if (lerpValue >= 1f)
+            if (lerpToTarget)
             {
-                lerpToTarget = false;
-                return;
-            }
+                if (lerpValue >= 1f)
+                {
+                    lerpToTarget = false;
+                    return;
+                }
 
-            lerpValue += Time.deltaTime;
-            transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
+                lerpValue += Time.deltaTime;
+                transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
+            }
         }
 
         // Action depending on state
