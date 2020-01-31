@@ -2096,12 +2096,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             foreach (Player stat in stats)
             {
-                if (stat == null)
-                {
-                    Debug.LogError("Player not found");
-                    return;
-                }
-
                 switch (stat.playerNum)
                 {
                     case 0:
@@ -2117,6 +2111,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
 
+            if(p1 == null || p2 == null)
+            {
+                Debug.LogError("Player not found");
+                return;
+            }
 
             if (p1 == gameObject)
             {
