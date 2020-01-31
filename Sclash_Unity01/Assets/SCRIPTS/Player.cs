@@ -546,7 +546,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per graphic frame
     void Update()
     {
-        if (photonView != null && photonView.IsMine)
+
+        if (photonView != null && !photonView.IsMine)
         {
             Debug.Log("checking network pos", gameObject);
             if (lerpToTarget)
@@ -558,7 +559,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     return;
                 }
 
-                lerpValue += Time.deltaTime;
+                lerpValue += Time.deltaTime*5;
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
                 Debug.Log("Lerping pos to network pos", gameObject);
             }
@@ -2257,6 +2258,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             netTargetPos = new Vector3(xPos, transform.position.y, transform.position.z);
             if (oldPos != netTargetPos)
             {
+                lerpValue = 0f;
                 lerpToTarget = true;
             }
 

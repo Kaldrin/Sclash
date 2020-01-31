@@ -263,6 +263,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                     }
                 }
 
+                foreach (Player p in playersStats)
+                {
+                    p.ManageOrientation();
+                }
+
                 Debug.Log("All players are here");
                 CameraManager.Instance.FindPlayers();
             }
