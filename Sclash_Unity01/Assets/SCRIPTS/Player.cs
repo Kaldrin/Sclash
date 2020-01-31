@@ -548,8 +548,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView != null && photonView.IsMine)
         {
+            Debug.Log("checking network pos", gameObject);
             if (lerpToTarget)
             {
+                Debug.Log("Lerping");
                 if (lerpValue >= 1f)
                 {
                     lerpToTarget = false;
@@ -558,6 +560,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 lerpValue += Time.deltaTime;
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
+                Debug.Log("Lerping pos to network pos", gameObject);
             }
         }
 
@@ -2252,7 +2255,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             oldPos = transform.position;
             netTargetPos = new Vector3(xPos, transform.position.y, transform.position.z);
-            lerpToTarget = true;
+            if (oldPos != netTargetPos)
+            {
+                lerpToTarget = true;
+            }
 
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
