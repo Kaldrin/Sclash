@@ -2108,7 +2108,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             if (p1 == null || p2 == null)
             {
-                StartCoroutine(LateManageOrientation());
                 return;
             }
 
@@ -2140,52 +2139,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             orientationCooldownFinished = true;
         }
     }
-
-    IEnumerator LateManageOrientation()
-    {
-        yield return new WaitForEndOfFrame();
-
-        GameObject p1 = null, p2 = null, self = null, other = null;
-        Player[] stats = FindObjectsOfType<Player>();
-
-        foreach (Player stat in stats)
-        {
-            switch (stat.playerNum)
-            {
-                case 0:
-                    p1 = stat.gameObject;
-                    break;
-
-                case 1:
-                    p2 = stat.gameObject;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        if (p1 == gameObject)
-        {
-            self = p1;
-            other = p2;
-        }
-        else if (p2 == gameObject)
-        {
-            self = p2;
-            other = p1;
-        }
-
-
-        float sign;
-        if (stats.Length == 2)
-            sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
-        else
-            sign = -1;
-
-        if (orientationCooldownFinished)
-            ApplyOrientation(sign);
-    }
+   
 
     // Immediatly rotates the player
     void ApplyOrientation(float sign)
