@@ -2089,9 +2089,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             GameObject p1 = null, p2 = null, self = null, other = null;
             Player[] stats = FindObjectsOfType<Player>();
 
+            if(stats.Length < 2)
+            {
+                Debug.LogWarning("Only one player in scene");
+            }
 
             foreach (Player stat in stats)
             {
+                if (stat == null)
+                {
+                    Debug.LogError("Player not found");
+                    return;
+                }
+
                 switch (stat.playerNum)
                 {
                     case 0:
@@ -2119,8 +2129,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 other = p1;
             }
 
-
             float sign;
+
             if (stats.Length == 2)
                 sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
             else
