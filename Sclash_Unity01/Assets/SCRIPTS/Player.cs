@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Photon.Realtime;
+using Photon.Pun;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region VARIABLES
     #region MANAGERS
@@ -1331,7 +1333,6 @@ public class Player : MonoBehaviour
         if (rb.simulated == false)
             rb.simulated = true;
 
-
         rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
 
 
@@ -2088,9 +2089,6 @@ public class Player : MonoBehaviour
             GameObject p1 = null, p2 = null, self = null, other = null;
             Player[] stats = FindObjectsOfType<Player>();
 
-            if (stats.Length < 2)
-                return;
-                
 
             foreach (Player stat in stats)
             {
@@ -2122,8 +2120,11 @@ public class Player : MonoBehaviour
             }
 
 
-            float sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
-
+            float sign;
+            if (stats.Length == 2)
+                sign = Mathf.Sign(self.transform.position.x - other.transform.position.x);
+            else
+                sign = -1;
 
             if (orientationCooldownFinished)
                 ApplyOrientation(sign);
@@ -2204,6 +2205,26 @@ public class Player : MonoBehaviour
             stamina = maxStamina;
         }
     }
+
     #endregion
     #endregion
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(playerState);
+            stream.SendNext(transform.position.x);
+            stream.SendNext(transform.localScale.x);
+        }
+        else if (stream.IsReading)
+        {
+            playerState = (STATE)stream.ReceiveNext();
+            float xPos = (float)stream.ReceiveNext();
+            float xScale = (float)stream.ReceiveNext();
+
+            transform.position = new Vector3(xPos, transform.position.y, transform.position.z);
+            transform.localScale = new Vector3(xScale, transform.position.y, transform.position.z);
+        }
+    }
 }

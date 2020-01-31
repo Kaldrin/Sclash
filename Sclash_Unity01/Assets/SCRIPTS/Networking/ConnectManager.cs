@@ -95,8 +95,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
 
         GameManager.Instance.playersList.Clear();
-        CameraManager.Instance.FindPlayers();
-
 
         //  JOIN OR CREATE ROOM  //
         JoinRoom();
@@ -112,10 +110,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         GameObject newPlayer = PhotonNetwork.Instantiate("PlayerNetwork", spawnPos, Quaternion.identity);
         newPlayer.name = "Player" + PhotonNetwork.CurrentRoom.PlayerCount;
 
+        CameraManager.Instance.FindPlayers();
+
         Debug.LogFormat("Spawning on spawner {0} : {1}", PhotonNetwork.CurrentRoom.PlayerCount - 1, spawnPos);
 
         Player stats = newPlayer.GetComponent<Player>();
         PlayerAnimations playerAnimations = newPlayer.GetComponent<PlayerAnimations>();
+
 
         stats.playerNum = PhotonNetwork.CurrentRoom.PlayerCount - 1;
         stats.ResetAllPlayerValuesForNextMatch();
@@ -141,6 +142,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             GameManager.Instance.playersList.Add(newPlayer);
 
 
+        yield return new WaitForEndOfFrame();
 
         // INIT MATCH //
         stats.SwitchState(Player.STATE.sneathed);
@@ -160,6 +162,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         Debug.Log("PUN : OnJoinedRoom() called by PUN. Player is now in a room");
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
+
+        CameraManager.Instance.actualXSmoothMovementsMultiplier = CameraManager.Instance.battleXSmoothMovementsMultiplier;
+        CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
+        CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
     }
 
     #endregion

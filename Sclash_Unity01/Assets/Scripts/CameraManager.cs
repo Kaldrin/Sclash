@@ -237,7 +237,6 @@ public class CameraManager : MonoBehaviour
         Player[] playersScripts = FindObjectsOfType<Player>();
         playersList = new GameObject[playersScripts.Length];
 
-
         for (int i = 0; i < playersScripts.Length; i++)
         {
             playersList[i] = playersScripts[i].gameObject;

@@ -2,20 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAnimations : MonoBehaviour
+using Photon.Pun;
+using Photon.Realtime;
+
+public class PlayerAnimations : MonoBehaviourPunCallbacks
 {
-    #region MANAGERS
-    // MANAGERS
-    [Header("HEADER")]
-    [SerializeField] string inputManagerName = "GlobalManager";
-
-    InputManager inputManager = null;
-    #endregion
-
-
-
-
-
 
     #region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
@@ -33,9 +24,8 @@ public class PlayerAnimations : MonoBehaviour
     [SerializeField] public GameObject legsMask = null;
 
     [Tooltip("The reference to the player's SpriteRenderers components for the character and their legs")]
-    [SerializeField] public SpriteRenderer
-        spriteRenderer = null,
-        legsSpriteRenderer = null;
+    [SerializeField]
+    public SpriteRenderer spriteRenderer, legsSpriteRenderer = null;
 
     [SerializeField] Player playerScript = null;
     # endregion
@@ -50,9 +40,8 @@ public class PlayerAnimations : MonoBehaviour
     [Header("ANIMATION VALUES")]
     [Tooltip("The minimum speed required for the walk anim to trigger")]
     [SerializeField] float minSpeedForWalkAnim = 0.05f;
-    [HideInInspector] public float
-        animatorBaseSpeed = 0,
-        legsAnimatorBaseSpeed = 0;
+    [HideInInspector]
+    public float animatorBaseSpeed, legsAnimatorBaseSpeed = 0;
     #endregion
 
 
@@ -63,7 +52,8 @@ public class PlayerAnimations : MonoBehaviour
     // ANIMATOR PARAMETERS
     [Header("PLAYER ANIMATOR PARAMETERS")]
     [SerializeField] string Walk = "Walk";
-    [SerializeField] string
+    [SerializeField]
+    string
         playerWalkDirection = "WalkDirection",
         moving = "Moving",
         stamina = "Stamina",
@@ -130,7 +120,6 @@ public class PlayerAnimations : MonoBehaviour
     private void Start()
     {
         animatorBaseSpeed = animator.speed;
-        inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
     }
 
     // Update is called once per graphic frame
@@ -169,13 +158,13 @@ public class PlayerAnimations : MonoBehaviour
     {
         // DASHING STATE
         animator.SetBool(dashing, playerScript.playerState == Player.STATE.dashing);
-        
+
 
         // WALK ANIM
         // If the player is in fact moving fast enough
         if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
-            animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(inputManager.playerInputs[playerScript.playerNum].horizontal)));
+            animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal)));
         }
         // If the player isn't really moving
         else
@@ -266,7 +255,7 @@ public class PlayerAnimations : MonoBehaviour
 
         animator.SetBool(dead, false);
         animator.SetBool(dashing, false);
-        
+
 
         animator.speed = 1;
 
@@ -371,7 +360,7 @@ public class PlayerAnimations : MonoBehaviour
     // Triggers the sneath animation
     public void TriggerSneath()
     {
-        animator.SetTrigger(sneath);      
+        animator.SetTrigger(sneath);
     }
 
     public void TriggerDrawText()
@@ -566,5 +555,6 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetTrigger(dashOn);
         animator.SetFloat(dashDirection, blendTreeValue);
     }
-    # endregion
+    #endregion
+    
 }
