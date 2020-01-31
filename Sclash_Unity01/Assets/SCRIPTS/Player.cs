@@ -2134,6 +2134,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
 
+            if (p1 == null || p2 == null)
+            {
+                Debug.LogWarning("Player x not found");
+                return;
+            }
+
             if (p1 == gameObject)
             {
                 self = p1.transform.position;
