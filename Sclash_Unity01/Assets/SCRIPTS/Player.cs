@@ -1407,7 +1407,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (inputManager.playerInputs[0].anyKey)
             {
-                TriggerDraw();
+                photonView.RPC("TriggerDraw", RpcTarget.All);
             }
         }
         else
@@ -1420,6 +1420,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Triggers saber draw and informs the game manager
+    [PunRPC]
     void TriggerDraw()
     {
         SwitchState(STATE.drawing);

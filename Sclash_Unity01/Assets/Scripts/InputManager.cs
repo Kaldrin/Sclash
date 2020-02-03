@@ -53,6 +53,11 @@ public class InputManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+    }
+
+    // Update is called once per graphic frame
+    void Update()
+    {
         scoreInput = Input.GetButton("Score");
         ManageHorizontalInput();
         ManageDashInput();
@@ -62,11 +67,6 @@ public class InputManager : MonoBehaviour
         ManageJumpInput();
         ManageParryInput();
         ManageAttackInput();
-    }
-
-    // Update is called once per graphic frame
-    void Update()
-    {
     }
 
     // FixedUpdate is called 50 times per second

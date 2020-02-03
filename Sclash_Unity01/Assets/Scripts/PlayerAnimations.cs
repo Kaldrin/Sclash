@@ -164,7 +164,15 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         // If the player is in fact moving fast enough
         if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
-            animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal)));
+            if (ConnectManager.Instance.enableMultiplayer)
+            {
+                animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal)));
+
+            }
+            else
+            {
+                animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal)));
+            }
         }
         // If the player isn't really moving
         else
@@ -556,5 +564,5 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animator.SetFloat(dashDirection, blendTreeValue);
     }
     #endregion
-    
+
 }
