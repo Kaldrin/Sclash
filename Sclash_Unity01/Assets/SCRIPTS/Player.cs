@@ -576,6 +576,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.sneathed:
+                ManageOrientation();
                 ManageDraw();
                 break;
 
@@ -2105,28 +2106,30 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // ORIENTATION CALLED IN UPDATE
     public void ManageOrientation()
     {
-        /**if (this.photonView != null)
-            if (!this.photonView.IsMine)
+        if (photonView != null)
+            if (!photonView.IsMine)
                 return;
-        */
 
         // Orient towards the enemy if player can in their current state
         if (canOrientTowardsEnemy)
         {
-            GameObject p1 = null, p2 = null;
+            GameObject z = null, p1 = null, p2 = null;
             Vector3 self = Vector3.zero, other = Vector3.zero;
             Player[] stats = FindObjectsOfType<Player>();
 
+            Debug.Log(stats.Length);
             foreach (Player stat in stats)
             {
                 switch (stat.playerNum)
                 {
                     case 0:
                         p1 = stat.gameObject;
+                        Debug.Log("Player1 = "+p1, gameObject);
                         break;
 
                     case 1:
                         p2 = stat.gameObject;
+                        Debug.Log("Player2 = "+p2, gameObject);
                         break;
 
                     default:
@@ -2134,12 +2137,22 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
 
-            if (p1 == null || p2 == null)
+            if (p1 == null)
             {
-                Debug.LogWarning("Player x not found");
-                return;
+                Debug.LogWarning("Player 1 not found");
+                z = new GameObject();
+                z.transform.position = Vector3.zero;
+                p1 = z;
             }
 
+            if (p2 == null)
+            {
+                Debug.LogWarning("Player 2 not found");
+                z = new GameObject();
+                z.transform.position = Vector3.zero;
+                p2 = z;
+            }
+            
             if (p1 == gameObject)
             {
                 self = p1.transform.position;
@@ -2150,13 +2163,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 self = p2.transform.position;
                 other = p1.transform.position;
             }
-
-            if (self == Vector3.zero || other == Vector3.zero)
-            {
-
-            }
-
+            
             float sign = Mathf.Sign(self.x - other.x);
+
+            Destroy(z);
 
             if (orientationCooldownFinished)
                 ApplyOrientation(sign);
@@ -2246,12 +2256,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(playerNum);
             stream.SendNext(playerState);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
         }
         else if (stream.IsReading)
         {
+            playerNum = (int)stream.ReceiveNext();
             playerState = (STATE)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
