@@ -82,6 +82,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         PhotonNetwork.JoinRoom(roomName.text);
     }
     
+    public void SetMultiplayer(bool multiplayer)
+    {
+        enableMultiplayer = multiplayer;
+    }
 
     #region Init room
 

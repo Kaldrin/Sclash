@@ -1087,6 +1087,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 instigator.GetComponent<Player>().TriggerClash();
 
 
+
                 // FX
                 Vector3 fxPos = new Vector3((gameManager.playersList[0].transform.position.x + gameManager.playersList[1].transform.position.x) / 2, clashFX.transform.position.y, clashFX.transform.position.z);
                 Instantiate(clashFXPrefabRef, fxPos, clashFX.transform.rotation, null).GetComponent<ParticleSystem>().Play();
@@ -1549,7 +1550,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)
             {
-                ReleaseAttack();
+                photonView.RPC("ReleaseAttack", RpcTarget.All);
             }
         }
         else
@@ -1567,7 +1568,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
-                ReleaseAttack();
+                if (ConnectManager.Instance.enableMultiplayer)
+                {
+                    photonView.RPC("ReleaseAttack", RpcTarget.All);
+                }
+                else
+                {
+                    ReleaseAttack();
+                }
             }
         }
         // Pass charge levels
@@ -1616,6 +1624,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region ATTACK
     // ATTACK
     // Triggers the attack
+    [PunRPC]
     void ReleaseAttack()
     {
         // FX
@@ -2013,6 +2022,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     //CLASHED
 
     // The player have been clashed / parried
+    [PunRPC]
     void TriggerClash()
     {
         SwitchState(STATE.clashed);
@@ -2196,7 +2206,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
 
-        
+
     }
 
     // If the player collides with a wall
@@ -2455,6 +2465,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             stream.SendNext(playerNum);
             stream.SendNext(playerState);
+            stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
         }
@@ -2462,6 +2473,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             playerNum = (int)stream.ReceiveNext();
             playerState = (STATE)stream.ReceiveNext();
+            stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
 
