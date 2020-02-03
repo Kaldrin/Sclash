@@ -131,6 +131,10 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
+        if (photonView != null)
+            if (!photonView.IsMine)
+                return;
+
         /*
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
         {
@@ -167,7 +171,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
             if (ConnectManager.Instance.enableMultiplayer)
             {
                 animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal)));
-
             }
             else
             {
