@@ -117,13 +117,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Player stats = newPlayer.GetComponent<Player>();
         PlayerAnimations playerAnimations = newPlayer.GetComponent<PlayerAnimations>();
 
+        ///Manage Input
+        InputManager.Instance.playerInputs = new InputManager.PlayerInputs[1];
 
         stats.playerNum = PhotonNetwork.CurrentRoom.PlayerCount - 1;
         stats.ResetAllPlayerValuesForNextMatch();
-
-        ///Input setup
-        InputManager.Instance.playerInputs = new InputManager.PlayerInputs[1];
-
+        
         ///Animation setup
         playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
         playerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];

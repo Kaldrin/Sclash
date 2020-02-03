@@ -1358,7 +1358,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (rb.simulated == false)
             rb.simulated = true;
 
-        rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+        if (ConnectManager.Instance.enableMultiplayer)
+            rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+        else
+            rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
 
 
         // FX
@@ -1400,9 +1403,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detects draw input
     void ManageDraw()
     {
-        if (inputManager.playerInputs[playerNum].anyKey)
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            TriggerDraw();
+            if (inputManager.playerInputs[0].anyKey)
+            {
+                TriggerDraw();
+            }
+        }
+        else
+        {
+            if (inputManager.playerInputs[playerNum].anyKey)
+            {
+                TriggerDraw();
+            }
         }
     }
 
@@ -1430,9 +1443,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // JUMP
     void ManageJump()
     {
-        if (!inputManager.playerInputs[playerNum].jump)
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            StartCoroutine(JumpCoroutine());
+            if (!inputManager.playerInputs[0].jump)
+            {
+                StartCoroutine(JumpCoroutine());
+            }
+        }
+        else
+        {
+
+            if (!inputManager.playerInputs[playerNum].jump)
+            {
+                StartCoroutine(JumpCoroutine());
+            }
         }
     }
 
@@ -1454,32 +1478,63 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Manages the detection of attack charge inputs
     void ManageChargeInput()
     {
-        // Player presses attack button
-        if (inputManager.playerInputs[playerNum].attack && canCharge)
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            if (stamina >= staminaCostForMoves)
+            // Player presses attack button
+            if (inputManager.playerInputs[0].attack && canCharge)
             {
-                SwitchState(STATE.charging);
+                if (stamina >= staminaCostForMoves)
+                {
+                    SwitchState(STATE.charging);
 
 
-                chargeStartTime = Time.time;
+                    chargeStartTime = Time.time;
 
 
-                // FX
-                chargeFlareFX.Play();
+                    // FX
+                    chargeFlareFX.Play();
 
 
-                // ANIMATION
-                playerAnimations.CancelCharge(false);
-                playerAnimations.TriggerCharge(true);
+                    // ANIMATION
+                    playerAnimations.CancelCharge(false);
+                    playerAnimations.TriggerCharge(true);
+                }
+            }
+
+            // Player releases attack button
+            if (!inputManager.playerInputs[0].attack)
+            {
+                canCharge = true;
             }
         }
-
-
-        // Player releases attack button
-        if (!inputManager.playerInputs[playerNum].attack)
+        else
         {
-            canCharge = true;
+            // Player presses attack button
+            if (inputManager.playerInputs[playerNum].attack && canCharge)
+            {
+                if (stamina >= staminaCostForMoves)
+                {
+                    SwitchState(STATE.charging);
+
+
+                    chargeStartTime = Time.time;
+
+
+                    // FX
+                    chargeFlareFX.Play();
+
+
+                    // ANIMATION
+                    playerAnimations.CancelCharge(false);
+                    playerAnimations.TriggerCharge(true);
+                }
+            }
+
+            // Player releases attack button
+            if (!inputManager.playerInputs[playerNum].attack)
+            {
+                canCharge = true;
+            }
         }
     }
 
@@ -1488,11 +1543,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //currentChargeFramesPressed++;
 
 
-
-        //Player releases attack button
-        if (!inputManager.playerInputs[playerNum].attack)
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            ReleaseAttack();
+            //Player releases attack button
+            if (!inputManager.playerInputs[0].attack)
+            {
+                ReleaseAttack();
+            }
+        }
+        else
+        {
+            //Player releases attack button
+            if (!inputManager.playerInputs[playerNum].attack)
+            {
+                ReleaseAttack();
+            }
         }
 
 
@@ -1603,36 +1668,68 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Vector3 dashDirection3D = new Vector3(0, 0, 0);
         float dashDirection = 0;
 
-
-        if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) * transform.localScale.x;
-            dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[playerNum].horizontal), 0, 0);
-
-
-            // Dash distance
-            if (Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) == -Mathf.Sign(transform.localScale.x))
+            if (Mathf.Abs(inputManager.playerInputs[0].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
             {
-                actualUsedDashDistance = forwardAttackDashDistance;
+                dashDirection = Mathf.Sign(inputManager.playerInputs[0].horizontal) * transform.localScale.x;
+                dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[0].horizontal), 0, 0);
 
 
-                // FX
-                attackDashFXFront.Play();
+                // Dash distance
+                if (Mathf.Sign(inputManager.playerInputs[0].horizontal) == -Mathf.Sign(transform.localScale.x))
+                {
+                    actualUsedDashDistance = forwardAttackDashDistance;
+
+
+                    // FX
+                    attackDashFXFront.Play();
+                }
+                else
+                {
+                    actualUsedDashDistance = backwardsAttackDashDistance;
+
+
+                    // FX
+                    attackDashFXBack.Play();
+                }
             }
             else
             {
-                actualUsedDashDistance = backwardsAttackDashDistance;
-
-
-                // FX
-                attackDashFXBack.Play();
+                attackNeutralFX.Play();
             }
         }
         else
         {
-            attackNeutralFX.Play();
-        }
+            if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
+            {
+                dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) * transform.localScale.x;
+                dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[playerNum].horizontal), 0, 0);
 
+
+                // Dash distance
+                if (Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) == -Mathf.Sign(transform.localScale.x))
+                {
+                    actualUsedDashDistance = forwardAttackDashDistance;
+
+
+                    // FX
+                    attackDashFXFront.Play();
+                }
+                else
+                {
+                    actualUsedDashDistance = backwardsAttackDashDistance;
+
+
+                    // FX
+                    attackDashFXBack.Play();
+                }
+            }
+            else
+            {
+                attackNeutralFX.Play();
+            }
+        }
 
         dashDirection3D *= actualUsedDashDistance;
         initPos = transform.position;
@@ -1722,11 +1819,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detect parry inputs
     void ManageParryInput()
     {
-        if (inputManager.playerInputs[playerNum].parry)
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            currentParryFramesPressed++;
-            TriggerParry();
-            currentParryFramesPressed = 0;
+            if (inputManager.playerInputs[0].parry)
+            {
+                currentParryFramesPressed++;
+                TriggerParry();
+                currentParryFramesPressed = 0;
+            }
+        }
+        else
+        {
+            if (inputManager.playerInputs[playerNum].parry)
+            {
+                currentParryFramesPressed++;
+                TriggerParry();
+                currentParryFramesPressed = 0;
+            }
         }
     }
 
@@ -1763,17 +1872,35 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detect pommel inputs
     void ManagePommel()
     {
-        if (!inputManager.playerInputs[playerNum].kick)
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            canPommel = true;
+            if (!inputManager.playerInputs[0].kick)
+            {
+                canPommel = true;
+            }
+
+
+            if (inputManager.playerInputs[0].kick && canPommel)
+            {
+                canPommel = false;
+
+                TriggerPommel();
+            }
         }
-
-
-        if (inputManager.playerInputs[playerNum].kick && canPommel)
+        else
         {
-            canPommel = false;
+            if (!inputManager.playerInputs[playerNum].kick)
+            {
+                canPommel = true;
+            }
 
-            TriggerPommel();
+
+            if (inputManager.playerInputs[playerNum].kick && canPommel)
+            {
+                canPommel = false;
+
+                TriggerPommel();
+            }
         }
     }
 
@@ -1936,68 +2063,138 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Functions to detect the dash input etc
     void ManageDashInput()
     {
-        // Detects dash with basic input rather than double tap, shortcut
-        if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
-            currentShortcutDashStep = DASHSTEP.rest;
-        }
-
-
-        if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
-        {
-            dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].dash);
-
-
-            TriggerBasicDash();
-        }
-
-
-        // Resets the dash input if too much time has passed
-        if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
-        {
-            if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
+            // Detects dash with basic input rather than double tap, shortcut
+            if (Mathf.Abs(inputManager.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
             {
-                currentDashStep = DASHSTEP.invalidated;
+                //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
+                currentShortcutDashStep = DASHSTEP.rest;
             }
-        }
 
 
-        // The player needs to let go the direction before pressing it again to dash
-        if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) < dashDeadZone)
-        {
-            if (currentDashStep == DASHSTEP.firstInput)
+            if (Mathf.Abs(inputManager.playerInputs[0].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
             {
-                currentDashStep = DASHSTEP.firstRelease;
-            }
-            // To make the first dash input he must have not been pressing it before, we need a double tap
-            else if (currentDashStep == DASHSTEP.invalidated)
-            {
-                currentDashStep = DASHSTEP.rest;
-            }
-        }
+                dashDirection = Mathf.Sign(inputManager.playerInputs[0].dash);
 
 
-        // When the player presses the direction
-        // Presses the
-        if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > dashDeadZone)
-        {
-            temporaryDashDirectionForCalculation = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal);
-
-            if (currentDashStep == DASHSTEP.rest)
-            {
-                currentDashStep = DASHSTEP.firstInput;
-                dashDirection = temporaryDashDirectionForCalculation;
-                dashInitializationStartTime = Time.time;
-
-            }
-            // Dash is validated, the player is gonna dash
-            else if (currentDashStep == DASHSTEP.firstRelease && dashDirection == temporaryDashDirectionForCalculation && stamina >= staminaCostForMoves)
-            {
-                currentDashStep = DASHSTEP.invalidated;
                 TriggerBasicDash();
             }
+
+
+            // Resets the dash input if too much time has passed
+            if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
+            {
+                if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
+                {
+                    currentDashStep = DASHSTEP.invalidated;
+                }
+            }
+
+
+            // The player needs to let go the direction before pressing it again to dash
+            if (Mathf.Abs(inputManager.playerInputs[0].horizontal) < dashDeadZone)
+            {
+                if (currentDashStep == DASHSTEP.firstInput)
+                {
+                    currentDashStep = DASHSTEP.firstRelease;
+                }
+                // To make the first dash input he must have not been pressing it before, we need a double tap
+                else if (currentDashStep == DASHSTEP.invalidated)
+                {
+                    currentDashStep = DASHSTEP.rest;
+                }
+            }
+
+
+            // When the player presses the direction
+            // Presses the
+            if (Mathf.Abs(inputManager.playerInputs[0].horizontal) > dashDeadZone)
+            {
+                temporaryDashDirectionForCalculation = Mathf.Sign(inputManager.playerInputs[0].horizontal);
+
+                if (currentDashStep == DASHSTEP.rest)
+                {
+                    currentDashStep = DASHSTEP.firstInput;
+                    dashDirection = temporaryDashDirectionForCalculation;
+                    dashInitializationStartTime = Time.time;
+
+                }
+                // Dash is validated, the player is gonna dash
+                else if (currentDashStep == DASHSTEP.firstRelease && dashDirection == temporaryDashDirectionForCalculation && stamina >= staminaCostForMoves)
+                {
+                    currentDashStep = DASHSTEP.invalidated;
+                    TriggerBasicDash();
+                }
+            }
         }
+        else
+        {
+            // Detects dash with basic input rather than double tap, shortcut
+            if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
+            {
+                //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
+                currentShortcutDashStep = DASHSTEP.rest;
+            }
+
+
+            if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
+            {
+                dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].dash);
+
+
+                TriggerBasicDash();
+            }
+
+
+            // Resets the dash input if too much time has passed
+            if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
+            {
+                if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
+                {
+                    currentDashStep = DASHSTEP.invalidated;
+                }
+            }
+
+
+            // The player needs to let go the direction before pressing it again to dash
+            if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) < dashDeadZone)
+            {
+                if (currentDashStep == DASHSTEP.firstInput)
+                {
+                    currentDashStep = DASHSTEP.firstRelease;
+                }
+                // To make the first dash input he must have not been pressing it before, we need a double tap
+                else if (currentDashStep == DASHSTEP.invalidated)
+                {
+                    currentDashStep = DASHSTEP.rest;
+                }
+            }
+
+
+            // When the player presses the direction
+            // Presses the
+            if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > dashDeadZone)
+            {
+                temporaryDashDirectionForCalculation = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal);
+
+                if (currentDashStep == DASHSTEP.rest)
+                {
+                    currentDashStep = DASHSTEP.firstInput;
+                    dashDirection = temporaryDashDirectionForCalculation;
+                    dashInitializationStartTime = Time.time;
+
+                }
+                // Dash is validated, the player is gonna dash
+                else if (currentDashStep == DASHSTEP.firstRelease && dashDirection == temporaryDashDirectionForCalculation && stamina >= staminaCostForMoves)
+                {
+                    currentDashStep = DASHSTEP.invalidated;
+                    TriggerBasicDash();
+                }
+            }
+        }
+
+        
     }
 
     // If the player collides with a wall
@@ -2118,19 +2315,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             Vector3 self = Vector3.zero, other = Vector3.zero;
             Player[] stats = FindObjectsOfType<Player>();
 
-            Debug.Log(stats.Length);
             foreach (Player stat in stats)
             {
                 switch (stat.playerNum)
                 {
                     case 0:
                         p1 = stat.gameObject;
-                        Debug.Log("Player1 = "+p1, gameObject);
                         break;
 
                     case 1:
                         p2 = stat.gameObject;
-                        Debug.Log("Player2 = "+p2, gameObject);
                         break;
 
                     default:
@@ -2153,7 +2347,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 z.transform.position = Vector3.zero;
                 p2 = z;
             }
-            
+
             if (p1 == gameObject)
             {
                 self = p1.transform.position;
@@ -2164,7 +2358,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 self = p2.transform.position;
                 other = p1.transform.position;
             }
-            
+
             float sign = Mathf.Sign(self.x - other.x);
 
             Destroy(z);
