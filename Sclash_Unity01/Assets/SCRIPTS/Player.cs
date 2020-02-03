@@ -1885,7 +1885,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 canPommel = false;
 
-                TriggerPommel();
+                photonView.RPC("TriggerPommel", RpcTarget.All);
             }
         }
         else
@@ -1906,6 +1906,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Kick coroutine
+    [PunRPC]
     void TriggerPommel()
     {
         SwitchState(STATE.pommeling);
