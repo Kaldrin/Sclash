@@ -67,7 +67,6 @@ public class InputManager : MonoBehaviour
         ManageJumpInput();
         ManageParryInput();
         ManageAttackInput();
-        
     }
 
     // FixedUpdate is called 50 times per second

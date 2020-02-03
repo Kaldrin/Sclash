@@ -563,6 +563,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
                 Debug.Log("Lerping pos to network pos", gameObject);
             }
+            return;
         }
 
         // Action depending on state

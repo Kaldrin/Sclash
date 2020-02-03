@@ -121,6 +121,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         stats.playerNum = PhotonNetwork.CurrentRoom.PlayerCount - 1;
         stats.ResetAllPlayerValuesForNextMatch();
 
+        ///Input setup
+        InputManager.Instance.playerInputs = new InputManager.PlayerInputs[1];
+
         ///Animation setup
         playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
         playerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
@@ -237,9 +240,28 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             Debug.Log("Update playerlists");
 
             Player[] playersStats = FindObjectsOfType<Player>();
-            foreach (Player p in playersStats)
+            for(int i = 0; i < playersStats.Length; i++)
             {
-                GameManager.Instance.playersList.Add(p.gameObject);
+                GameManager.Instance.playersList.Add(playersStats[i].gameObject);
+
+                //Instantiate 2nd player
+                Player p2 = playersStats[i];
+                PlayerAnimations p2Anim = playersStats[i].gameObject.GetComponent<PlayerAnimations>();
+
+                p2Anim.spriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
+                p2Anim.legsSpriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
+
+                p2Anim.spriteRenderer.sortingOrder = 10 * p2.playerNum;
+                p2Anim.legsSpriteRenderer.sortingOrder = 10 * p2.playerNum;
+                p2Anim.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * p2.playerNum + 2;
+                p2Anim.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * p2.playerNum - 2;
+
+                ///FX Setup
+                ParticleSystem attackSignParticles = p2.attackRangeFX.GetComponent<ParticleSystem>();
+                ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
+                attackSignParticlesMain.startColor = GameManager.Instance.attackSignColors[p2.playerNum];
+
+                p2.playerLight.color = GameManager.Instance.playerLightsColors[p2.playerNum];
             }
 
 
