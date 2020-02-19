@@ -249,8 +249,6 @@ public class MenuBrowser : MonoBehaviour
         }
         else
         {
-            elements[browseIndex].GetComponent<Button>().Select();
-
             if (elements[browseIndex].GetComponent<Button>())
             {
                 elements[browseIndex].GetComponent<Button>().Select();

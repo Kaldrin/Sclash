@@ -14,6 +14,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     AudioManager audioManager;
 
+    bool isConnecting = false;
+
     string gameVersion = "2.7";
     public bool connectedToMaster = false;
     public bool enableMultiplayer;
@@ -45,17 +47,27 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         if (enableMultiplayer)
             Connect();
 
-        spawners = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+        spawners = GameManager.Instance.playerSpawns;
     }
-    
     #endregion
 
     public void Connect()
     {
+        Debug.Log("Connecting ...");
+
         if (!PhotonNetwork.IsConnected)
         {
             PhotonNetwork.GameVersion = gameVersion;
             PhotonNetwork.ConnectUsingSettings();
+            isConnecting = true;
+        }
+    }
+
+    void Update()
+    {
+        if (enableMultiplayer && !PhotonNetwork.IsConnected && isConnecting)
+        {
+            Connect();
         }
     }
 
@@ -79,9 +91,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void JoinSelectedRoom(TextMeshProUGUI roomName)
     {
+        InitMultiplayerMatch(false);
+
         PhotonNetwork.JoinRoom(roomName.text);
     }
-    
+
     public void SetMultiplayer(bool multiplayer)
     {
         enableMultiplayer = multiplayer;
@@ -89,7 +103,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     #region Init room
 
-    public void InitMultiplayerMatch()
+    /// <summary>
+    /// Initialise tous les paramètres pour se connecter au mode en ligne.
+    /// </summary>
+    /// <param name="isJoining"></param>
+
+    public void InitMultiplayerMatch(bool isJoining = true)
     {
         // DELETE EXISTING PLAYERS IN SCENE //
         Player[] oldPlayers = FindObjectsOfType<Player>();
@@ -101,12 +120,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         GameManager.Instance.playersList.Clear();
 
         //  JOIN OR CREATE ROOM  //
-        JoinRoom();
 
+        if (isJoining)
+            JoinRoom();
     }
 
     IEnumerator JoinRoomCoroutine()
     {
+
         // INSTANTIATE PLAYER //
         ///Get player spawns
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
@@ -116,7 +137,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         CameraManager.Instance.FindPlayers();
 
-        Debug.LogFormat("Spawning on spawner {0} : {1}", PhotonNetwork.CurrentRoom.PlayerCount - 1, spawnPos);
+        Debug.LogFormat("Spawning on spawner {0} : {1}", spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1], spawnPos);
 
         Player stats = newPlayer.GetComponent<Player>();
         PlayerAnimations playerAnimations = newPlayer.GetComponent<PlayerAnimations>();
@@ -126,7 +147,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         stats.playerNum = PhotonNetwork.CurrentRoom.PlayerCount - 1;
         stats.ResetAllPlayerValuesForNextMatch();
-        
+
         ///Animation setup
         playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
         playerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
@@ -181,6 +202,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnConnectedToMaster()
     {
+        isConnecting = false;
         connectedToMaster = true;
         Debug.Log("PUN : OnConnectedToMaster() was called by PUN");
         PhotonNetwork.JoinLobby();
@@ -189,6 +211,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("PUN : OnJoinedLobby() was called by PUN");
+        //InitMultiplayerMatch();
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -243,7 +266,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             Debug.Log("Update playerlists");
 
             Player[] playersStats = FindObjectsOfType<Player>();
-            for(int i = 0; i < playersStats.Length; i++)
+            for (int i = 0; i < playersStats.Length; i++)
             {
                 GameManager.Instance.playersList.Add(playersStats[i].gameObject);
 
@@ -307,7 +330,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnLeftRoom()
     {
+        Debug.Log("PUN : OnLeftRoom() was called by PUN");
+        CameraManager.Instance.FindPlayers();
+        GameManager.Instance.playersList = new List<GameObject>(2);
 
+        GameManager.Instance.Start();
+
+        InputManager.Instance.playerInputs = new InputManager.PlayerInputs[2];
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player other)
@@ -325,8 +354,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         GameManager.Instance.playersList.Add(otherPlayer);
     }
 
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        Debug.Log("Player left room");
+        base.OnPlayerLeftRoom(otherPlayer);
+    }
+
     public void CreateCustomRoom()
     {
+        InitMultiplayerMatch(false);
+
         RoomOptions options = new RoomOptions();
         options.CustomRoomPropertiesForLobby = newRoomParameters;
 

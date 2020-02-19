@@ -549,10 +549,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (photonView != null && !photonView.IsMine)
         {
-            Debug.Log("checking network pos", gameObject);
             if (lerpToTarget)
             {
-                Debug.Log("Lerping");
                 if (lerpValue >= 1f)
                 {
                     lerpToTarget = false;
@@ -561,7 +559,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 lerpValue += Time.deltaTime * 5;
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
-                Debug.Log("Lerping pos to network pos", gameObject);
             }
             return;
         }
@@ -1123,7 +1120,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else
             {
                 hit = true;
-                TriggerHit();
+                if (ConnectManager.Instance.enableMultiplayer)
+                    photonView.RPC("TriggerHit", RpcTarget.All);
+                else
+                    TriggerHit();
+
                 audioManager.BattleEventIncreaseIntensity();
             }
 
@@ -1165,6 +1166,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Hit
+    [PunRPC]
     void TriggerHit()
     {
         currentHealth -= 1;
@@ -1834,7 +1836,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (inputManager.playerInputs[0].parry)
             {
                 currentParryFramesPressed++;
-                TriggerParry();
+                photonView.RPC("TriggerParry", RpcTarget.All);
                 currentParryFramesPressed = 0;
             }
         }
@@ -1850,6 +1852,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Parry coroutine
+    [PunRPC]
     void TriggerParry()
     {
         SwitchState(STATE.parrying);

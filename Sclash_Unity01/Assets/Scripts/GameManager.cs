@@ -262,7 +262,7 @@ public class GameManager : MonoBehaviourPun
     }
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         // Set variables
         score = new Vector2(0, 0);
@@ -754,6 +754,11 @@ public class GameManager : MonoBehaviourPun
     // Resets the match settings and values for a next match
     IEnumerator ResetGameCoroutine(bool remathRightAfter)
     {
+        if (photonView != null && ConnectManager.Instance.enableMultiplayer)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
         SwitchState(GAMESTATE.loading);
 
 
