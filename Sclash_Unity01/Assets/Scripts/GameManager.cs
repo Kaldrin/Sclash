@@ -25,8 +25,14 @@ public class GameManager : MonoBehaviour
     [Tooltip("The MapLoader script instance reference")]
     [SerializeField] MapLoader mapLoader = null;
 
-    [Tooltip("The CameraShake script instance reference in the scene")]
-    [SerializeField] public CameraShake cameraShake = null;
+    [Tooltip("The CameraShake scripts instances references in the scene")]
+    [SerializeField] public CameraShake
+        deathCameraShake = null,
+        clashCameraShake = null,
+        pommelCameraShake = null,
+        finalCameraShake = null;
+
+    [SerializeField] StatsManager statsManager = null;
     #endregion
 
 
@@ -137,8 +143,11 @@ public class GameManager : MonoBehaviour
         attackSignColors = {Color.red, Color.yellow},
         playerLightsColors = {Color.red, Color.yellow};
     [Tooltip("The names to identify the players")]
+
     [SerializeField] string[] playerNames = {"Aka", "Ao"};
+
     [HideInInspector] public bool playerDead = false;
+    bool allPlayersHaveDrawn = false;
     # endregion
 
 
@@ -166,7 +175,10 @@ public class GameManager : MonoBehaviour
         dodgeSlowMoTimeScale = 0.2f,
         dodgeSlowMoDuration = 2f,
         dodgeTimeScaleFadeSpeed = 0.2f,
-        deathCameraShakeDuration = 0.3f;
+        deathCameraShakeDuration = 0.3f,
+        clashCameraShakeDuration = 0.3f,
+        pommelCameraShakeDuration = 0.3f,
+        finalCameraShakeDuration = 0.7f;
     
     float
         actualTimeScaleUpdateSmoothness = 0.05f,
@@ -176,7 +188,9 @@ public class GameManager : MonoBehaviour
     bool runTimeScaleUpdate = true;
 
     [Tooltip("The round transition leaves effect object reference")]
-    [SerializeField] public ParticleSystem roundTransitionLeavesFX = null;
+    [SerializeField] public ParticleSystem
+        roundTransitionLeavesFX = null,
+        animeLinesFx = null;
     # endregion
 
 
@@ -477,7 +491,7 @@ public class GameManager : MonoBehaviour
 
         if (!audioManager.battleMusicOn)
         {
-            bool allPlayersHaveDrawn = true;
+            allPlayersHaveDrawn = true;
 
             for (int i = 0; i < playersList.Count; i++)
             {
@@ -489,6 +503,11 @@ public class GameManager : MonoBehaviour
             if (allPlayersHaveDrawn)
             {
                 audioManager.ActivateBattleMusic();
+
+
+                // STATS
+                statsManager.InitalizeNewGame(1);
+                statsManager.InitializeNewRound();
             }
         }
     }
@@ -618,6 +637,10 @@ public class GameManager : MonoBehaviour
     // Executed when a player dies, starts the score display and next round parameters
     public void APlayerIsDead(int winningPlayerIndex)
     {
+        // STATS
+        statsManager.FinalizeRound(winningPlayerIndex);
+
+
         playerDead = true;
         UpdatePlayersScoreValues(winningPlayerIndex);
         SwitchState(GAMESTATE.roundFinished);
@@ -685,6 +708,10 @@ public class GameManager : MonoBehaviour
         audioManager.UpdateMusicPhaseThatShouldPlayDependingOnScore();
 
 
+        // STATS
+        statsManager.InitializeNewRound();
+
+
         yield return new WaitForSeconds(1f);
 
 
@@ -735,13 +762,18 @@ public class GameManager : MonoBehaviour
     }
 
     // Resets the match settings and values for a next match
-    IEnumerator ResetGameCoroutine(bool remathRightAfter)
+    IEnumerator ResetGameCoroutine(bool rematchRightAfter)
     {
+        // STATS
+        if (gameState != GAMESTATE.finished && allPlayersHaveDrawn)
+            statsManager.FinalizeGame(false, 1);
+
+
         SwitchState(GAMESTATE.loading);
         
 
         // Activates the menu blur panel if it is not supposed to start a new match right after
-        if (!remathRightAfter)
+        if (!rematchRightAfter)
             blurPanel.SetActive(true);
 
 
@@ -754,6 +786,8 @@ public class GameManager : MonoBehaviour
         SwitchState(GAMESTATE.menu);
         ResetPlayersForNextMatch();
         TriggerMatchEndFilterEffect(false);
+        //TriggerMatchEndFilterEffect(true);
+        //TriggerMatchEndFilterEffect(false);
         ResetScore();
 
 
@@ -770,7 +804,7 @@ public class GameManager : MonoBehaviour
 
 
         // Restarts a new match right after it is finished being set up
-        if (remathRightAfter)
+        if (rematchRightAfter)
             StartCoroutine(StartMatchCoroutine());
         else
         {
@@ -796,11 +830,15 @@ public class GameManager : MonoBehaviour
     // MATCH END
     IEnumerator APlayerWon(int winningPlayerIndex)
     {
+        // STATS
+        statsManager.FinalizeGame(true, 1);
+
+
         // AUDIO
         audioManager.ActivateWind();
 
 
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(4f);
 
 
         // GAME STATE
@@ -1011,6 +1049,10 @@ public class GameManager : MonoBehaviour
         timeScaleObjective = slowMoTimeScale;
 
 
+        // FX
+        animeLinesFx.Play();
+
+
         // AUDIO
         for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
         {
@@ -1044,6 +1086,10 @@ public class GameManager : MonoBehaviour
 
         // TIME
         Time.timeScale = timeScaleObjective;
+
+
+        // FX
+        animeLinesFx.Stop();
     } 
 
     // Update the timescale smoothly for smooth slow mo effects in FixedUpdate

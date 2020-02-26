@@ -35,6 +35,9 @@ public class JsonSave
     public float fxVolume;
     public float voiceVolume;
     public int roundsToWin;
+
+    public Stats stats;
+    public bool hasBeenSavedOnce = false;
 }
 
 public static class SaveGameManager

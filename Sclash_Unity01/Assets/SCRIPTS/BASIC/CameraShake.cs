@@ -11,6 +11,9 @@ public class CameraShake : MonoBehaviour
     # endregion
 
 
+    [Header("IDENTIFICATION")]
+    [SerializeField] string cameraShakeName = "Camera shake";
+
 
 
 
@@ -60,12 +63,6 @@ public class CameraShake : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        
-    }
-
-    // FixedUpdate is called 50 times per frame
-    void FixedUpdate()
-    {
         if (shakeDuration > 0)
         {
             if (!hasBeganShaking)
@@ -101,7 +98,7 @@ public class CameraShake : MonoBehaviour
 
             camTransform.localPosition = baseShakePos + randomShakeVector;
             hasResetPosition = false;
-            shakeDuration -= Time.deltaTime * decreaseFactor;
+            shakeDuration -= Time.fixedDeltaTime * decreaseFactor;
         }
         else
         {
@@ -129,6 +126,12 @@ public class CameraShake : MonoBehaviour
                 hasResetPosition = true;
             }
         }
+    }
+
+    // FixedUpdate is called 50 times per frame
+    void FixedUpdate()
+    {
+        
     }
     # endregion
 }

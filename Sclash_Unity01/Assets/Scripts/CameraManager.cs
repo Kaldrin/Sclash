@@ -75,13 +75,14 @@ public class CameraManager : MonoBehaviour
     [SerializeField] public float battleXSmoothMovementsMultiplier = 0.5f;
     [SerializeField] public float cinematicXSmoothMovementsMultiplier = 0.05f;
     [HideInInspector] public float actualXSmoothMovementsMultiplier = 0.5f;
+    float playersBaseYPos = 0;
 
     [SerializeField] Vector2 cameraArmXLimitsZoomedAndUnzoomed = new Vector2(10, 5); 
 
     Vector3 currentMovementSpeed = new Vector3(0, 0, 0);
     [HideInInspector] public Vector3 cameraArmBasePos = new Vector3(0, 0, 0);
 
-    GameObject[] playersList;
+    GameObject[] playersList = new GameObject[2];
     #endregion
 
 
@@ -122,6 +123,7 @@ public class CameraManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         if (playersList == null)
         {
             playersList = FindPlayers();
@@ -138,8 +140,7 @@ public class CameraManager : MonoBehaviour
         cameraBasePos = cameraComponent.transform.position;
         cameraArmBasePos = transform.position;
 
-
-        //
+        
         StartCoroutine(BehaviourDependingOnState());
     }
 
@@ -245,7 +246,16 @@ public class CameraManager : MonoBehaviour
 
 
         if (playersList != null)
+        {
+            for (int i = 0; i < playersList.Length; i++)
+            {
+                playersBaseYPos += playersList[i].transform.position.y;
+            }
+            playersBaseYPos = playersBaseYPos / playersList.Length;
+
             return playersList;
+        }
+            
         else
         {
             Debug.Log("The camera couldn't find the players");
@@ -283,7 +293,8 @@ public class CameraManager : MonoBehaviour
                 }
 
                 temporaryCalculationPosition.x = temporaryCalculationPosition.x / playersList.Length;
-                temporaryCalculationPosition.y = playersList[0].transform.position.y;
+                //temporaryCalculationPosition.y = playersList[0].transform.position.y;
+                temporaryCalculationPosition.y = playersBaseYPos;
             }
             else if (playersList.Length == 1)
             {

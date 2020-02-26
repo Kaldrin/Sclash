@@ -1,0 +1,153 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2520716d736b29d43a93ec227ede5ee9, type: 3}
+  m_Name: Stats01
+  m_EditorClassIdentifier: 
+  globalStats:
+  - statName: GLOBAL
+    totalPlayTime: 0
+    totalGamesPlayed: 0
+    totalGamesFinished: 0
+    totalRoundsPlayed: 0
+    averageFinishedGameDuration: 0
+    averageRoundDuration: 0
+    averageRoundsNumberPerFinishedGame: 0
+    gamesList: []
+    charge: 0
+    forwardAttack: 0
+    backwardsAttack: 0
+    neutralAttack: 0
+    death: 0
+    forwardDash: 0
+    backwardsDash: 0
+    pommel: 0
+    successfulPommel: 0
+    parry: 0
+    successfulParry: 0
+    clash: 0
+    dodge: 0
+  - statName: LOCAL
+    totalPlayTime: 0
+    totalGamesPlayed: 0
+    totalGamesFinished: 0
+    totalRoundsPlayed: 0
+    averageFinishedGameDuration: 0
+    averageRoundDuration: 0
+    averageRoundsNumberPerFinishedGame: 0
+    gamesList: []
+    charge: 0
+    forwardAttack: 0
+    backwardsAttack: 0
+    neutralAttack: 0
+    death: 0
+    forwardDash: 0
+    backwardsDash: 0
+    pommel: 0
+    successfulPommel: 0
+    parry: 0
+    successfulParry: 0
+    clash: 0
+    dodge: 0
+  - statName: ONLINE
+    totalPlayTime: 0
+    totalGamesPlayed: 0
+    totalGamesFinished: 0
+    totalRoundsPlayed: 0
+    averageFinishedGameDuration: 0
+    averageRoundDuration: 0
+    averageRoundsNumberPerFinishedGame: 0
+    gamesList: []
+    charge: 0
+    forwardAttack: 0
+    backwardsAttack: 0
+    neutralAttack: 0
+    death: 0
+    forwardDash: 0
+    backwardsDash: 0
+    pommel: 0
+    successfulPommel: 0
+    parry: 0
+    successfulParry: 0
+    clash: 0
+    dodge: 0
+  characters:
+  - name: Jinmu
+    illustration: {fileID: 21300000, guid: 913be14294618cd4b965b565c05a8719, type: 3}
+    global:
+      totalPlayTime: 0
+      totalGamesPlayed: 0
+      totalGamesFinished: 0
+      totalRoundsPlayed: 0
+      averageFinishedGameDuration: 0
+      averageRoundDuration: 0
+      averageRoundsNumberPerFinishedGame: 0
+      totalRoundsWon: 0
+      totalRoundsLost: 0
+      totalGamesWon: 0
+      totalGamesLost: 0
+      charge: 0
+      forwardAttack: 0
+      backwardsAttack: 0
+      neutralAttack: 0
+      death: 0
+      forwardDash: 0
+      backwardsDash: 0
+      pommel: 0
+      successfulPommel: 0
+      parry: 0
+      successfulParry: 0
+    local:
+      totalPlayTime: 0
+      totalGamesPlayed: 0
+      totalGamesFinished: 0
+      totalRoundsPlayed: 0
+      averageFinishedGameDuration: 0
+      averageRoundDuration: 0
+      averageRoundsNumberPerFinishedGame: 0
+      totalRoundsWon: 0
+      totalRoundsLost: 0
+      totalGamesWon: 0
+      totalGamesLost: 0
+      charge: 0
+      forwardAttack: 0
+      backwardsAttack: 0
+      neutralAttack: 0
+      death: 0
+      forwardDash: 0
+      backwardsDash: 0
+      pommel: 0
+      successfulPommel: 0
+      parry: 0
+      successfulParry: 0
+    online:
+      totalPlayTime: 0
+      totalGamesPlayed: 0
+      totalGamesFinished: 0
+      totalRoundsPlayed: 0
+      averageFinishedGameDuration: 0
+      averageRoundDuration: 0
+      averageRoundsNumberPerFinishedGame: 0
+      totalRoundsWon: 0
+      totalRoundsLost: 0
+      totalGamesWon: 0
+      totalGamesLost: 0
+      charge: 0
+      forwardAttack: 0
+      backwardsAttack: 0
+      neutralAttack: 0
+      death: 0
+      forwardDash: 0
+      backwardsDash: 0
+      pommel: 0
+      successfulPommel: 0
+      parry: 0
+      successfulParry: 0

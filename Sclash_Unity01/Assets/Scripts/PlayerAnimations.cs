@@ -63,7 +63,8 @@ public class PlayerAnimations : MonoBehaviour
     // ANIMATOR PARAMETERS
     [Header("PLAYER ANIMATOR PARAMETERS")]
     [SerializeField] string Walk = "Walk";
-    [SerializeField] string
+    [SerializeField]
+    string
         playerWalkDirection = "WalkDirection",
         moving = "Moving",
         stamina = "Stamina",
@@ -83,7 +84,10 @@ public class PlayerAnimations : MonoBehaviour
         pommelOn = "PommelOn",
         pommeledOn = "PommeledOn",
         draw = "Draw",
-        sneath = "Sneath";
+        sneath = "Sneath",
+        jump = "Jump",
+        land = "Land",
+        verticalSpeed = "VerticalSpeed";
 
     // LEG ANIMATOR PARAMETERS
     [Header("LEG ANIMATOR PARAMETERS")]
@@ -94,8 +98,6 @@ public class PlayerAnimations : MonoBehaviour
     [SerializeField] string textDrawOn = "DrawOn";
     [SerializeField] string resetDrawText = "ResetDraw";
     # endregion
-
-
 
 
 
@@ -142,18 +144,10 @@ public class PlayerAnimations : MonoBehaviour
     // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
-        /*
-        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
-        {
-            UpdateAnims();
-        }
-        */
-
         UpdateAnims();
         UpdateWalkDirection();
-        //UpdateFX();
         UpdateIdleStateDependingOnStamina(playerScript.stamina);
-        //UpdateChargeWalk();
+        animator.SetFloat(verticalSpeed, rigid.velocity.y);
     }
     #endregion
 
@@ -228,6 +222,7 @@ public class PlayerAnimations : MonoBehaviour
         animator.ResetTrigger(draw);
         animator.ResetTrigger(sneath);
         animator.ResetTrigger(dashOn);
+        ResetAllJumpParameters();
 
 
         animator.SetBool(dead, false);
@@ -262,6 +257,7 @@ public class PlayerAnimations : MonoBehaviour
         animator.ResetTrigger(draw);
         animator.ResetTrigger(sneath);
         animator.ResetTrigger(dashOn);
+        ResetAllJumpParameters();
 
 
         animator.SetBool(dead, false);
@@ -328,7 +324,9 @@ public class PlayerAnimations : MonoBehaviour
         {
         }
     }
-    # endregion
+    #endregion
+
+
 
 
 
@@ -566,5 +564,36 @@ public class PlayerAnimations : MonoBehaviour
         animator.SetTrigger(dashOn);
         animator.SetFloat(dashDirection, blendTreeValue);
     }
-    # endregion
+    #endregion
+
+
+
+
+    #region JUMP ANIMATIONS
+    public void TriggerJump()
+    {
+        animator.SetTrigger(jump);
+    }
+
+    public void ResetJump()
+    {
+        animator.ResetTrigger(jump);
+    }
+
+    public void TriggerLand()
+    {
+        animator.SetTrigger(land);
+    }
+
+    public void ResetLand()
+    {
+        animator.ResetTrigger(land);
+    }
+
+    public void ResetAllJumpParameters()
+    {
+        ResetJump();
+        ResetLand();
+    }
+    #endregion
 }

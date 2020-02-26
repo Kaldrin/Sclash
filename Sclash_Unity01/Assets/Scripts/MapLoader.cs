@@ -5,8 +5,8 @@ using UnityEngine;
 public class MapLoader : MonoBehaviour
 {
 
-
-    # region MANAGERS
+    #region VARIABLES
+    #region MANAGERS
     // MANAGERS
     [Header("MANAGERS")]
     [Tooltip("The reference for the unique game manager script of the scene")]
@@ -33,6 +33,7 @@ public class MapLoader : MonoBehaviour
     [SerializeField] GameObject mapContainer = null;
     [Tooltip("Currently instantiated map, visible in game")]
     [HideInInspector] public GameObject currentMap = null;
+    [HideInInspector] public int currentMapIndex = 0;
 
     [Tooltip("Scriptable object data reference containing the maps objects, their image and names")]
     [SerializeField] MapsDataBase mapsData = null;
@@ -41,14 +42,11 @@ public class MapLoader : MonoBehaviour
 
 
 
-    [SerializeField] bool loadNewMap = true;
-
-
-
-
     # region MAP LOADING
     // MAP LOADING
     bool canLoadNewMap = true;
+    [SerializeField] bool loadNewMap = true;
+    #endregion
     #endregion
 
 
@@ -60,9 +58,8 @@ public class MapLoader : MonoBehaviour
 
 
 
-
-
-    # region BASE FUNCTIONS
+    #region FUNCTIONS
+    #region BASE FUNCTIONS
     // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
@@ -118,8 +115,9 @@ public class MapLoader : MonoBehaviour
         if (currentMap != null)
             Destroy(currentMap);
 
-
+        Debug.Log(mapsData);
         currentMap = Instantiate(mapsData.mapsList[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+        
     }
 
     // Starts the LoadNewMap coroutine, launched by the play in the maps menu
@@ -161,6 +159,7 @@ public class MapLoader : MonoBehaviour
 
             //mapMenuObjectsParent.SetActive(true);
             canLoadNewMap = true;
+            currentMapIndex = index;
         }
     }
 
@@ -169,5 +168,6 @@ public class MapLoader : MonoBehaviour
         int randomIndex = Random.Range(0, mapsData.mapsList.Count);
         StartCoroutine(LoadNewMapInGameCoroutine(randomIndex, true));
     }
-    # endregion
+    #endregion
+    #endregion
 }

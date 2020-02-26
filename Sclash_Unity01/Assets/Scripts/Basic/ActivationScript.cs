@@ -14,18 +14,13 @@ public class ActivationScript : MonoBehaviour {
 		
 	}
 
-    void SetActive(bool state)
+    public void SetActive(bool state)
     {
         gameObject.SetActive(state);
     }
 
-    public void Activate()
+    public void Switch()
     {
-        gameObject.SetActive(true);
-    }
-
-    public void Deactivate()
-    {
-        gameObject.SetActive(false);
+        gameObject.SetActive(!isActiveAndEnabled);
     }
 }

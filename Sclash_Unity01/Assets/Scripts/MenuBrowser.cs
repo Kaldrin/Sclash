@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 // Created for Unity 2019.1.1f1
 public class MenuBrowser : MonoBehaviour
 {
+    #region VARIABLES
     // BROWSING
     [Header("BROWSING")]
     [Tooltip("The list of elements to browse in this menu page")]
@@ -65,9 +66,10 @@ public class MenuBrowser : MonoBehaviour
 
 
     // SOUND
-    [Header("Sound")]
+    [Header("SOUND")]
     [Tooltip("The PlayRandomSoundInList script to play a random sound from the given source on it whenever browsing through menu elements")]
     [SerializeField] PlayRandomSoundInList hoverSound = null;
+    #endregion
 
 
 
@@ -82,7 +84,7 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-
+    #region FUNCTIONS
     // BASE FUNCTIONS
     void Awake()
     {
@@ -107,9 +109,22 @@ public class MenuBrowser : MonoBehaviour
         }
     }
 
+
+    void Start()
+    {
+
+        Select(true);
+
+
+
+        UpdateColors();
+    }
+
     // Update is called once per graphic frame
     void Update()
     {
+        
+
         if (elements.Length > 0)
         {
             // H AXIS
@@ -212,6 +227,8 @@ public class MenuBrowser : MonoBehaviour
 
 
 
+
+
     // BROWSING
     void VerticalBrowse(int direction)
     {
@@ -239,6 +256,8 @@ public class MenuBrowser : MonoBehaviour
 
 
 
+
+
     // SELECTION
     // Selects or unselects not the specified object
     public void Select(bool state)
@@ -249,8 +268,6 @@ public class MenuBrowser : MonoBehaviour
         }
         else
         {
-            elements[browseIndex].GetComponent<Button>().Select();
-
             if (elements[browseIndex].GetComponent<Button>())
             {
                 elements[browseIndex].GetComponent<Button>().Select();
@@ -319,8 +336,59 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-    // OTHER
+    // ADD & REMOVE ELEMENTS
+    public void AddElement(GameObject newButton)
+    {
+        GameObject[] newElementsList = new GameObject[elements.Length + 1];
 
+        newElementsList[newElementsList.Length - 1] = newButton;
+
+
+        for (int i = 0; i < elements.Length; i++)
+        {
+            newElementsList[i] = elements[i];
+        }
+
+
+        elements = newElementsList;
+
+        shouldUseButtonColorSwitch.Add(true);
+    }
+
+    public void RemoveElement(GameObject buttonToRemove)
+    {
+        if (isObjectInGameObjectArray(buttonToRemove, elements))
+        {
+            int indexToRemove = FindObjectIndexInGameObjectArray(buttonToRemove, elements);
+            GameObject[] newElements = new GameObject[elements.Length - 1];
+
+            int indexOffset = 0;
+
+
+            for (int i = 0; i < newElements.Length; i++)
+            {
+                if (i == indexToRemove)
+                    indexOffset = 1;
+
+
+                newElements[i] = elements[i + indexOffset];
+            }
+
+
+            elements = newElements;
+        }
+        else
+        {
+        }
+    }
+
+
+
+
+
+
+
+    // OTHER
     public void FixButtonColorUsageList()
     {
         if (shouldUseButtonColorSwitch.Count < elements.Length)
@@ -331,6 +399,36 @@ public class MenuBrowser : MonoBehaviour
             }
         }
     }
+
+    bool isObjectInGameObjectArray(GameObject objectToFind, GameObject[] array)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i] == objectToFind)
+            {
+                return true;
+            }
+        }
+
+
+        return false;
+    }
+
+    int FindObjectIndexInGameObjectArray(GameObject objectToFind, GameObject[] array)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i] == objectToFind)
+            {
+                return i;
+            }
+        }
+
+
+        return 0;
+    }
+
+
 
 
 
@@ -394,4 +492,5 @@ public class MenuBrowser : MonoBehaviour
             }
         }
     }
+    #endregion
 }
