@@ -74,6 +74,9 @@ public class PlayerAnimations : MonoBehaviour
         chargeOff = "ChargeOff",
         attackDirection = "AttackDirection",
         parryOn = "ParryOn",
+        maintainParry = "MaintainParry",
+        maintainParryOn = "MaintainParryOn",
+        maintainParryOff = "MaintainParryOff",
         clashedOn = "ClashedOn",
         clashedOff = "ClashedOff",
         deathOn = "DeathOn",
@@ -223,6 +226,7 @@ public class PlayerAnimations : MonoBehaviour
         animator.ResetTrigger(sneath);
         animator.ResetTrigger(dashOn);
         ResetAllJumpParameters();
+        ResetMaintainParry();
 
 
         animator.SetBool(dead, false);
@@ -258,6 +262,7 @@ public class PlayerAnimations : MonoBehaviour
         animator.ResetTrigger(sneath);
         animator.ResetTrigger(dashOn);
         ResetAllJumpParameters();
+        ResetMaintainParry();
 
 
         animator.SetBool(dead, false);
@@ -325,8 +330,6 @@ public class PlayerAnimations : MonoBehaviour
         }
     }
     #endregion
-
-
 
 
 
@@ -406,6 +409,31 @@ public class PlayerAnimations : MonoBehaviour
     }
     #endregion
 
+
+
+
+
+    # region MAINTAIN PARRY ANIMATION
+    // PARRY ANIMATION
+    // Triggers on / off parry animation
+    public void TriggerMaintainParry()
+    {
+        animator.SetTrigger(maintainParryOn);
+    }
+
+    // Resets the parry animation triggers
+    public void EndMaintainParry()
+    {
+        //animator.SetBool(maintainParry, false);
+        animator.SetTrigger(maintainParryOff);
+    }
+
+    public void ResetMaintainParry()
+    {
+        animator.ResetTrigger(maintainParryOn);
+        animator.ResetTrigger(maintainParryOff);
+    }
+    #endregion
 
 
 

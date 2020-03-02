@@ -11,8 +11,8 @@ public class StatsManager : MonoBehaviour
 
 
     // DATA COMPUTING
-    Game currentGame;
-    Round currentRound;
+    Game currentGame = new Game();
+    Round currentRound = new Round();
     float currentRoundStartTime = 0;
     float currentGameStartTime = 0;
 
@@ -26,20 +26,19 @@ public class StatsManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-          LoadStats();
+        InitalizeNewGame(0);
+
+
+        // Intializing variables to prevent null reference exceptions
+        InitializeNewRound();
+        LoadStats();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
 
 
 
-
-
+    #region GAME
     // GAME
     public void InitalizeNewGame(int gameType)
     {
@@ -68,7 +67,7 @@ public class StatsManager : MonoBehaviour
  
 
         // Rounds
-        currentGame.rounds = new List<Round>();
+        currentGame.rounds = new List<Round>(0);
 
 
         currentGameStartTime = Time.time;
@@ -76,33 +75,62 @@ public class StatsManager : MonoBehaviour
 
     public void FinalizeGame(bool finished, int gameType)
     {
-        currentGame.roundsPlayed = currentGame.rounds.Count;
+        try
+        {
+            currentGame.roundsPlayed = currentGame.rounds.Count; // Bug ici (Null reference exception)
+        }
+        catch
+        {
+            Debug.Log("Problem when finalizing the recording of the game, can't save the number of rounds played for some reason");
+            currentGame.roundsPlayed = 1;
+        }
         currentGame.duration = Time.time - currentGameStartTime;
         currentGame.gameFinished = finished;
         currentGame.finalScore = gameManager.score;
 
 
         GlobalStat newGlobalStats = statsAsset.globalStats[gameType];
-        newGlobalStats.gamesList.Add(currentGame);
+        try
+        {
+            newGlobalStats.gamesList.Add(currentGame);
+        }
+        catch
+        {
+            Debug.Log("Problem when finalizing the recording of the game, can't save the game element for some reason");
+        }
 
         statsAsset.globalStats[gameType] = newGlobalStats;
 
 
         ComputeGameDatas();
     }
+    #endregion
 
 
 
 
 
 
+
+
+    #region ROUNDS
     // ROUNDS
     public void InitializeNewRound()
     {
-        currentRound.index = currentGame.rounds.Count;
+        try
+        {
+            currentRound.index = currentGame.rounds.Count; // Bug ici aussi (Null reference exception)
+        }
+        catch
+        {
+            Debug.Log("Problem initializing the round, can't set the round's index accessing the current game's round list count for some reason");
+            currentRound.index = 0;
+        }
+
+
         currentRound.duration = 0;
         currentRound.winner = 0;
-        currentRound.actions = new List<ActionsList>(); // Il semblerai que cette variable soit effacée (= null) à chaque restart
+        currentRound.actions = new List<ActionsList>();
         currentRound.actions.Add(new ActionsList());
         currentRound.actions.Add(new ActionsList());
         currentRound.actions[0].actionsList = new List<Action>();
@@ -110,6 +138,8 @@ public class StatsManager : MonoBehaviour
 
 
         currentRoundStartTime = Time.time;
+
+        Debug.Log("Initialized round");
     }
 
     public void FinalizeRound(int winner)
@@ -117,9 +147,16 @@ public class StatsManager : MonoBehaviour
         currentRound.duration = Time.time - currentRoundStartTime;
         currentRound.winner = winner;
 
-
-        currentGame.rounds.Add(currentRound);
+        try
+        {
+            currentGame.rounds.Add(currentRound);   // Problème ici (Null reference exception)
+        }
+        catch
+        {
+            Debug.Log("Problem when finalizing the recording of the round, can't add the current round to the game's list of rounds for some reason");
+        }
     }
+    #endregion
 
 
 
@@ -133,15 +170,15 @@ public class StatsManager : MonoBehaviour
         Action newAction = new Action();
         newAction.name = action;
 
-
+        Debug.Log(currentRound.actions[0].actionsList);
         try
         {
-            newAction.index = currentRound.actions[player].actionsList.Count; // Ici il y a un problème que je ne comprend pas
+            newAction.index = currentRound.actions[player].actionsList.Count; // Ici il y a un problème que je ne comprend pas (Null reference exception)
         }
         catch
         {
             newAction.index = 0;
-            Debug.Log("Action recording didn't work for some reason, ignored");
+            Debug.Log("Problem recording the action, can't set its index depending on the size of the round's action list for this player for some reason");
         }
         newAction.timeCode = Time.time - currentRoundStartTime;
         newAction.level = level;
@@ -149,13 +186,15 @@ public class StatsManager : MonoBehaviour
 
         try
         {
-            currentRound.actions[player].actionsList.Add(newAction);
+            currentRound.actions[player].actionsList.Add(newAction); // Problème ici :/ (Null reference exception)
         }
         catch
         {
-            Debug.Log("Action recording didn't work for some reason, ignored");
+            Debug.Log("Problem recording the action, can't add it to the current round's action list for some reason");
         }
     }
+
+
 
 
 
@@ -190,7 +229,7 @@ public class StatsManager : MonoBehaviour
         {
             newGlobalStat.statName = statsAsset.globalStats[o].statName;
             newGlobalStat.gamesList = statsAsset.globalStats[o].gamesList;
-
+            
 
             // Total play time
             totalPlayTime = 0;
@@ -220,6 +259,9 @@ public class StatsManager : MonoBehaviour
 
 
             newGlobalStat.totalGamesFinished = totalGamesFinished;
+            
+
+
 
 
             // Total rounds played
@@ -235,6 +277,7 @@ public class StatsManager : MonoBehaviour
             newGlobalStat.totalRoundsPlayed = totalRoundsPlayed;
 
 
+
             // Average game duration
             averageFinishedGameDuration = 0;
 
@@ -245,8 +288,12 @@ public class StatsManager : MonoBehaviour
                     averageFinishedGameDuration += statsAsset.globalStats[o].gamesList[i].duration;
             }
 
+            if (averageFinishedGameDuration / newGlobalStat.totalGamesFinished >= 0)
+                newGlobalStat.averageFinishedGameDuration = averageFinishedGameDuration / newGlobalStat.totalGamesFinished;
+            else
+                newGlobalStat.averageFinishedGameDuration = 0;
 
-            newGlobalStat.averageFinishedGameDuration = averageFinishedGameDuration / newGlobalStat.totalGamesFinished;
+            Debug.Log(newGlobalStat.gamesList.Count);
 
 
             // Average round duration
@@ -261,8 +308,11 @@ public class StatsManager : MonoBehaviour
                 }
             }
 
+            if (averageRoundDuration / newGlobalStat.totalRoundsPlayed >= 0)
+                newGlobalStat.averageRoundDuration = averageRoundDuration / newGlobalStat.totalRoundsPlayed;
+            else
+                newGlobalStat.averageRoundDuration = 0;
 
-            newGlobalStat.averageRoundDuration = averageRoundDuration / newGlobalStat.totalRoundsPlayed;
 
 
             // Average rounds number per finished game
@@ -275,9 +325,10 @@ public class StatsManager : MonoBehaviour
                     averageRoundNumberPerFinishedGame += statsAsset.globalStats[o].gamesList[i].roundsPlayed;
             }
 
-
-            newGlobalStat.averageRoundsNumberPerFinishedGame = averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished;
-
+            if (averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished >= 0)
+                newGlobalStat.averageRoundsNumberPerFinishedGame = averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished;
+            else
+                newGlobalStat.averageRoundsNumberPerFinishedGame = 0;
 
 
             // Actions
@@ -304,7 +355,7 @@ public class StatsManager : MonoBehaviour
                 {
                     try
                     {
-                        for (int z = 0; z < newGlobalStat.gamesList[i].rounds[y].actions.Count; z++)    // Problème que j'arrive pas à identifier ici qui softlock le jeu
+                        for (int z = 0; z < newGlobalStat.gamesList[i].rounds[y].actions.Count; z++)    // Problème que j'arrive pas à identifier ici qui softlock le jeu (Null reference exception)
                         {
                             for (int w = 0; w < newGlobalStat.gamesList[i].rounds[y].actions[z].actionsList.Count; w++)
                             {
@@ -368,7 +419,7 @@ public class StatsManager : MonoBehaviour
                     }
                     catch
                     {
-
+                        Debug.Log("Problem counting the number of each actions for local or online stats, can't access the list of list of actions for some reason");
                     }
                 }
             }
@@ -417,7 +468,12 @@ public class StatsManager : MonoBehaviour
         newGlobalStat.totalPlayTime = statsAsset.globalStats[1].totalPlayTime + statsAsset.globalStats[2].totalPlayTime;
         newGlobalStat.totalGamesPlayed = statsAsset.globalStats[1].gamesList.Count + statsAsset.globalStats[2].gamesList.Count;
         newGlobalStat.totalGamesFinished = statsAsset.globalStats[1].totalGamesFinished + statsAsset.globalStats[2].totalGamesFinished;
+        
         newGlobalStat.totalRoundsPlayed = statsAsset.globalStats[1].totalRoundsPlayed + statsAsset.globalStats[2].totalRoundsPlayed;
+        
+
+
+
 
 
         // Games list
@@ -426,8 +482,12 @@ public class StatsManager : MonoBehaviour
 
         for (int i = 0; i < statsAsset.globalStats[2].gamesList.Count; i++)
         {
-            statsAsset.globalStats[0].gamesList.Add(statsAsset.globalStats[2].gamesList[i]);
+            newGlobalStat.gamesList.Add(statsAsset.globalStats[2].gamesList[i]);
         }
+
+        Debug.Log(newGlobalStat.gamesList.Count);
+
+
 
 
         // Average game duration
@@ -440,8 +500,15 @@ public class StatsManager : MonoBehaviour
                 averageFinishedGameDuration += statsAsset.globalStats[0].gamesList[i].duration;
         }
 
+        if (averageFinishedGameDuration / newGlobalStat.totalGamesFinished >= 0)
+            newGlobalStat.averageFinishedGameDuration = averageFinishedGameDuration / newGlobalStat.totalGamesFinished;
+        else
+            newGlobalStat.averageFinishedGameDuration = 0;
 
-        newGlobalStat.averageFinishedGameDuration = averageFinishedGameDuration / newGlobalStat.totalGamesFinished;
+
+
+
+
 
 
         // Average round duration
@@ -456,7 +523,15 @@ public class StatsManager : MonoBehaviour
             }
         }
 
-        newGlobalStat.averageRoundDuration = averageRoundDuration / newGlobalStat.totalRoundsPlayed;
+        if (averageRoundDuration / newGlobalStat.totalRoundsPlayed >= 0)
+            newGlobalStat.averageRoundDuration = averageRoundDuration / newGlobalStat.totalRoundsPlayed;
+        else
+            newGlobalStat.averageRoundDuration = 0;
+
+
+
+
+
 
 
         // Average rounds number per finished game
@@ -469,8 +544,13 @@ public class StatsManager : MonoBehaviour
                 averageRoundNumberPerFinishedGame += statsAsset.globalStats[0].gamesList[i].roundsPlayed;
         }
 
+        if (averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished >= 0)
+            newGlobalStat.averageRoundsNumberPerFinishedGame = averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished;
+        else
+            newGlobalStat.averageRoundsNumberPerFinishedGame = 0;
 
-        newGlobalStat.averageRoundsNumberPerFinishedGame = averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished;
+
+
 
 
         // Actions
@@ -492,6 +572,8 @@ public class StatsManager : MonoBehaviour
 
 
 
+
+        // Save the calculations
         statsAsset.globalStats[0] = newGlobalStat;
         SaveStats();
     }
@@ -538,6 +620,9 @@ public class StatsManager : MonoBehaviour
 
             statsAsset.globalStats[i] = newGlobalStat;
         }
+
+
+        SaveStats();
     }
 
 

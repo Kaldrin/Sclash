@@ -43,17 +43,21 @@ public class GameStat : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
-    void Start()
+
+
+
+
+
+
+    public void HideAllRounds()
     {
-        
+        for (int i = 0; i < roundsList.Count; i++)
+        {
+            roundsList[i].actionsInfosGameObject.SetActive(false);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 
     public void UpdateRoundsList(Game game)
     {
@@ -69,6 +73,7 @@ public class GameStat : MonoBehaviour
             if (roundsListParent.GetChild(i).gameObject != roundStatObject)
                 Destroy(roundsListParent.GetChild(i));
         }
+        roundsList.Clear();
 
 
         // Fill the list
@@ -76,6 +81,7 @@ public class GameStat : MonoBehaviour
         {
             currentlyInstantiatedRoundStatObject = Instantiate(roundStatObject, roundsListParent);
             currentlyInstantiatedRoundStat = currentlyInstantiatedRoundStatObject.GetComponent<RoundStat>();
+            roundsList.Add(currentlyInstantiatedRoundStat);
 
             currentlyInstantiatedRoundStat.roundIndex.text = (i + 1).ToString();
             currentlyInstantiatedRoundStat.winnerName.text = "Jinmu";

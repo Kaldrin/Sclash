@@ -12,20 +12,6 @@ public class ActionMarker : MonoBehaviour
 
 
 
-
- 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void UpdateLevelMarkers(int actionLevel)
     {
         for (int i = 0; i < levelMarkersParent.childCount; i++)

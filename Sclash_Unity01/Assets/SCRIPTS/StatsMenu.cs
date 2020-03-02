@@ -139,9 +139,14 @@ public class StatsMenu : MonoBehaviour
         UpdateAllStatsDisplayedInfos();
     }
 
-
     public void UpdateAllStatsDisplayedInfos()
     {
+        StartCoroutine(UpdateAllStatsDisplayedInfosCoroutine());
+    }
+
+    IEnumerator UpdateAllStatsDisplayedInfosCoroutine()
+    {
+        yield return new WaitForSeconds(0f);
         UpdateDisplayedInfosTypeIndication();
         UpdateDisplayedGlobalInfos();
         UpdateDisplayedGamesInfos();
@@ -267,6 +272,8 @@ public class StatsMenu : MonoBehaviour
 
 
 
+
+
             // Update the game's infos display
             currentlyInstantiatedGameStat.gameIndex.text = (i + 1).ToString();
             currentlyInstantiatedGameStat.stageIllustration.sprite = mapsDataBase.mapsList[stats.globalStats[currentStatMode].gamesList[i].stage].mapImage;
@@ -274,21 +281,34 @@ public class StatsMenu : MonoBehaviour
 
 
 
+
+
+
             // Date
             currentlyInstantiatedGameStat.hour.text = stats.globalStats[currentStatMode].gamesList[i].date.hour.ToString();
-            currentlyInstantiatedGameStat.minute.text = stats.globalStats[currentStatMode].gamesList[i].date.minute.ToString();
+
+            if (stats.globalStats[currentStatMode].gamesList[i].date.minute < 10)
+                currentlyInstantiatedGameStat.minute.text = "0" + stats.globalStats[currentStatMode].gamesList[i].date.minute.ToString();
+            else
+                currentlyInstantiatedGameStat.minute.text = stats.globalStats[currentStatMode].gamesList[i].date.minute.ToString();
+
 
             if (stats.globalStats[currentStatMode].gamesList[i].date.day < 10)
                 currentlyInstantiatedGameStat.day.text = "0" + stats.globalStats[currentStatMode].gamesList[i].date.day.ToString();
             else
                 currentlyInstantiatedGameStat.day.text = stats.globalStats[currentStatMode].gamesList[i].date.day.ToString();
 
+
             if (stats.globalStats[currentStatMode].gamesList[i].date.month < 10)
                 currentlyInstantiatedGameStat.month.text = "0" + stats.globalStats[currentStatMode].gamesList[i].date.month.ToString();
             else
                 currentlyInstantiatedGameStat.month.text = stats.globalStats[currentStatMode].gamesList[i].date.month.ToString();
 
+
             currentlyInstantiatedGameStat.year.text = stats.globalStats[currentStatMode].gamesList[i].date.year.ToString();
+
+
+
 
 
             // Characters

@@ -90,6 +90,8 @@ public class GameManager : MonoBehaviour
     [Header("SCORE")]
     [Tooltip("The score display text mesh pro component reference")]
     [SerializeField] public Text scoreTextComponent = null;
+    [SerializeField] TextMeshProUGUI maxScoreTextDisplay = null;
+
     [Tooltip("The score display game object reference")]
     [SerializeField] public GameObject scoreObject = null;
     [HideInInspector] public Vector2 score = new Vector2(0, 0);
@@ -191,6 +193,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public ParticleSystem
         roundTransitionLeavesFX = null,
         animeLinesFx = null;
+    [SerializeField] ParticleSystem hajimeFX = null;
     # endregion
 
 
@@ -370,7 +373,7 @@ public class GameManager : MonoBehaviour
                 playerDead = false;
                 menuManager.pauseMenu.SetActive(false);
                 menuManager.winScreen.SetActive(false);
-                scoreObject.SetActive(false);
+                scoreObject.GetComponent<Animator>().SetBool("On", false);
                 Cursor.visible = false;
                 break;
 
@@ -440,7 +443,17 @@ public class GameManager : MonoBehaviour
     // Starts the match, activates the camera cinematic zoom and then switches to battle camera
     public IEnumerator StartMatchCoroutine()
     {
+        // FX
+        hajimeFX.Play();
+
+
+        // AUDIO
         audioManager.FindPlayers();
+
+
+        maxScoreTextDisplay.text = scoreToWin.ToString();
+
+
         for (int i = 0; i < playersList.Count; i++)
         {
             playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
@@ -465,7 +478,7 @@ public class GameManager : MonoBehaviour
 
 
         // AUDIO
-        audioManager.matchBeginsRandomSoundSource.Play();
+        //audioManager.matchBeginsRandomSoundSource.Play();
         
 
 
@@ -638,7 +651,15 @@ public class GameManager : MonoBehaviour
     public void APlayerIsDead(int winningPlayerIndex)
     {
         // STATS
-        statsManager.FinalizeRound(winningPlayerIndex);
+        try
+        {
+            statsManager.FinalizeRound(winningPlayerIndex);
+        }
+        catch
+        {
+            Debug.Log("Error while finalizing the recording of the current round, ignoring");
+        }
+
 
 
         playerDead = true;
@@ -684,6 +705,7 @@ public class GameManager : MonoBehaviour
     // Start next round
     IEnumerator NextRoundCoroutine()
     {
+        Debug.Log("Next round");
         yield return new WaitForSecondsRealtime(timeBeforeNextRoundTransitionTriggers);
 
 
@@ -707,9 +729,16 @@ public class GameManager : MonoBehaviour
         // AUDIO
         audioManager.UpdateMusicPhaseThatShouldPlayDependingOnScore();
 
-
+        
         // STATS
-        statsManager.InitializeNewRound();
+        try
+        {
+            statsManager.InitializeNewRound();
+        }
+        catch
+        {
+            Debug.Log("Error while initializing a new round, ignoring");
+        }
 
 
         yield return new WaitForSeconds(1f);
@@ -727,9 +756,9 @@ public class GameManager : MonoBehaviour
     // Displays the current score for a given amount of time
     IEnumerator ShowScoreBetweenRoundsCoroutine()
     {
-        scoreObject.SetActive(true);
+        scoreObject.GetComponent<Animator>().SetBool("On", true);
         yield return new WaitForSeconds(betweenRoundsScoreShowDuration);
-        scoreObject.SetActive(false);
+        scoreObject.GetComponent<Animator>().SetBool("On", false);
     }
 
 
@@ -766,7 +795,16 @@ public class GameManager : MonoBehaviour
     {
         // STATS
         if (gameState != GAMESTATE.finished && allPlayersHaveDrawn)
-            statsManager.FinalizeGame(false, 1);
+        {
+            try
+            {
+                statsManager.FinalizeGame(false, 1);
+            }
+            catch
+            {
+                Debug.Log("Error while finilizing the recording of the current game, ignoring");
+            }
+        }
 
 
         SwitchState(GAMESTATE.loading);
@@ -831,7 +869,14 @@ public class GameManager : MonoBehaviour
     IEnumerator APlayerWon(int winningPlayerIndex)
     {
         // STATS
-        statsManager.FinalizeGame(true, 1);
+        try
+        {
+            statsManager.FinalizeGame(true, 1);
+        }
+        catch
+        {
+            Debug.Log("Error while finilizing the recording of the current game, ignoring");
+        }
 
 
         // AUDIO

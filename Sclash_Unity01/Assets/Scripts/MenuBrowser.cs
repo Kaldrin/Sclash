@@ -112,19 +112,15 @@ public class MenuBrowser : MonoBehaviour
 
     void Start()
     {
-
+        VerticalBrowse(0);
+        Select(false);
         Select(true);
-
-
-
         UpdateColors();
     }
 
     // Update is called once per graphic frame
     void Update()
     {
-        
-
         if (elements.Length > 0)
         {
             // H AXIS
@@ -219,6 +215,8 @@ public class MenuBrowser : MonoBehaviour
             {
                 Select(false);
             }
+
+            UpdateColors();
         }
     }
 
@@ -275,6 +273,11 @@ public class MenuBrowser : MonoBehaviour
             else if (elements[browseIndex].GetComponent<TMP_InputField>())
             {
                 elements[browseIndex].GetComponent<TMP_InputField>().Select();
+            }
+            else if (elements[browseIndex].GetComponent<EventTrigger>())
+            {
+                BaseEventData baseEventData = null;
+                elements[browseIndex].GetComponent<EventTrigger>().OnSelect(baseEventData);
             }
         }
 

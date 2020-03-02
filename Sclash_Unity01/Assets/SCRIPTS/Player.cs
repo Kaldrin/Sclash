@@ -68,6 +68,7 @@ public class Player : MonoBehaviour
         attacking,
         pommeling,
         parrying,
+        maintainParrying,
         preparingToJump,
         jumping,
         dashing,
@@ -78,7 +79,7 @@ public class Player : MonoBehaviour
         dead,
     }
 
-    
+
     [HideInInspector] public STATE oldState = STATE.normal;
 
     [SerializeField] bool hasFinishedAnim = false;
@@ -195,6 +196,26 @@ public class Player : MonoBehaviour
 
 
 
+    #region ACTIONS
+    [Header("ACTIONS")]
+    [SerializeField] bool canJump = true;
+    [SerializeField] bool canMaintainParry = true;
+    [SerializeField] bool canBriefParry = false;
+    #endregion
+
+
+
+
+    #region FRAMES
+    [Header("FRAMES")]
+    [Tooltip("Only editable by animator, is currently in parry frames state")]
+    [SerializeField] public bool parryFrame = false;
+    [SerializeField] public bool
+        perfectParryFrame = false,
+        activeFrame = false,
+        clashFrames = false;
+    #endregion
+
 
 
     #region DRAW
@@ -213,16 +234,12 @@ public class Player : MonoBehaviour
 
 
 
-    
     #region JUMP
     // JUMP
     [Header("JUMP")]
     [SerializeField] float
         jumpPower = 10f;
-
-    [SerializeField] bool canJump = true;
     #endregion
-    
 
 
 
@@ -252,24 +269,21 @@ public class Player : MonoBehaviour
 
 
 
+
     #region ATTACK
     // ATTACK
     [Header("ATTACK")]
     [Tooltip("Attack range parameters")]
     [SerializeField] public float lightAttackRange = 1.8f;
     [Tooltip("Attack range parameters")]
-    [SerializeField]
-    public float
+    [SerializeField] public float
         heavyAttackRange = 3.2f,
         attackRangeDisjoint = 0.2f;
     [SerializeField] float axisDeadZoneForAttackDash = 0.2f;
     [HideInInspector] public float actualAttackRange = 0;
 
     [Tooltip("Frame parameters for the attack")]
-    [SerializeField]
-    public bool
-        activeFrame = false,
-        clashFrames = false;
+
     [HideInInspector] public bool isAttacking = false;
 
 
@@ -279,6 +293,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool hasAttackRecoveryAnimFinished = false;
 
     #endregion
+
 
 
 
@@ -330,6 +345,7 @@ public class Player : MonoBehaviour
 
 
 
+
     #region KICK
     // KICK
     [Header("KICK")]
@@ -341,6 +357,7 @@ public class Player : MonoBehaviour
     float
         kickRange = 0.88f;
     #endregion
+
 
 
 
@@ -361,8 +378,6 @@ public class Player : MonoBehaviour
     #region PARRY
     // PARRY
     [Header("PARRY")]
-    [Tooltip("Only editable by animator, is currently in parry frames state")]
-    [SerializeField] public bool parryFrame = false;
     [HideInInspector] public bool canParry = true;
 
     //[SerializeField] int numberOfFramesToDetectParryInput = 3;
@@ -370,6 +385,12 @@ public class Player : MonoBehaviour
     #endregion
 
 
+
+
+    #region MAINTAIN PARRY
+    [Header("MAINTAIN PARRY")]
+    [SerializeField] float maintainParryStaminaCostOverTime = 0.1f;
+    #endregion
 
 
 
@@ -394,15 +415,11 @@ public class Player : MonoBehaviour
     [Header("FX")]
     [Tooltip("The references to the game objects holding the different FXs")]
     [SerializeField] GameObject clashFXPrefabRef = null;
-    [SerializeField]
-    GameObject
-        staminaGainFX = null,
-        deathBloodFX = null;
+    [SerializeField] GameObject deathBloodFX = null;
 
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public ParticleSystem attackRangeFX = null;
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         chargeFlareFX = null,
         chargeFX = null,
         chargeFullFX = null,
@@ -411,7 +428,8 @@ public class Player : MonoBehaviour
         kickedFX = null,
         staminaLossFX = null,
         clashFX = null,
-        slashFX = null;
+        slashFX = null,
+        staminaGainFX = null;
 
     [Tooltip("The slider component reference to move the charging FX on the katana")]
     [SerializeField] Slider chargeSlider = null;
@@ -573,18 +591,19 @@ public class Player : MonoBehaviour
                 break;
 
             case STATE.normal:
-                if (canJump)
-                    ManageJumpInput();
+                ManageJumpInput();
                 ManageChargeInput();
                 ManageDashInput();
                 ManagePommel();
                 ManageParryInput();
+                ManageMaintainParryInput();
                 break;
 
             case STATE.charging:
                 ManageDashInput();
                 ManagePommel();
                 ManageParryInput();
+                ManageMaintainParryInput();
                 ManageCharging();
                 break;
 
@@ -601,6 +620,10 @@ public class Player : MonoBehaviour
             case STATE.parrying:
                 break;
 
+            case STATE.maintainParrying:
+                ManageMaintainParryInput();
+                break;
+
             case STATE.preparingToJump:
                 break;
 
@@ -612,6 +635,7 @@ public class Player : MonoBehaviour
                 ManageChargeInput();
                 ManagePommel();
                 ManageParryInput();
+                ManageMaintainParryInput();
                 break;
 
             case STATE.clashed:
@@ -760,6 +784,18 @@ public class Player : MonoBehaviour
                 UpdateStaminaColor();
                 break;
 
+            case STATE.maintainParrying:
+                RunDash();
+                if (hasFinishedAnim)
+                {
+                    SwitchState(STATE.normal);
+                }
+                StaminaCost(maintainParryStaminaCostOverTime, false);
+                UpdateStaminaSlidersValue();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+                UpdateStaminaColor();
+                break;
+
             case STATE.preparingToJump:
                 if (hasFinishedAnim)
                 {
@@ -829,7 +865,9 @@ public class Player : MonoBehaviour
     #region STATE SWITCH
     public void SwitchState(STATE newState)
     {
-        oldState = playerState;
+        if (playerState != STATE.frozen)
+            oldState = playerState;
+
         playerState = newState;
 
 
@@ -862,6 +900,7 @@ public class Player : MonoBehaviour
             case STATE.normal:
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
+                isDashing = false;
                 //canCharge = false;
                 playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
@@ -873,11 +912,13 @@ public class Player : MonoBehaviour
                 break;
 
             case STATE.charging:
+                isDashing = false;
                 chargeLevel = 1;
                 chargeStartTime = Time.time;
                 actualMovementsSpeed = chargeMovementsSpeed;
                 dashFXBack.Stop();
                 dashFXFront.Stop();
+                chargeFlareFX.gameObject.SetActive(true);
                 break;
 
             case STATE.attacking:
@@ -892,7 +933,7 @@ public class Player : MonoBehaviour
                     playerColliders[i].isTrigger = true;
                 }
                 PauseStaminaRegen();
-                StaminaCost(staminaCostForMoves);
+                StaminaCost(staminaCostForMoves, true);
                 break;
 
             case STATE.pommeling:
@@ -905,10 +946,22 @@ public class Player : MonoBehaviour
                 chargeLevel = 1;
                 canParry = false;
                 PauseStaminaRegen();
-                StaminaCost(staminaCostForMoves);
+                StaminaCost(staminaCostForMoves, true);
                 rb.velocity = Vector3.zero;
                 dashFXBack.Stop();
                 dashFXFront.Stop();
+                chargeFlareFX.gameObject.SetActive(false);
+                chargeFlareFX.gameObject.SetActive(true);
+                break;
+
+            case STATE.maintainParrying:
+                chargeLevel = 1;
+                rb.velocity = Vector3.zero;
+                PauseStaminaRegen();
+                dashFXBack.Stop();
+                dashFXFront.Stop();
+                chargeFlareFX.gameObject.SetActive(false);
+                chargeFlareFX.gameObject.SetActive(true);
                 break;
 
             case STATE.preparingToJump:
@@ -933,8 +986,9 @@ public class Player : MonoBehaviour
                 {
                     playerColliders[i].isTrigger = true;
                 }
-                StaminaCost(staminaCostForMoves);
+                StaminaCost(staminaCostForMoves, true);
                 PauseStaminaRegen();
+                chargeFlareFX.gameObject.SetActive(false);
                 break;
 
             case STATE.recovering:
@@ -976,6 +1030,8 @@ public class Player : MonoBehaviour
                 }
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
+                attackDashFXFront.Stop();
+                attackDashFXBack.Stop();
                 walkFXBack.Stop();
                 walkFXFront.Stop();
                 drawText.SetActive(false);
@@ -999,7 +1055,7 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < gameManager.playersList.Count; i++)
         {
-            if (i + 1 != playerNum)
+            if (i != playerNum)
             {
                 otherPlayerNum = i;
             }
@@ -1099,8 +1155,17 @@ public class Player : MonoBehaviour
 
         if (playerState != STATE.dead)
         {
+            if (Mathf.Sign(instigator.transform.localScale.x) == Mathf.Sign(transform.localScale.x))
+            {
+                hit = true;
+                TriggerHit();
+
+
+                // SOUND
+                audioManager.BattleEventIncreaseIntensity();
+            }
             // CLASH
-            if (clashFrames)
+            else if (clashFrames)
             {
                 TriggerClash();
                 instigator.GetComponent<Player>().TriggerClash();
@@ -1112,8 +1177,13 @@ public class Player : MonoBehaviour
 
 
                 // STATS
-                statsManager.AddAction(ACTION.clash, playerNum, 0);
-                statsManager.AddAction(ACTION.clash, otherPlayerNum, 0);
+                if (statsManager)
+                {
+                    statsManager.AddAction(ACTION.clash, playerNum, 0);
+                    statsManager.AddAction(ACTION.clash, otherPlayerNum, 0);
+                }
+                else
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
             // PARRY
             else if (parryFrame)
@@ -1135,7 +1205,10 @@ public class Player : MonoBehaviour
 
 
                 // STATS
-                statsManager.AddAction(ACTION.successfulParry, playerNum, 0);
+                if (statsManager)
+                    statsManager.AddAction(ACTION.successfulParry, playerNum, 0);
+                else
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
             // UNTOUCHABLE FRAMES
             else if (untouchableFrame)
@@ -1148,13 +1221,19 @@ public class Player : MonoBehaviour
 
 
                 // STATS
-                statsManager.AddAction(ACTION.dodge, playerNum, 0);
+                if (statsManager)
+                    statsManager.AddAction(ACTION.dodge, playerNum, 0);
+                else
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
             // TOUCHED
             else
             {
                 hit = true;
                 TriggerHit();
+
+
+                // SOUND
                 audioManager.BattleEventIncreaseIntensity();
             }
 
@@ -1186,7 +1265,10 @@ public class Player : MonoBehaviour
 
 
                 // STATS
-                statsManager.AddAction(ACTION.death, playerNum, 0);
+                if (statsManager)
+                    statsManager.AddAction(ACTION.death, playerNum, 0);
+                else
+                   Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
         }
 
@@ -1212,6 +1294,7 @@ public class Player : MonoBehaviour
 
         // FX
         slashFX.Play();
+        UpdateFXOrientation();
 
 
         // CAMERA FX
@@ -1284,7 +1367,7 @@ public class Player : MonoBehaviour
     }
 
     // Function to decrement to stamina
-    public void StaminaCost(float cost)
+    public void StaminaCost(float cost, bool playFX)
     {
         stamina -= cost;
 
@@ -1296,7 +1379,8 @@ public class Player : MonoBehaviour
 
 
         // FX
-        staminaLossFX.Play();
+        if (playFX)
+           staminaLossFX.Play();
     }
 
     // Update stamina slider value
@@ -1309,8 +1393,7 @@ public class Player : MonoBehaviour
             {
                 staminaBarChargedAudioEffectSource.Play();
 
-                staminaGainFX.SetActive(false);
-                staminaGainFX.SetActive(true);
+                staminaGainFX.Play();
                 staminaGainFX.GetComponent<ParticleSystem>().Play();
             }
         }
@@ -1471,9 +1554,12 @@ public class Player : MonoBehaviour
     // JUMP
     void ManageJumpInput()
     {
-        if (inputManager.playerInputs[playerNum].jump)
+        if (canJump)
         {
-            TriggerJumpBeginning();
+            if (inputManager.playerInputs[playerNum].jump)
+            {
+                TriggerJumpBeginning();
+            }
         }
     }
 
@@ -1508,6 +1594,7 @@ public class Player : MonoBehaviour
             if (stamina >= staminaCostForMoves)
             {
                 SwitchState(STATE.charging);
+                canCharge = false;
 
 
                 chargeStartTime = Time.time;
@@ -1515,6 +1602,7 @@ public class Player : MonoBehaviour
 
                 // FX
                 chargeFlareFX.Play();
+                chargeSlider.value = 1;
 
 
                 // ANIMATION
@@ -1523,7 +1611,10 @@ public class Player : MonoBehaviour
 
 
                 // STATS
-                statsManager.AddAction(ACTION.charge, playerNum, 0);
+                if (statsManager)
+                   statsManager.AddAction(ACTION.charge, playerNum, 0);
+                else
+                   Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
         }
 
@@ -1676,8 +1767,11 @@ public class Player : MonoBehaviour
 
 
                 // STATS
-                statsManager.AddAction(ACTION.forwardAttack, playerNum, saveChargeLevelForStats);
-                
+                if (statsManager)
+                    statsManager.AddAction(ACTION.forwardAttack, playerNum, saveChargeLevelForStats);
+                else
+                   Debug.Log("Couldn't access statsManager to record action, ignoring");
+
             }
             else
             {
@@ -1689,7 +1783,10 @@ public class Player : MonoBehaviour
 
 
                 // STATS
-                statsManager.AddAction(ACTION.backwardsAttack, playerNum, saveChargeLevelForStats);
+                if  (statsManager)
+                    statsManager.AddAction(ACTION.backwardsAttack, playerNum, saveChargeLevelForStats);
+                else
+                   Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
         }
         else
@@ -1698,7 +1795,10 @@ public class Player : MonoBehaviour
 
 
             // STATS
-            statsManager.AddAction(ACTION.neutralAttack, playerNum, saveChargeLevelForStats);
+            if (statsManager)
+                statsManager.AddAction(ACTION.neutralAttack, playerNum, saveChargeLevelForStats);
+            else
+                   Debug.Log("Couldn't access statsManager to record action, ignoring");
         }
         
 
@@ -1732,6 +1832,12 @@ public class Player : MonoBehaviour
             {
                 if (!hits.Contains(c.transform.parent.gameObject))
                 {
+                    if ((c.transform.parent.position.x - transform.position.x) * transform.localScale.x > 0)
+                    {
+                        Debug.Log("Enemy is in back");
+                    }
+
+
                     hits.Add(c.transform.parent.gameObject);
                     //Debug.Log(c.transform.parent.gameObject);
                 }
@@ -1784,22 +1890,87 @@ public class Player : MonoBehaviour
 
 
 
+    #region MAINTAIN PARRY
+    // Detect parry inputs
+    void ManageMaintainParryInput()
+    {
+        if (canMaintainParry)
+        {
+            if (inputManager.playerInputs[playerNum].parry && canParry)
+            {
+                currentParryFramesPressed++;
+                canParry = false;
+
+
+                if (stamina >= staminaCostForMoves)
+                    TriggerMaintainParry();
+
+
+                currentParryFramesPressed = 0;
+            }
+
+
+            if (!inputManager.playerInputs[playerNum].parry || stamina <= maintainParryStaminaCostOverTime)
+            {
+                canParry = true;
+                ReleaseMaintainParry();
+            }
+        }
+    }
+
+    // Maintain parry coroutine
+    void TriggerMaintainParry()
+    {
+        SwitchState(STATE.maintainParrying);
+
+
+        // ANIMATION
+        playerAnimations.ResetMaintainParry();
+        playerAnimations.TriggerMaintainParry();
+
+
+        // STATS
+        statsManager.AddAction(ACTION.parry, playerNum, chargeLevel);
+    }
+
+    void ReleaseMaintainParry()
+    {
+        // ANIMATION
+        playerAnimations.EndMaintainParry();
+    }
+    #endregion
+
+
+
+
+
+
 
     #region PARRY
     // PARRY
     // Detect parry inputs
     void ManageParryInput()
     {
-        if (inputManager.playerInputs[playerNum].parry)
+        if (canBriefParry)
         {
-            currentParryFramesPressed++;
+            if (inputManager.playerInputs[playerNum].parry && canParry)
+            {
+                currentParryFramesPressed++;
+                canParry = false;
 
 
-            if (stamina >= staminaCostForMoves)
-                TriggerParry();
+                if (stamina >= staminaCostForMoves)
+                    TriggerParry();
 
 
-            currentParryFramesPressed = 0;
+                currentParryFramesPressed = 0;
+            }
+
+
+            if (!inputManager.playerInputs[playerNum].parry)
+            {
+                canParry = true;
+            }
         }
     }
 
@@ -1815,7 +1986,10 @@ public class Player : MonoBehaviour
 
 
         // STATS
-        statsManager.AddAction(ACTION.parry, playerNum, chargeLevel);
+        if (statsManager)
+            statsManager.AddAction(ACTION.parry, playerNum, chargeLevel);
+        else
+            Debug.Log("Couldn't access statsManager to record action, ignoring");
     }
     #endregion
 
@@ -1845,7 +2019,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Kick coroutine
+    // Pommel coroutine
     void TriggerPommel()
     {
         SwitchState(STATE.pommeling);
@@ -1856,7 +2030,10 @@ public class Player : MonoBehaviour
 
 
         // STATS
-        statsManager.AddAction(ACTION.pommel, playerNum, chargeLevel);
+        if (statsManager)
+            statsManager.AddAction(ACTION.pommel, playerNum, chargeLevel);
+        else
+            Debug.Log("Couldn't access statsManager to record action, ignoring");
     }
 
     // Apply pommel hitbox depending on kick frames
@@ -1908,12 +2085,12 @@ public class Player : MonoBehaviour
         {
             // Stamina
             if (playerState == STATE.parrying || playerState == STATE.attacking)
-                StaminaCost(staminaCostForMoves);
+                StaminaCost(staminaCostForMoves, true);
 
 
             StopAllCoroutines();
             SwitchState(STATE.clashed);
-
+            ApplyOrientation(- gameManager.playersList[otherPlayerNum].transform.localScale.x);
 
 
             canCharge = false;
@@ -1946,7 +2123,10 @@ public class Player : MonoBehaviour
 
 
             // STATS
-            statsManager.AddAction(ACTION.successfulPommel, otherPlayerNum, chargeLevel);
+            if (statsManager)
+                statsManager.AddAction(ACTION.successfulPommel, otherPlayerNum, chargeLevel);
+            else
+                   Debug.Log("Couldn't access statsManager to record action, ignoring");
         }
     }
     #endregion
@@ -2093,40 +2273,49 @@ public class Player : MonoBehaviour
     // Triggers the dash (Not the clash or attack dash) for it to run
     void TriggerBasicDash()
     {
-        // CHANGE STATE
-        SwitchState(STATE.dashing);
-
-
-        StopAllCoroutines();
-        dashTime = 0;
-
-
-        if (dashDirection == -transform.localScale.x)
+        if (stamina >= staminaCostForMoves)
         {
-            actualUsedDashDistance = forwardDashDistance;
-            dashFXFront.Play();
+            // CHANGE STATE
+            SwitchState(STATE.dashing);
 
 
-            // STATS
-            statsManager.AddAction(ACTION.forwardDash, otherPlayerNum, chargeLevel);
+            StopAllCoroutines();
+            dashTime = 0;
+
+
+            if (dashDirection == -transform.localScale.x)
+            {
+                actualUsedDashDistance = forwardDashDistance;
+                dashFXFront.Play();
+
+
+                // STATS
+                if (statsManager)
+                    statsManager.AddAction(ACTION.forwardDash, otherPlayerNum, chargeLevel);
+                else
+                   Debug.Log("Couldn't access statsManager to record action, ignoring");
+            }
+            else
+            {
+                actualUsedDashDistance = backwardsDashDistance;
+                dashFXBack.Play();
+
+
+                // STATS
+                if (statsManager)
+                    statsManager.AddAction(ACTION.backwardsDash, otherPlayerNum, chargeLevel);
+                else
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+            }
+
+
+            // ANIMATION
+            playerAnimations.TriggerDash(dashDirection * transform.localScale.x);
+
+
+            initPos = transform.position;
+            targetPos = transform.position + new Vector3(actualUsedDashDistance * dashDirection, 0, 0);
         }
-        else
-        {
-            actualUsedDashDistance = backwardsDashDistance;
-            dashFXBack.Play();
-
-
-            // STATS
-            statsManager.AddAction(ACTION.backwardsDash, otherPlayerNum, chargeLevel);
-        }
-
-
-        // ANIMATION
-        playerAnimations.TriggerDash(dashDirection * transform.localScale.x);
-
-
-        initPos = transform.position;
-        targetPos = transform.position + new Vector3(actualUsedDashDistance * dashDirection, 0, 0);
     }
 
     // Runs the dash, to use in FixedUpdate
@@ -2252,16 +2441,18 @@ public class Player : MonoBehaviour
 
         orientationCooldownStartTime = Time.time;
         orientationCooldownFinished = false;
+    }
 
 
+    void UpdateFXOrientation()
+    {
         // FX
         Vector3 deathBloodFXRotation = deathBloodFX.gameObject.transform.localEulerAngles;
 
 
-        if (transform.localScale.x <= 0)
+        if (gameManager.playersList[otherPlayerNum].transform.localScale.x >= 0)
         {
-
-            deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, deathBloodFXRotationForDirectionChange);
+            deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, - deathBloodFXRotationForDirectionChange * transform.localScale.x);
 
 
             // Changes the draw text indication's scale so that it's, well, readable for a human being

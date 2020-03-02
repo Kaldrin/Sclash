@@ -13,58 +13,1826 @@ MonoBehaviour:
   m_Name: Stats01
   m_EditorClassIdentifier: 
   globalStats:
-  - statName: GLOBAL
-    totalPlayTime: 0
-    totalGamesPlayed: 0
-    totalGamesFinished: 0
-    totalRoundsPlayed: 0
-    averageFinishedGameDuration: 0
-    averageRoundDuration: 0
-    averageRoundsNumberPerFinishedGame: 0
-    gamesList: []
-    charge: 0
-    forwardAttack: 0
-    backwardsAttack: 0
-    neutralAttack: 0
-    death: 0
-    forwardDash: 0
-    backwardsDash: 0
-    pommel: 0
-    successfulPommel: 0
-    parry: 0
-    successfulParry: 0
+  - statName: ONLINE
+    totalPlayTime: 184.62506
+    totalGamesPlayed: 2
+    totalGamesFinished: 2
+    totalRoundsPlayed: 17
+    averageFinishedGameDuration: 92.31253
+    averageRoundDuration: 8.372689
+    averageRoundsNumberPerFinishedGame: 8.5
+    gamesList:
+    - index: 0
+      date:
+        year: 2020
+        month: 2
+        day: 27
+        hour: 14
+        minute: 7
+      type: LOCAL
+      stage: 0
+      character1: 0
+      character2: 0
+      scoreToWin: 10
+      roundsPlayed: 14
+      duration: 163.32632
+      gameFinished: 1
+      finalScore: {x: 10, y: 4}
+      rounds:
+      - index: 0
+        duration: 5.006325
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.39061832
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.9592485
+            level: 0
+          - name: 3
+            index: 2
+            timeCode: 2.0328045
+            level: 1
+          - name: 0
+            index: 3
+            timeCode: 4.612112
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 4.71134
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.42497158
+            level: 1
+          - name: 9
+            index: 1
+            timeCode: 2.9028063
+            level: 1
+          - name: 9
+            index: 2
+            timeCode: 3.5561142
+            level: 1
+          - name: 4
+            index: 3
+            timeCode: 5.006325
+            level: 0
+      - index: 1
+        duration: 18.856464
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1384487
+            level: 1
+          - name: 6
+            index: 1
+            timeCode: 7.2065163
+            level: 1
+          - name: 5
+            index: 2
+            timeCode: 8.77236
+            level: 1
+          - name: 0
+            index: 3
+            timeCode: 13.937656
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 14.059868
+            level: 1
+          - name: 0
+            index: 5
+            timeCode: 16.687252
+            level: 0
+          - name: 1
+            index: 6
+            timeCode: 16.802784
+            level: 1
+          - name: 4
+            index: 7
+            timeCode: 18.856464
+            level: 0
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 2.1539974
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 6.970106
+            level: 1
+          - name: 6
+            index: 2
+            timeCode: 8.41769
+            level: 1
+          - name: 5
+            index: 3
+            timeCode: 12.041515
+            level: 1
+          - name: 7
+            index: 4
+            timeCode: 12.256519
+            level: 1
+          - name: 8
+            index: 5
+            timeCode: 12.276466
+            level: 1
+          - name: 8
+            index: 6
+            timeCode: 12.556465
+            level: 1
+          - name: 5
+            index: 7
+            timeCode: 13.843887
+            level: 1
+          - name: 7
+            index: 8
+            timeCode: 14.102142
+            level: 1
+          - name: 8
+            index: 9
+            timeCode: 14.196465
+            level: 1
+          - name: 5
+            index: 10
+            timeCode: 16.578873
+            level: 1
+          - name: 7
+            index: 11
+            timeCode: 16.790955
+            level: 1
+          - name: 8
+            index: 12
+            timeCode: 16.956467
+            level: 1
+          - name: 0
+            index: 13
+            timeCode: 18.369747
+            level: 0
+          - name: 1
+            index: 14
+            timeCode: 18.549995
+            level: 1
+      - index: 2
+        duration: 3.425541
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.3425446
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 1.6381569
+            level: 1
+          - name: 5
+            index: 2
+            timeCode: 1.9198494
+            level: 1
+          - name: 5
+            index: 3
+            timeCode: 2.1907768
+            level: 1
+          - name: 0
+            index: 4
+            timeCode: 2.7974396
+            level: 0
+          - name: 1
+            index: 5
+            timeCode: 3.1385002
+            level: 1
+        - actionsList:
+          - name: 4
+            index: 0
+            timeCode: 3.425541
+            level: 0
+      - index: 3
+        duration: 6.2985497
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.3241425
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 3.224266
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 3.393444
+            level: 1
+          - name: 7
+            index: 3
+            timeCode: 5.1186104
+            level: 1
+          - name: 8
+            index: 4
+            timeCode: 5.13855
+            level: 1
+          - name: 8
+            index: 5
+            timeCode: 5.1585503
+            level: 1
+          - name: 0
+            index: 6
+            timeCode: 5.900429
+            level: 0
+          - name: 1
+            index: 7
+            timeCode: 6.0170364
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.2937927
+            level: 1
+          - name: 9
+            index: 1
+            timeCode: 3.4875717
+            level: 1
+          - name: 10
+            index: 2
+            timeCode: 3.6785507
+            level: 0
+          - name: 5
+            index: 3
+            timeCode: 4.896141
+            level: 1
+          - name: 4
+            index: 4
+            timeCode: 6.2985497
+            level: 0
+      - index: 4
+        duration: 29.41877
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.710968
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 22.833199
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 22.940231
+            level: 1
+          - name: 9
+            index: 3
+            timeCode: 24.3629
+            level: 1
+          - name: 10
+            index: 4
+            timeCode: 24.658768
+            level: 0
+          - name: 0
+            index: 5
+            timeCode: 26.286713
+            level: 0
+          - name: 1
+            index: 6
+            timeCode: 26.392517
+            level: 1
+          - name: 4
+            index: 7
+            timeCode: 29.41877
+            level: 0
+        - actionsList:
+          - name: 9
+            index: 0
+            timeCode: 23.04815
+            level: 1
+          - name: 10
+            index: 1
+            timeCode: 23.23877
+            level: 0
+          - name: 0
+            index: 2
+            timeCode: 24.228554
+            level: 0
+          - name: 1
+            index: 3
+            timeCode: 24.3629
+            level: 1
+          - name: 9
+            index: 4
+            timeCode: 26.416344
+            level: 1
+          - name: 10
+            index: 5
+            timeCode: 26.678764
+            level: 0
+          - name: 0
+            index: 6
+            timeCode: 29.041
+            level: 0
+          - name: 1
+            index: 7
+            timeCode: 29.126434
+            level: 1
+      - index: 5
+        duration: 6.83342
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.91628265
+            level: 1
+          - name: 9
+            index: 1
+            timeCode: 5.896858
+            level: 1
+          - name: 10
+            index: 2
+            timeCode: 6.213417
+            level: 0
+          - name: 0
+            index: 3
+            timeCode: 6.466629
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 6.536377
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.8992157
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.5984802
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 5.908516
+            level: 5
+          - name: 4
+            index: 3
+            timeCode: 6.83342
+            level: 0
+      - index: 6
+        duration: 8.140717
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 2.604622
+            level: 1
+          - name: 6
+            index: 1
+            timeCode: 3.1624374
+            level: 1
+          - name: 0
+            index: 2
+            timeCode: 7.266464
+            level: 0
+          - name: 1
+            index: 3
+            timeCode: 7.3637085
+            level: 1
+          - name: 4
+            index: 4
+            timeCode: 8.140717
+            level: 0
+        - actionsList:
+          - name: 9
+            index: 0
+            timeCode: 5.8069534
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 7.503639
+            level: 0
+          - name: 2
+            index: 2
+            timeCode: 7.6366653
+            level: 1
+          - name: 12
+            index: 3
+            timeCode: 7.660721
+            level: 0
+          - name: 12
+            index: 4
+            timeCode: 7.6807175
+            level: 0
+          - name: 12
+            index: 5
+            timeCode: 7.7007217
+            level: 0
+          - name: 12
+            index: 6
+            timeCode: 7.7207184
+            level: 0
+          - name: 12
+            index: 7
+            timeCode: 7.7407227
+            level: 0
+          - name: 12
+            index: 8
+            timeCode: 7.7607193
+            level: 0
+          - name: 12
+            index: 9
+            timeCode: 7.780716
+            level: 0
+          - name: 12
+            index: 10
+            timeCode: 7.80072
+            level: 0
+      - index: 7
+        duration: 3.898758
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 0
+            index: 0
+            timeCode: 3.480217
+            level: 0
+          - name: 1
+            index: 1
+            timeCode: 3.5848312
+            level: 1
+        - actionsList:
+          - name: 7
+            index: 0
+            timeCode: 3.8501053
+            level: 1
+          - name: 12
+            index: 1
+            timeCode: 3.8787613
+            level: 0
+          - name: 4
+            index: 2
+            timeCode: 3.898758
+            level: 0
+      - index: 8
+        duration: 8.7508545
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 3.8064194
+            level: 1
+          - name: 6
+            index: 1
+            timeCode: 5.650406
+            level: 1
+          - name: 0
+            index: 2
+            timeCode: 8.418694
+            level: 0
+          - name: 3
+            index: 3
+            timeCode: 8.495895
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 7.118553
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 7.467079
+            level: 1
+          - name: 5
+            index: 2
+            timeCode: 7.788147
+            level: 1
+          - name: 4
+            index: 3
+            timeCode: 8.7508545
+            level: 0
+      - index: 9
+        duration: 13.113968
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1130219
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.5154724
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 1.6173553
+            level: 1
+          - name: 11
+            index: 3
+            timeCode: 1.913971
+            level: 0
+          - name: 0
+            index: 4
+            timeCode: 10.936523
+            level: 0
+          - name: 7
+            index: 5
+            timeCode: 12.091827
+            level: 1
+          - name: 0
+            index: 6
+            timeCode: 12.634155
+            level: 0
+          - name: 3
+            index: 7
+            timeCode: 12.85704
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.12974548
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 1.0953064
+            level: 1
+          - name: 0
+            index: 2
+            timeCode: 1.4866791
+            level: 0
+          - name: 1
+            index: 3
+            timeCode: 1.6173553
+            level: 1
+          - name: 11
+            index: 4
+            timeCode: 1.913971
+            level: 0
+          - name: 5
+            index: 5
+            timeCode: 10.742706
+            level: 1
+          - name: 4
+            index: 6
+            timeCode: 13.113968
+            level: 0
+      - index: 10
+        duration: 11.754196
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.0825653
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 2.8450775
+            level: 0
+          - name: 0
+            index: 2
+            timeCode: 7.1782684
+            level: 0
+          - name: 0
+            index: 3
+            timeCode: 10.21582
+            level: 0
+          - name: 0
+            index: 4
+            timeCode: 11.411087
+            level: 0
+          - name: 3
+            index: 5
+            timeCode: 11.511429
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.0621643
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 2.6393585
+            level: 1
+          - name: 7
+            index: 2
+            timeCode: 3.9302216
+            level: 1
+          - name: 8
+            index: 3
+            timeCode: 3.934204
+            level: 1
+          - name: 8
+            index: 4
+            timeCode: 4.214203
+            level: 1
+          - name: 7
+            index: 5
+            timeCode: 4.784668
+            level: 1
+          - name: 8
+            index: 6
+            timeCode: 4.7942047
+            level: 1
+          - name: 7
+            index: 7
+            timeCode: 5.4930267
+            level: 1
+          - name: 5
+            index: 8
+            timeCode: 6.9697266
+            level: 1
+          - name: 7
+            index: 9
+            timeCode: 8.1736145
+            level: 1
+          - name: 8
+            index: 10
+            timeCode: 8.174194
+            level: 1
+          - name: 5
+            index: 11
+            timeCode: 9.991562
+            level: 1
+          - name: 7
+            index: 12
+            timeCode: 10.649429
+            level: 1
+          - name: 8
+            index: 13
+            timeCode: 10.654205
+            level: 1
+          - name: 4
+            index: 14
+            timeCode: 11.754196
+            level: 0
+      - index: 11
+        duration: 6.550644
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 2.4183502
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 2.7232513
+            level: 1
+          - name: 0
+            index: 2
+            timeCode: 3.8870392
+            level: 0
+          - name: 1
+            index: 3
+            timeCode: 3.9746094
+            level: 1
+          - name: 9
+            index: 4
+            timeCode: 4.6973114
+            level: 1
+          - name: 4
+            index: 5
+            timeCode: 6.550644
+            level: 0
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 2.4183502
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 2.7232513
+            level: 1
+          - name: 9
+            index: 2
+            timeCode: 3.94133
+            level: 1
+          - name: 10
+            index: 3
+            timeCode: 4.27063
+            level: 0
+          - name: 0
+            index: 4
+            timeCode: 6.2148438
+            level: 0
+          - name: 1
+            index: 5
+            timeCode: 6.257126
+            level: 1
+      - index: 12
+        duration: 2.075821
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.60749817
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.6880035
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 1.7705536
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.60749817
+            level: 1
+          - name: 4
+            index: 1
+            timeCode: 2.075821
+            level: 0
+      - index: 13
+        duration: 2.4757996
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1606445
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 2.054367
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 2.181366
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1147003
+            level: 1
+          - name: 4
+            index: 1
+            timeCode: 2.4757996
+            level: 0
+    - index: 1
+      date:
+        year: 2020
+        month: 2
+        day: 27
+        hour: 14
+        minute: 11
+      type: LOCAL
+      stage: 0
+      character1: 0
+      character2: 0
+      scoreToWin: 2
+      roundsPlayed: 3
+      duration: 21.298737
+      gameFinished: 1
+      finalScore: {x: 2, y: 1}
+      rounds:
+      - index: 0
+        duration: 5.7187347
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1576691
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.5265045
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 1.6267853
+            level: 1
+          - name: 0
+            index: 3
+            timeCode: 3.2405243
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 3.3125763
+            level: 1
+          - name: 9
+            index: 5
+            timeCode: 3.966339
+            level: 1
+          - name: 4
+            index: 6
+            timeCode: 5.7187347
+            level: 0
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.134552
+            level: 1
+          - name: 9
+            index: 1
+            timeCode: 3.4362793
+            level: 1
+          - name: 10
+            index: 2
+            timeCode: 3.5987396
+            level: 0
+          - name: 0
+            index: 3
+            timeCode: 5.3410034
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 5.425705
+            level: 1
+      - index: 1
+        duration: 7.2606506
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 3.3176575
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 6.831543
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 6.9768524
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 3.2746582
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 6.7331543
+            level: 1
+          - name: 4
+            index: 2
+            timeCode: 7.2606506
+            level: 0
+      - index: 2
+        duration: 2.7565155
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.0950165
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.9484406
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 2.45932
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1309509
+            level: 1
+          - name: 4
+            index: 1
+            timeCode: 2.7565155
+            level: 0
+    charge: 35
+    forwardAttack: 26
+    backwardsAttack: 1
+    neutralAttack: 4
+    death: 16
+    forwardDash: 48
+    backwardsDash: 4
+    pommel: 11
+    successfulPommel: 11
+    parry: 12
+    successfulParry: 9
     clash: 0
-    dodge: 0
+    dodge: 9
   - statName: LOCAL
-    totalPlayTime: 0
-    totalGamesPlayed: 0
-    totalGamesFinished: 0
-    totalRoundsPlayed: 0
-    averageFinishedGameDuration: 0
-    averageRoundDuration: 0
-    averageRoundsNumberPerFinishedGame: 0
-    gamesList: []
-    charge: 0
-    forwardAttack: 0
-    backwardsAttack: 0
-    neutralAttack: 0
-    death: 0
-    forwardDash: 0
-    backwardsDash: 0
-    pommel: 0
-    successfulPommel: 0
-    parry: 0
-    successfulParry: 0
+    totalPlayTime: 184.62506
+    totalGamesPlayed: 2
+    totalGamesFinished: 2
+    totalRoundsPlayed: 17
+    averageFinishedGameDuration: 92.31253
+    averageRoundDuration: 8.372689
+    averageRoundsNumberPerFinishedGame: 8.5
+    gamesList:
+    - index: 0
+      date:
+        year: 2020
+        month: 2
+        day: 27
+        hour: 14
+        minute: 7
+      type: LOCAL
+      stage: 0
+      character1: 0
+      character2: 0
+      scoreToWin: 10
+      roundsPlayed: 14
+      duration: 163.32632
+      gameFinished: 1
+      finalScore: {x: 10, y: 4}
+      rounds:
+      - index: 0
+        duration: 5.006325
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.39061832
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.9592485
+            level: 0
+          - name: 3
+            index: 2
+            timeCode: 2.0328045
+            level: 1
+          - name: 0
+            index: 3
+            timeCode: 4.612112
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 4.71134
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.42497158
+            level: 1
+          - name: 9
+            index: 1
+            timeCode: 2.9028063
+            level: 1
+          - name: 9
+            index: 2
+            timeCode: 3.5561142
+            level: 1
+          - name: 4
+            index: 3
+            timeCode: 5.006325
+            level: 0
+      - index: 1
+        duration: 18.856464
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1384487
+            level: 1
+          - name: 6
+            index: 1
+            timeCode: 7.2065163
+            level: 1
+          - name: 5
+            index: 2
+            timeCode: 8.77236
+            level: 1
+          - name: 0
+            index: 3
+            timeCode: 13.937656
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 14.059868
+            level: 1
+          - name: 0
+            index: 5
+            timeCode: 16.687252
+            level: 0
+          - name: 1
+            index: 6
+            timeCode: 16.802784
+            level: 1
+          - name: 4
+            index: 7
+            timeCode: 18.856464
+            level: 0
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 2.1539974
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 6.970106
+            level: 1
+          - name: 6
+            index: 2
+            timeCode: 8.41769
+            level: 1
+          - name: 5
+            index: 3
+            timeCode: 12.041515
+            level: 1
+          - name: 7
+            index: 4
+            timeCode: 12.256519
+            level: 1
+          - name: 8
+            index: 5
+            timeCode: 12.276466
+            level: 1
+          - name: 8
+            index: 6
+            timeCode: 12.556465
+            level: 1
+          - name: 5
+            index: 7
+            timeCode: 13.843887
+            level: 1
+          - name: 7
+            index: 8
+            timeCode: 14.102142
+            level: 1
+          - name: 8
+            index: 9
+            timeCode: 14.196465
+            level: 1
+          - name: 5
+            index: 10
+            timeCode: 16.578873
+            level: 1
+          - name: 7
+            index: 11
+            timeCode: 16.790955
+            level: 1
+          - name: 8
+            index: 12
+            timeCode: 16.956467
+            level: 1
+          - name: 0
+            index: 13
+            timeCode: 18.369747
+            level: 0
+          - name: 1
+            index: 14
+            timeCode: 18.549995
+            level: 1
+      - index: 2
+        duration: 3.425541
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.3425446
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 1.6381569
+            level: 1
+          - name: 5
+            index: 2
+            timeCode: 1.9198494
+            level: 1
+          - name: 5
+            index: 3
+            timeCode: 2.1907768
+            level: 1
+          - name: 0
+            index: 4
+            timeCode: 2.7974396
+            level: 0
+          - name: 1
+            index: 5
+            timeCode: 3.1385002
+            level: 1
+        - actionsList:
+          - name: 4
+            index: 0
+            timeCode: 3.425541
+            level: 0
+      - index: 3
+        duration: 6.2985497
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.3241425
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 3.224266
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 3.393444
+            level: 1
+          - name: 7
+            index: 3
+            timeCode: 5.1186104
+            level: 1
+          - name: 8
+            index: 4
+            timeCode: 5.13855
+            level: 1
+          - name: 8
+            index: 5
+            timeCode: 5.1585503
+            level: 1
+          - name: 0
+            index: 6
+            timeCode: 5.900429
+            level: 0
+          - name: 1
+            index: 7
+            timeCode: 6.0170364
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.2937927
+            level: 1
+          - name: 9
+            index: 1
+            timeCode: 3.4875717
+            level: 1
+          - name: 10
+            index: 2
+            timeCode: 3.6785507
+            level: 0
+          - name: 5
+            index: 3
+            timeCode: 4.896141
+            level: 1
+          - name: 4
+            index: 4
+            timeCode: 6.2985497
+            level: 0
+      - index: 4
+        duration: 29.41877
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.710968
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 22.833199
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 22.940231
+            level: 1
+          - name: 9
+            index: 3
+            timeCode: 24.3629
+            level: 1
+          - name: 10
+            index: 4
+            timeCode: 24.658768
+            level: 0
+          - name: 0
+            index: 5
+            timeCode: 26.286713
+            level: 0
+          - name: 1
+            index: 6
+            timeCode: 26.392517
+            level: 1
+          - name: 4
+            index: 7
+            timeCode: 29.41877
+            level: 0
+        - actionsList:
+          - name: 9
+            index: 0
+            timeCode: 23.04815
+            level: 1
+          - name: 10
+            index: 1
+            timeCode: 23.23877
+            level: 0
+          - name: 0
+            index: 2
+            timeCode: 24.228554
+            level: 0
+          - name: 1
+            index: 3
+            timeCode: 24.3629
+            level: 1
+          - name: 9
+            index: 4
+            timeCode: 26.416344
+            level: 1
+          - name: 10
+            index: 5
+            timeCode: 26.678764
+            level: 0
+          - name: 0
+            index: 6
+            timeCode: 29.041
+            level: 0
+          - name: 1
+            index: 7
+            timeCode: 29.126434
+            level: 1
+      - index: 5
+        duration: 6.83342
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.91628265
+            level: 1
+          - name: 9
+            index: 1
+            timeCode: 5.896858
+            level: 1
+          - name: 10
+            index: 2
+            timeCode: 6.213417
+            level: 0
+          - name: 0
+            index: 3
+            timeCode: 6.466629
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 6.536377
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.8992157
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.5984802
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 5.908516
+            level: 5
+          - name: 4
+            index: 3
+            timeCode: 6.83342
+            level: 0
+      - index: 6
+        duration: 8.140717
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 2.604622
+            level: 1
+          - name: 6
+            index: 1
+            timeCode: 3.1624374
+            level: 1
+          - name: 0
+            index: 2
+            timeCode: 7.266464
+            level: 0
+          - name: 1
+            index: 3
+            timeCode: 7.3637085
+            level: 1
+          - name: 4
+            index: 4
+            timeCode: 8.140717
+            level: 0
+        - actionsList:
+          - name: 9
+            index: 0
+            timeCode: 5.8069534
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 7.503639
+            level: 0
+          - name: 2
+            index: 2
+            timeCode: 7.6366653
+            level: 1
+          - name: 12
+            index: 3
+            timeCode: 7.660721
+            level: 0
+          - name: 12
+            index: 4
+            timeCode: 7.6807175
+            level: 0
+          - name: 12
+            index: 5
+            timeCode: 7.7007217
+            level: 0
+          - name: 12
+            index: 6
+            timeCode: 7.7207184
+            level: 0
+          - name: 12
+            index: 7
+            timeCode: 7.7407227
+            level: 0
+          - name: 12
+            index: 8
+            timeCode: 7.7607193
+            level: 0
+          - name: 12
+            index: 9
+            timeCode: 7.780716
+            level: 0
+          - name: 12
+            index: 10
+            timeCode: 7.80072
+            level: 0
+      - index: 7
+        duration: 3.898758
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 0
+            index: 0
+            timeCode: 3.480217
+            level: 0
+          - name: 1
+            index: 1
+            timeCode: 3.5848312
+            level: 1
+        - actionsList:
+          - name: 7
+            index: 0
+            timeCode: 3.8501053
+            level: 1
+          - name: 12
+            index: 1
+            timeCode: 3.8787613
+            level: 0
+          - name: 4
+            index: 2
+            timeCode: 3.898758
+            level: 0
+      - index: 8
+        duration: 8.7508545
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 3.8064194
+            level: 1
+          - name: 6
+            index: 1
+            timeCode: 5.650406
+            level: 1
+          - name: 0
+            index: 2
+            timeCode: 8.418694
+            level: 0
+          - name: 3
+            index: 3
+            timeCode: 8.495895
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 7.118553
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 7.467079
+            level: 1
+          - name: 5
+            index: 2
+            timeCode: 7.788147
+            level: 1
+          - name: 4
+            index: 3
+            timeCode: 8.7508545
+            level: 0
+      - index: 9
+        duration: 13.113968
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1130219
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.5154724
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 1.6173553
+            level: 1
+          - name: 11
+            index: 3
+            timeCode: 1.913971
+            level: 0
+          - name: 0
+            index: 4
+            timeCode: 10.936523
+            level: 0
+          - name: 7
+            index: 5
+            timeCode: 12.091827
+            level: 1
+          - name: 0
+            index: 6
+            timeCode: 12.634155
+            level: 0
+          - name: 3
+            index: 7
+            timeCode: 12.85704
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.12974548
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 1.0953064
+            level: 1
+          - name: 0
+            index: 2
+            timeCode: 1.4866791
+            level: 0
+          - name: 1
+            index: 3
+            timeCode: 1.6173553
+            level: 1
+          - name: 11
+            index: 4
+            timeCode: 1.913971
+            level: 0
+          - name: 5
+            index: 5
+            timeCode: 10.742706
+            level: 1
+          - name: 4
+            index: 6
+            timeCode: 13.113968
+            level: 0
+      - index: 10
+        duration: 11.754196
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.0825653
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 2.8450775
+            level: 0
+          - name: 0
+            index: 2
+            timeCode: 7.1782684
+            level: 0
+          - name: 0
+            index: 3
+            timeCode: 10.21582
+            level: 0
+          - name: 0
+            index: 4
+            timeCode: 11.411087
+            level: 0
+          - name: 3
+            index: 5
+            timeCode: 11.511429
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.0621643
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 2.6393585
+            level: 1
+          - name: 7
+            index: 2
+            timeCode: 3.9302216
+            level: 1
+          - name: 8
+            index: 3
+            timeCode: 3.934204
+            level: 1
+          - name: 8
+            index: 4
+            timeCode: 4.214203
+            level: 1
+          - name: 7
+            index: 5
+            timeCode: 4.784668
+            level: 1
+          - name: 8
+            index: 6
+            timeCode: 4.7942047
+            level: 1
+          - name: 7
+            index: 7
+            timeCode: 5.4930267
+            level: 1
+          - name: 5
+            index: 8
+            timeCode: 6.9697266
+            level: 1
+          - name: 7
+            index: 9
+            timeCode: 8.1736145
+            level: 1
+          - name: 8
+            index: 10
+            timeCode: 8.174194
+            level: 1
+          - name: 5
+            index: 11
+            timeCode: 9.991562
+            level: 1
+          - name: 7
+            index: 12
+            timeCode: 10.649429
+            level: 1
+          - name: 8
+            index: 13
+            timeCode: 10.654205
+            level: 1
+          - name: 4
+            index: 14
+            timeCode: 11.754196
+            level: 0
+      - index: 11
+        duration: 6.550644
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 2.4183502
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 2.7232513
+            level: 1
+          - name: 0
+            index: 2
+            timeCode: 3.8870392
+            level: 0
+          - name: 1
+            index: 3
+            timeCode: 3.9746094
+            level: 1
+          - name: 9
+            index: 4
+            timeCode: 4.6973114
+            level: 1
+          - name: 4
+            index: 5
+            timeCode: 6.550644
+            level: 0
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 2.4183502
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 2.7232513
+            level: 1
+          - name: 9
+            index: 2
+            timeCode: 3.94133
+            level: 1
+          - name: 10
+            index: 3
+            timeCode: 4.27063
+            level: 0
+          - name: 0
+            index: 4
+            timeCode: 6.2148438
+            level: 0
+          - name: 1
+            index: 5
+            timeCode: 6.257126
+            level: 1
+      - index: 12
+        duration: 2.075821
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.60749817
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.6880035
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 1.7705536
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 0.60749817
+            level: 1
+          - name: 4
+            index: 1
+            timeCode: 2.075821
+            level: 0
+      - index: 13
+        duration: 2.4757996
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1606445
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 2.054367
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 2.181366
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1147003
+            level: 1
+          - name: 4
+            index: 1
+            timeCode: 2.4757996
+            level: 0
+    - index: 1
+      date:
+        year: 2020
+        month: 2
+        day: 27
+        hour: 14
+        minute: 11
+      type: LOCAL
+      stage: 0
+      character1: 0
+      character2: 0
+      scoreToWin: 2
+      roundsPlayed: 3
+      duration: 21.298737
+      gameFinished: 1
+      finalScore: {x: 2, y: 1}
+      rounds:
+      - index: 0
+        duration: 5.7187347
+        winner: 1
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1576691
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.5265045
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 1.6267853
+            level: 1
+          - name: 0
+            index: 3
+            timeCode: 3.2405243
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 3.3125763
+            level: 1
+          - name: 9
+            index: 5
+            timeCode: 3.966339
+            level: 1
+          - name: 4
+            index: 6
+            timeCode: 5.7187347
+            level: 0
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.134552
+            level: 1
+          - name: 9
+            index: 1
+            timeCode: 3.4362793
+            level: 1
+          - name: 10
+            index: 2
+            timeCode: 3.5987396
+            level: 0
+          - name: 0
+            index: 3
+            timeCode: 5.3410034
+            level: 0
+          - name: 1
+            index: 4
+            timeCode: 5.425705
+            level: 1
+      - index: 1
+        duration: 7.2606506
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 3.3176575
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 6.831543
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 6.9768524
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 3.2746582
+            level: 1
+          - name: 5
+            index: 1
+            timeCode: 6.7331543
+            level: 1
+          - name: 4
+            index: 2
+            timeCode: 7.2606506
+            level: 0
+      - index: 2
+        duration: 2.7565155
+        winner: 0
+        actions:
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.0950165
+            level: 1
+          - name: 0
+            index: 1
+            timeCode: 1.9484406
+            level: 0
+          - name: 1
+            index: 2
+            timeCode: 2.45932
+            level: 1
+        - actionsList:
+          - name: 5
+            index: 0
+            timeCode: 1.1309509
+            level: 1
+          - name: 4
+            index: 1
+            timeCode: 2.7565155
+            level: 0
+    charge: 35
+    forwardAttack: 26
+    backwardsAttack: 1
+    neutralAttack: 4
+    death: 16
+    forwardDash: 48
+    backwardsDash: 4
+    pommel: 11
+    successfulPommel: 11
+    parry: 12
+    successfulParry: 9
     clash: 0
-    dodge: 0
+    dodge: 9
   - statName: ONLINE
     totalPlayTime: 0
     totalGamesPlayed: 0
     totalGamesFinished: 0
     totalRoundsPlayed: 0
-    averageFinishedGameDuration: 0
-    averageRoundDuration: 0
-    averageRoundsNumberPerFinishedGame: 0
+    averageFinishedGameDuration: NaN
+    averageRoundDuration: NaN
+    averageRoundsNumberPerFinishedGame: NaN
     gamesList: []
     charge: 0
     forwardAttack: 0

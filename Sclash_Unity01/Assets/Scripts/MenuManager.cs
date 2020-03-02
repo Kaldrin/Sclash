@@ -65,7 +65,8 @@ public class MenuManager : MonoBehaviour
         pauseOptionMenuBrowser = null,
         mainOptionMenuBrowser = null,
         changeMapButton = null,
-        backIndicator = null;
+        backIndicator = null,
+        scoreToWinSlider = null;
 
     int playerWhoPaused = 0;
 
@@ -111,6 +112,7 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         LoadParameters();
+        Cursor.visible = true;
     }
 
     // Update is called once per grahic frame
@@ -159,7 +161,10 @@ public class MenuManager : MonoBehaviour
 
 
         if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game && gameManager.gameState == GameManager.GAMESTATE.game)
-            gameManager.scoreObject.SetActive(inputManager.scoreInput);
+        {
+            //gameManager.scoreObject.SetActive(inputManager.scoreInput);
+            gameManager.scoreObject.GetComponent<Animator>().SetBool("On", inputManager.scoreInput);
+        }
     }
     # endregion
 
@@ -220,13 +225,15 @@ public class MenuManager : MonoBehaviour
 
         blurPanel.SetActive(state);
         pauseMenu.SetActive(state);
-        gameManager.scoreObject.SetActive(state);
+        //gameManager.scoreObject.SetActive(state);
+        gameManager.scoreObject.GetComponent<Animator>().SetBool("On", state);
 
         backButton.SetActive(!state);
         resumeButton.SetActive(state);
         quitButton.SetActive(state);
         mainMenuButton.SetActive(state);
         changeMapButton.SetActive(false);
+        scoreToWinSlider.SetActive(false);
         //backIndicator.SetActive(state);
 
         pauseOptionMenuBrowser.SetActive(state);

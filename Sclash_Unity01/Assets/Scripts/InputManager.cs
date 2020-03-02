@@ -55,10 +55,6 @@ public class InputManager : MonoBehaviour
 
     # region BASE FUNCTIONS
     // BASE FUNCTIONS   
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
 
     // Update is called once per graphic frame
     void Update()
@@ -72,12 +68,6 @@ public class InputManager : MonoBehaviour
         ManageJumpInput();
         ManageParryInput();
         ManageAttackInput();
-    }
-
-    // FixedUpdate is called 50 times per second
-    private void FixedUpdate()
-    {
-        
     }
     # endregion
 
@@ -200,7 +190,7 @@ public class InputManager : MonoBehaviour
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
-            playerInputs[i].parry = Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) < - axisDeadZone;
+            playerInputs[i].parry = Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone;
         }
     }
     # endregion

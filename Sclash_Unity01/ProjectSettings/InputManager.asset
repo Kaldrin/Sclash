@@ -134,7 +134,7 @@ InputManager:
     axis: 0
     joyNum: 1
   - serializedVersion: 3
-    m_Name: Fire0
+    m_Name: Fire050
     descriptiveName: Attack player 1 (3)
     descriptiveNegativeName: 
     negativeButton: 
@@ -246,7 +246,7 @@ InputManager:
     axis: 0
     joyNum: 2
   - serializedVersion: 3
-    m_Name: Fire1
+    m_Name: Fire150
     descriptiveName: Attack player 2 (3)
     descriptiveNegativeName: 
     negativeButton: 
@@ -259,7 +259,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 2
+    axis: 9
     joyNum: 2
   - serializedVersion: 3
     m_Name: Parry0
@@ -294,7 +294,7 @@ InputManager:
     axis: 0
     joyNum: 1
   - serializedVersion: 3
-    m_Name: Parry0
+    m_Name: Parry050
     descriptiveName: Parry player 1 (3)
     descriptiveNegativeName: 
     negativeButton: 
@@ -307,7 +307,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 2
+    axis: 8
     joyNum: 1
   - serializedVersion: 3
     m_Name: Parry1
@@ -317,22 +317,6 @@ InputManager:
     positiveButton: joystick 2 button 4
     altNegativeButton: 
     altPositiveButton: '[2]'
-    gravity: 1000
-    dead: 0.001
-    sensitivity: 1000
-    snap: 0
-    invert: 0
-    type: 0
-    axis: 0
-    joyNum: 2
-  - serializedVersion: 3
-    m_Name: Parry1
-    descriptiveName: Parry player 2 (2)
-    descriptiveNegativeName: 
-    negativeButton: 
-    positiveButton: l
-    altNegativeButton: 
-    altPositiveButton: 
     gravity: 1000
     dead: 0.001
     sensitivity: 1000
@@ -358,7 +342,7 @@ InputManager:
     axis: 0
     joyNum: 2
   - serializedVersion: 3
-    m_Name: Parry1
+    m_Name: Parry150
     descriptiveName: Parry player 2 (4)
     descriptiveNegativeName: 
     negativeButton: 
@@ -586,7 +570,7 @@ InputManager:
     descriptiveName: Pause player 1 (1)
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick button 7
+    positiveButton: joystick 1 button 7
     altNegativeButton: 
     altPositiveButton: escape
     gravity: 1
@@ -602,7 +586,7 @@ InputManager:
     descriptiveName: Pause player 2 (1)
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick button 7
+    positiveButton: joystick 2 button 7
     altNegativeButton: 
     altPositiveButton: p
     gravity: 1
