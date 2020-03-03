@@ -1860,53 +1860,63 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Vector3 dashDirection3D = new Vector3(0, 0, 0);
         float dashDirection = 0;
 
-        if (ConnectManager.Instance.enableMultiplayer)
+
+        if (ConnectManager.Instance.enableMultiplayer)  // Ici c'est pour Victor
         {
-            if (Mathf.Abs(inputManager.playerInputs[0].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
+        }
+
+
+        if (Mathf.Abs(inputManager.playerInputs[0].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
+        {
+            dashDirection = Mathf.Sign(inputManager.playerInputs[0].horizontal) * transform.localScale.x;
+            dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[0].horizontal), 0, 0);
+
+
+            // Dash distance
+            if (Mathf.Sign(inputManager.playerInputs[0].horizontal) == -Mathf.Sign(transform.localScale.x))
             {
-                dashDirection = Mathf.Sign(inputManager.playerInputs[0].horizontal) * transform.localScale.x;
-                dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[0].horizontal), 0, 0);
+                actualUsedDashDistance = forwardAttackDashDistance;
 
 
-                // Dash distance
-                if (Mathf.Sign(inputManager.playerInputs[0].horizontal) == -Mathf.Sign(transform.localScale.x))
-                {
-                    actualUsedDashDistance = forwardAttackDashDistance;
-                    // FX
-                    attackDashFXFront.Play();
+                // FX
+                attackDashFXFront.Play();
 
 
-                    // STATS
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.forwardAttack, playerNum, saveChargeLevelForStats);
-                    else
-                       Debug.Log("Couldn't access statsManager to record action, ignoring");
-                }
+                // STATS
+                if (statsManager)
+                    statsManager.AddAction(ACTION.forwardAttack, playerNum, saveChargeLevelForStats);
                 else
-                {
-                    actualUsedDashDistance = backwardsAttackDashDistance;
-
-
-                    // FX
-                    attackDashFXBack.Play();
-
-
-                    // STATS
-                    if  (statsManager)
-                        statsManager.AddAction(ACTION.backwardsAttack, playerNum, saveChargeLevelForStats);
-                    else
-                       Debug.Log("Couldn't access statsManager to record action, ignoring");
-
-
-                    // FX
-                    attackDashFXFront.Play();
-                }
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
             else
             {
-                attackNeutralFX.Play();
+                actualUsedDashDistance = backwardsAttackDashDistance;
+
+
+                // FX
+                attackDashFXBack.Play();
+
+
+                // STATS
+                if  (statsManager)
+                    statsManager.AddAction(ACTION.backwardsAttack, playerNum, saveChargeLevelForStats);
+                else
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
         }
+        else
+        {
+            // FX
+            attackNeutralFX.Play();
+
+
+            // STATS
+            if (statsManager)
+                statsManager.AddAction(ACTION.neutralAttack, playerNum, saveChargeLevelForStats);
+            else
+                Debug.Log("Couldn't access statsManager to record action, ignoring");
+        }
+        
         
 
         dashDirection3D *= actualUsedDashDistance;
@@ -2071,6 +2081,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 currentParryFramesPressed = 0;
+            }
+
+            if (!inputManager.playerInputs[playerNum].parry)
+            {
+                canParry = true;
             }
 
 
