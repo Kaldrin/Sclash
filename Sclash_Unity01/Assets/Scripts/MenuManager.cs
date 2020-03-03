@@ -150,7 +150,6 @@ public class MenuManager : MonoBehaviour
     {
         bool playerDead = false;
 
-
         for (int i = 0; i < gameManager.playersList.Count; i++)
         {
             if (gameManager.playersList[i].GetComponent<Player>().playerState == Player.STATE.dead)

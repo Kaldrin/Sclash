@@ -5,6 +5,12 @@ using TMPro;
 
 public class InputManager : MonoBehaviour
 {
+    #region Singleton
+    public static InputManager Instance;
+    #endregion  
+
+
+    [System.Serializable]
     public struct PlayerInputs
     {
         public bool pauseUp;
@@ -21,10 +27,9 @@ public class InputManager : MonoBehaviour
         axisDeadZone = 0.1f,
         dashDeadZone = 0.5f;
 
-    [HideInInspector] public PlayerInputs[] playerInputs = new PlayerInputs[2];
+    [SerializeField] public PlayerInputs[] playerInputs = new PlayerInputs[2];
 
     [HideInInspector] public bool scoreInput = false;
-
 
 
 
@@ -42,7 +47,6 @@ public class InputManager : MonoBehaviour
     
     
 
-    
 
 
 
@@ -53,8 +57,15 @@ public class InputManager : MonoBehaviour
 
 
 
-    # region BASE FUNCTIONS
+
+
+
+    #region BASE FUNCTIONS
     // BASE FUNCTIONS   
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // Update is called once per graphic frame
     void Update()
@@ -69,13 +80,8 @@ public class InputManager : MonoBehaviour
         ManageParryInput();
         ManageAttackInput();
     }
+
     # endregion
-
-
-
-
-
-
 
 
 

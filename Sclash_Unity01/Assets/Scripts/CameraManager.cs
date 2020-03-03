@@ -82,7 +82,7 @@ public class CameraManager : MonoBehaviour
     Vector3 currentMovementSpeed = new Vector3(0, 0, 0);
     [HideInInspector] public Vector3 cameraArmBasePos = new Vector3(0, 0, 0);
 
-    GameObject[] playersList = new GameObject[2];
+    [SerializeField] GameObject[] playersList = new GameObject[2];
     #endregion
 
 
@@ -238,7 +238,6 @@ public class CameraManager : MonoBehaviour
         Player[] playersScripts = FindObjectsOfType<Player>();
         playersList = new GameObject[playersScripts.Length];
 
-
         for (int i = 0; i < playersScripts.Length; i++)
         {
             playersList[i] = playersScripts[i].gameObject;
@@ -258,7 +257,7 @@ public class CameraManager : MonoBehaviour
             
         else
         {
-            Debug.Log("The camera couldn't find the players");
+            Debug.LogError("The camera couldn't find the players");
             return null;
         }
     }
