@@ -266,8 +266,7 @@ public class MenuManager : MonoBehaviour
     // SAVE / LOAD PARAMETERS
     // Load menu parameters
     void LoadParameters()
-    {
-        
+    {  
         // Save from current session saves
         masterVolume.slider.value = menuParametersSave.masterVolume;
         masterVolume.UpdateVolume();

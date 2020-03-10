@@ -37,7 +37,7 @@ public class JsonSave
     public int roundsToWin;
 
     public Stats stats;
-    public bool hasBeenSavedOnce = false;
+    //public bool hasBeenSavedOnce = false;
 }
 
 public static class SaveGameManager

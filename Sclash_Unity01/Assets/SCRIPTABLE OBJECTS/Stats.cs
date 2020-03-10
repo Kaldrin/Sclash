@@ -149,7 +149,7 @@ public struct GlobalStat
 [CreateAssetMenu(fileName = "Stats01", menuName = "Scriptable objects/Stats")]
 public class Stats : ScriptableObject
 {
-    public List<GlobalStat> globalStats;
+    public List<GlobalStat> globalStats = new List<GlobalStat>();
 
-    public List<Character> characters = null;
+    public List<Character> characters = new List<Character>();
 }

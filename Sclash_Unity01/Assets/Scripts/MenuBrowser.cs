@@ -385,13 +385,19 @@ public class MenuBrowser : MonoBehaviour
         }
     }
 
+    public void ChangeBackButton(GameObject newBackButton)
+    {
+        backElement = newBackButton;
+        Debug.Log("Change back button");
+    }
 
 
 
 
 
 
-    // OTHER
+
+    #region OTHER
     public void FixButtonColorUsageList()
     {
         if (shouldUseButtonColorSwitch.Count < elements.Length)
@@ -430,6 +436,7 @@ public class MenuBrowser : MonoBehaviour
 
         return 0;
     }
+    #endregion
 
 
 

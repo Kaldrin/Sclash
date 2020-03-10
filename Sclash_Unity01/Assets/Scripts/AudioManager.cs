@@ -82,7 +82,8 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] int
         battleIntensityLevelForPhase2 = 3,
-        battleIntensityLevelForPhase3 = 8;
+        battleIntensityLevelForPhase3 = 8,
+        maxBattleIntensityLevel = 12;
     public int currentPhase = 0;
     int
         chosenMusic = 0,
@@ -563,6 +564,10 @@ public class AudioManager : MonoBehaviour
     {
         lastIntensityLevel = battleIntensity;
         battleIntensity++;
+
+
+        if (battleIntensity >= maxBattleIntensityLevel)
+            battleIntensity = maxBattleIntensityLevel;
 
 
         UpdateMusicPhaseImmediatlyDependingOnBattleIntensity();

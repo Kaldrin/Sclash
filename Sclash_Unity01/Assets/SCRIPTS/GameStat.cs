@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class GameStat : MonoBehaviour
 {
     [SerializeField] Stats stats = null;
+    [HideInInspector] public Game game;
+    bool hasUpdateRoundsList = false;
 
     [Header("MAIN GAME INFOS")]
     [SerializeField] public TextMeshProUGUI gameIndex = null;
@@ -59,7 +61,17 @@ public class GameStat : MonoBehaviour
 
 
 
-    public void UpdateRoundsList(Game game)
+
+    public void TriggerUpdateRoundsList()
+    {
+        if (!hasUpdateRoundsList)
+        {
+            hasUpdateRoundsList = true;
+            StartCoroutine(TriggerUpdateRoundsList(game));
+        }
+    }
+
+    IEnumerator TriggerUpdateRoundsList(Game game)
     {
         roundStatObject.SetActive(true);
 
@@ -72,6 +84,8 @@ public class GameStat : MonoBehaviour
         {
             if (roundsListParent.GetChild(i).gameObject != roundStatObject)
                 Destroy(roundsListParent.GetChild(i));
+
+            yield return new WaitForSecondsRealtime(0.02f);
         }
         roundsList.Clear();
 
@@ -147,8 +161,12 @@ public class GameStat : MonoBehaviour
             currentlyInstantiatedRoundStat.playerNames[1].text = stats.characters[game.character1].name;
 
 
-            currentlyInstantiatedRoundStat.UpdateLegendColors();
-            currentlyInstantiatedRoundStat.UpdateActionsTimelinesDisplay(game.rounds[i]);
+            
+
+            yield return new WaitForSecondsRealtime(0.02f);
+            //currentlyInstantiatedRoundStat.UpdateLegendColors();
+            //currentlyInstantiatedRoundStat.UpdateActionsTimelinesDisplay(game.rounds[i]);
+            currentlyInstantiatedRoundStat.round = game.rounds[i];
         }
 
 

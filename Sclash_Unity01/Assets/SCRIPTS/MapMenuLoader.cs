@@ -33,7 +33,7 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
     [Tooltip("The reference to the scriptable object data containing all the maps")]
     [SerializeField] MapsDataBase mapsDatabase01 = null;
     [Tooltip("The reference to the MenuBrowser script managing the map selection screen")]
-    [SerializeField] MenuBrowser mapsMenuBrowser = null;
+    [SerializeField] List<MenuBrowser> mapsMenuBrowsers = new List<MenuBrowser>();
     #endregion
 
 
@@ -76,16 +76,14 @@ public class MapMenuLoader : MonoBehaviour, IPointerClickHandler
 
 
         mapMenuObject.SetActive(false);
-        mapsMenuBrowser.elements = menuBrowserButtonsList.ToArray();
-        mapsMenuBrowser.backElement = backButton;
-        mapsMenuBrowser.FixButtonColorUsageList();
+        for (int i = 0; i < mapsMenuBrowsers.Count; i++)
+        {
+            mapsMenuBrowsers[i].elements = menuBrowserButtonsList.ToArray();
+            mapsMenuBrowsers[i].backElement = backButton;
+            mapsMenuBrowsers[i].FixButtonColorUsageList();
+        }
     }
 
-    // Update is called once per graphic frame
-    void Update()
-    {
-        
-    }
 
     public void OnPointerClick(PointerEventData eventData)
     {

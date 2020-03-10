@@ -110,12 +110,11 @@ public class MapLoader : MonoBehaviour
     # region MAP LOADING
     // MAP LOADING
     // Immediatly changes the map
-    void SetMap(int mapIndex)
+    public void SetMap(int mapIndex)
     {
         if (currentMap != null)
             Destroy(currentMap);
 
-        Debug.Log(mapsData);
         currentMap = Instantiate(mapsData.mapsList[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
         
     }
@@ -150,7 +149,7 @@ public class MapLoader : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
 
-
+            Debug.Log(index);
             SetMap(index);
 
 

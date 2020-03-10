@@ -6,12 +6,17 @@ using UnityEngine.UI;
 
 public class RoundStat : MonoBehaviour
 {
+
+    bool hasUpdatedInfos = false;
+
+
     [Header("ROUND MAIN INFOS")]
     [SerializeField] public TextMeshProUGUI roundIndex = null;
     [SerializeField] public TextMeshProUGUI
         minute = null,
         second = null;
     [SerializeField] public TextMeshProUGUI winnerName = null;
+    [HideInInspector] public Round round;
 
 
 
@@ -71,8 +76,27 @@ public class RoundStat : MonoBehaviour
 
 
 
+    public void TriggerUpdateAllInfos()
+    {
+        if (!hasUpdatedInfos)
+        {
+            hasUpdatedInfos = true;
+            StartCoroutine(UpdateAllInfosCoroutine());
+        }
+    }
 
-    public void UpdateLegendColors()
+
+    IEnumerator UpdateAllInfosCoroutine()
+    {
+        UpdateLegendColors();
+        yield return new WaitForSecondsRealtime(0.1f);
+        StartCoroutine(UpdateActionsTimelinesDisplayCoroutine(round));
+    }
+
+
+
+
+    void UpdateLegendColors()
     {
         chargeLegend.color = charge;
         forwardAttackLegend.color = forwardAttack;
@@ -91,7 +115,7 @@ public class RoundStat : MonoBehaviour
 
 
 
-    public void UpdateActionsTimelinesDisplay(Round round)
+    IEnumerator UpdateActionsTimelinesDisplayCoroutine(Round round)
     {
         GameObject currentlyInstantiatedActionMarkerObject = null;
         Image currentlyInstantiatedActionMarkerImage = null;
@@ -185,10 +209,13 @@ public class RoundStat : MonoBehaviour
 
                 currentlyInstantiatedActionMarkerImage.color = actionColor;
                 currentlyInstantiatedActionMarkerObject.GetComponent<ActionMarker>().UpdateLevelMarkers(round.actions[y].actionsList[i].level);
+
+                yield return new WaitForSecondsRealtime(0.02f);
             }
 
 
             actionMarkerObjects[y].SetActive(false);
+            yield return new WaitForSecondsRealtime(0.02f);
         }
     }
 }

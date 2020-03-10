@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO;
 
 public class StatsManager : MonoBehaviour
 {
@@ -11,12 +12,17 @@ public class StatsManager : MonoBehaviour
 
 
     // DATA COMPUTING
+    [Header("DATA COMPUTING")]
     Game currentGame = new Game();
     Round currentRound = new Round();
     float currentRoundStartTime = 0;
     float currentGameStartTime = 0;
 
 
+
+
+    [Header("SAVE DATA")]
+    [SerializeField] string statsSaveFilName = "StatsAsset.txt";
 
 
 
@@ -27,7 +33,8 @@ public class StatsManager : MonoBehaviour
     void Start()
     {
         InitalizeNewGame(0);
-
+        Debug.Log(statsAsset.globalStats[0].gamesList.Count);
+        Debug.Log("Start");
 
         // Intializing variables to prevent null reference exceptions
         InitializeNewRound();
@@ -93,6 +100,7 @@ public class StatsManager : MonoBehaviour
         try
         {
             newGlobalStats.gamesList.Add(currentGame);
+            Debug.Log(statsAsset.globalStats[gameType].gamesList.Count);
         }
         catch
         {
@@ -101,7 +109,7 @@ public class StatsManager : MonoBehaviour
 
         statsAsset.globalStats[gameType] = newGlobalStats;
 
-
+        Debug.Log("Finalize game");
         ComputeGameDatas();
     }
     #endregion
@@ -139,7 +147,7 @@ public class StatsManager : MonoBehaviour
 
         currentRoundStartTime = Time.time;
 
-        Debug.Log("Initialized round");
+        //Debug.Log("Initialized round");
     }
 
     public void FinalizeRound(int winner)
@@ -170,7 +178,7 @@ public class StatsManager : MonoBehaviour
         Action newAction = new Action();
         newAction.name = action;
 
-        Debug.Log(currentRound.actions[0].actionsList);
+
         try
         {
             newAction.index = currentRound.actions[player].actionsList.Count; // Ici il y a un problème que je ne comprend pas (Null reference exception)
@@ -293,8 +301,6 @@ public class StatsManager : MonoBehaviour
             else
                 newGlobalStat.averageFinishedGameDuration = 0;
 
-            Debug.Log(newGlobalStat.gamesList.Count);
-
 
             // Average round duration
             averageRoundDuration = 0;
@@ -414,7 +420,6 @@ public class StatsManager : MonoBehaviour
                                         break;
                                 }
                             }
-
                         }
                     }
                     catch
@@ -485,7 +490,6 @@ public class StatsManager : MonoBehaviour
             newGlobalStat.gamesList.Add(statsAsset.globalStats[2].gamesList[i]);
         }
 
-        Debug.Log(newGlobalStat.gamesList.Count);
 
 
 
@@ -633,19 +637,30 @@ public class StatsManager : MonoBehaviour
     // SAVE & LOADS
     void SaveStats()
     {
+        /*
         // Save forever
+        SaveGameManager.Load();
         JsonSave save = SaveGameManager.GetCurrentSave();
 
 
         save.stats = statsAsset;
-        save.hasBeenSavedOnce = true;
+        //save.hasBeenSavedOnce = true;
 
+        Debug.Log("Saved user data");
+        Debug.Log(Application.persistentDataPath);
         SaveGameManager.Save();
+        */
+
+        string json = JsonUtility.ToJson(statsAsset);
+        File.WriteAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName, json);
     }
 
     void LoadStats()
     {
+        /*
+        
         // Loads actual saves
+        SaveGameManager.Load();
         JsonSave save = SaveGameManager.GetCurrentSave();
 
         if (save.stats != null)
@@ -654,6 +669,27 @@ public class StatsManager : MonoBehaviour
         {
             ReinitializeAllData();
             SaveStats();
+        }
+
+        Debug.Log("Loaded user data");
+        */
+
+
+        Stats data = null;
+        Debug.Log(File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName));
+
+        if (File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName))
+        {
+            //data = ScriptableObject.CreateInstance<Stats>();
+            string json = File.ReadAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName);
+            JsonUtility.FromJsonOverwrite(json, statsAsset);
+
+            statsAsset = data;
+        }
+        else
+        {
+            //data = Resources.Load<Stats>("Stats Data");
+            ReinitializeAllData();
         }
     }
 }

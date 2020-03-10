@@ -149,7 +149,7 @@ public class StatsMenu : MonoBehaviour
         yield return new WaitForSeconds(0f);
         UpdateDisplayedInfosTypeIndication();
         UpdateDisplayedGlobalInfos();
-        UpdateDisplayedGamesInfos();
+        StartCoroutine(UpdateDisplayedGamesInfos());
     }
 
 
@@ -247,7 +247,8 @@ public class StatsMenu : MonoBehaviour
         dodge.text = stats.globalStats[currentStatMode].dodge.ToString();
     }
 
-    void UpdateDisplayedGamesInfos()
+
+    IEnumerator UpdateDisplayedGamesInfos()
     {
         gameStatObject.SetActive(true);
 
@@ -343,7 +344,10 @@ public class StatsMenu : MonoBehaviour
 
 
             // Rounds
-            currentlyInstantiatedGameStat.UpdateRoundsList(stats.globalStats[currentStatMode].gamesList[i]);
+            //currentlyInstantiatedGameStat.TriggerUpdateRoundsList(stats.globalStats[currentStatMode].gamesList[i]);
+            currentlyInstantiatedGameStat.game = stats.globalStats[currentStatMode].gamesList[i];
+
+            yield return new WaitForSecondsRealtime(0.1f);
         }
 
 

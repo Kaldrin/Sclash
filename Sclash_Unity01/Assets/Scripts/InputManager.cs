@@ -18,8 +18,10 @@ public class InputManager : MonoBehaviour
         public float horizontal;
         public float dash;
         public bool attack;
+        public bool attackDown;
         public bool kick;
         public bool parry;
+        public bool parryDown;
         public bool jump;
     }
 
@@ -91,7 +93,7 @@ public class InputManager : MonoBehaviour
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
-            playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone);
+            playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
         }
     }
     # endregion
@@ -161,6 +163,7 @@ public class InputManager : MonoBehaviour
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
+            playerInputs[i].attackDown = (!playerInputs[i].attack && (Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone));
             playerInputs[i].attack = Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone;
         }
     }
@@ -196,6 +199,7 @@ public class InputManager : MonoBehaviour
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
+            playerInputs[i].parryDown = (!playerInputs[i].parry && (Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone));
             playerInputs[i].parry = Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone;
         }
     }

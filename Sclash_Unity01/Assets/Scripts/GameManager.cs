@@ -662,7 +662,6 @@ public class GameManager : MonoBehaviourPun
 
 
     #region ROUND TO ROUND & SCORE
-    // ROUND TO ROUND & SCORE
     // Executed when a player dies, starts the score display and next round parameters
     public void APlayerIsDead(int winningPlayerIndex)
     {
@@ -721,7 +720,7 @@ public class GameManager : MonoBehaviourPun
     // Start next round
     IEnumerator NextRoundCoroutine()
     {
-        Debug.Log("Next round");
+        //Debug.Log("Next round");
         yield return new WaitForSecondsRealtime(timeBeforeNextRoundTransitionTriggers);
 
 
@@ -818,7 +817,7 @@ public class GameManager : MonoBehaviourPun
             }
             catch
             {
-                Debug.Log("Error while finilizing the recording of the current game, ignoring");
+                Debug.Log("Error while finalizing the recording of the current game, ignoring");
             }
         }
 
@@ -847,8 +846,14 @@ public class GameManager : MonoBehaviourPun
         SwitchState(GAMESTATE.menu);
         ResetPlayersForNextMatch();
         TriggerMatchEndFilterEffect(false);
-        //TriggerMatchEndFilterEffect(true);
-        //TriggerMatchEndFilterEffect(false);
+        
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<Player>().playerLight.color = playerLightsColors[i];
+            playersList[i].GetComponent<Player>().playerLight.intensity = 5;
+        }
+
+        mapLoader.SetMap(mapLoader.currentMapIndex);
         ResetScore();
 
 
@@ -898,7 +903,7 @@ public class GameManager : MonoBehaviourPun
         }
         catch
         {
-            Debug.Log("Error while finilizing the recording of the current game, ignoring");
+            Debug.Log("Error while finalizing the recording of the current game, ignoring");
         }
 
 
@@ -958,6 +963,15 @@ public class GameManager : MonoBehaviourPun
     {
         if (on)
         {
+
+            // Deactivates background elements for only orange color
+            for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+            {
+                mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
+            }
+
+
+
             // List of all renderers for the death VFX
             spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
             meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
@@ -977,7 +991,7 @@ public class GameManager : MonoBehaviourPun
             // Sets all black
             for (int i = 0; i < spriteRenderers.Length; i++)
             {
-                if (!spriteRenderers[i].CompareTag("NonBlackFX"))
+                if (!spriteRenderers[i].CompareTag("NonBlackFX") && spriteRenderers[i].gameObject.activeInHierarchy)
                 {
                     originalSpriteRenderersColors.Add(spriteRenderers[i].color);
                     spriteRenderers[i].color = Color.black;
@@ -988,7 +1002,7 @@ public class GameManager : MonoBehaviourPun
             }
             for (int i = 0; i < meshRenderers.Length; i++)
             {
-                if (!meshRenderers[i].CompareTag("NonBlackFX"))
+                if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                 {
                     originalMeshRenderersColors.Add(meshRenderers[i].material.color);
                     meshRenderers[i].material.color = Color.black;
@@ -1012,19 +1026,12 @@ public class GameManager : MonoBehaviourPun
 
             for (int i = 0; i < lights.Length; i++)
             {
-                if (!lights[i].CompareTag("NonBlackFX"))
+                if (!lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
                 {
                     originalLightsIntensities.Add(lights[i].intensity);
                     lights[i].intensity = 0;
                 }
-            }
-
-
-            // Deactivates background elements for only orange color
-            for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
-            {
-                mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
-            }
+            }          
         }
         else
         {
@@ -1035,7 +1042,7 @@ public class GameManager : MonoBehaviourPun
                 {
                     for (int i = 0; i < spriteRenderers.Length; i++)
                     {
-                        if (!spriteRenderers[i].CompareTag("NonBlackFX"))
+                        if (!spriteRenderers[i].CompareTag("NonBlackFX") && spriteRenderers[i].gameObject.activeInHierarchy)
                         {
                             //spriteRenderers[i].color = Color.Lerp(spriteRenderers[i].color, spriteRenderersColors[i], (1 / 100 * j));
                             spriteRenderers[i].color = originalSpriteRenderersColors[i];
@@ -1051,9 +1058,12 @@ public class GameManager : MonoBehaviourPun
             {
                 for (int i = 0; i < meshRenderers.Length; i++)
                 {
-                    if (!meshRenderers[i].CompareTag("NonBlackFX"))
+                    if (meshRenderers[i])
                     {
-                        meshRenderers[i].material.color = originalMeshRenderersColors[i];
+                        if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
+                        {
+                            meshRenderers[i].material.color = originalMeshRenderersColors[i];
+                        }
                     }
                 }
             }
@@ -1080,9 +1090,19 @@ public class GameManager : MonoBehaviourPun
             {
                 for (int i = 0; i < lights.Length; i++)
                 {
-                    if (!lights[i].CompareTag("NonBlackFX"))
+                    try
                     {
-                        lights[i].intensity = originalLightsIntensities[i];
+                        if (lights[i])
+                        {
+                            if (!lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
+                            {
+                                lights[i].intensity = originalLightsIntensities[i];
+                            }
+                        }
+                    }
+                    catch
+                    {
+
                     }
                 }
             }

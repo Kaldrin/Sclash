@@ -58,80 +58,82 @@ public class CameraShake : MonoBehaviour
     {
         originalPos = camTransform.localPosition;
         beforeShakePos = originalPos;
+
+        StartCoroutine(UpdateCameraShakeCoroutine());
     }
 
     // Update is called once per graphic frame
-    void Update()
+    IEnumerator UpdateCameraShakeCoroutine()
     {
-        if (shakeDuration > 0)
+        while (true)
         {
-            if (!hasBeganShaking)
+            if (shakeDuration > 0)
             {
-                hasBeganShaking = true;
-                beforeShakePos = camTransform.localPosition;
-            }
+                if (!hasBeganShaking)
+                {
+                    hasBeganShaking = true;
+                    beforeShakePos = camTransform.localPosition;
+                }
 
-            // Random shake calculation
-            Vector3 randomShakeVector = Random.insideUnitSphere * shakeAmount;
-            randomShakeVector = new Vector3(randomShakeVector.x * axisInfluence.x, randomShakeVector.y * axisInfluence.y, randomShakeVector.z * axisInfluence.z);
-
-
-            // Which axis are influenced or not
-            Vector3 baseShakePos = beforeShakePos;
+                // Random shake calculation
+                Vector3 randomShakeVector = Random.insideUnitSphere * shakeAmount;
+                randomShakeVector = new Vector3(randomShakeVector.x * axisInfluence.x, randomShakeVector.y * axisInfluence.y, randomShakeVector.z * axisInfluence.z);
 
 
-            if (axisInfluence.x == 0)
-            {
-                baseShakePos.x = camTransform.localPosition.x;
-            }
-            if (axisInfluence.y == 0)
-            {
-                baseShakePos.y = camTransform.localPosition.y;
-            }
-            if (axisInfluence.z == 0)
-            {
-                baseShakePos.z = camTransform.localPosition.z;
-            }
+                // Which axis are influenced or not
+                Vector3 baseShakePos = beforeShakePos;
 
 
-
-
-            camTransform.localPosition = baseShakePos + randomShakeVector;
-            hasResetPosition = false;
-            shakeDuration -= Time.fixedDeltaTime * decreaseFactor;
-        }
-        else
-        {
-            shakeDuration = 0f;
-            hasBeganShaking = false;
-
-
-            if (!hasResetPosition)
-            {
                 if (axisInfluence.x == 0)
                 {
-                    beforeShakePos.x = camTransform.localPosition.x;
+                    baseShakePos.x = camTransform.localPosition.x;
                 }
                 if (axisInfluence.y == 0)
                 {
-                    beforeShakePos.y = camTransform.localPosition.y;
+                    baseShakePos.y = camTransform.localPosition.y;
                 }
                 if (axisInfluence.z == 0)
                 {
-                    beforeShakePos.z = camTransform.localPosition.z;
+                    baseShakePos.z = camTransform.localPosition.z;
                 }
 
 
-                camTransform.localPosition = beforeShakePos;
-                hasResetPosition = true;
-            }
-        }
-    }
 
-    // FixedUpdate is called 50 times per frame
-    void FixedUpdate()
-    {
-        
+
+                camTransform.localPosition = baseShakePos + randomShakeVector;
+                hasResetPosition = false;
+                shakeDuration -= Time.fixedDeltaTime * decreaseFactor;
+            }
+            else
+            {
+                shakeDuration = 0f;
+                hasBeganShaking = false;
+
+
+                if (!hasResetPosition)
+                {
+                    if (axisInfluence.x == 0)
+                    {
+                        beforeShakePos.x = camTransform.localPosition.x;
+                    }
+                    if (axisInfluence.y == 0)
+                    {
+                        beforeShakePos.y = camTransform.localPosition.y;
+                    }
+                    if (axisInfluence.z == 0)
+                    {
+                        beforeShakePos.z = camTransform.localPosition.z;
+                    }
+
+
+                    camTransform.localPosition = beforeShakePos;
+                    hasResetPosition = true;
+                }
+            }
+
+
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
     }
     # endregion
 }
