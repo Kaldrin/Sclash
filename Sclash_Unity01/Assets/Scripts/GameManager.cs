@@ -455,7 +455,8 @@ public class GameManager : MonoBehaviourPun
         audioManager.FindPlayers();
 
 
-        maxScoreTextDisplay.text = scoreToWin.ToString();
+        UpdateMaxScoreDisplay();
+        
 
 
         for (int i = 0; i < playersList.Count; i++)
@@ -767,7 +768,6 @@ public class GameManager : MonoBehaviourPun
     }
 
 
-    // SCORE
     // Displays the current score for a given amount of time
     IEnumerator ShowScoreBetweenRoundsCoroutine()
     {
@@ -782,6 +782,11 @@ public class GameManager : MonoBehaviourPun
     {
         score = new Vector2(0, 0);
         scoreTextComponent.text = ScoreBuilder();
+    }
+
+    public void UpdateMaxScoreDisplay()
+    {
+        maxScoreTextDisplay.text = scoreToWin.ToString();
     }
     #endregion
 
@@ -920,6 +925,7 @@ public class GameManager : MonoBehaviourPun
 
         // PLAYER STATE
         playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.sneathing);
+        playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.frozen);
 
 
         // MENU
@@ -1122,12 +1128,16 @@ public class GameManager : MonoBehaviourPun
     // Starts the SlowMo coroutine
     public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
+        StopCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
         StartCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
     }
 
     // Slow motion and zoom for a given duration
     IEnumerator SlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
+        
+
+
         // CAMERA STATE
         cameraManager.SwitchState(CameraManager.CAMERASTATE.eventcam);
 
@@ -1192,6 +1202,9 @@ public class GameManager : MonoBehaviourPun
 
             if (Time.timeScale <= minTimeScale)
                 Time.timeScale = minTimeScale;
+
+
+            Debug.Log(Time.timeScale);
         }
     }
     # endregion
@@ -1204,13 +1217,11 @@ public class GameManager : MonoBehaviourPun
 
 
     # region SECONDARY FUNCTIONS
-    // SECONDARY FUNCTIONS
     // Compares 2 floats with a range of tolerance
     public static bool FastApproximately(float a, float b, float threshold)
     {
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
     }
-
     #endregion
    
     #endregion

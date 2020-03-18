@@ -4,21 +4,15 @@ using UnityEngine;
 
 public class SoundFunctions : MonoBehaviour {
 
-    // BASE FUNCTIONS
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
 
 
 
-    // PLAY
+
+
+
+
+    #region PLAY
     // Play sound from name of the game object with the audio source
     public void PlaySoundFromName(string sound)
     {
@@ -48,13 +42,17 @@ public class SoundFunctions : MonoBehaviour {
         else
             Debug.Log("AudioSource '" + audioSource + "' could'nt be found in the scene");
     }
+    #endregion
 
 
 
 
 
 
-    // ACTIVATE
+
+
+
+    #region ACTIVATE
     // Activate / deactivate an audiosource (Music, ambiance, etc) from name of the game object with the audio source
     public void SetAudioActiveFromName(string sound, bool state)
     {
@@ -94,12 +92,16 @@ public class SoundFunctions : MonoBehaviour {
         else
             Debug.Log("AudioSource '" + audioSource + "' could'nt be found in the scene");
     }
+    #endregion
 
 
 
 
 
-    // MUTE
+
+
+
+    #region MUTE
     // Mute / unmute an audiosource (Music, ambiance, etc) from name of the game object with the audiosource
     public void SetAudioMuteFromName(string sound, bool state)
     {
@@ -129,6 +131,13 @@ public class SoundFunctions : MonoBehaviour {
         else
             Debug.Log("AudioSource '" + audioSource + "' could'nt be found in the scene");
     }
+    #endregion
+
+
+
+
+
+
 
 
 

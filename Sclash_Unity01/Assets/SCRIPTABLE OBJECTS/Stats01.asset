@@ -14,1057 +14,179 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalStats:
   - statName: ONLINE
-    totalPlayTime: 140.85999
-    totalGamesPlayed: 13
-    totalGamesFinished: 11
-    totalRoundsPlayed: 24
-    averageFinishedGameDuration: 11.348003
-    averageRoundDuration: 6.069781
-    averageRoundsNumberPerFinishedGame: 2.090909
+    totalPlayTime: 20.918854
+    totalGamesPlayed: 1
+    totalGamesFinished: 1
+    totalRoundsPlayed: 5
+    averageFinishedGameDuration: 0
+    averageRoundDuration: 0
+    averageRoundsNumberPerFinishedGame: 0
     gamesList:
     - index: 0
       date:
         year: 2020
         month: 3
-        day: 9
+        day: 11
         hour: 13
-        minute: 30
+        minute: 20
       type: LOCAL
       stage: 0
       character1: 0
       character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 6.061389
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.2813892
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.082839966
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.38504314
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 0.9737263
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.03774309
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.3612752
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.2813892
-            level: 0
-      - index: 1
-        duration: 1.9787817
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.9105902
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2298708
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.6742935
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.8863306
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2298708
-            level: 1
-    - index: 1
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 32
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 6.922841
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 2.3028407
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.14406824
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.4423442
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 2.01155
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.14406824
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.4423442
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 2.3028407
-            level: 0
-      - index: 1
-        duration: 1.8189983
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.7535114
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.071188
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.5257969
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.7535114
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0485411
-            level: 1
-    - index: 2
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 34
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 3
-      duration: 10.4354925
-      gameFinished: 1
-      finalScore: {x: 1, y: 2}
-      rounds:
-      - index: 0
-        duration: 1.3154926
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.18959332
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.5071478
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.009594
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.18959332
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.5071478
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.3154926
-            level: 0
-      - index: 1
-        duration: 1.9063263
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.8502159
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.1400337
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.9063263
-            level: 0
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.82597923
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.1400337
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.598074
-            level: 1
-      - index: 2
-        duration: 1.62603
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.70503426
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.96027565
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.62603
-            level: 0
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 5
-            index: 4
-            timeCode: 39.44151
-            level: 1
-          - name: 4
-            index: 5
-            timeCode: 40.706028
-            level: 0
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.6805229
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.9850979
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.3280525
-            level: 1
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 1
-            index: 4
-            timeCode: 40.39313
-            level: 1
-      - index: 2
-        duration: 40.706028
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.70503426
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.96027565
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.62603
-            level: 0
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 5
-            index: 4
-            timeCode: 39.44151
-            level: 1
-          - name: 4
-            index: 5
-            timeCode: 40.706028
-            level: 0
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.6805229
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.9850979
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.3280525
-            level: 1
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 1
-            index: 4
-            timeCode: 40.39313
-            level: 1
-      - index: 4
-        duration: 1.5905533
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72927856
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0581055
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72927856
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.035469
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.2844772
-            level: 1
-    - index: 2
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 34
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
+      scoreToWin: 5
       roundsPlayed: 5
-      duration: 53.895493
+      duration: 20.918854
       gameFinished: 1
-      finalScore: {x: 0, y: 2}
+      finalScore: {x: 5, y: 0}
       rounds:
       - index: 0
-        duration: 1.3154926
+        duration: 1.3188591
         winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.18959332
+            timeCode: 0.2543831
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.5071478
+            timeCode: 0.5479622
             level: 1
           - name: 1
             index: 2
-            timeCode: 1.009594
+            timeCode: 1.0028076
             level: 1
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.18959332
+            timeCode: 0.2543831
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.5071478
+            timeCode: 0.5093384
             level: 1
           - name: 4
             index: 2
-            timeCode: 1.3154926
+            timeCode: 1.3188591
             level: 0
       - index: 1
-        duration: 1.9063263
-        winner: 1
+        duration: 2.8680153
+        winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.8502159
+            timeCode: 1.1426163
             level: 1
-          - name: 5
+          - name: 1
             index: 1
-            timeCode: 1.1400337
+            timeCode: 2.567772
             level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.9063263
-            level: 0
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.82597923
+            timeCode: 1.1944275
             level: 1
-          - name: 5
+          - name: 4
             index: 1
-            timeCode: 1.1400337
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.598074
-            level: 1
+            timeCode: 2.8680153
+            level: 0
       - index: 2
-        duration: 1.62603
-        winner: 1
+        duration: 1.777298
+        winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.70503426
+            timeCode: 0.7125473
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.96027565
+            timeCode: 0.9989624
             level: 1
-          - name: 4
+          - name: 1
             index: 2
-            timeCode: 1.62603
-            level: 0
-          - name: 5
-            index: 3
-            timeCode: 39.129894
+            timeCode: 1.4701233
             level: 1
-          - name: 5
-            index: 4
-            timeCode: 39.44151
-            level: 1
-          - name: 4
-            index: 5
-            timeCode: 40.706028
-            level: 0
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.6805229
+            timeCode: 0.6563339
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.9850979
+            timeCode: 0.9519386
             level: 1
-          - name: 1
+          - name: 4
             index: 2
-            timeCode: 1.3280525
-            level: 1
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 1
-            index: 4
-            timeCode: 40.39313
-            level: 1
-      - index: 2
-        duration: 40.706028
-        winner: 1
+            timeCode: 1.777298
+            level: 0
+      - index: 3
+        duration: 2.0028229
+        winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.70503426
+            timeCode: 1.0526505
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.96027565
+            timeCode: 1.3799438
             level: 1
-          - name: 4
+          - name: 1
             index: 2
-            timeCode: 1.62603
-            level: 0
-          - name: 5
-            index: 3
-            timeCode: 39.129894
+            timeCode: 1.7011337
             level: 1
-          - name: 5
-            index: 4
-            timeCode: 39.44151
-            level: 1
-          - name: 4
-            index: 5
-            timeCode: 40.706028
-            level: 0
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.6805229
+            timeCode: 1.0526505
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.9850979
+            timeCode: 1.3559723
             level: 1
-          - name: 1
+          - name: 4
             index: 2
-            timeCode: 1.3280525
-            level: 1
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 1
-            index: 4
-            timeCode: 40.39313
-            level: 1
+            timeCode: 2.0028229
+            level: 0
       - index: 4
-        duration: 1.5905533
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72927856
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0581055
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72927856
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.035469
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.2844772
-            level: 1
-    - index: 4
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 36
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 5.9585104
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.2385111
+        duration: 1.75
         winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.09306431
+            timeCode: 0.7033386
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.357625
+            timeCode: 1.033432
             level: 1
           - name: 1
             index: 2
-            timeCode: 0.9298973
+            timeCode: 1.4400787
             level: 1
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.042015076
+            timeCode: 0.6787567
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.357625
+            timeCode: 0.9879303
             level: 1
           - name: 4
             index: 2
-            timeCode: 1.2385111
+            timeCode: 1.75
             level: 0
-      - index: 1
-        duration: 1.9055996
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.96027565
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2696514
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.6128931
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.96027565
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2696514
-            level: 1
-    - index: 5
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 37
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 6.323365
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.8233657
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.092589855
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2074146
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.531795
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.092589855
-            level: 1
-          - name: 4
-            index: 1
-            timeCode: 1.8233657
-            level: 0
-      - index: 1
-        duration: 1.6947937
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.60228634
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.89751434
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.4019632
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.60228634
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.89751434
-            level: 1
-    - index: 1
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 38
-      type: GLOBAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 10
-      roundsPlayed: 2
-      duration: 12.44
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 7.98
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 6.2222524
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 6.548066
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 7.6928005
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 6.2522125
-            level: 1
-          - name: 4
-            index: 1
-            timeCode: 7.98
-            level: 0
-      - index: 1
-        duration: 1.6633883
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72517204
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0344124
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.3826075
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72517204
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0110207
-            level: 1
-    - index: 7
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 41
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 6.0464997
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.2465
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.16130018
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.42986488
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 0.9577198
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.16130018
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.45414352
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.2465
-            level: 0
-      - index: 1
-        duration: 2.010867
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.9113693
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.1997461
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.7199621
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.9113693
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.1997461
-            level: 1
-    - index: 8
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 42
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 0
-      duration: 1.7424412
-      gameFinished: 0
-      finalScore: {x: 0, y: 0}
-      rounds: []
-    - index: 9
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 50
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 1
-      duration: 14.289503
-      gameFinished: 0
-      finalScore: {x: 1, y: 0}
-      rounds:
-      - index: 0
-        duration: 7.6963906
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.2865615
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.5855851
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 7.3904843
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.2865615
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.61650705
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 7.6963906
-            level: 0
-    - index: 1
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 59
-      type: GLOBAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 10
-      roundsPlayed: 1
-      duration: 13.74
-      gameFinished: 1
-      finalScore: {x: 1, y: 0}
-      rounds:
-      - index: 0
-        duration: 13.74
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 12.531555
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 12.84667
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 13.43167
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 12.531555
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 12.814659
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 13.74
-            level: 0
-    - index: 11
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 59
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 1
-      roundsPlayed: 1
-      duration: 1.4112396
-      gameFinished: 1
-      finalScore: {x: 1, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.4112396
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.2167511
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.55088997
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.1119175
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.2167511
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.5208149
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.4112396
-            level: 0
-    - index: 12
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 14
-        minute: 0
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 1
-      roundsPlayed: 1
-      duration: 1.5932045
-      gameFinished: 1
-      finalScore: {x: 1, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.5932045
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.3395958
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.64702606
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.2878761
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.15184021
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.46391678
-            level: 1
     charge: 0
-    forwardAttack: 30
+    forwardAttack: 5
     backwardsAttack: 0
     neutralAttack: 0
-    death: 21
-    forwardDash: 114
+    death: 4
+    forwardDash: 18
     backwardsDash: 0
     pommel: 0
     successfulPommel: 0
@@ -1073,1057 +195,179 @@ MonoBehaviour:
     clash: 0
     dodge: 0
   - statName: LOCAL
-    totalPlayTime: 140.85999
-    totalGamesPlayed: 13
-    totalGamesFinished: 11
-    totalRoundsPlayed: 24
-    averageFinishedGameDuration: 11.348003
-    averageRoundDuration: 6.069781
-    averageRoundsNumberPerFinishedGame: 2.090909
+    totalPlayTime: 20.918854
+    totalGamesPlayed: 1
+    totalGamesFinished: 1
+    totalRoundsPlayed: 5
+    averageFinishedGameDuration: 20.918854
+    averageRoundDuration: 1.9433991
+    averageRoundsNumberPerFinishedGame: 5
     gamesList:
     - index: 0
       date:
         year: 2020
         month: 3
-        day: 9
+        day: 11
         hour: 13
-        minute: 30
+        minute: 20
       type: LOCAL
       stage: 0
       character1: 0
       character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 6.061389
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.2813892
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.082839966
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.38504314
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 0.9737263
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.03774309
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.3612752
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.2813892
-            level: 0
-      - index: 1
-        duration: 1.9787817
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.9105902
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2298708
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.6742935
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.8863306
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2298708
-            level: 1
-    - index: 1
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 32
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 6.922841
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 2.3028407
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.14406824
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.4423442
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 2.01155
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.14406824
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.4423442
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 2.3028407
-            level: 0
-      - index: 1
-        duration: 1.8189983
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.7535114
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.071188
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.5257969
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.7535114
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0485411
-            level: 1
-    - index: 2
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 34
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 3
-      duration: 10.4354925
-      gameFinished: 1
-      finalScore: {x: 1, y: 2}
-      rounds:
-      - index: 0
-        duration: 1.3154926
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.18959332
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.5071478
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.009594
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.18959332
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.5071478
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.3154926
-            level: 0
-      - index: 1
-        duration: 1.9063263
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.8502159
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.1400337
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.9063263
-            level: 0
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.82597923
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.1400337
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.598074
-            level: 1
-      - index: 2
-        duration: 1.62603
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.70503426
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.96027565
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.62603
-            level: 0
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 5
-            index: 4
-            timeCode: 39.44151
-            level: 1
-          - name: 4
-            index: 5
-            timeCode: 40.706028
-            level: 0
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.6805229
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.9850979
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.3280525
-            level: 1
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 1
-            index: 4
-            timeCode: 40.39313
-            level: 1
-      - index: 2
-        duration: 40.706028
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.70503426
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.96027565
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.62603
-            level: 0
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 5
-            index: 4
-            timeCode: 39.44151
-            level: 1
-          - name: 4
-            index: 5
-            timeCode: 40.706028
-            level: 0
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.6805229
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.9850979
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.3280525
-            level: 1
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 1
-            index: 4
-            timeCode: 40.39313
-            level: 1
-      - index: 4
-        duration: 1.5905533
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72927856
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0581055
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72927856
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.035469
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.2844772
-            level: 1
-    - index: 2
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 34
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
+      scoreToWin: 5
       roundsPlayed: 5
-      duration: 53.895493
+      duration: 20.918854
       gameFinished: 1
-      finalScore: {x: 0, y: 2}
+      finalScore: {x: 5, y: 0}
       rounds:
       - index: 0
-        duration: 1.3154926
+        duration: 1.3188591
         winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.18959332
+            timeCode: 0.2543831
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.5071478
+            timeCode: 0.5479622
             level: 1
           - name: 1
             index: 2
-            timeCode: 1.009594
+            timeCode: 1.0028076
             level: 1
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.18959332
+            timeCode: 0.2543831
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.5071478
+            timeCode: 0.5093384
             level: 1
           - name: 4
             index: 2
-            timeCode: 1.3154926
+            timeCode: 1.3188591
             level: 0
       - index: 1
-        duration: 1.9063263
-        winner: 1
+        duration: 2.8680153
+        winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.8502159
+            timeCode: 1.1426163
             level: 1
-          - name: 5
+          - name: 1
             index: 1
-            timeCode: 1.1400337
+            timeCode: 2.567772
             level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.9063263
-            level: 0
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.82597923
+            timeCode: 1.1944275
             level: 1
-          - name: 5
+          - name: 4
             index: 1
-            timeCode: 1.1400337
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.598074
-            level: 1
+            timeCode: 2.8680153
+            level: 0
       - index: 2
-        duration: 1.62603
-        winner: 1
+        duration: 1.777298
+        winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.70503426
+            timeCode: 0.7125473
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.96027565
+            timeCode: 0.9989624
             level: 1
-          - name: 4
+          - name: 1
             index: 2
-            timeCode: 1.62603
-            level: 0
-          - name: 5
-            index: 3
-            timeCode: 39.129894
+            timeCode: 1.4701233
             level: 1
-          - name: 5
-            index: 4
-            timeCode: 39.44151
-            level: 1
-          - name: 4
-            index: 5
-            timeCode: 40.706028
-            level: 0
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.6805229
+            timeCode: 0.6563339
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.9850979
+            timeCode: 0.9519386
             level: 1
-          - name: 1
+          - name: 4
             index: 2
-            timeCode: 1.3280525
-            level: 1
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 1
-            index: 4
-            timeCode: 40.39313
-            level: 1
-      - index: 2
-        duration: 40.706028
-        winner: 1
+            timeCode: 1.777298
+            level: 0
+      - index: 3
+        duration: 2.0028229
+        winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.70503426
+            timeCode: 1.0526505
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.96027565
+            timeCode: 1.3799438
             level: 1
-          - name: 4
+          - name: 1
             index: 2
-            timeCode: 1.62603
-            level: 0
-          - name: 5
-            index: 3
-            timeCode: 39.129894
+            timeCode: 1.7011337
             level: 1
-          - name: 5
-            index: 4
-            timeCode: 39.44151
-            level: 1
-          - name: 4
-            index: 5
-            timeCode: 40.706028
-            level: 0
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.6805229
+            timeCode: 1.0526505
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.9850979
+            timeCode: 1.3559723
             level: 1
-          - name: 1
+          - name: 4
             index: 2
-            timeCode: 1.3280525
-            level: 1
-          - name: 5
-            index: 3
-            timeCode: 39.129894
-            level: 1
-          - name: 1
-            index: 4
-            timeCode: 40.39313
-            level: 1
+            timeCode: 2.0028229
+            level: 0
       - index: 4
-        duration: 1.5905533
-        winner: 1
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72927856
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0581055
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72927856
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.035469
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.2844772
-            level: 1
-    - index: 4
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 36
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 5.9585104
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.2385111
+        duration: 1.75
         winner: 0
         actions:
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.09306431
+            timeCode: 0.7033386
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.357625
+            timeCode: 1.033432
             level: 1
           - name: 1
             index: 2
-            timeCode: 0.9298973
+            timeCode: 1.4400787
             level: 1
         - actionsList:
           - name: 5
             index: 0
-            timeCode: 0.042015076
+            timeCode: 0.6787567
             level: 1
           - name: 5
             index: 1
-            timeCode: 0.357625
+            timeCode: 0.9879303
             level: 1
           - name: 4
             index: 2
-            timeCode: 1.2385111
+            timeCode: 1.75
             level: 0
-      - index: 1
-        duration: 1.9055996
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.96027565
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2696514
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.6128931
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.96027565
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2696514
-            level: 1
-    - index: 5
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 37
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 6.323365
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.8233657
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.092589855
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.2074146
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.531795
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.092589855
-            level: 1
-          - name: 4
-            index: 1
-            timeCode: 1.8233657
-            level: 0
-      - index: 1
-        duration: 1.6947937
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.60228634
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.89751434
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.4019632
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.60228634
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.89751434
-            level: 1
-    - index: 1
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 38
-      type: GLOBAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 10
-      roundsPlayed: 2
-      duration: 12.44
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 7.98
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 6.2222524
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 6.548066
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 7.6928005
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 6.2522125
-            level: 1
-          - name: 4
-            index: 1
-            timeCode: 7.98
-            level: 0
-      - index: 1
-        duration: 1.6633883
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72517204
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0344124
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.3826075
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.72517204
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.0110207
-            level: 1
-    - index: 7
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 41
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 2
-      duration: 6.0464997
-      gameFinished: 1
-      finalScore: {x: 2, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.2465
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.16130018
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.42986488
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 0.9577198
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.16130018
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.45414352
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.2465
-            level: 0
-      - index: 1
-        duration: 2.010867
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.9113693
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.1997461
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.7199621
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.9113693
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 1.1997461
-            level: 1
-    - index: 8
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 42
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 0
-      duration: 1.7424412
-      gameFinished: 0
-      finalScore: {x: 0, y: 0}
-      rounds: []
-    - index: 9
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 50
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 2
-      roundsPlayed: 1
-      duration: 14.289503
-      gameFinished: 0
-      finalScore: {x: 1, y: 0}
-      rounds:
-      - index: 0
-        duration: 7.6963906
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.2865615
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.5855851
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 7.3904843
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.2865615
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.61650705
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 7.6963906
-            level: 0
-    - index: 1
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 59
-      type: GLOBAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 10
-      roundsPlayed: 1
-      duration: 13.74
-      gameFinished: 1
-      finalScore: {x: 1, y: 0}
-      rounds:
-      - index: 0
-        duration: 13.74
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 12.531555
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 12.84667
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 13.43167
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 12.531555
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 12.814659
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 13.74
-            level: 0
-    - index: 11
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 13
-        minute: 59
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 1
-      roundsPlayed: 1
-      duration: 1.4112396
-      gameFinished: 1
-      finalScore: {x: 1, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.4112396
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.2167511
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.55088997
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.1119175
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.2167511
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.5208149
-            level: 1
-          - name: 4
-            index: 2
-            timeCode: 1.4112396
-            level: 0
-    - index: 12
-      date:
-        year: 2020
-        month: 3
-        day: 9
-        hour: 14
-        minute: 0
-      type: LOCAL
-      stage: 0
-      character1: 0
-      character2: 0
-      scoreToWin: 1
-      roundsPlayed: 1
-      duration: 1.5932045
-      gameFinished: 1
-      finalScore: {x: 1, y: 0}
-      rounds:
-      - index: 0
-        duration: 1.5932045
-        winner: 0
-        actions:
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.3395958
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.64702606
-            level: 1
-          - name: 1
-            index: 2
-            timeCode: 1.2878761
-            level: 1
-        - actionsList:
-          - name: 5
-            index: 0
-            timeCode: 0.15184021
-            level: 1
-          - name: 5
-            index: 1
-            timeCode: 0.46391678
-            level: 1
     charge: 0
-    forwardAttack: 30
+    forwardAttack: 5
     backwardsAttack: 0
     neutralAttack: 0
-    death: 21
-    forwardDash: 114
+    death: 4
+    forwardDash: 18
     backwardsDash: 0
     pommel: 0
     successfulPommel: 0
@@ -2154,9 +398,7 @@ MonoBehaviour:
     clash: 0
     dodge: 0
   characters:
-  - name: Jinmu
-    illustration: {fileID: 21300000, guid: 913be14294618cd4b965b565c05a8719, type: 3}
-    global:
+  - global:
       totalPlayTime: 0
       totalGamesPlayed: 0
       totalGamesFinished: 0

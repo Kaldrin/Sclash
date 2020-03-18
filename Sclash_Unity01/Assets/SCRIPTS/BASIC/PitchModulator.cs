@@ -10,7 +10,17 @@ public class PitchModulator : MonoBehaviour
     [SerializeField] bool modulateOnEnabled = false;
 
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        if (!sourceToModulate)
+        {
+            sourceToModulate = new AudioSource();
+            Debug.Log("The audio source to modulate the pitch was not referenced on this object : " + gameObject.name + ", ignoring");
+        }
+    }
+
+
+
     private void OnEnable()
     {
         sourceToModulate.pitch = Random.Range(pitchModulationLimits.x, pitchModulationLimits.y);

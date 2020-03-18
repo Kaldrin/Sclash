@@ -8,6 +8,7 @@ public class SliderToVolume : MonoBehaviour
 {
     [SerializeField] public Slider slider;
     [SerializeField] AudioMixer mixer = null;
+    float oldValue = 0;
     [SerializeField] string mixerGroup = null;
 
 
@@ -22,13 +23,14 @@ public class SliderToVolume : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        oldValue = slider.value;
     }
 
     // Update is called once per graphic frame
     void Update()
     {
-        UpdateVolume();
+        if (slider.value != oldValue)
+            UpdateVolume();
     } 
 
 

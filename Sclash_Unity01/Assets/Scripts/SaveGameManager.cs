@@ -32,6 +32,7 @@ public class JsonSave
     public bool isEmpty = true;
     public float masterVolume;
     public float musicVolume;
+    public float menuFXVolume;
     public float fxVolume;
     public float voiceVolume;
     public int roundsToWin;

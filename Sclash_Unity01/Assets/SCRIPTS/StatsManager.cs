@@ -33,8 +33,7 @@ public class StatsManager : MonoBehaviour
     void Start()
     {
         InitalizeNewGame(0);
-        Debug.Log(statsAsset.globalStats[0].gamesList.Count);
-        Debug.Log("Start");
+        //Debug.Log(statsAsset.globalStats[0].gamesList.Count);
 
         // Intializing variables to prevent null reference exceptions
         InitializeNewRound();
@@ -675,8 +674,8 @@ public class StatsManager : MonoBehaviour
         */
 
 
-        Stats data = null;
-        Debug.Log(File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName));
+        //Stats data = null;
+        //Debug.Log(File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName));
 
         if (File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName))
         {
@@ -684,7 +683,7 @@ public class StatsManager : MonoBehaviour
             string json = File.ReadAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName);
             JsonUtility.FromJsonOverwrite(json, statsAsset);
 
-            statsAsset = data;
+            //statsAsset = data;
         }
         else
         {

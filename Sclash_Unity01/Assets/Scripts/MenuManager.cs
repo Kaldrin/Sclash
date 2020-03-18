@@ -34,6 +34,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] SliderToVolume
         masterVolume = null,
         musicVolume = null,
+        menuFXVolume = null,
         fxVolume = null,
         voiceVolume = null;
     [Tooltip("The reference to the Slider component in the options menu controlling the number of rounds needed to win the game")]
@@ -56,17 +57,6 @@ public class MenuManager : MonoBehaviour
         pauseMenu = null,
         mainMenu = null,
         winScreen = null;
-    [Tooltip("Menu elements references")]
-    [SerializeField] GameObject
-        backButton = null,
-        resumeButton = null,
-        quitButton = null,
-        mainMenuButton = null,
-        pauseOptionMenuBrowser = null,
-        mainOptionMenuBrowser = null,
-        changeMapButton = null,
-        backIndicator = null,
-        scoreToWinSlider = null;
 
     int playerWhoPaused = 0;
 
@@ -227,16 +217,16 @@ public class MenuManager : MonoBehaviour
         //gameManager.scoreObject.SetActive(state);
         gameManager.scoreObject.GetComponent<Animator>().SetBool("On", state);
 
-        backButton.SetActive(!state);
-        resumeButton.SetActive(state);
-        quitButton.SetActive(state);
-        mainMenuButton.SetActive(state);
-        changeMapButton.SetActive(false);
-        scoreToWinSlider.SetActive(false);
+        //backButton.SetActive(!state);
+        //resumeButton.SetActive(state);
+        //quitButton.SetActive(state);
+        //mainMenuButton.SetActive(state);
+        //changeMapButton.SetActive(false);
+        //scoreToWinSlider.SetActive(false);
         //backIndicator.SetActive(state);
 
-        pauseOptionMenuBrowser.SetActive(state);
-        mainOptionMenuBrowser.SetActive(false);
+        //pauseOptionMenuBrowser.SetActive(state);
+        //mainOptionMenuBrowser.SetActive(false);
         
 
         Cursor.visible = state;
@@ -253,7 +243,7 @@ public class MenuManager : MonoBehaviour
         */
 
 
-        SaveParameters();
+        //SaveParameters();
     }
     # endregion
 
@@ -273,6 +263,9 @@ public class MenuManager : MonoBehaviour
 
         musicVolume.slider.value = menuParametersSave.musicVolume;
         musicVolume.UpdateVolume();
+
+        menuFXVolume.slider.value = menuParametersSave.menuFXVolume;
+        menuFXVolume.UpdateVolume();
 
         fxVolume.slider.value = menuParametersSave.fxVolume;
         fxVolume.UpdateVolume();
@@ -294,6 +287,9 @@ public class MenuManager : MonoBehaviour
         musicVolume.slider.value = save.musicVolume;
         musicVolume.UpdateVolume();
 
+        menuFXVolume.slider.value = save.menuFXVolume;
+        menuFXVolume.UpdateVolume();
+
         fxVolume.slider.value = save.fxVolume;
         fxVolume.UpdateVolume();
 
@@ -309,6 +305,7 @@ public class MenuManager : MonoBehaviour
         // Save for current session
         menuParametersSave.masterVolume = masterVolume.slider.value;
         menuParametersSave.musicVolume = musicVolume.slider.value;
+        menuParametersSave.menuFXVolume = menuFXVolume.slider.value;
         menuParametersSave.fxVolume = fxVolume.slider.value;
         menuParametersSave.voiceVolume = voiceVolume.slider.value;
         menuParametersSave.roundToWin = gameManager.scoreToWin;
@@ -320,6 +317,7 @@ public class MenuManager : MonoBehaviour
 
         save.masterVolume = masterVolume.slider.value;
         save.musicVolume = musicVolume.slider.value;
+        save.menuFXVolume = menuFXVolume.slider.value;
         save.fxVolume = fxVolume.slider.value;
         save.voiceVolume = voiceVolume.slider.value;
         save.roundsToWin = Mathf.FloorToInt(roundsToWinSlider.value);

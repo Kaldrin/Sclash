@@ -12,13 +12,13 @@ public class AudioManager : MonoBehaviour
     [SerializeField] GameManager gameManager = null;
     // Name of the CameraManager to find it in the scene
     [SerializeField] CameraManager cameraManager = null;
-    # endregion
+    #endregion
 
 
 
 
 
-    # region SOUND FUNCTIONS
+    #region SOUND FUNCTIONS
     // SOUND FUNCTIONS
     [Header("SOUND FUNCTIONS")]
     // A script that provides premade sound functions to play a little more easily with audio sources
@@ -29,13 +29,38 @@ public class AudioManager : MonoBehaviour
 
 
 
-    # region SOUND FX
-    // SOUND FX
+
+
+    #region AUDIO STATES
+    public enum AUDIOSTATE
+    {
+        none,
+        menu,
+        beforeBattle,
+        battle,
+        won,
+    }
+
+    public AUDIOSTATE audioState = AUDIOSTATE.menu;
+    AUDIOSTATE oldAudioState = AUDIOSTATE.menu;
+    #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #region SOUND FX
     [Header("SOUND FX")]
-    // Sound FXs audio sources
-    [SerializeField] AudioSource clashSoundFXAudioSOurce = null;
+    [SerializeField] AudioSource parrySoundFXAudioSource = null;
     [SerializeField] AudioSource
-        parrySoundFXAudioSource = null,
         successfulAttackSoundFXAudioSource = null,
         deathSoundFXAudioSource = null;
     // Sound FXs audio sources but with a script to play a random sound in a previously filled list
@@ -47,8 +72,16 @@ public class AudioManager : MonoBehaviour
 
 
 
+    #region CLASH FX
+    [Header("CLASH FX")]
+    [SerializeField] AudioSource clashImpactSoundFXAudioSOurce = null;
+    [SerializeField] AudioSource clashReverbSoundFXAudioSource = null;
+    [SerializeField] float clashReverbDelay = 0.3f;
+    #endregion
 
-    # region MUSIC
+
+
+    #region MUSIC
     // MUSIC
     [Header("MUSIC")]
     [SerializeField] AudioSource menuMusicAudioSource = null;
@@ -104,16 +137,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] MusicsDatabase musicDataBase = null;
     # endregion
 
-
-
-
-
-    # region VOICE
-    // VOICE
-    [Header("VOICE")]
-    [SerializeField] AudioSource deathVoice;
-    [SerializeField] AudioSource introVoice;
-    # endregion
 
 
 
@@ -238,14 +261,46 @@ public class AudioManager : MonoBehaviour
         // If no battle event increases intensity in a laps of time, decreases the music's intensity
         DecreaseIntensityWithTime();
     }
-    # endregion
+    #endregion
 
 
 
 
+    #region STATES
+    public void SwitchAudioState(AUDIOSTATE newAudioState)
+    {
+        oldAudioState = audioState;
+        audioState = newAudioState;
 
 
-    # region CHEATS
+        switch(newAudioState)
+        {
+            case AUDIOSTATE.none:
+                break;
+
+
+            case AUDIOSTATE.menu:
+                break;
+
+
+            case AUDIOSTATE.beforeBattle:
+                break;
+
+
+            case AUDIOSTATE.battle:
+                break;
+
+
+            case AUDIOSTATE.won:
+                break;
+        }
+    }
+    #endregion
+
+
+
+
+    #region CHEATS
     // CHEATS
     // Cheats keys to modify music for development test purposes
     void AudioCheats()
@@ -784,9 +839,16 @@ public class AudioManager : MonoBehaviour
     # region SOUND FX
     // SOUND FX
     // Plays clash sound FX
-    public void TriggerClashAudio()
+    public void TriggerClashAudioCoroutine()
     {
-        soundFunctions.PlaySoundFromSource(clashSoundFXAudioSOurce);
+        StartCoroutine(ClashAudioCoroutine());
+    }
+
+    IEnumerator ClashAudioCoroutine()
+    {
+        soundFunctions.PlaySoundFromSource(clashImpactSoundFXAudioSOurce);
+        yield return new WaitForSecondsRealtime(clashReverbDelay);
+        soundFunctions.PlaySoundFromSource(clashReverbSoundFXAudioSource);
     }
 
     // Plays successful parry sound FX

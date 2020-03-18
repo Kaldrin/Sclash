@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class GameStat : MonoBehaviour
 {
     [SerializeField] Stats stats = null;
+    [SerializeField] CharactersDatabase characters = null;
     [HideInInspector] public Game game;
     bool hasUpdateRoundsList = false;
 
@@ -157,8 +158,8 @@ public class GameStat : MonoBehaviour
 
 
             // Timelines
-            currentlyInstantiatedRoundStat.playerNames[0].text = stats.characters[game.character1].name;
-            currentlyInstantiatedRoundStat.playerNames[1].text = stats.characters[game.character1].name;
+            currentlyInstantiatedRoundStat.playerNames[0].text = characters.charactersList[game.character1].name;
+            currentlyInstantiatedRoundStat.playerNames[1].text = characters.charactersList[game.character2].name;
 
 
             

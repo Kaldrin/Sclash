@@ -30,6 +30,7 @@ public class StatsMenu : MonoBehaviour
     [Header("DATA")]
     [SerializeField] Stats stats = null;
     [SerializeField] MapsDataBase mapsDataBase = null;
+    [SerializeField] CharactersDatabase characters = null;
 
 
 
@@ -313,10 +314,10 @@ public class StatsMenu : MonoBehaviour
 
 
             // Characters
-            currentlyInstantiatedGameStat.character1Name.text = stats.characters[stats.globalStats[currentStatMode].gamesList[i].character1].name;
-            currentlyInstantiatedGameStat.character2Name.text = stats.characters[stats.globalStats[currentStatMode].gamesList[i].character1].name;
-            currentlyInstantiatedGameStat.characterIllustration1.sprite = stats.characters[stats.globalStats[currentStatMode].gamesList[i].character1].illustration;
-            currentlyInstantiatedGameStat.characterIllustration2.sprite = stats.characters[stats.globalStats[currentStatMode].gamesList[i].character1].illustration;
+            currentlyInstantiatedGameStat.character1Name.text = characters.charactersList[stats.globalStats[currentStatMode].gamesList[i].character1].name;
+            currentlyInstantiatedGameStat.character2Name.text = characters.charactersList[stats.globalStats[currentStatMode].gamesList[i].character1].name;
+            currentlyInstantiatedGameStat.characterIllustration1.sprite = characters.charactersList[stats.globalStats[currentStatMode].gamesList[i].character1].illustration;
+            currentlyInstantiatedGameStat.characterIllustration2.sprite = characters.charactersList[stats.globalStats[currentStatMode].gamesList[i].character1].illustration;
 
 
             currentlyInstantiatedGameStat.finalScore.text = stats.globalStats[currentStatMode].gamesList[i].finalScore.x.ToString() + " / " + stats.globalStats[currentStatMode].gamesList[i].finalScore.y.ToString();

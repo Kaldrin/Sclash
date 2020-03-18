@@ -106,11 +106,8 @@ public struct CharacterStat
 }
 
 [System.Serializable]
-public struct Character
+public struct CharacterStats
 {
-    public string name;
-    public Sprite illustration;
-
     public CharacterStat global;
     public CharacterStat local;
     public CharacterStat online;
@@ -151,5 +148,5 @@ public class Stats : ScriptableObject
 {
     public List<GlobalStat> globalStats = new List<GlobalStat>();
 
-    public List<Character> characters = new List<Character>();
+    public List<CharacterStats> characters = new List<CharacterStats>();
 }
