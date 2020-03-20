@@ -1808,7 +1808,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     // Triggers saber draw and informs the game manager
     [PunRPC]
-    void TriggerDraw()
+    public void TriggerDraw()
     {
         SwitchState(STATE.drawing);
         gameManager.SaberDrawn(playerNum);
