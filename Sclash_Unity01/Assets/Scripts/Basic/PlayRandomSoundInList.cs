@@ -27,7 +27,7 @@ public class PlayRandomSoundInList : MonoBehaviour
             {
                 play = false;
                 int randomSoundIndex = Random.Range(0, soundList.Length - 1);
-
+                Debug.Log(randomSoundIndex);
 
                 audioSource.clip = soundList[randomSoundIndex];
                 audioSource.Play();

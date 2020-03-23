@@ -294,28 +294,6 @@ public class GameManager : MonoBehaviourPun
     // Update is called once per graphic frame
     private void Update()
     {
-        switch (gameState)
-        {
-            case GAMESTATE.menu:
-                break;
-
-            case GAMESTATE.loading:
-                break;
-
-            case GAMESTATE.intro:
-                break;
-
-            case GAMESTATE.game:
-                break;
-
-            case GAMESTATE.paused:
-                break;
-
-            case GAMESTATE.finished:
-                break;
-        }
-
-
         if (cheatCodes)
         {
             if (Input.GetKeyUp(slowTimeKey))
@@ -473,7 +451,8 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.ActivateWind();
+        //audioManager.ActivateWind();
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
 
 
         yield return new WaitForSeconds(0.5f);
@@ -503,10 +482,10 @@ public class GameManager : MonoBehaviourPun
     // A saber has been drawn, stores it and checks if both players have drawn
     IEnumerator SaberDrawnCoroutine(int playerNum)
     {
-        yield return new WaitForSecondsRealtime(playersList[playerNum].GetComponent<Player>().drawDuration + 0.5f);
+        yield return new WaitForSecondsRealtime(1f);
 
 
-        if (!audioManager.battleMusicOn)
+        if (audioManager.audioState == AudioManager.AUDIOSTATE.beforeBattle)
         {
             allPlayersHaveDrawn = true;
 
@@ -515,13 +494,13 @@ public class GameManager : MonoBehaviourPun
                 if (playersList[i].GetComponent<Player>().playerState != Player.STATE.normal)
                     allPlayersHaveDrawn = false;
             }
-
+            
 
             if (allPlayersHaveDrawn)
             {
-                audioManager.ActivateBattleMusic();
-
-
+                //audioManager.ActivateBattleMusic();
+                audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
+                Debug.Log("Draw");
                 // STATS
                 statsManager.InitalizeNewGame(1);
                 statsManager.InitializeNewRound();
@@ -1135,9 +1114,6 @@ public class GameManager : MonoBehaviourPun
     // Slow motion and zoom for a given duration
     IEnumerator SlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
-        
-
-
         // CAMERA STATE
         cameraManager.SwitchState(CameraManager.CAMERASTATE.eventcam);
 
@@ -1157,6 +1133,7 @@ public class GameManager : MonoBehaviourPun
             audioManager.battleMusicPhaseSources[i].pitch = slowMoTimeScale;
             audioManager.battleMusicStrikesSources[i].pitch = slowMoTimeScale;
         }
+        audioManager.TriggerSlowMoAudio(true);
 
 
         yield return new WaitForSecondsRealtime(slowMoEffectDuration);
@@ -1177,6 +1154,7 @@ public class GameManager : MonoBehaviourPun
             audioManager.battleMusicPhaseSources[i].pitch = 1;
             audioManager.battleMusicStrikesSources[i].pitch = 1;
         }
+        audioManager.TriggerSlowMoAudio(false);
 
 
         yield return new WaitForSecondsRealtime(0.5f);
@@ -1202,9 +1180,6 @@ public class GameManager : MonoBehaviourPun
 
             if (Time.timeScale <= minTimeScale)
                 Time.timeScale = minTimeScale;
-
-
-            Debug.Log(Time.timeScale);
         }
     }
     # endregion

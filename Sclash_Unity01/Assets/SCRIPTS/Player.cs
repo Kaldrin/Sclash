@@ -252,9 +252,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region DRAW
     // DRAW
     [Header("DRAW")]
-    [Tooltip("The duration the draw animation takes to switch to drawn state")]
-    [SerializeField] public float drawDuration = 2f;
-
     [Tooltip("The reference to the game object containing the text component telling the players to draw their sabers")]
     [SerializeField] public GameObject drawText = null;
     Vector3 drawTextBaseScale = new Vector3(0, 0, 0);
@@ -536,11 +533,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-    #region SOUND
-    // SOUND
-    [Header("SOUND")]
+    #region AUDIO
+    [Header("AUDIO")]
     [Tooltip("The reference to the stamina charged audio FX AudioSource")]
     [SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
+    [SerializeField] PlayRandomSoundInList notEnoughStaminaSFX = null;
     #endregion
 
 
@@ -597,13 +594,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void Start()
     {
         // GET MANAGERS
-        // Get audio manager to use in the script
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
-        // Get game manager to use in the script
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
-        // Get input manager
         inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>(); 
-        // Get stats manager
         statsManager = GameObject.Find(statsManagerName).GetComponent<StatsManager>();
 
 
@@ -813,7 +806,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     hasFinishedAnim = false;
                     SwitchState(STATE.recovering);
-                    //Debug.Log("Recover");
                 }
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -857,11 +849,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     hasFinishedAnim = false;
                     SwitchState(STATE.normal);
-                    //Debug.Log("Normal");
                 }
-                //UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
-                //UpdateStaminaColor();
                 break;
 
             case STATE.maintainParrying:
@@ -908,29 +897,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
-                //RunDash();
-
-                if (hasFinishedAnim)
-                {
-                    //hasFinishedAnim = false;
-                    
-                    //SwitchState(STATE.normal);
-                }
                 rb.velocity = Vector3.zero;
                 break;
 
             case STATE.enemyKilled:
                 ManageMovementsInputs();
-                //ManageOrientation();
                 SetStaminaBarsOpacity(0);
                 playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
                 break;
 
             case STATE.enemyKilledEndMatch:
                 ManageMovementsInputs();
-                //ManageOrientation();
                 SetStaminaBarsOpacity(0);
-                //playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
                 break;
 
             case STATE.dead:
@@ -1113,7 +1091,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.dead:
                 rb.velocity = new Vector2(0, rb.velocity.y);
-                //rb.simulated = false;
                 SetStaminaBarsOpacity(0);
                 playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
@@ -1241,7 +1218,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region RECEIVE AN ATTACK
-    // RECEIVE AN ATTACK
     public bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
         bool hit = false;
@@ -1632,6 +1608,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else
                 staminaSliders[i].GetComponent<Animator>().ResetTrigger("NotEnoughStamina");
         }
+
+
+        // AUDIO
+        notEnoughStaminaSFX.Play();
     }
 
     // Stamina recup anim
@@ -2476,7 +2456,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region POMMELED
-    // POMMELED
     // The player have been kicked
     public void Pommeled()
     {
@@ -2493,7 +2472,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (playerState == STATE.parrying || playerState == STATE.attacking)
             {
                 StartCoroutine(TriggerStaminaBreakAnim());
-                //StaminaCost(staminaCostForMoves, true);
             }
                 
 
@@ -2513,7 +2491,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             actualUsedDashDistance = kickKnockbackDistance;
             initPos = transform.position;
             targetPos = transform.position + new Vector3(actualUsedDashDistance * dashDirection, 0, 0);
-            //transform.position = targetPos;
             dashTime = 0;
             isDashing = true;
 
@@ -2526,7 +2503,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // AUDIO
-            audioManager.TriggerClashAudioCoroutine();
+            //audioManager.TriggerClashAudioCoroutine();
             audioManager.BattleEventIncreaseIntensity();
 
 

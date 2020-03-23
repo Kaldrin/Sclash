@@ -71,7 +71,6 @@ public class MenuManager : MonoBehaviour
 
 
     # region WIN
-    // WIN
     [Header("WIN MENU")]
     [Tooltip("The reference to the game object containing the win text")]
     [SerializeField] public GameObject winMessage = null;
@@ -97,7 +96,6 @@ public class MenuManager : MonoBehaviour
 
     # region FUNCTIONS
     # region BASE FUNCTIONS
-    // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
@@ -169,6 +167,7 @@ public class MenuManager : MonoBehaviour
     {
         if (!pauseCooldownOn)
         {
+            Debug.Log("Can pause");
             for (int i = 0; i < inputManager.playerInputs.Length; i++)
             {
                 if (inputManager.playerInputs[i].pauseUp)

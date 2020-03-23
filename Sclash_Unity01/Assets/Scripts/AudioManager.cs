@@ -5,9 +5,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     # region MANAGERS
-    // MANAGERS
     [Header("MANAGERS")]
-    [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
     // Name of the GameManager to find it in the scene
     [SerializeField] GameManager gameManager = null;
     // Name of the CameraManager to find it in the scene
@@ -19,12 +17,20 @@ public class AudioManager : MonoBehaviour
 
 
     #region SOUND FUNCTIONS
-    // SOUND FUNCTIONS
     [Header("SOUND FUNCTIONS")]
     // A script that provides premade sound functions to play a little more easily with audio sources
     [SerializeField] SoundFunctions soundFunctions = null;
     # endregion
 
+
+
+
+
+
+    # region MUSIC DATA
+    [Header("MUSIC DATA")]
+    [SerializeField] MusicsDatabase musicDataBase = null;
+    # endregion
 
 
 
@@ -41,6 +47,7 @@ public class AudioManager : MonoBehaviour
         won,
     }
 
+    [Header("AUDIO STATES")]
     public AUDIOSTATE audioState = AUDIOSTATE.menu;
     AUDIOSTATE oldAudioState = AUDIOSTATE.menu;
     #endregion
@@ -57,32 +64,16 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region SOUND FX
-    [Header("SOUND FX")]
-    [SerializeField] AudioSource parrySoundFXAudioSource = null;
-    [SerializeField] AudioSource
-        successfulAttackSoundFXAudioSource = null,
-        deathSoundFXAudioSource = null;
-    // Sound FXs audio sources but with a script to play a random sound in a previously filled list
-    [SerializeField] public PlayRandomSoundInList
-        matchBeginsRandomSoundSource = null,
-        roundBeginsRandomSoundSource = null;
-    #endregion
+    
 
 
 
 
-    #region CLASH FX
-    [Header("CLASH FX")]
-    [SerializeField] AudioSource clashImpactSoundFXAudioSOurce = null;
-    [SerializeField] AudioSource clashReverbSoundFXAudioSource = null;
-    [SerializeField] float clashReverbDelay = 0.3f;
-    #endregion
+    
 
 
 
     #region MUSIC
-    // MUSIC
     [Header("MUSIC")]
     [SerializeField] AudioSource menuMusicAudioSource = null;
     [SerializeField] AudioSource
@@ -131,19 +122,50 @@ public class AudioManager : MonoBehaviour
 
 
 
-    # region MUSIC DATA
-    // MUSIC DATA
-    [Header("MUSIC DATA")]
-    [SerializeField] MusicsDatabase musicDataBase = null;
-    # endregion
+    #region MUSIC 2
+    [Header("MUSIC 2")]
+    [SerializeField] AudioSource phase1MainAudioSource = null;
+    #endregion
 
+
+
+
+
+
+
+
+    #region SOUND FX
+    [Header("SOUND FX")]
+    [SerializeField] AudioSource parrySoundFXAudioSource = null;
+    [SerializeField]
+    AudioSource
+        successfulAttackSoundFXAudioSource = null,
+        deathSoundFXAudioSource = null,
+        slowMoInAudioSource = null,
+        slowMoOutAudioSource = null;
+    // Sound FXs audio sources but with a script to play a random sound in a previously filled list
+    [SerializeField]
+    public PlayRandomSoundInList
+        matchBeginsRandomSoundSource = null,
+        roundBeginsRandomSoundSource = null;
+    #endregion
+
+
+
+
+
+    #region CLASH FX
+    [Header("CLASH FX")]
+    [SerializeField] AudioSource clashImpactSoundFXAudioSOurce = null;
+    [SerializeField] AudioSource clashReverbSoundFXAudioSource = null;
+    [SerializeField] float clashReverbDelay = 0.3f;
+    #endregion
 
 
 
 
 
     # region PLAYERS
-    // PLAYERS
     GameObject[] playersList;
     //float distanceBetweenPlayers = 0;
     # endregion
@@ -176,7 +198,6 @@ public class AudioManager : MonoBehaviour
 
 
     # region BASE FUNCTIONS
-    // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
@@ -184,7 +205,7 @@ public class AudioManager : MonoBehaviour
         int randomMusicChoice = Random.Range(0, musicDataBase.musicsList.Count);
         chosenMusic = randomMusicChoice;
 
-
+        /*
         // Set the default stem of the music phases audio sources
         battleMusicPhaseSources[0].clip = musicDataBase.musicsList[chosenMusic].phases[0].stems[0].stemAudio;
         battleMusicPhaseSources[1].clip = musicDataBase.musicsList[chosenMusic].phases[1].stems[0].stemAudio;
@@ -195,6 +216,7 @@ public class AudioManager : MonoBehaviour
         battleMusicStrikesSources[2].clip = musicDataBase.musicsList[chosenMusic].phases[2].stems[0].stemStrikesAudio;
 
         winAudioSource.clip = musicDataBase.musicsList[chosenMusic].winAudio;
+        */
 
 
         // Sets the menu music volume objective at its max
@@ -208,14 +230,38 @@ public class AudioManager : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        // MUSIC CHEATS
+        // CHEATS
         if (gameManager.cheatCodes)
             AudioCheats();
+
+
+        switch (audioState)
+        {
+            case AUDIOSTATE.none:
+                break;
+
+
+            case AUDIOSTATE.menu:
+                break;
+
+
+            case AUDIOSTATE.beforeBattle:
+                break;
+
+
+            case AUDIOSTATE.battle:
+                break;
+
+
+            case AUDIOSTATE.won:
+                break;
+        }
     }
 
     // FixedUpdate is called 50 times per frame
     private void FixedUpdate()
     {
+        /*
         switch (gameManager.gameState)
         {
             case GameManager.GAMESTATE.finished:
@@ -239,10 +285,11 @@ public class AudioManager : MonoBehaviour
                     UpdateCurrentlyPlayingMusicImmediatly();
                 break;
         }
+        */
 
 
 
-
+        /*
         // Adjusts phase 1 volume depending on players' distance from each other
         if (battleMusicOn)
         {
@@ -260,6 +307,36 @@ public class AudioManager : MonoBehaviour
 
         // If no battle event increases intensity in a laps of time, decreases the music's intensity
         DecreaseIntensityWithTime();
+        */
+
+
+
+
+
+
+        switch (audioState)
+        {
+            case AUDIOSTATE.none:
+                break;
+
+
+            case AUDIOSTATE.menu:
+                break;
+
+
+            case AUDIOSTATE.beforeBattle:
+                break;
+
+
+            case AUDIOSTATE.battle:
+                if (!phase1MainAudioSource.isPlaying) ;
+                phase1MainAudioSource.clip = musicDataBase.musicsList[0].phases[0].stems[Random.Range(0, musicDataBase.musicsList[0].phases[0].stems.Count)].stemAudio;
+                break;
+
+
+            case AUDIOSTATE.won:
+                break;
+        }
     }
     #endregion
 
@@ -284,10 +361,14 @@ public class AudioManager : MonoBehaviour
 
 
             case AUDIOSTATE.beforeBattle:
+                menuMusicAudioSource.volume = 0;
+                
                 break;
 
 
             case AUDIOSTATE.battle:
+                phase1MainAudioSource.Play();
+
                 break;
 
 
@@ -300,39 +381,7 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region CHEATS
-    // CHEATS
-    // Cheats keys to modify music for development test purposes
-    void AudioCheats()
-    {
-        // If cheat input to switch to next phase is pressed
-        if (Input.GetKeyDown(phaseUpCheatKey))
-        {
-            ImmediatlySwitchPhase("Up");
-        }
 
-
-        // If cheat input to switch to previous phase is pressed
-        if (Input.GetKeyDown(phaseDownCheatKey))
-        {
-            ImmediatlySwitchPhase("Down");
-        }
-    }
-    # endregion
-
-
-
-
-
-
-    # region FIND PLAYERS
-    // FIND PLAYERS
-    // Finds the players on the scene to use their data for music modification
-    public void FindPlayers()
-    {
-        playersList = GameObject.FindGameObjectsWithTag("Player");
-    }
-    # endregion
 
 
 
@@ -340,7 +389,6 @@ public class AudioManager : MonoBehaviour
 
 
     # region MUSIC ACTIVATION
-    // MUSICS ACTIVATION
     // Activates menu music
     public void ActivateMenuMusic()
     {
@@ -405,7 +453,6 @@ public class AudioManager : MonoBehaviour
 
     public void ActivateWinMusic()
     {
-        //soundFunctions.SetAudioActiveFromSource(winAudioSource, true, true);
         soundFunctions.PlaySoundFromSource(winAudioSource);
 
         battleMusicOn = false;
@@ -413,8 +460,6 @@ public class AudioManager : MonoBehaviour
         battleIntensity = 0;
 
 
-        // Set the volume objective of the wind track to its max
-        //windVolumeObjective = windMaxVolume;
         // Sets the volume objectives of other tracks to 0
         menuMusicVolumeObjective = 0;
 
@@ -434,7 +479,6 @@ public class AudioManager : MonoBehaviour
 
 
     # region MUSICS AND AUDIO TRACKS SMOOTH VOLUME UPDATE
-    // BATTLE MUSICS AND AUDIO TRACKS SMOOTH VOLUME UPDATE
     // Fades musics volumes smothly for soft transitions, called in FixedUpdate
     void SmoothVolumeInterpUpdateForMusicAndAudioTracks()
     {
@@ -445,7 +489,6 @@ public class AudioManager : MonoBehaviour
             if (menuMusicAudioSource.volume > menuMusicVolumeObjective)
             {
                 menuMusicAudioSource.volume += -musicVolumeFadeSpeed;
-
 
                 if (menuMusicAudioSource.volume <= menuMusicVolumeObjective)
                 {
@@ -837,7 +880,6 @@ public class AudioManager : MonoBehaviour
 
 
     # region SOUND FX
-    // SOUND FX
     // Plays clash sound FX
     public void TriggerClashAudioCoroutine()
     {
@@ -864,5 +906,51 @@ public class AudioManager : MonoBehaviour
 
         soundFunctions.PlaySoundFromSource(deathSoundFXAudioSource);
     }
+
+    public void TriggerSlowMoAudio(bool inOut)
+    {
+        if (inOut)
+            soundFunctions.PlaySoundFromSource(slowMoInAudioSource);
+        else
+            soundFunctions.PlaySoundFromSource(slowMoOutAudioSource);
+    }
     #endregion
+
+
+
+
+
+    # region FIND PLAYERS
+    // FIND PLAYERS
+    // Finds the players on the scene to use their data for music modification
+    public void FindPlayers()
+    {
+        playersList = GameObject.FindGameObjectsWithTag("Player");
+    }
+    # endregion
+
+
+
+
+
+
+    #region CHEATS
+    // CHEATS
+    // Cheats keys to modify music for development test purposes
+    void AudioCheats()
+    {
+        // If cheat input to switch to next phase is pressed
+        if (Input.GetKeyDown(phaseUpCheatKey))
+        {
+            ImmediatlySwitchPhase("Up");
+        }
+
+
+        // If cheat input to switch to previous phase is pressed
+        if (Input.GetKeyDown(phaseDownCheatKey))
+        {
+            ImmediatlySwitchPhase("Down");
+        }
+    }
+    # endregion
 }

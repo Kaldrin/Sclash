@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 public class MenuBrowser : MonoBehaviour
 {
     #region VARIABLES
-    // BROWSING
+    #region BROWSING
     [Header("BROWSING")]
     [Tooltip("The list of elements to browse in this menu page")]
     [SerializeField] public GameObject[] elements = null;
@@ -19,6 +19,8 @@ public class MenuBrowser : MonoBehaviour
 
     [Tooltip("The index of the selected menu element in the elements list")]
     [SerializeField] public int browseIndex = 0;
+    [SerializeField] bool applyDefaultIndexOnEnable = false;
+    [SerializeField] int defaultIndex = 0;
     int sens = 1;
 
     [SerializeField] bool invertVerticalAxis = false;
@@ -41,12 +43,12 @@ public class MenuBrowser : MonoBehaviour
         verticalInputRestZone = 0.1f,
         horizontalInputDetectionZone = 0.5f,
         horizontalRestZone = 0.1f;
+    #endregion
 
 
 
 
-
-    // VISUAL
+    #region VISUAL
     [Header("VISUAL")]
     [Tooltip("Default color of an unselected menu element's text")]
     [SerializeField] Color textDefaultColor = Color.black;
@@ -59,7 +61,7 @@ public class MenuBrowser : MonoBehaviour
 
     [Tooltip("For each menu element, should use the script's button color change or let the button's default one ?")]
     [SerializeField] public List<bool> shouldUseButtonColorSwitch = new List<bool>();
-
+    #endregion
 
 
 
@@ -117,6 +119,8 @@ public class MenuBrowser : MonoBehaviour
         Select(true);
         UpdateColors();
     }
+
+
 
     // Update is called once per graphic frame
     void Update()
@@ -180,7 +184,8 @@ public class MenuBrowser : MonoBehaviour
                 }
             }
 
-
+            Select(true);
+            /*
             if (elements[browseIndex].GetComponent<Button>() || elements[browseIndex].GetComponent<TMP_InputField>())
             {
                 Select(true);
@@ -189,6 +194,7 @@ public class MenuBrowser : MonoBehaviour
             {
                 Select(false);
             }
+            */
         }
 
 
@@ -205,6 +211,9 @@ public class MenuBrowser : MonoBehaviour
     // OnEnable is called each time the object is set from inactive to active
     void OnEnable()
     {
+        if (applyDefaultIndexOnEnable)
+            browseIndex = defaultIndex;
+
         if (elements.Length > 0)
         {
             if (elements[browseIndex].GetComponent<Button>())
@@ -227,7 +236,7 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-    // BROWSING
+    #region BROWSING
     void VerticalBrowse(int direction)
     {
         vAxisInUse = true;
@@ -248,6 +257,7 @@ public class MenuBrowser : MonoBehaviour
 
         UpdateColors();
     }
+    #endregion
 
 
 
@@ -255,8 +265,7 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-
-    // SELECTION
+    #region SELECTION
     // Selects or unselects not the specified object
     public void Select(bool state)
     {
@@ -276,8 +285,11 @@ public class MenuBrowser : MonoBehaviour
             }
             else if (elements[browseIndex].GetComponent<EventTrigger>())
             {
+                /*
                 BaseEventData baseEventData = null;
                 elements[browseIndex].GetComponent<EventTrigger>().OnSelect(baseEventData);
+                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements[browseIndex]);
+                */
             }
         }
 
@@ -333,13 +345,13 @@ public class MenuBrowser : MonoBehaviour
 
         return 0;
     }
+    #endregion
 
 
 
 
 
-
-    // ADD & REMOVE ELEMENTS
+    #region ADD & REMOVE ELEMENTS
     public void AddElement(GameObject newButton)
     {
         GameObject[] newElementsList = new GameObject[elements.Length + 1];
@@ -390,7 +402,7 @@ public class MenuBrowser : MonoBehaviour
         backElement = newBackButton;
         Debug.Log("Change back button");
     }
-
+    #endregion
 
 
 
@@ -445,7 +457,7 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-    // COLOR
+    #region COLOR
     // Updates the color of each element of the menu screen depending on wether it's selected or not
     void UpdateColors()
     {
@@ -502,5 +514,6 @@ public class MenuBrowser : MonoBehaviour
             }
         }
     }
+    #endregion
     #endregion
 }
