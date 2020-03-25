@@ -410,7 +410,8 @@ public class GameManager : MonoBehaviourPun
     {
         // SOUND
         // Set on the menu music
-        audioManager.ActivateMenuMusic();
+        //audioManager.ActivateMenuMusic();
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
 
 
         SpawnPlayers();
@@ -443,6 +444,7 @@ public class GameManager : MonoBehaviourPun
 
         // AUDIO
         audioManager.FindPlayers();
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
 
 
         UpdateMaxScoreDisplay();
@@ -460,11 +462,6 @@ public class GameManager : MonoBehaviourPun
 
         SwitchState(GAMESTATE.game);
         cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
-
-
-        // AUDIO
-        //audioManager.ActivateWind();
-        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
 
 
         yield return new WaitForSeconds(0.5f);
@@ -485,41 +482,34 @@ public class GameManager : MonoBehaviourPun
         cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
     }
 
-    // Starts the DrawSabersCoroutine
+    // A saber has been drawn, stores it and checks if both players have drawn
     public void SaberDrawn(int playerNum)
     {
-        StartCoroutine(SaberDrawnCoroutine(playerNum));
-    }
-
-    // A saber has been drawn, stores it and checks if both players have drawn
-    IEnumerator SaberDrawnCoroutine(int playerNum)
-    {
-        yield return new WaitForSecondsRealtime(1f);
-
-
         if (audioManager.audioState == AudioManager.AUDIOSTATE.beforeBattle)
         {
             allPlayersHaveDrawn = true;
 
             for (int i = 0; i < playersList.Count; i++)
             {
-                if (playersList[i].GetComponent<Player>().playerState != Player.STATE.normal)
+                if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
+                {
                     allPlayersHaveDrawn = false;
+                }
             }
-            
+
 
             if (allPlayersHaveDrawn)
             {
                 //audioManager.ActivateBattleMusic();
                 audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
-                Debug.Log("Draw");
+
+
                 // STATS
                 statsManager.InitalizeNewGame(1);
                 statsManager.InitializeNewRound();
             }
         }
     }
-
     #endregion
 
 
@@ -769,10 +759,6 @@ public class GameManager : MonoBehaviourPun
         roundTransitionLeavesFX.Play();
 
 
-        // AUDIO
-        audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = true;
-
-
         yield return new WaitForSeconds(1.5f);
 
 
@@ -780,7 +766,7 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.UpdateMusicPhaseThatShouldPlayDependingOnScore();
+        //audioManager.UpdateMusicPhaseThatShouldPlayDependingOnScore();
 
 
         // STATS
@@ -871,6 +857,7 @@ public class GameManager : MonoBehaviourPun
         }
 
 
+        // STATE
         SwitchState(GAMESTATE.loading);
 
 
@@ -883,9 +870,21 @@ public class GameManager : MonoBehaviourPun
         roundTransitionLeavesFX.Play();
 
 
+        // AUDIO
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.none);
+
+
+
+
         yield return new WaitForSecondsRealtime(resetGameDelay);
 
+
+
+
+        // STATE
         SwitchState(GAMESTATE.menu);
+
+
         ResetPlayersForNextMatch();
         TriggerMatchEndFilterEffect(false);
 
@@ -907,8 +906,7 @@ public class GameManager : MonoBehaviourPun
         cameraManager.cameraComponent.transform.position = cameraManager.cameraBasePos;
 
 
-        // AUDIO
-        audioManager.ResetBattleMusicPhase();
+        
 
 
         // Restarts a new match right after it is finished being set up
@@ -922,7 +920,7 @@ public class GameManager : MonoBehaviourPun
 
 
             // AUDIO
-            audioManager.ActivateMenuMusic();
+            audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
         }
     }
     #endregion
@@ -950,7 +948,8 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.ActivateWind();
+        //audioManager.ActivateWind();
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.won);
 
 
         yield return new WaitForSecondsRealtime(4f);
@@ -971,7 +970,7 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
+        //audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
 
 
         // ANIMATION
@@ -989,7 +988,7 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.ActivateWinMusic();
+        audioManager.winMusicAudioSource.Play();
     }
     #endregion
 
@@ -1186,11 +1185,6 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
-        {
-            audioManager.battleMusicPhaseSources[i].pitch = slowMoTimeScale;
-            audioManager.battleMusicStrikesSources[i].pitch = slowMoTimeScale;
-        }
         audioManager.TriggerSlowMoAudio(true);
 
 
@@ -1207,11 +1201,13 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
+        /*
         for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
         {
             audioManager.battleMusicPhaseSources[i].pitch = 1;
             audioManager.battleMusicStrikesSources[i].pitch = 1;
         }
+        */
         audioManager.TriggerSlowMoAudio(false);
 
 
@@ -1238,6 +1234,13 @@ public class GameManager : MonoBehaviourPun
 
             if (Time.timeScale <= minTimeScale)
                 Time.timeScale = minTimeScale;
+
+
+            for (int i = 0; i < audioManager.phasesMainAudioSources.Count; i++)
+            {
+                audioManager.phasesMainAudioSources[i].pitch = Time.timeScale;
+                audioManager.phasesStrikesAudioSources[i].pitch = Time.timeScale;
+            }
         }
     }
     #endregion

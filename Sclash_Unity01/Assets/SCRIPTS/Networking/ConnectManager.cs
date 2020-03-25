@@ -180,7 +180,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         GameManager.Instance.SwitchState(GameManager.GAMESTATE.game);
         CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.battle);
 
-        audioManager.ActivateWind();
+        //audioManager.ActivateWind();
 
         /// Wait 0.5 seconds
         yield return new WaitForSeconds(0.5f);

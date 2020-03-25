@@ -257,10 +257,16 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
+  - guid: bbf74f7612713c94a83af9ef173e7c24
+    name: BattleMusic
   - guid: da3cfd271c03fe84b8e363459329639c
     name: FX
   - guid: 0dcbf639934989548bf0c2d8100bc4c8
     name: Master
+  - guid: 47e6a366fb313784783130f9c3b4bc13
+    name: MenuFX
+  - guid: 81614e06c0246874fa64ce0009de0d81
+    name: MenuMusic
   - guid: 5b275abdfeb6e774daa7f5530619c077
     name: Music
   - guid: 949e5c015b4ba5940894a7b8044b365f
@@ -330,6 +336,7 @@ AudioMixerSnapshotController:
     16db615582f8dd846ae285d8ff85b447: 2300
     59b2da955e5c6e8469ebe0050d439b71: 0.75
     f3883fa586b219e4ca3d9560a0833e2c: 2248.8918
+    81614e06c0246874fa64ce0009de0d81: 0.13552584
     2373676705d3e024fbd8a6a5c80c1a22: 2
     e4996af7fa8656d44909c352c33f76aa: 1.15
     bfad32aac36902145ad9b6dc3e47ff7f: 0.8100002
@@ -339,6 +346,7 @@ AudioMixerSnapshotController:
     f44ea88b18e62c24badad3b0e1bf6590: 2.4
     94fc9a4c89f9259489eac4ea8b0f9128: 99.03897
     d668575df8af4ff4d963c9f0d93f7c80: 2.07
+    5b275abdfeb6e774daa7f5530619c077: 5.1526933
     f5b05f3e9e7d8c144ba7d4673f070e63: 5770.381
     97fef7bfc5d1b6741bc8eee5a7f4de74: 2.29
   m_TransitionOverrides: {}
