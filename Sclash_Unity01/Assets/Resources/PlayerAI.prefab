@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b5d293b60063848b8ff3df328545ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attachedPlayer: {fileID: 0}
+  opponent: {fileID: 0}
+  DistanceTolerance: 5
+  normalRate: 0.25
+  closeRate: 0.1
 --- !u!1001 &4136137855984589529
 PrefabInstance:
   m_ObjectHideFlags: 0
