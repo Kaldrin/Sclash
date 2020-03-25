@@ -775,9 +775,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 UpdateStaminaColor();
                 if (hasFinishedAnim)
                 {
-                    
                     hasFinishedAnim = false;
                     SwitchState(STATE.normal);
+                    gameManager.SaberDrawn(playerNum);
                 }
                 break;
 
@@ -841,6 +841,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
+                rb.velocity = Vector3.zero;
                 break;
 
             case STATE.parrying:
@@ -851,6 +852,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     SwitchState(STATE.normal);
                 }
                 SetStaminaBarsOpacity(staminaBarsOpacity);
+                rb.velocity = Vector3.zero;
                 break;
 
             case STATE.maintainParrying:
@@ -958,7 +960,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.normal:
-                //rb.simulated = true;
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
@@ -1222,7 +1223,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         bool hit = false;
 
-
+        
         if (playerState != STATE.dead)
         {
             if (Mathf.Sign(instigator.transform.localScale.x) == Mathf.Sign(transform.localScale.x))
@@ -1317,6 +1318,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     TriggerHit();
 
 
+                // AUDIO
                 audioManager.BattleEventIncreaseIntensity();
             }
 
@@ -1324,9 +1326,24 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // IS DEAD ?
             if (currentHealth <= 0 && playerState != STATE.dead)
             {
+                bool wasSneathed = false;
+
+
+                // ASKS TO START MATCH IF SNEATHED
+                if (playerState == STATE.sneathed || playerState == STATE.drawing)
+                    wasSneathed = true;
+
+
+                // STATE
                 SwitchState(STATE.dead);
 
 
+                // STARTS MATCH IF PLAYER WAS SNEATHED
+                if (wasSneathed)
+                    gameManager.SaberDrawn(playerNum);
+
+
+                // HAS WON ?
                 if (gameManager.score[instigator.GetComponent<Player>().playerNum] + 1 >= gameManager.scoreToWin)
                 {
                     gameManager.TriggerMatchEndFilterEffect(true);
@@ -1371,7 +1388,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         currentHealth -= 1;
 
 
-        // SOUND
+        // AUDIO
         audioManager.TriggerSuccessfulAttackAudio();
         audioManager.BattleEventIncreaseIntensity();
 
@@ -1636,9 +1653,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // FX
         staminaRecupFX.Play();
 
-        
-        
-
 
         while (regeneratedAmount < 1)
         {
@@ -1658,7 +1672,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         staminaRecupAnimOn = false;
 
 
+        // AUDIO
+        staminaBarChargedAudioEffectSource.Play();
+
+
         // FX
+        staminaGainFX.Play();
         staminaRecupFX.Stop();
     }
 
@@ -1777,7 +1796,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void TriggerDraw()
     {
         SwitchState(STATE.drawing);
-        gameManager.SaberDrawn(playerNum);
+        //gameManager.SaberDrawn(playerNum);
+        //gameManager.players
 
 
         // ANIMATION
@@ -2397,15 +2417,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void TriggerPommel()
     {
-        SwitchState(STATE.pommeling);
-
-
-        targetsHit.Clear();
-
         // ANIMATION
         playerAnimations.TriggerPommel();
 
 
+        // STATE
+        SwitchState(STATE.pommeling);
+
+
+
+        targetsHit.Clear();
+
+        
         // STATS
         if (statsManager)
             statsManager.AddAction(ACTION.pommel, playerNum, chargeLevel);

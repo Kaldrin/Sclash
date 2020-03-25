@@ -14,6 +14,8 @@ public struct Stem
 public struct Phase
 {
     public List<Stem> stems;
+    public List<Stem> phaseDownStems;
+    public AudioClip phaseUpFX;
 }
 
 [System.Serializable]
@@ -21,6 +23,7 @@ public struct Music
 {
     public List<Phase> phases;
     public AudioClip winAudio;
+    public int startStem;
 }
 
 

@@ -11,6 +11,7 @@ public class MapLoader : MonoBehaviour
     [Header("MANAGERS")]
     [Tooltip("The reference for the unique game manager script of the scene")]
     [SerializeField] GameManager gameManager = null;
+    [SerializeField] AudioManager audioManager = null;
     # endregion
 
 
@@ -159,6 +160,8 @@ public class MapLoader : MonoBehaviour
             //mapMenuObjectsParent.SetActive(true);
             canLoadNewMap = true;
             currentMapIndex = index;
+
+            audioManager.ChangeSelectedMusicIndex(mapsData.mapsList[currentMapIndex].musicIndex);
         }
     }
 

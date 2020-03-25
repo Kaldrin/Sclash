@@ -15,107 +15,373 @@ MonoBehaviour:
   musicsList:
   - phases:
     - stems:
-      - stemAudio: {fileID: 8300000, guid: 79b5a9c4c4836cf42be16d264bf1da28, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 7568dc161fff7024eb2e398aad80e0e8,
+      - stemAudio: {fileID: 8300000, guid: 0e6b78b931dcc88478ac346e4035d39e, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: e1d517fb50764374a9e266f428326a03,
           type: 3}
         stemsThatConnect: 010000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: 211528f669dcba4438ee3ae663dbfdc4, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 646d1fb01071ac849b6058b131bebc84,
+      - stemAudio: {fileID: 8300000, guid: 6eac68d868cae4f46ba1f119836e5125, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: fc8094dc4b302c94aba1d56c02f785f2,
           type: 3}
         stemsThatConnect: 000000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: ac939f1520026df4b9e18fb24d1b3f49, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: e70df9fdfd1daec41bf271bc392bf170,
+      - stemAudio: {fileID: 8300000, guid: 99d2934f614f7624da3680e88bd41d88, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 985e1e31edeafcd4abf7b9d86931faf9,
           type: 3}
         stemsThatConnect: 000000000100000003000000
-      - stemAudio: {fileID: 8300000, guid: 804de4aac7d08f3478379f1b955582a0, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 0092ce4932eb25a4b9eb1712d7afdc2f,
+      - stemAudio: {fileID: 8300000, guid: 92febe621f31b604181ea335836f0f40, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 11408dc8df91447429b6ad3a848ccd86,
           type: 3}
         stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 8300000, guid: 48eb340f8de02ae4798fb43bde94b8e5, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 2f7d529431414ff429446139722d8bbe,
+          type: 3}
+        stemsThatConnect: 
+      - stemAudio: {fileID: 8300000, guid: 550840db522f3d44581cc85cd6c81a62, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 4a8b3f2d6cd252a449815a669673c9f5,
+          type: 3}
+        stemsThatConnect: 
+      - stemAudio: {fileID: 8300000, guid: 385e97be2bf5b9249902afba42d01ba7, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 338feff750e7d3844ac6a6664c80a296,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 0}
     - stems:
-      - stemAudio: {fileID: 8300000, guid: a720d463a600bce44a37cf35c7db51f7, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: c8f48254ad470564dbbabfc1a0427175,
+      - stemAudio: {fileID: 8300000, guid: f787c7a89b6eefa4e9d562edc05f05cc, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 21e27747e5edc604d93d60f45c9f3397,
           type: 3}
         stemsThatConnect: 010000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: b06781b63b27b8c4a862baea31482021, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 7f73fc972bbf435498e8d01b28c81297,
+      - stemAudio: {fileID: 8300000, guid: facacdaa3aed45541ab2b1dfac55ea42, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 04a2566cc93b1ea498e1359b50aaaf4c,
           type: 3}
         stemsThatConnect: 000000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: f165b9b6e2421544385509eb2afbc94d, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 1ef7386d545b71a4d93afe1d92d432b0,
+      - stemAudio: {fileID: 8300000, guid: 38846c558fe84a4419bde78eb037fdc8, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 174a752ff7e44c74f9d8e98c5e0faa41,
           type: 3}
         stemsThatConnect: 000000000100000003000000
-      - stemAudio: {fileID: 8300000, guid: 6a0450cde73f2f24db24f13c32436117, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 8bf641239d01aaf42850dfda98aa6b6e,
+      - stemAudio: {fileID: 8300000, guid: c0856aaad14d38e41a9b7768f7c2c457, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 8c0e8206b8fa6b24a8517c1520bc23cb,
           type: 3}
         stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 8300000, guid: 0df277d6bfe1362459463ae5c82a5dc4, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 8f7a38722b67f1d4da3981e032473f6f,
+          type: 3}
+        stemsThatConnect: 
+      - stemAudio: {fileID: 8300000, guid: 943780dbde808a34a9300e6a7b4ead65, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 9a3c82e887bda1640a9c7b7cc5a79a16,
+          type: 3}
+        stemsThatConnect: 
+      - stemAudio: {fileID: 8300000, guid: b7db4b4a7c465b44988b127d37530eb5, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 098be49b6cd456d41a90843b9a213b9c,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 8300000, guid: 3af8101b415e53e4986a9d254ff8d51d, type: 3}
     - stems:
-      - stemAudio: {fileID: 8300000, guid: 1c2096f4b3fe24c46a4797019c4a0d0e, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: d00e434aa7cf04040951429e81ff2558,
+      - stemAudio: {fileID: 8300000, guid: 5d56a2e6ef591ff4b875d9ef0b9b4ce4, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 349795dde6280994c84de2e9372adc93,
           type: 3}
         stemsThatConnect: 010000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: c49ec69fe77d55d4e9d9ddc8d1bc4924, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 75e9e6bbaf69c364ca34b752648f075a,
+      - stemAudio: {fileID: 8300000, guid: 2abd59634cb27614b83ace713b097936, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: a9278c6322c1b054a9995f36112069df,
           type: 3}
         stemsThatConnect: 000000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: 22eaa89085596d04d91a3dcbba361d26, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 87b6dbf38dd58544ab5ac8b24745ca08,
+      - stemAudio: {fileID: 8300000, guid: ef9d0270aa33a764ca25760ff73f60cd, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 602857172098d6b4694173a121bf2565,
           type: 3}
         stemsThatConnect: 000000000100000003000000
-      - stemAudio: {fileID: 8300000, guid: 2018269a43604664cab630a6255f484d, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 109f8478cb61ce04aacc2b23807754c5,
+      - stemAudio: {fileID: 8300000, guid: 60c7ceae3d08f4143b0ca4f9e6338ff4, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: fdd05d554ff243a479d04d4cca1eb9b1,
           type: 3}
         stemsThatConnect: 000000000100000002000000
-    winAudio: {fileID: 8300000, guid: d8507ce9bd66d5347945d1aaa68ba4a8, type: 3}
+      phaseDownStems: []
+      phaseUpFX: {fileID: 8300000, guid: c8ec9fc651e79b144861874e6ebaef8f, type: 3}
+    winAudio: {fileID: 8300000, guid: 73b3792000b6464479d30de1ad5db185, type: 3}
+    startStem: 2
   - phases:
     - stems:
-      - stemAudio: {fileID: 8300000, guid: b1ad8093cc4248e4dba368ccc3ea6271, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 7427c232c6d6e07498ac3f64f1831065,
+      - stemAudio: {fileID: 8300000, guid: 9db3e7ee5dddada4e97ccf667ea495f1, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 30160ffc3b26830469355b3dac62a58c,
           type: 3}
         stemsThatConnect: 010000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: b1e3fd0c5b9c51a4983a15a96a4a77da, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 018f008b8b4f20c42897b873f0163e05,
+      - stemAudio: {fileID: 8300000, guid: c539816c8dc75bb438871b810fcb770a, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 06a067cdaf017f046b65c01b3e7ab99d,
           type: 3}
         stemsThatConnect: 000000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: d0c762ff93fd58642b6d8972c12acdb9, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 1224d855b25833c40aeb83349793b7a8,
+      - stemAudio: {fileID: 8300000, guid: 61f1a6526def5234ea13a5bc1f90c157, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 1c2744c3f8fb08d48a43b702a3f71cae,
           type: 3}
         stemsThatConnect: 000000000100000003000000
-      - stemAudio: {fileID: 8300000, guid: c1778fd624b2fde4dbb13a786726944c, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: fd08cecdc9992c24caee9c34ab4f365e,
+      - stemAudio: {fileID: 8300000, guid: 4c3c2a8d542384c4bb6d83d046befa0f, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 4f7b54890cef69f45b1fd25e2a1ffb0e,
           type: 3}
         stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 8300000, guid: 1ba2efef0c6ab9a479338f93dbb0fba5, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: ca751376ac8ba554ead5545ef436b2cf,
+          type: 3}
+        stemsThatConnect: 
+      - stemAudio: {fileID: 8300000, guid: 72ccfd8f169d594428115149bc6d1f0b, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: d9a9729df3d248b41844b8a40386b79a,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 0}
     - stems:
-      - stemAudio: {fileID: 8300000, guid: 66aa14755d4845146af9c91c76b8f08c, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 5a107be6607e9f44282f93811c2a8f2d,
+      - stemAudio: {fileID: 8300000, guid: 56f281b97a23c2e43a97be3f9e899976, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 88944e202958d954cb67fbfe2c5a37b7,
           type: 3}
         stemsThatConnect: 010000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: b06374cb62a5abc48ab17fca4d1a1c33, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 5ae47fd8162468244bb4857632235ee1,
+      - stemAudio: {fileID: 8300000, guid: fc06553158ea41e4a8c98a4f766f8771, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 5da2dc9bcca963b428d561e67ef269e2,
           type: 3}
         stemsThatConnect: 000000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: 67b4ac0a1a571e34ab6263471f9fecb9, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: fa49d0fd2a28f49418ab38ad0a2ae511,
+      - stemAudio: {fileID: 8300000, guid: cd2a9e809820f4147b668522b28c761b, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 4104d74a81ab87841a53d4e43f5d8eef,
           type: 3}
         stemsThatConnect: 000000000100000003000000
-      - stemAudio: {fileID: 8300000, guid: 332e7d324cb246f4bae34f8642484ab4, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 5b54602a569c776409e6b33512eae78e,
+      - stemAudio: {fileID: 8300000, guid: 9e7e9a8d4d28a2645be79b2b91b142f8, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 85232b04a33faa74baaf09748b2a3d4f,
           type: 3}
         stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 8300000, guid: 8bd126f96f0e12b4483195c5c45edf61, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: c9e2af2d86e35d2409bcf4901a1b890a,
+          type: 3}
+        stemsThatConnect: 
+      - stemAudio: {fileID: 8300000, guid: 14a92c05b05465e468a843787f8473c0, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 916ecc5701c828641951d166918c86b8,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 8300000, guid: 07d98d09c8b208a45b5c9c72b2bcd8a5, type: 3}
     - stems:
-      - stemAudio: {fileID: 8300000, guid: 786b1924a9f4ff74a8c88487df62de1a, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: 9783c035fb8f40249936d4f4e3c260d0,
+      - stemAudio: {fileID: 8300000, guid: 1bd7e366c75ab7a489d4f68f6aeafa78, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 26b45059d98d95543ad4492a432b2c0d,
           type: 3}
         stemsThatConnect: 010000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: f63a543408bff9a42869f5d95e0e1fc5, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: f00e8ec9814193f4f9ef49ad02d3169e,
+      - stemAudio: {fileID: 8300000, guid: 4ddef8c7289b3644f897491ab040d0fe, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 4221aa86a49c097498946a75f6cf5812,
           type: 3}
         stemsThatConnect: 000000000200000003000000
-      - stemAudio: {fileID: 8300000, guid: 7ba26d5f138d0bd43b5a321168135c7b, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: b82252d2690ebf946923bac7bcadeb32,
+      - stemAudio: {fileID: 8300000, guid: 3674bf75597b78f45bf3cba361200fd9, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 5472068da99ec3243b6408351851b882,
           type: 3}
         stemsThatConnect: 000000000100000003000000
-      - stemAudio: {fileID: 8300000, guid: 1937e8f49121fc3458e9af9b16724d36, type: 3}
-        stemStrikesAudio: {fileID: 8300000, guid: b975768f04b26ed4595c2959fd7fb0a2,
+      - stemAudio: {fileID: 8300000, guid: b3f670a3a19b32b49955aa6bd2f4b1f3, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: a931b9fb6dd351c49978889525188797,
           type: 3}
         stemsThatConnect: 000000000100000002000000
-    winAudio: {fileID: 8300000, guid: 3541fa3c7a6502c40a711df269f93633, type: 3}
+      phaseDownStems: []
+      phaseUpFX: {fileID: 8300000, guid: c18c18f1549407a49b994653809ebd3c, type: 3}
+    winAudio: {fileID: 8300000, guid: 61951fb8a4e3ffc41a88af5c989b8a59, type: 3}
+    startStem: 0
+  - phases:
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: fca7d0bae9b7c554c9e11312896c0a71, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 8fd242aef621cfa4b9848719838b62da,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: fca7d0bae9b7c554c9e11312896c0a71, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 60e4e00dd9f05184e9191f30d2820eb3,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: fca7d0bae9b7c554c9e11312896c0a71, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 4e2fd026f02590b4f8801d55b51e4b1e,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: fca7d0bae9b7c554c9e11312896c0a71, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 3ca9c07668d07ab40886698d09ffe486,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 8300000, guid: 5d79a55e81b03654b8da1a5d90ccffe1, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 297569835bf0aac44a0126394352235a,
+          type: 3}
+        stemsThatConnect: 
+      - stemAudio: {fileID: 8300000, guid: 1a73480ccb3c12b4d95b509a618140f2, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 06111fd9803f2e64aba40444165ed215,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 0}
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: 4e6d29659425a5a4987fecd291d1d1ab, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 334a0ffc28cf187449ec876c28df343f,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 4e6d29659425a5a4987fecd291d1d1ab, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: ffe65c85fcc9a9f419c57cc13f952f02,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 4e6d29659425a5a4987fecd291d1d1ab, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: c0198d43b86666c4aaafcfe81abe8fbc,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: 4e6d29659425a5a4987fecd291d1d1ab, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: b9c109c998c6fc646a7f10af854adc8c,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 8300000, guid: 384b4fc5b80bc9e49ade7cee08fc232e, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: a79d0110399993744b013400da9c50d8,
+          type: 3}
+        stemsThatConnect: 
+      - stemAudio: {fileID: 8300000, guid: 309f2629d0c3db5459d0c657d86e801d, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 5d6a42671c853904d9ab5bc845d36a90,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 8300000, guid: 07d98d09c8b208a45b5c9c72b2bcd8a5, type: 3}
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: d93eff022ff4e0f4b87591fbb3993f3d, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 47c1830dfeb39f3458739910f46e118b,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: c0ce9ca738d7d714d983b185287bb930, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 48178df9c53f0544ca42d8544a9f4e1b,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 0da623be0099ed147b4aa969f9c81617, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: c959a8801e8ea1d4aab3f33a14ac301c,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: 2cbbd380385c67a409050e51d8ed01ab, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 9b61febf199b34e458d5638c2a3c7c17,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems: []
+      phaseUpFX: {fileID: 8300000, guid: c18c18f1549407a49b994653809ebd3c, type: 3}
+    winAudio: {fileID: 8300000, guid: 4e09cee4856b60c47998a58dc2b4a18e, type: 3}
+    startStem: 0
+  - phases:
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: a677a1c55defb7d4a92a353eb796e195, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 3ba5735ce0c39a34eb4e0991588f69d9,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 10a63f43aa3a00149b34888dbac992fe, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 690a4a2e87e9af04883d1d595ef91822,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 0e2b9793cf999a148bf6124e1249adc2, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: ffd098325edcdba48994ca3d7978d340,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: 6c9669aa0902a9a43a11f5410c9f9d3f, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 0c82e29ffe95d4e4895d47a67d57d10d,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 0}
+        stemStrikesAudio: {fileID: 8300000, guid: 3022e92879bb3274597f4376aaadd3c2,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 0}
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: 7dbc2ba2ebaae234999051b8061d6522, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: b88b26a7ace625a43b9c12948224bfa5,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 775c382fd4b39554293d6e179a5d844a, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: c46deba8a48abcd4780ccb04b0ad8de3,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 55652c7e680557543b7698cd46b5172a, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: f8068ee62aed96a48b8f91409ee12c7a,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: 66b33937c2e6e264682813ac70608e20, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: ed2b9cb78e2e076428a0421483fdcd53,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 0}
+        stemStrikesAudio: {fileID: 8300000, guid: 5e66244e39eb79640b2bf80d214bd055,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 8300000, guid: 07d98d09c8b208a45b5c9c72b2bcd8a5, type: 3}
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: b7f791107fa736d4d96c005441fcddcc, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 9e27ee0f5bfa56d46b50b6d210993f30,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 63db39c0dbff7e649a4385f4b25a18a6, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: b343ee784b339a240b2efaafb0aa42e0,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 8177ab7c404f4364eb9b34e1e4a0d419, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 0e82348bb861c8f44ba067a4cb6edd33,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: 9e636efc650599248bf3716d624c5f12, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 5fd34c9fb4591a246b3368d6c0562963,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems: []
+      phaseUpFX: {fileID: 8300000, guid: c18c18f1549407a49b994653809ebd3c, type: 3}
+    winAudio: {fileID: 8300000, guid: ce6010949b9decf4f9ff5068239d38f7, type: 3}
+    startStem: 0
+  - phases:
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: 2e2db76c3027d214aaaae9a546d31546, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 9818ef3a4fb8f6d439286f908185c6b9,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: d4103d3245fd84748aec421b1f6ceb88, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: ee1eabd52e448754e9ac28f19b289060,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 047cad5dbe923b24286a040d8b4633d6, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 796efb0c6d2b2044ea5db9c73628fd37,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: 8a64ae19515183146b274d42138ed04a, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 6e934cff98ffd674680761eeffb39940,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 0}
+        stemStrikesAudio: {fileID: 8300000, guid: 5ba88c2ee0a9a0946879e8ffe6753feb,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 0}
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: 9e12fc8ffae55cb43989c07b7c878653, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 599564ea6ccbc4f4a8e0c13c625699e7,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: e4240ac7969d6314aa8c486a38449528, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 91563feebfb788f45a5606a3227dd106,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 0d62affbcd7cf154e976527ea06f1250, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 7a1835b025bb33c41a510e124d5aca15,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: c108df2f12e0f924ea6e497d1e8aa5f6, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: 26898c6e600686542a73ecd9d11574eb,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems:
+      - stemAudio: {fileID: 0}
+        stemStrikesAudio: {fileID: 8300000, guid: 1c292825ea983604d8c3af4a0171972f,
+          type: 3}
+        stemsThatConnect: 
+      phaseUpFX: {fileID: 8300000, guid: 07d98d09c8b208a45b5c9c72b2bcd8a5, type: 3}
+    - stems:
+      - stemAudio: {fileID: 8300000, guid: 20c58f17a83be2945a15223aca3e1248, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: b309c2d186bb8634587c19bdd36be122,
+          type: 3}
+        stemsThatConnect: 010000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: 55dabf8f6a724fb46a1c2c8646266496, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: ad9718105d20a9f4bbd733ac5a3fc7fa,
+          type: 3}
+        stemsThatConnect: 000000000200000003000000
+      - stemAudio: {fileID: 8300000, guid: e8257c49cfde1614c8584ae9060fd4a1, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: bf30509175a04aa4ea1d6a5f9e8daf64,
+          type: 3}
+        stemsThatConnect: 000000000100000003000000
+      - stemAudio: {fileID: 8300000, guid: f159d6fb36fd2304b8fb6dc08958c12c, type: 3}
+        stemStrikesAudio: {fileID: 8300000, guid: ef8824c31ee731e488f9ed57a2c687ce,
+          type: 3}
+        stemsThatConnect: 000000000100000002000000
+      phaseDownStems: []
+      phaseUpFX: {fileID: 8300000, guid: c18c18f1549407a49b994653809ebd3c, type: 3}
+    winAudio: {fileID: 8300000, guid: b7b02ca0b54c74249a1eacd23da3e78b, type: 3}
+    startStem: 0

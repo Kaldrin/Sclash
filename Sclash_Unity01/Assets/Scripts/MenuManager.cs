@@ -11,13 +11,13 @@ public class MenuManager : MonoBehaviour
 {
     # region FUNCTIONS
     # region MANAGERS
-    // MANAGERS
     [Header("MANAGERS")]
-    // Game managers
     [Tooltip("The references to the GameManager script instance component")]
     [SerializeField] GameManager gameManager = null;
+    
+    [Tooltip("The AudioManager script instance reference")]
+    [SerializeField] AudioManager audioManager = null;
 
-    // Input manager
     [Tooltip("The references to the InputManager script instance component")]
     [SerializeField] InputManager inputManager = null;
     # endregion
@@ -167,7 +167,6 @@ public class MenuManager : MonoBehaviour
     {
         if (!pauseCooldownOn)
         {
-            Debug.Log("Can pause");
             for (int i = 0; i < inputManager.playerInputs.Length; i++)
             {
                 if (inputManager.playerInputs[i].pauseUp)
@@ -206,9 +205,15 @@ public class MenuManager : MonoBehaviour
     void TriggerPause(bool state)
     {
         if (state)
+        {
+            audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
             gameManager.SwitchState(GameManager.GAMESTATE.paused);
+        }
         else
+        {
+            audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
             gameManager.SwitchState(GameManager.GAMESTATE.game);
+        }
 
 
         blurPanel.SetActive(state);
