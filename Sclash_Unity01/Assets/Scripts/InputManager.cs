@@ -25,8 +25,7 @@ public class InputManager : MonoBehaviour
         public bool jump;
     }
 
-    [SerializeField]
-    float
+    [SerializeField] float
         axisDeadZone = 0.1f,
         dashDeadZone = 0.5f;
 
@@ -47,8 +46,8 @@ public class InputManager : MonoBehaviour
         pommelAxis = "Kick",
         parryAxis = "Parry",
         jumpAxis = "Jump";
-
-
+    
+    
 
 
 
@@ -74,22 +73,14 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         scoreInput = Input.GetButton("Score");
-        for (int i = 0; i < playerInputs.Length; i++)
-        {
-            if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
-            {
-                return;
-            }
-
-            ManageHorizontalInput(i);
-            ManageDashInput(i);
-            ManageKickInput(i);
-            ManageAnyKeyInput(i);
-            ManagePauseInput(i);
-            ManageJumpInput(i);
-            ManageParryInput(i);
-            ManageAttackInput(i);
-        }
+        ManageHorizontalInput();
+        ManageDashInput();
+        ManageKickInput();
+        ManageAnyKeyInput();
+        ManagePauseInput();
+        ManageJumpInput();
+        ManageParryInput();
+        ManageAttackInput();
     }
 
     # endregion
@@ -98,9 +89,12 @@ public class InputManager : MonoBehaviour
 
     #region ANY KEY
     // ANY KEY
-    void ManageAnyKeyInput(int i)
+    void ManageAnyKeyInput()
     {
-        playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
+        }
     }
     # endregion
 
@@ -113,9 +107,12 @@ public class InputManager : MonoBehaviour
 
     # region PAUSE
     // PAUSE
-    void ManagePauseInput(int i)
+    void ManagePauseInput()
     {
-        playerInputs[i].pauseUp = Input.GetButtonUp(pauseAxis + i);
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].pauseUp = Input.GetButtonUp(pauseAxis + i);
+        }
     }
     # endregion
 
@@ -127,9 +124,12 @@ public class InputManager : MonoBehaviour
 
     # region HORIZONTAL
     // HORIZONTAL
-    void ManageHorizontalInput(int i)
+    void ManageHorizontalInput()
     {
-        playerInputs[i].horizontal = Input.GetAxis(horizontalAxis + i);
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].horizontal = Input.GetAxis(horizontalAxis + i);
+        }
     }
     # endregion
 
@@ -141,9 +141,12 @@ public class InputManager : MonoBehaviour
 
     # region DASH
     // DASH
-    void ManageDashInput(int i)
+    void ManageDashInput()
     {
-        playerInputs[i].dash = Input.GetAxis(dashAxis + i);
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].dash = Input.GetAxis(dashAxis + i);
+        }
     }
     # endregion
 
@@ -156,10 +159,13 @@ public class InputManager : MonoBehaviour
 
     #region ATTACK
     // KICK
-    void ManageAttackInput(int i)
+    void ManageAttackInput()
     {
-        playerInputs[i].attackDown = (!playerInputs[i].attack && (Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone));
-        playerInputs[i].attack = Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone;
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].attackDown = (!playerInputs[i].attack && (Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone));
+            playerInputs[i].attack = Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone;
+        }
     }
     # endregion
 
@@ -172,9 +178,12 @@ public class InputManager : MonoBehaviour
 
     # region KICK
     // KICK
-    void ManageKickInput(int i)
+    void ManageKickInput()
     {
-        playerInputs[i].kick = Input.GetButton(pommelAxis + i);
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].kick = Input.GetButton(pommelAxis + i);
+        }
     }
     # endregion
 
@@ -186,10 +195,13 @@ public class InputManager : MonoBehaviour
 
     # region PARRY
     // KICK
-    void ManageParryInput(int i)
+    void ManageParryInput()
     {
-        playerInputs[i].parryDown = (!playerInputs[i].parry && (Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone));
-        playerInputs[i].parry = Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone;
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].parryDown = (!playerInputs[i].parry && (Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone));
+            playerInputs[i].parry = Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone;
+        }
     }
     # endregion
 
@@ -201,9 +213,12 @@ public class InputManager : MonoBehaviour
 
     #region JUMP
     // JUMP
-    void ManageJumpInput(int i)
+    void ManageJumpInput()
     {
-        playerInputs[i].jump = Input.GetButtonDown(jumpAxis + i);
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].jump = Input.GetButtonDown(jumpAxis + i);
+        }
     }
     # endregion
 }

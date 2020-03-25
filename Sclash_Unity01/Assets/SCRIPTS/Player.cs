@@ -38,7 +38,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
-    [SerializeField] public Rigidbody2D rb = null;
+    [SerializeField] Rigidbody2D rb = null;
     [SerializeField] PlayerAnimations playerAnimations = null;
     [Tooltip("The basic collider of the player")]
     [SerializeField] public Collider2D playerCollider;
@@ -98,7 +98,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public int playerNum = 0;
     int otherPlayerNum = 0;
     [HideInInspector] public int networkPlayerNum = 0;
-    public bool playerIsAI;
+    [HideInInspector] public bool playerIsAI;
     #endregion
 
 
@@ -191,7 +191,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         chargeMovementsSpeed = 1.2f,
         sneathedMovementsSpeed = 1.8f,
         attackingMovementsSpeed = 2.2f;
-    public float actualMovementsSpeed = 1;
+    float actualMovementsSpeed = 1;
 
     Vector3 oldPos, netTargetPos = Vector3.zero;
     float lerpValue = 0f;
@@ -652,6 +652,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
+        //IA
+        if (playerIsAI)
+            return;
+
         // Action depending on state
         switch (playerState)
         {
@@ -746,8 +750,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // FixedUpdate is called 50 times per second
     void FixedUpdate()
     {
-
-
         if (kickFrame)
         {
             ApplyPommelHitbox();
@@ -762,6 +764,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
         }
+
 
         // Behaviour depending on state
         switch (playerState)
@@ -1735,21 +1738,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region MOVEMENTS
     // MOVEMENTS
-    public void ManageMovementsInputs()
+    void ManageMovementsInputs()
     {
-
         // The player move if they can in their state
         if (rb.simulated == false)
             rb.simulated = true;
 
-        if (!playerIsAI)
-        {
-            if (ConnectManager.Instance.enableMultiplayer)
-                rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
-            else
-                rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
-        }
-
+        if (ConnectManager.Instance.enableMultiplayer)
+            rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+        else
+            rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
 
 
         // FX
