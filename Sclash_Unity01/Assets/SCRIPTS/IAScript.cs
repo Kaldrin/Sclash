@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class IAScript : MonoBehaviour
 {
+    #region Variables
     public class Actions
     {
         public string name;
@@ -25,10 +26,14 @@ public class IAScript : MonoBehaviour
 
     bool isWaiting;
     bool isClose = true;
+    bool canAddWeight = true;
 
     float rand;
 
-    public float DistanceTolerance;
+
+    public float DistanceTolerance = 3;
+    float distBetweenPlayers;
+    float hitDistance = 2;
 
     bool isChoosing = false;
     // Update rate when far 
@@ -36,7 +41,7 @@ public class IAScript : MonoBehaviour
     float normalRate = 0.25f;
     // Update rate when on close combat
     [SerializeField]
-    float closeRate = 0.1f;
+    float closeRate = 0.05f;
 
     bool nextState;
     float stateTimer;
@@ -52,6 +57,7 @@ public class IAScript : MonoBehaviour
         new Actions("MoveAway",1),
         new Actions("DashToward",1),
         new Actions("DashAway",1),
+        new Actions("InterruptAttack",0)
     };
     [SerializeField]
     int actionWeightSum;
@@ -63,10 +69,14 @@ public class IAScript : MonoBehaviour
         pommel,
         moveToward,
         moveAway,
-        dashRight,
-        dashLeft;
+        dashToward,
+        dashAway,
+        interruptAttack;
 
-    void Awake()
+    #endregion
+
+    #region Built-in methods
+    void OnEnable()
     {
         attachedPlayer = GetComponent<Player>();
 
@@ -81,6 +91,47 @@ public class IAScript : MonoBehaviour
         attachedPlayer.playerIsAI = true;
     }
 
+    void Update()
+    {
+
+        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
+        {
+            if (attachedPlayer.playerState != Player.STATE.charging)
+            {
+                actionsList[8].weight = 0;
+            }
+
+            ShowWeight();
+            //AI DRAW
+            if (attachedPlayer.playerState == Player.STATE.sneathed && !isWaiting)
+            {
+                isWaiting = true;
+                StartCoroutine(WaitABit("TriggerDraw", rand, false));
+            }
+
+            if (canAddWeight)
+                AddWeights();
+
+            if (!isChoosing && attachedPlayer.playerState == Player.STATE.normal)
+            {
+                isChoosing = true;
+                float timeToWait = isClose ? closeRate : normalRate;
+
+                if (!isClose)
+                {
+                    IncreaseWeight("MoveToward", 5);
+                }
+
+                StartCoroutine(WaitABit(ChooseState(), timeToWait, true));
+            }
+
+            distBetweenPlayers = Mathf.Abs(attachedPlayer.transform.position.x - opponent.transform.position.x);
+            isClose = distBetweenPlayers <= DistanceTolerance ? true : false;
+        }
+    }
+
+    #endregion
+
     void ShowWeight()
     {
         wait = actionsList[0].weight;
@@ -89,8 +140,9 @@ public class IAScript : MonoBehaviour
         pommel = actionsList[3].weight;
         moveToward = actionsList[4].weight;
         moveAway = actionsList[5].weight;
-        dashRight = actionsList[6].weight;
-        dashLeft = actionsList[7].weight;
+        dashToward = actionsList[6].weight;
+        dashAway = actionsList[7].weight;
+        interruptAttack = actionsList[8].weight;
     }
 
     void FindOpponent()
@@ -111,41 +163,96 @@ public class IAScript : MonoBehaviour
         }
     }
 
-    void Start()
+    void AddWeights()
     {
-
-        Debug.Log("Hello, I'm a *FRIENDLY* AI");
-    }
-
-    void Update()
-    {
-
-        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
+        if (opponent.playerState == Player.STATE.dead || attachedPlayer.playerState == Player.STATE.dead)
         {
-            ShowWeight();
-            //AI DRAW
-            if (attachedPlayer.playerState == Player.STATE.sneathed && !isWaiting)
+            foreach (Actions a in actionsList)
             {
-                isWaiting = true;
-                StartCoroutine(WaitABit("TriggerDraw", rand, false));
+                ResetSelfWeight(a);
+            }
+            return;
+        }
+
+        canAddWeight = false;
+
+        if (attachedPlayer.stamina <= 2 && isClose)
+        {
+            if (attachedPlayer.stamina <= 1)
+            {
+                IncreaseWeight("MoveAway", 2);
+            }
+            else
+            {
+                IncreaseWeight("DashAway", 1);
+                IncreaseWeight("MoveAway", 1);
+            }
+        }
+
+        if (!isClose)
+        {
+            IncreaseWeight("MoveToward", 1);
+            canAddWeight = true;
+        }
+        else
+        {
+            switch (opponent.playerState)
+            {
+                case Player.STATE.charging:
+                    IncreaseWeight("Parry", 3);
+                    IncreaseWeight("Attack", 2);
+                    IncreaseWeight("DashToward", 1);
+                    break;
+
+                case Player.STATE.attacking:
+                    if (isClose)
+                    {
+                        if (attachedPlayer.playerState == Player.STATE.charging)
+                        {
+                            Debug.Log("<color=red>INTERUPT !!!</color>");
+                            IncreaseWeight("InterruptAttack", 100);
+                        }
+                        IncreaseWeight("Parry", 5);
+                    }
+                    break;
+
+                case Player.STATE.parrying:
+                    if (distBetweenPlayers <= hitDistance)
+                    {
+                        IncreaseWeight("Pommel", 4);
+                    }
+                    IncreaseWeight("Attack", 2);
+                    break;
+
+                case Player.STATE.dashing:
+                    if (distBetweenPlayers <= hitDistance)
+                        IncreaseWeight("Attack", 5);
+                    break;
             }
 
-            if (!isChoosing && attachedPlayer.playerState == Player.STATE.normal)
-            {
-                isChoosing = true;
-                float timeToWait = isClose ? closeRate : normalRate;
-
-                StartCoroutine(WaitABit(ChooseState(), timeToWait, true));
-            }
-
-            isClose = Mathf.Abs(attachedPlayer.transform.position.x - opponent.transform.position.x) <= DistanceTolerance ? true : false;
+            StartCoroutine(WaitABit("EnableWeight", 0.15f));
         }
     }
+
+    void EnableWeight()
+    {
+        canAddWeight = true;
+    }
+
+
 
     #region Action function
     void Wait()
     {
         StartCoroutine(WaitAction(.1f));
+    }
+
+    void InterruptAttack()
+    {
+        Debug.Log("Interrupt");
+        StopCoroutine("WaitABit");
+        ReleaseAttack();
+        isChoosing = false;
     }
 
     void Attack()
@@ -154,11 +261,26 @@ public class IAScript : MonoBehaviour
 
         float chargeTime = Random.Range(0f, 3f);
         StartCoroutine(WaitABit("ReleaseAttack", chargeTime));
-        StartCoroutine(WaitAction(chargeTime + .01f));
+        isChoosing = false;
+        //StartCoroutine(WaitAction(chargeTime + .01f));
     }
 
     void ReleaseAttack()
     {
+        if (distBetweenPlayers <= hitDistance - 1)
+        {
+            if (Random.Range(0f, 1f) > 0.5)
+            {
+                Debug.Log("Back attack !");
+                InputManager.Instance.playerInputs[attachedPlayer.playerNum].horizontal = Mathf.Sign(transform.position.x - opponent.transform.position.x);
+            }
+        }
+        else
+        {
+            Debug.Log("Forward attack !");
+            InputManager.Instance.playerInputs[attachedPlayer.playerNum].horizontal = Mathf.Sign(opponent.transform.position.x - transform.position.x);
+        }
+
         InputManager.Instance.playerInputs[attachedPlayer.playerNum].attack = false;
     }
 
@@ -187,7 +309,7 @@ public class IAScript : MonoBehaviour
     {
         ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x));
 
-        StartCoroutine(WaitABit("ResetHorizontal", 0.25f));
+        StartCoroutine(WaitABit("ResetHorizontal", 0.35f));
         isChoosing = false;
     }
 
@@ -195,7 +317,7 @@ public class IAScript : MonoBehaviour
     {
         ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x));
 
-        StartCoroutine(WaitABit("ResetHorizontal", 0.25f));
+        StartCoroutine(WaitABit("ResetHorizontal", 0.35f));
         isChoosing = false;
     }
 
@@ -253,11 +375,37 @@ public class IAScript : MonoBehaviour
         return rState;
     }
 
+    void IncreaseWeight(string actionName, int amount = 1)
+    {
+        foreach (Actions act in actionsList)
+        {
+            if (act.name == actionName)
+            {
+                act.weight += amount;
+                return;
+            }
+        }
+        Debug.LogError("Action " + actionName + " not found !");
+    }
+
+    void ResetWeight(string actionName)
+    {
+        foreach (Actions act in actionsList)
+        {
+            if (act.name == actionName)
+            {
+                act.weight = 1;
+                return;
+            }
+        }
+    }
+
     void IncreaseOtherWeights()
     {
         foreach (Actions a in actionsList)
         {
-            a.weight++;
+            if (a.name != "InterruptAttack")
+                a.weight++;
         }
     }
 
@@ -273,7 +421,7 @@ public class IAScript : MonoBehaviour
     /// </summary>
     IEnumerator WaitABit(string calledFunc = null, float t = 0, bool self = true)
     {
-        Debug.Log("Wait " + t + "sec and invoke " + calledFunc);
+        //Debug.Log("Wait " + t + "sec and invoke " + calledFunc);
         yield return new WaitForSecondsRealtime(t);
         isWaiting = false;
 

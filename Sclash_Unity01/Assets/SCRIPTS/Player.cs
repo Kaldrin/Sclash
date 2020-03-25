@@ -910,7 +910,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
-                
+
                 rb.velocity = Vector3.zero;
                 break;
 
@@ -1625,7 +1625,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // AUDIO
-        notEnoughStaminaSFX.Play();
+        if (notEnoughStaminaSFX != null)
+            notEnoughStaminaSFX.Play();
     }
 
     // Stamina recup anim
@@ -2100,6 +2101,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
         {
             dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) * transform.localScale.x;
+            Debug.Log("Dash direction : " + dashDirection);
             dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[playerNum].horizontal), 0, 0);
 
 

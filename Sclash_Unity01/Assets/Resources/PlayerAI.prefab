@@ -14,9 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachedPlayer: {fileID: 0}
   opponent: {fileID: 0}
-  DistanceTolerance: 5
+  DistanceTolerance: 3
   normalRate: 0.25
   closeRate: 0.1
+  actionWeightSum: 0
+  wait: 0
+  attack: 0
+  parry: 0
+  pommel: 0
+  moveToward: 0
+  moveAway: 0
+  dashToward: 0
+  dashAway: 0
 --- !u!1001 &4136137855984589529
 PrefabInstance:
   m_ObjectHideFlags: 0

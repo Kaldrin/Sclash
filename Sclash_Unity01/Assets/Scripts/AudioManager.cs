@@ -64,26 +64,29 @@ public class AudioManager : MonoBehaviour
 
 
 
-    
 
 
 
 
-    
+
+
 
 
 
     #region MUSIC
     [Header("MUSIC")]
     [SerializeField] AudioSource menuMusicAudioSource = null;
-    [SerializeField] AudioSource
+    [SerializeField]
+    AudioSource
         windAudioSource = null,
         winAudioSource = null;
-    [SerializeField] public AudioSource[]
-        battleMusicPhaseSources = {null, null, null },
-        battleMusicStrikesSources = {null, null, null };
+    [SerializeField]
+    public AudioSource[]
+        battleMusicPhaseSources = { null, null, null },
+        battleMusicStrikesSources = { null, null, null };
 
-    [SerializeField] float
+    [SerializeField]
+    float
         musicVolumeFadeSpeed = 0.05f,
         menuMusicMaxVolume = 0.3f,
         battleMusicMaxVolume = 1f,
@@ -99,12 +102,14 @@ public class AudioManager : MonoBehaviour
         battleMusicsVolumeObjectives = { 0, 0, 0 },
         battleMusicsStrikesVolumeObjectives = { 0, 0, 0 };
 
-    [HideInInspector] public bool
+    [HideInInspector]
+    public bool
         adjustBattleMusicVolumeDepdendingOnPlayersDistance = true,
         battleMusicOn = false;
     bool shouldChangeMusicPhase = false;
 
-    [SerializeField] int
+    [SerializeField]
+    int
         battleIntensityLevelForPhase2 = 3,
         battleIntensityLevelForPhase3 = 8,
         maxBattleIntensityLevel = 12;
@@ -329,8 +334,8 @@ public class AudioManager : MonoBehaviour
 
 
             case AUDIOSTATE.battle:
-                if (!phase1MainAudioSource.isPlaying) ;
-                phase1MainAudioSource.clip = musicDataBase.musicsList[0].phases[0].stems[Random.Range(0, musicDataBase.musicsList[0].phases[0].stems.Count)].stemAudio;
+                if (!phase1MainAudioSource.isPlaying)
+                    phase1MainAudioSource.clip = musicDataBase.musicsList[0].phases[0].stems[Random.Range(0, musicDataBase.musicsList[0].phases[0].stems.Count)].stemAudio;
                 break;
 
 
@@ -350,7 +355,7 @@ public class AudioManager : MonoBehaviour
         audioState = newAudioState;
 
 
-        switch(newAudioState)
+        switch (newAudioState)
         {
             case AUDIOSTATE.none:
                 break;
@@ -362,7 +367,7 @@ public class AudioManager : MonoBehaviour
 
             case AUDIOSTATE.beforeBattle:
                 menuMusicAudioSource.volume = 0;
-                
+
                 break;
 
 
@@ -406,11 +411,11 @@ public class AudioManager : MonoBehaviour
             battleMusicsStrikesVolumeObjectives[i] = 0;
         }
 
-        
-        
+
+
 
         windVolumeObjective = 0;
-    }  
+    }
 
     // Activates battle music
     public void ActivateBattleMusic()
@@ -441,7 +446,7 @@ public class AudioManager : MonoBehaviour
         windVolumeObjective = windMaxVolume;
         // Sets the volume objectives of other tracks to 0
         menuMusicVolumeObjective = 0;
-        
+
 
 
         for (int i = 0; i < battleMusicsVolumeObjectives.Length; i++)
@@ -509,7 +514,7 @@ public class AudioManager : MonoBehaviour
                 menuMusicAudioSource.volume = menuMusicVolumeObjective;
             }
         }
-        
+
 
 
 
@@ -630,7 +635,7 @@ public class AudioManager : MonoBehaviour
             for (int i = 0; i < battleMusicsStrikesVolumeObjectives.Length; i++)
             {
                 float tempVolume = ((cameraManager.actualDistanceBetweenPlayers - playersDistanceForVolumeLimits.y) / (playersDistanceForVolumeLimits.x - playersDistanceForVolumeLimits.y)) * battleMusicMaxVolume;
-                
+
 
                 if (tempVolume < 0)
                     tempVolume = 0;
@@ -831,7 +836,7 @@ public class AudioManager : MonoBehaviour
                 battleMusicStrikesSources[i].clip = musicDataBase.musicsList[chosenMusic].phases[i].stems[currentStem].stemStrikesAudio;
 
 
-                if ( i != currentPhase)
+                if (i != currentPhase)
                 {
                     battleMusicsVolumeObjectives[i] = 0;
                     battleMusicsStrikesVolumeObjectives[i] = 0;

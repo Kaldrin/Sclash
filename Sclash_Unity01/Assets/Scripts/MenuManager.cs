@@ -31,7 +31,8 @@ public class MenuManager : MonoBehaviour
     // SAVE PARAMETERS
     [Header("SAVE PARAMETERS")] [SerializeField] MenuParameters menuParametersSave = null;
     [Tooltip("The references to the Sliders components in the options menu controlling the volumes of the different tracks of the game")]
-    [SerializeField] SliderToVolume
+    [SerializeField]
+    SliderToVolume
         masterVolume = null,
         musicVolume = null,
         menuFXVolume = null,
@@ -50,10 +51,12 @@ public class MenuManager : MonoBehaviour
     // PAUSE
     [Header("PAUSE MENU")]
     [Tooltip("The reference to the menu's blur panel game object")]
-    [SerializeField] GameObject
+    [SerializeField]
+    GameObject
         blurPanel = null;
     [Tooltip("Menu elements references")]
-    [SerializeField] public GameObject
+    [SerializeField]
+    public GameObject
         pauseMenu = null,
         mainMenu = null,
         winScreen = null;
@@ -106,7 +109,7 @@ public class MenuManager : MonoBehaviour
     // Update is called once per grahic frame
     void Update()
     {
-        switch(gameManager.gameState)
+        switch (gameManager.gameState)
         {
             case GameManager.GAMESTATE.game:
                 ManagePauseOnInput();
@@ -167,7 +170,6 @@ public class MenuManager : MonoBehaviour
     {
         if (!pauseCooldownOn)
         {
-            Debug.Log("Can pause");
             for (int i = 0; i < inputManager.playerInputs.Length; i++)
             {
                 if (inputManager.playerInputs[i].pauseUp)
@@ -188,7 +190,7 @@ public class MenuManager : MonoBehaviour
         {
             if (inputManager.playerInputs[playerWhoPaused].pauseUp)
             {
-                pauseCooldownOn = true;
+                pauseCooldownOn = false;
                 pauseCooldownStartTime = Time.time;
                 TriggerPause(false);
             }
@@ -226,7 +228,7 @@ public class MenuManager : MonoBehaviour
 
         //pauseOptionMenuBrowser.SetActive(state);
         //mainOptionMenuBrowser.SetActive(false);
-        
+
 
         Cursor.visible = state;
 
@@ -255,7 +257,7 @@ public class MenuManager : MonoBehaviour
     // SAVE / LOAD PARAMETERS
     // Load menu parameters
     void LoadParameters()
-    {  
+    {
         // Save from current session saves
         masterVolume.slider.value = menuParametersSave.masterVolume;
         masterVolume.UpdateVolume();
@@ -273,7 +275,7 @@ public class MenuManager : MonoBehaviour
         voiceVolume.UpdateVolume();
 
         roundsToWinSlider.value = menuParametersSave.roundToWin;
-        
+
 
 
         // Loads actual saves
