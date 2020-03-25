@@ -6,6 +6,7 @@ public class PitchModulator : MonoBehaviour
 {
     [SerializeField] AudioSource sourceToModulate = null;
     bool oldIsPlaying = false;
+    float basePitch = 0;
     [SerializeField] Vector2 pitchModulationLimits = new Vector2(0.8f, 1.2f);
     [SerializeField] bool modulateOnEnabled = false;
 
