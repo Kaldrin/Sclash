@@ -92,9 +92,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-    #region PLAYERS
+    #region PLAYERS INFOS
     // PLAYERS
-    [Header("PLAYERS")]
+    [Header("PLAYERS IDENTIFICATION")]
+    
+    [SerializeField] public Text characterNameDisplay = null;
+    [SerializeField] public Image characterIdentificationArrow = null;
+    [HideInInspector] public int characterIndex = 0;
     [HideInInspector] public int playerNum = 0;
     int otherPlayerNum = 0;
     [HideInInspector] public int networkPlayerNum = 0;
@@ -322,7 +326,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // ATTACK RECOVERY
     [Header("ATTACK RECOVERY")]
     [SerializeField] bool hasAttackRecoveryAnimFinished = false;
-
     #endregion
 
 
@@ -2189,7 +2192,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     if ((c.transform.parent.position.x - transform.position.x) * transform.localScale.x > 0)
                     {
-                        Debug.Log("Enemy is in back");
                     }
 
 
@@ -2951,10 +2953,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (sign > 0)
         {
             transform.localScale = new Vector3(1, 1, 1);
+            UpdateNameScale(Mathf.Abs(characterNameDisplay.rectTransform.localScale.x));
         }
         else
         {
             transform.localScale = new Vector3(-1, 1, 1);
+            UpdateNameScale(- Mathf.Abs(characterNameDisplay.rectTransform.localScale.x));
         }
 
 
@@ -2985,6 +2989,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // Changes the draw text indication's scale so that it's, well, readable for a human being
             drawText.transform.localScale = new Vector3(drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
         }
+    }
+
+    void UpdateNameScale(float newXScale)
+    {
+        characterNameDisplay.rectTransform.localScale = new Vector3(newXScale, characterNameDisplay.rectTransform.localScale.y, characterNameDisplay.rectTransform.localScale.z);
     }
     #endregion
 

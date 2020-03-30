@@ -7,28 +7,18 @@ public class MapLoader : MonoBehaviour
 
     #region VARIABLES
     #region MANAGERS
-    // MANAGERS
     [Header("MANAGERS")]
     [Tooltip("The reference for the unique game manager script of the scene")]
     [SerializeField] GameManager gameManager = null;
     [SerializeField] AudioManager audioManager = null;
+    [SerializeField] MapMenuLoader mapMenuLoader = null;
     # endregion
 
-
-
-
-    # region MAPS MENU
-    // MAPS MENU
-    [Header("MAPS MENU")]
-    [Tooltip("The MenuBrowser script that browses through the map elements")]
-    [SerializeField] MenuBrowser mapsMenuBrowser = null;
-    # endregion
 
 
 
 
     # region MAPS DATA
-    // MAPS DATA
     [Header("MAPS DATA")]
     [Tooltip("Parent object of the currently instantiated map")]
     [SerializeField] GameObject mapContainer = null;
@@ -37,7 +27,7 @@ public class MapLoader : MonoBehaviour
     [HideInInspector] public int currentMapIndex = 0;
 
     [Tooltip("Scriptable object data reference containing the maps objects, their image and names")]
-    [SerializeField] MapsDataBase mapsData = null;
+    [SerializeField] public MapsDataBase mapsData = null;
     # endregion
 
 
@@ -46,7 +36,7 @@ public class MapLoader : MonoBehaviour
     # region MAP LOADING
     // MAP LOADING
     bool canLoadNewMap = true;
-    [SerializeField] bool loadNewMap = true;
+    [SerializeField] bool loadMapOnStart = false;
     #endregion
     #endregion
 
@@ -65,25 +55,47 @@ public class MapLoader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Get the managers
-        //gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+        mapMenuLoader.LoadParameters();
 
 
-        // Deactivates all activated in editor maps before loading the game's one
-        
 
 
         // Load map
-        if (loadNewMap)
+        if (loadMapOnStart)
         {
             for (int i = 0; i < mapContainer.transform.childCount; i++)
             {
-                mapContainer.transform.GetChild(i).gameObject.SetActive(false);
+                Destroy(mapContainer.transform.GetChild(i).gameObject);
             }
 
 
-            int randomIndex = Random.Range(0, mapsData.mapsList.Count);
-            SetMap(randomIndex);
+            int nextStageIndex = Random.Range(0, mapsData.stagesLists.Count);
+
+
+            if (gameManager.gameParameters.keepLastLoadedStage)
+                SetMap(gameManager.gameParameters.lastLoadedStageIndex);
+            else if (gameManager.gameParameters.useCustomListForRandomStartStage)
+            {
+                int loopCount = 0;
+            
+                while (!mapsData.stagesLists[nextStageIndex].inCustomList)
+                {
+                    nextStageIndex = Random.Range(0, mapsData.stagesLists.Count);
+
+                    loopCount++;
+                    if (loopCount >= 100)
+                    {
+                        nextStageIndex = 0;
+                        break;
+                    }
+                }
+
+                SetMap(nextStageIndex);
+            }
+            else
+            {
+                SetMap(Random.Range(0, mapsData.stagesLists.Count));
+            }
         }
         else
         {
@@ -96,12 +108,6 @@ public class MapLoader : MonoBehaviour
             }
         }
     }
-
-    // Update is called once per graphic frame
-    void Update()
-    {
-
-    }
     # endregion
 
 
@@ -109,15 +115,16 @@ public class MapLoader : MonoBehaviour
 
 
     # region MAP LOADING
-    // MAP LOADING
     // Immediatly changes the map
     public void SetMap(int mapIndex)
     {
         if (currentMap != null)
             Destroy(currentMap);
 
-        currentMap = Instantiate(mapsData.mapsList[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
-        
+        currentMap = Instantiate(mapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+        currentMapIndex = mapIndex;
+        gameManager.gameParameters.lastLoadedStageIndex = currentMapIndex;
+        mapMenuLoader.SaveParameters();
     }
 
     // Starts the LoadNewMap coroutine, launched by the play in the maps menu
@@ -133,12 +140,14 @@ public class MapLoader : MonoBehaviour
         {
             int index = 0;
 
-
-            if (!randomIndex)
+            /*
+            if (randomIndex)
                 index = mapsMenuBrowser.browseIndex - 1;
             else
                 index = newMapIndex;
+                */
 
+            index = newMapIndex;
 
 
             gameManager.roundTransitionLeavesFX.gameObject.SetActive(false);
@@ -150,7 +159,7 @@ public class MapLoader : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
 
-            Debug.Log(index);
+
             SetMap(index);
 
 
@@ -161,14 +170,17 @@ public class MapLoader : MonoBehaviour
             canLoadNewMap = true;
             currentMapIndex = index;
 
-            audioManager.ChangeSelectedMusicIndex(mapsData.mapsList[currentMapIndex].musicIndex);
+            audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[currentMapIndex].musicIndex);
         }
     }
 
     public void LoadRandomMap()
     {
-        int randomIndex = Random.Range(0, mapsData.mapsList.Count);
-        StartCoroutine(LoadNewMapInGameCoroutine(randomIndex, true));
+        int randomIndex = Random.Range(0, mapMenuLoader.currentlyDisplayedStagesList.Count);
+        int randomMapIndex = mapMenuLoader.currentlyDisplayedStagesList[randomIndex];
+
+
+        StartCoroutine(LoadNewMapInGameCoroutine(randomMapIndex, true));
     }
     #endregion
     #endregion

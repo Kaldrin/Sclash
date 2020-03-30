@@ -278,7 +278,7 @@ public class StatsMenu : MonoBehaviour
 
             // Update the game's infos display
             currentlyInstantiatedGameStat.gameIndex.text = (i + 1).ToString();
-            currentlyInstantiatedGameStat.stageIllustration.sprite = mapsDataBase.mapsList[stats.globalStats[currentStatMode].gamesList[i].stage].mapImage;
+            currentlyInstantiatedGameStat.stageIllustration.sprite = mapsDataBase.stagesLists[stats.globalStats[currentStatMode].gamesList[i].stage].mapImage;
             currentlyInstantiatedGameStat.gameType.text = stats.globalStats[currentStatMode].gamesList[i].type;
 
 

@@ -9,7 +9,7 @@ using TMPro;
 // Created for Unity 2019.1.1f1
 public class MenuManager : MonoBehaviour
 {
-    # region FUNCTIONS
+    # region VARIABLES
     # region MANAGERS
     [Header("MANAGERS")]
     [Tooltip("The references to the GameManager script instance component")]
@@ -20,14 +20,22 @@ public class MenuManager : MonoBehaviour
 
     [Tooltip("The references to the InputManager script instance component")]
     [SerializeField] InputManager inputManager = null;
-    # endregion
+    #endregion
+
+
+
+
+    #region DATA
+    [Header("DATA")]
+    [SerializeField] CharactersDatabase charactersData = null;
+    #endregion
 
 
 
 
 
 
-    # region SAVE PARAMETERS
+    #region SAVE PARAMETERS
     // SAVE PARAMETERS
     [Header("SAVE PARAMETERS")] [SerializeField] MenuParameters menuParametersSave = null;
     [Tooltip("The references to the Sliders components in the options menu controlling the volumes of the different tracks of the game")]
@@ -76,6 +84,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] public GameObject winMessage = null;
     [Tooltip("The reference to the TextMeshProUGUI component containing the name of the winner")]
     [SerializeField] public TextMeshProUGUI winName = null;
+    [SerializeField] public List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
+    [SerializeField] public List<Text> scoresDisplays = new List<Text>(2);
     # endregion
     # endregion
 
@@ -110,7 +120,7 @@ public class MenuManager : MonoBehaviour
         {
             case GameManager.GAMESTATE.game:
                 ManagePauseOnInput();
-                ManageScoreDisplayInput();
+                ManageInfosDisplayInput();
                 break;
 
             case GameManager.GAMESTATE.paused:
@@ -131,10 +141,9 @@ public class MenuManager : MonoBehaviour
 
 
 
-    # region SCORE
-    // SCORE
+    # region SCORE DISPLAY IN GAME
     //Update score display
-    void ManageScoreDisplayInput()
+    void ManageInfosDisplayInput()
     {
         bool playerDead = false;
 
@@ -146,11 +155,25 @@ public class MenuManager : MonoBehaviour
             }
         }
 
-
-        if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game && gameManager.gameState == GameManager.GAMESTATE.game)
+        // Display score & in game help
+        if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
         {
-            //gameManager.scoreObject.SetActive(inputManager.scoreInput);
             gameManager.scoreObject.GetComponent<Animator>().SetBool("On", inputManager.scoreInput);
+            
+
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                gameManager.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
+                gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
+            }
+        }
+        // Display in game help key indication
+        if (!playerDead && audioManager.audioState == AudioManager.AUDIOSTATE.battle)
+        {
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                gameManager.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
+            }
         }
     }
     # endregion
@@ -161,7 +184,6 @@ public class MenuManager : MonoBehaviour
 
 
     # region PAUSE
-    // PAUSE
     // Input to activate pause
     void ManagePauseOnInput()
     {
@@ -202,7 +224,7 @@ public class MenuManager : MonoBehaviour
             TriggerPause(true);
     }
 
-    void TriggerPause(bool state)
+    public void TriggerPause(bool state)
     {
         if (state)
         {
@@ -218,49 +240,52 @@ public class MenuManager : MonoBehaviour
 
         blurPanel.SetActive(state);
         pauseMenu.SetActive(state);
-        //gameManager.scoreObject.SetActive(state);
+
+
         gameManager.scoreObject.GetComponent<Animator>().SetBool("On", state);
 
-        //backButton.SetActive(!state);
-        //resumeButton.SetActive(state);
-        //quitButton.SetActive(state);
-        //mainMenuButton.SetActive(state);
-        //changeMapButton.SetActive(false);
-        //scoreToWinSlider.SetActive(false);
-        //backIndicator.SetActive(state);
 
-        //pauseOptionMenuBrowser.SetActive(state);
-        //mainOptionMenuBrowser.SetActive(false);
-        
-
-        Cursor.visible = state;
-
-
-        /*
         for (int i = 0; i < gameManager.playersList.Count; i++)
         {
-            if (state)
-                gameManager.playersList[i].GetComponent<Animator>().speed = 0;
-            else
-                gameManager.playersList[i].GetComponent<Animator>().speed = 1;
+            gameManager.inGameHelp[i].SetBool("On", state);
+            gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+            gameManager.playerKeysIndicators[i].SetBool("On", !state);
         }
-        */
 
 
-        //SaveParameters();
+
+        Cursor.visible = state;
     }
     # endregion
 
 
 
 
+    public void SetUpWinMenu(string winnerName, Color winnerColor, Vector2 score, Color[] playersColors)
+    {
+        winName.text = winnerName;
+        winName.color = winnerColor;
 
 
-    # region SAVE
-    // SAVE / LOAD PARAMETERS
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            scoresNames[i].text = charactersData.charactersList[gameManager.playersList[i].GetComponent<Player>().characterIndex].name;
+            scoresNames[i].color = playersColors[i];
+            scoresDisplays[i].text = score[i].ToString();
+            scoresDisplays[i].color = playersColors[i];
+        }
+    }
+
+
+
+
+
+
+    # region SAVE / LOAD PARAMETERS
     // Load menu parameters
     void LoadParameters()
     {  
+        
         // Save from current session saves
         masterVolume.slider.value = menuParametersSave.masterVolume;
         masterVolume.UpdateVolume();
@@ -279,11 +304,11 @@ public class MenuManager : MonoBehaviour
 
         roundsToWinSlider.value = menuParametersSave.roundToWin;
         
+        
 
 
         // Loads actual saves
         JsonSave save = SaveGameManager.GetCurrentSave();
-
 
         masterVolume.slider.value = save.masterVolume;
         masterVolume.UpdateVolume();
@@ -313,6 +338,7 @@ public class MenuManager : MonoBehaviour
         menuParametersSave.fxVolume = fxVolume.slider.value;
         menuParametersSave.voiceVolume = voiceVolume.slider.value;
         menuParametersSave.roundToWin = gameManager.scoreToWin;
+
 
 
         // Save forever

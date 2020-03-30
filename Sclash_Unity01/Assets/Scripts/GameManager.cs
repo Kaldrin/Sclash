@@ -41,6 +41,16 @@ public class GameManager : MonoBehaviourPun
 
 
 
+    #region DATA
+    [Header("DATA")]
+    [SerializeField] CharactersDatabase charactersData = null;
+    [SerializeField] public MenuParameters gameParameters = null;
+    #endregion
+
+
+
+
+
     #region GAME STATE
     public enum GAMESTATE
     {
@@ -68,6 +78,8 @@ public class GameManager : MonoBehaviourPun
     [Header("START")]
     [Tooltip("The delay before the battle camera values are entered in the camera parameters to make it reactive for battle once the game started, because the smooth camera values stay some time to smooth the zoom towards the scene")]
     [SerializeField] float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
+    [SerializeField] Animator drawTextAnimator = null;
+    bool drawTextVisible = false;
     # endregion
 
 
@@ -81,21 +93,35 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] GameObject mainMenu = null;
     [Tooltip("The blur panel object reference")]
     [SerializeField] GameObject blurPanel = null;
-    # endregion
+    #endregion
 
 
 
 
+    #region IN GAME INFOS
+    [Header("IN GAME INFOS")]
+    [SerializeField] public Animator[] inGameHelp = null;
+    [SerializeField] public List<Animator> playerKeysIndicators = new List<Animator>(2);
+    [SerializeField] List<TextMeshProUGUI> playerHelpTextIdentifiers = new List<TextMeshProUGUI>(2);
+    [SerializeField] List<Image> playerHelpIconIdentifiers = new List<Image>(2);
+    #endregion
 
-    # region SCORE
-    // SCORE
-    [Header("SCORE")]
-    [Tooltip("The score display text mesh pro component reference")]
-    [SerializeField] public Text scoreTextComponent = null;
-    [SerializeField] TextMeshProUGUI maxScoreTextDisplay = null;
 
+
+
+    #region SCORE DISPLAY
+    [Header("SCORE DISPLAY")]
     [Tooltip("The score display game object reference")]
     [SerializeField] public GameObject scoreObject = null;
+    
+    [Tooltip("The score display text mesh pro component reference")]
+    [SerializeField] List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
+    [SerializeField] List<Text> scoresDisplays = new List<Text>(2);
+    [SerializeField] TextMeshProUGUI maxScoreTextDisplay = null;
+    #endregion
+
+    #region SCORE CALCULATION
+    [Header("SCORE CALCULATION")]
     [HideInInspector] public Vector2 score = new Vector2(0, 0);
     [Tooltip("The duration the score lasts on screen when a round has finished")]
     [SerializeField] float betweenRoundsScoreShowDuration = 4f;
@@ -139,16 +165,14 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] GameObject player = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
     [SerializeField] public GameObject[] playerSpawns = { null, null };
-    public List<GameObject> playersList = new List<GameObject>(2);
+    [HideInInspector] public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
-    [SerializeField]
-    public Color[]
+    [SerializeField] public Color[]
         playersColors = { Color.red, Color.yellow },
         attackSignColors = { Color.red, Color.yellow },
         playerLightsColors = { Color.red, Color.yellow };
     [Tooltip("The names to identify the players")]
-    [SerializeField] string[] playerNames = {"Aka", "Ao"};
     [HideInInspector] public bool playerDead = false;
     bool allPlayersHaveDrawn = false;
     # endregion
@@ -353,7 +377,8 @@ public class GameManager : MonoBehaviourPun
 
             case GAMESTATE.loading:
                 playerDead = false;
-                menuManager.pauseMenu.SetActive(false);
+                //menuManager.pauseMenu.SetActive(false);
+                menuManager.TriggerPause(false);
                 menuManager.winScreen.SetActive(false);
                 scoreObject.GetComponent<Animator>().SetBool("On", false);
                 Cursor.visible = false;
@@ -408,7 +433,6 @@ public class GameManager : MonoBehaviourPun
     {
         // SOUND
         // Set on the menu music
-        //audioManager.ActivateMenuMusic();
         audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
 
 
@@ -426,6 +450,9 @@ public class GameManager : MonoBehaviourPun
     // Starts the match, activates the camera cinematic zoom and then switches to battle camera
     public IEnumerator StartMatchCoroutine()
     {
+        StopCoroutine(StartMatchCoroutine());
+
+
         // FX
         hajimeFX.Play();
 
@@ -435,8 +462,17 @@ public class GameManager : MonoBehaviourPun
         audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
 
 
+        // SCORE DISPLAY
         UpdateMaxScoreDisplay();
-        
+        ResetScore();
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            scoresNames[i].name = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
+            scoresNames[i].color = playersColors[i];
+            scoresDisplays[i].color = playersColors[i];
+            playerHelpTextIdentifiers[i].color = playersColors[i];
+            playerHelpIconIdentifiers[i].color = playersColors[i];
+        }
 
 
         for (int i = 0; i < playersList.Count; i++)
@@ -455,19 +491,36 @@ public class GameManager : MonoBehaviourPun
         yield return new WaitForSeconds(0.5f);
 
 
-        //cameraManager.FindPlayers();
-
-
-        // AUDIO
-        //audioManager.matchBeginsRandomSoundSource.Play();
-
-
         yield return new WaitForSeconds(timeBeforeBattleCameraActivationWhenGameStarts);
 
 
         cameraManager.actualXSmoothMovementsMultiplier = cameraManager.battleXSmoothMovementsMultiplier;
         cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
         cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
+
+
+        yield return new WaitForSeconds(10f);
+
+
+        // Appears draw text if both players haven't drawn
+        allPlayersHaveDrawn = true;
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
+            {
+                allPlayersHaveDrawn = false;
+            }
+        }
+
+
+        if (!allPlayersHaveDrawn)
+        {
+            drawTextVisible = true;
+            drawTextAnimator.ResetTrigger("FadeIn");
+            drawTextAnimator.SetTrigger("FadeIn");
+            drawTextAnimator.ResetTrigger("FadeOut");
+        }
     }
 
     // A saber has been drawn, stores it and checks if both players have drawn
@@ -495,6 +548,15 @@ public class GameManager : MonoBehaviourPun
                 // STATS
                 statsManager.InitalizeNewGame(1);
                 statsManager.InitializeNewRound();
+
+
+                // Makes draw text disappear if it has appeared
+                if (drawTextVisible)
+                {
+                    drawTextAnimator.ResetTrigger("FadeOut");
+                    drawTextAnimator.SetTrigger("FadeOut");
+                    drawTextAnimator.ResetTrigger("FadeIn");
+                }
             }
         }
     }
@@ -507,7 +569,6 @@ public class GameManager : MonoBehaviourPun
 
 
     #region PLAYERS
-    // PLAYERS
     // Spawns the players
     void SpawnPlayers()
     {
@@ -519,23 +580,17 @@ public class GameManager : MonoBehaviourPun
             Player playerScript = null;
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-            //playerStats = playersList[i].GetComponent<PlayerStats>();
+
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
-            //playerAttack = playersList[i].GetComponent<PlayerAttack>();
             playerScript = playersList[i].GetComponent<Player>();
 
-            //playerStats.playerNum = i + 1;
-            //playerStats.ResetValues();
             playerScript.playerNum = i;
             playerScript.ResetAllPlayerValuesForNextMatch();
 
 
-
-
-
             // ANIMATIONS
-            playerAnimations.spriteRenderer.color = playersColors[i];
-            playerAnimations.legsSpriteRenderer.color = playersColors[i];
+            //playerAnimations.spriteRenderer.color = playersColors[i];
+            //playerAnimations.legsSpriteRenderer.color = playersColors[i];
 
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
@@ -544,12 +599,15 @@ public class GameManager : MonoBehaviourPun
 
 
             // FX
-            //ParticleSystem attackSignParticles = playerAttack.attackSign.GetComponent<ParticleSystem>();
             ParticleSystem attackSignParticles = playerScript.attackRangeFX.GetComponent<ParticleSystem>();
             ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
             attackSignParticlesMain.startColor = attackSignColors[i];
 
 
+            // VISUAL IDENTIFICATION
+            playerScript.characterNameDisplay.text = charactersData.charactersList[0].name; 
+            playerScript.characterNameDisplay.color = playersColors[i];
+            playerScript.characterIdentificationArrow.color = playersColors[i];
             playerScript.playerLight.color = playerLightsColors[i];
         }
     }
@@ -567,13 +625,10 @@ public class GameManager : MonoBehaviourPun
 
             playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
             playersList[i].GetComponent<PlayerAnimations>().ResetDrawText();
-            //playersList[i].GetComponent<PlayerAttack>().hasDrawn = false;
-            //playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
 
 
             p.transform.position = playerSpawns[i].transform.position;
             p.transform.rotation = playerSpawns[i].transform.rotation;
-            //p.GetComponent<PlayerStats>().ResetValues();
             p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
 
 
@@ -597,7 +652,6 @@ public class GameManager : MonoBehaviourPun
 
             p.transform.position = playerSpawns[i].transform.position;
             p.transform.rotation = playerSpawns[i].transform.rotation;
-            //p.GetComponent<PlayerStats>().ResetValues();
             p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
             p.GetComponent<Player>().SwitchState(Player.STATE.normal);
 
@@ -665,7 +719,12 @@ public class GameManager : MonoBehaviourPun
     void UpdatePlayersScoreValues(int winningPlayerIndex)
     {
         score[winningPlayerIndex] += 1;
-        scoreTextComponent.text = ScoreBuilder();
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            scoresDisplays[i].text = score[i].ToString();
+        }
+        //scoreTextComponent.text = ScoreBuilder();
     }
 
     // Builds the score display message
@@ -732,7 +791,6 @@ public class GameManager : MonoBehaviourPun
         audioManager.roundBeginsRandomSoundSource.Play();
     }
 
-
     // Displays the current score for a given amount of time
     IEnumerator ShowScoreBetweenRoundsCoroutine()
     {
@@ -741,12 +799,16 @@ public class GameManager : MonoBehaviourPun
         scoreObject.GetComponent<Animator>().SetBool("On", false);
     }
 
-
     // Reset the score and its display
     void ResetScore()
     {
         score = new Vector2(0, 0);
-        scoreTextComponent.text = ScoreBuilder();
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            scoresDisplays[i].text = "0";
+        }
+        //scoreTextComponent.text = ScoreBuilder();
     }
 
     public void UpdateMaxScoreDisplay()
@@ -799,6 +861,18 @@ public class GameManager : MonoBehaviourPun
         }
 
 
+        // NEXT STAGE
+        int newStageIndex = mapLoader.currentMapIndex;
+
+        if (gameState == GAMESTATE.finished)
+        {
+            if (rematchRightAfter)
+            {
+                newStageIndex = CalculateNextStageIndex();
+            }
+        }
+
+
         // STATE
         SwitchState(GAMESTATE.loading);
 
@@ -806,6 +880,18 @@ public class GameManager : MonoBehaviourPun
         // Activates the menu blur panel if it is not supposed to start a new match right after
         if (!rematchRightAfter)
             blurPanel.SetActive(true);
+
+
+        // IN GAME INDICATIONS
+        drawTextAnimator.ResetTrigger("FadeOut");
+        drawTextAnimator.SetTrigger("FadeOut");
+        drawTextAnimator.ResetTrigger("FadeIn");
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+            inGameHelp[i].SetBool("On", false);
+            playerKeysIndicators[i].SetBool("On", false);
+        }
 
 
         // FX
@@ -817,9 +903,7 @@ public class GameManager : MonoBehaviourPun
 
 
 
-
         yield return new WaitForSecondsRealtime(resetGameDelay);
-
 
 
 
@@ -830,13 +914,20 @@ public class GameManager : MonoBehaviourPun
         ResetPlayersForNextMatch();
         TriggerMatchEndFilterEffect(false);
         
+
+        // PLAYERS LIGHTS / COLORS
         for (int i = 0; i < playersList.Count; i++)
         {
             playersList[i].GetComponent<Player>().playerLight.color = playerLightsColors[i];
             playersList[i].GetComponent<Player>().playerLight.intensity = 5;
         }
 
-        mapLoader.SetMap(mapLoader.currentMapIndex);
+
+        // NEXT STAGE
+        mapLoader.SetMap(newStageIndex);
+
+
+
         ResetScore();
 
 
@@ -846,9 +937,6 @@ public class GameManager : MonoBehaviourPun
         cameraManager.actualZoomSmoothDuration = cameraManager.cinematicZoomSmoothDuration;
         cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
         cameraManager.cameraComponent.transform.position = cameraManager.cameraBasePos;
-
-
-        
 
 
         // Restarts a new match right after it is finished being set up
@@ -890,8 +978,17 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        //audioManager.ActivateWind();
         audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.won);
+
+        
+        // SCORE
+        scoreObject.GetComponent<Animator>().SetBool("On", false);
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+            inGameHelp[i].SetBool("On", false);
+            playerKeysIndicators[i].SetBool("On", false);
+        }
 
 
         yield return new WaitForSecondsRealtime(4f);
@@ -906,9 +1003,10 @@ public class GameManager : MonoBehaviourPun
         playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.frozen);
 
 
-        // MENU
-        menuManager.winName.text = playerNames[winningPlayerIndex];
-        menuManager.winName.color = playersColors[winningPlayerIndex];
+        // WIN MENU
+        //menuManager.winName.text = charactersData.charactersList[playersList[winningPlayerIndex].GetComponent<Player>().characterIndex].name;
+        //menuManager.winName.color = playersColors[winningPlayerIndex];
+        menuManager.SetUpWinMenu(charactersData.charactersList[playersList[winningPlayerIndex].GetComponent<Player>().characterIndex].name, playersColors[winningPlayerIndex], score, playersColors);
 
 
         // AUDIO
@@ -1195,6 +1293,103 @@ public class GameManager : MonoBehaviourPun
 
 
     # region SECONDARY FUNCTIONS
+    int CalculateNextStageIndex()
+    {
+        int nextStageIndex = mapLoader.currentMapIndex;
+        int loopCount = 0;
+
+        // DAY NIGHT
+        if (gameParameters.dayNightCycle)
+        {
+            if (!gameParameters.randomStage)
+            {
+                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
+                    nextStageIndex = mapLoader.currentMapIndex + 1;
+                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.night)
+                    nextStageIndex = mapLoader.currentMapIndex - 1;
+
+                Debug.Log(mapLoader.currentMapIndex);
+            }
+            else
+            {
+                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
+                    nextStageIndex = mapLoader.currentMapIndex + 1;
+                else
+                {
+                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+
+                    if (gameParameters.useCustomListForRandom)
+                    {
+                        while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex || !(mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.day))
+                        {
+                            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+
+                            loopCount++;
+                            if (loopCount >= 100)
+                            {
+                                nextStageIndex = 0;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        while (nextStageIndex == mapLoader.currentMapIndex || mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.night)
+                        {
+                            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                            Debug.Log(nextStageIndex == mapLoader.currentMapIndex);
+                            loopCount++;
+                            if (loopCount >= 100)
+                            {
+                                Debug.Log("Couldn't find random day map that is not this one, taking index 0 instead");
+                                nextStageIndex = 0;
+                                break;
+                            }
+                        }
+                            
+                    }
+                }
+            }
+        }
+        // RANDOM
+        else if (gameParameters.randomStage)
+        {
+            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+
+            if (gameParameters.useCustomListForRandom)
+            {
+                while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex)
+                {
+                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+
+                    loopCount++;
+                    if (loopCount >= 100)
+                    {
+                        nextStageIndex = 0;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                while (nextStageIndex == mapLoader.currentMapIndex)
+                {
+                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+
+                    loopCount++;
+                    if (loopCount >= 100)
+                    {
+                        nextStageIndex = 0;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return nextStageIndex;
+    }
+
+
     // Compares 2 floats with a range of tolerance
     public static bool FastApproximately(float a, float b, float threshold)
     {

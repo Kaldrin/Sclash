@@ -60,7 +60,7 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region MUSIC
+    #region MUSIC SOURCES
     [Header("MUSIC SOURCES")]
     // MUSIC SOURCES
     [SerializeField] AudioSource menuAudioSource = null;
@@ -69,8 +69,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public AudioSource winMusicAudioSource = null;
     [SerializeField] AudioSource phaseTransitionFXAudioSource = null;
     [SerializeField] AudioSource phaseTransitionStemAudioSource = null;
+    [SerializeField] AudioSource windAudioSource = null;
+    #endregion
 
 
+
+    #region MUSIC SOURCES VOLUMES PARAMETERS
     // SOURCES VOLUMES OBJECTIVES (The volumes towards which the sources' volumes will move slowly)
     [Header("MUSIC SOURCES VOLUMES PARAMETERS")]
     float menuVolumeObjective = 0;
@@ -78,16 +82,22 @@ public class AudioManager : MonoBehaviour
     List<float> phasesStrikesVolumeObjectives = new List<float>(3) { 0, 0, 0 };
     [SerializeField] Vector2 playersDistanceForStrikesVolumeLimits = new Vector2(6, 15);
     float winVolumeObjective = 0;
+    float windVolumeObjective = 0;
     [SerializeField] float volumeFadeSpeed = 0.01f;
-    
+    #endregion
 
+
+    #region SOURCES MAX VOLUMES
     // SOURCES MAX VOLUME (Default max volume objectives)
     float maxMenuVolume = 0;
     List<float> maxPhasesMainVolumes = new List<float>(3) { 0, 0, 0 };
     List<float> maxPhasesStrikesVolumes = new List<float>(3) { 0, 0, 0 };
     float maxWinVolume = 0;
+    float maxWindVolume = 0;
+    #endregion
 
 
+    #region SELECTED MUSIC, STEM, PHASE
     // Selected music, stem, phase...
     [Header("STEMS & PHASES")]
     [SerializeField] bool useRandomStemSelection = true;
@@ -97,8 +107,10 @@ public class AudioManager : MonoBehaviour
         currentMusicPhase = 0,
         currentMusicStem = 0,
         previousMusicStem = 0;
+    #endregion
 
 
+    #region BATTLE INTENSITY
     // BATTLE INTENSITY
     [Header("MUSIC BATTLE INTENSITY")]
     [SerializeField] float decreaseBattleIntensityEveryDuration = 3f;
@@ -107,8 +119,7 @@ public class AudioManager : MonoBehaviour
         currentBattleIntensity = 0,
         lastBattleIntensityLevel = 0;
     [SerializeField] int maxBattleIntensityLevel = 12;
-    [SerializeField] List<int> battleIntensityLevelsForPhaseUp = new List<int>(2) {3, 8, 1000};
-    
+    [SerializeField] List<int> battleIntensityLevelsForPhaseUp = new List<int>(2) {3, 8, 1000}; 
     #endregion
 
 
@@ -268,7 +279,7 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region STATES
+    #region AUDIO STATES
     public void SwitchAudioState(AUDIOSTATE newAudioState)
     {
         oldAudioState = audioState;
@@ -290,6 +301,7 @@ public class AudioManager : MonoBehaviour
 
 
             case AUDIOSTATE.menu:
+                windVolumeObjective = 0;
                 menuVolumeObjective = maxMenuVolume;
                 menuAudioSource.Play();
                 break;
@@ -297,6 +309,8 @@ public class AudioManager : MonoBehaviour
 
             case AUDIOSTATE.beforeBattle:
                 menuVolumeObjective = 0;
+                windAudioSource.Play();
+                windVolumeObjective = maxWindVolume;
                 SetUpAudioElementsDependingOnSelectedMusic(currentlySelectedMusicIndex);
                 phasesMainVolumeObjectives[currentMusicPhase] = maxPhasesMainVolumes[currentMusicPhase];
 
@@ -312,6 +326,7 @@ public class AudioManager : MonoBehaviour
 
 
             case AUDIOSTATE.battle:
+                windVolumeObjective = 0;
                 phasesMainAudioSources[currentMusicPhase].Play();
                 phasesStrikesAudioSources[currentMusicPhase].Play();
 
@@ -331,6 +346,7 @@ public class AudioManager : MonoBehaviour
 
 
             case AUDIOSTATE.won:
+                windVolumeObjective = maxWindVolume;
                 for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
                 {
                     phasesMainVolumeObjectives[i] = 0;
@@ -352,6 +368,7 @@ public class AudioManager : MonoBehaviour
         }
     }
     #endregion
+
 
 
 
@@ -476,7 +493,7 @@ public class AudioManager : MonoBehaviour
                 decrementCurrentPhaseAtNextLoop = false;
                 ImmediatelySwitchPhase(-1, false, 0);
 
-                if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio)
+                if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count > 0)
                     phaseTransitionStemAudioSource.clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio;
 
 
@@ -564,12 +581,12 @@ public class AudioManager : MonoBehaviour
 
 
 
-
     #region MUSICS VOLUMES
     void GetSourcesDefaultVolume()
     {
         maxMenuVolume = menuAudioSource.volume;
         maxWinVolume = winMusicAudioSource.volume;
+        maxWindVolume = windAudioSource.volume;
 
 
         for (int i = 0; i < maxPhasesMainVolumes.Count; i++)
@@ -587,7 +604,20 @@ public class AudioManager : MonoBehaviour
         float volumeFadeDirection = 0;
 
 
-        // Menu
+        // WIND
+        if (windAudioSource.volume != windVolumeObjective)
+        {
+            volumeFadeDirection = Mathf.Sign(windVolumeObjective - windAudioSource.volume);
+            
+            windAudioSource.volume += volumeFadeDirection * volumeFadeSpeed;
+
+            if (volumeFadeDirection >= 0 && windAudioSource.volume >= windVolumeObjective)
+                windAudioSource.volume = windVolumeObjective;
+            else if (volumeFadeDirection < 0 && windAudioSource.volume <= windVolumeObjective)
+                windAudioSource.volume = windVolumeObjective;
+        }
+
+        // MENU
         if (menuAudioSource.volume != menuVolumeObjective)
         {
             volumeFadeDirection = Mathf.Sign(menuVolumeObjective - menuAudioSource.volume);
@@ -600,7 +630,7 @@ public class AudioManager : MonoBehaviour
                 menuAudioSource.volume = menuVolumeObjective;
         }
 
-        // Main
+        // MAIN
         for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
         {
             if (phasesMainAudioSources[i].volume != phasesMainVolumeObjectives[i])
@@ -616,7 +646,7 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        // Strikes
+        // STRIKES
         for (int i = 0; i < phasesStrikesVolumeObjectives.Count; i++)
         {
             if (phasesStrikesAudioSources[i].volume != phasesStrikesVolumeObjectives[i])
