@@ -6,6 +6,19 @@ using UnityEngine;
 
 public class IAScript : MonoBehaviour
 {
+    const float EASY_DIFFICULTY = 1.5f;
+    const float MEDIUM_DIFFICULTY = 1f;
+    const float HARD_DIFFICULTY = 0.25f;
+
+    public Difficulty IADifficulty;
+    public enum Difficulty
+    {
+        Easy,
+        Medium,
+        Hard
+    }
+    float IAMultiplicator;
+
     #region Variables
     public class Actions
     {
@@ -32,8 +45,8 @@ public class IAScript : MonoBehaviour
 
 
     public float DistanceTolerance = 3;
-    float distBetweenPlayers;
-    float hitDistance = 2;
+    [SerializeField] float distBetweenPlayers;
+    float hitDistance = 2f;
 
     bool isChoosing = false;
     // Update rate when far 
@@ -46,6 +59,9 @@ public class IAScript : MonoBehaviour
     bool nextState;
     float stateTimer;
 
+
+    public float timeToWait;
+
     [SerializeField]
     List<Actions> actionsList = new List<Actions>()
     {
@@ -53,8 +69,6 @@ public class IAScript : MonoBehaviour
         new Actions("Attack",1),
         new Actions("Parry",1),
         new Actions("Pommel",1),
-        new Actions("MoveToward",1),
-        new Actions("MoveAway",1),
         new Actions("DashToward",1),
         new Actions("DashAway",1),
         new Actions("InterruptAttack",0)
@@ -67,8 +81,6 @@ public class IAScript : MonoBehaviour
     public int attack,
         parry,
         pommel,
-        moveToward,
-        moveAway,
         dashToward,
         dashAway,
         interruptAttack;
@@ -78,6 +90,8 @@ public class IAScript : MonoBehaviour
     #region Built-in methods
     void OnEnable()
     {
+        SetDifficulty(IADifficulty);
+
         attachedPlayer = GetComponent<Player>();
 
         FindOpponent();
@@ -91,46 +105,119 @@ public class IAScript : MonoBehaviour
         attachedPlayer.playerIsAI = true;
     }
 
+
     void Update()
     {
-
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
         {
+            //RESET WEIGHTS ON DEATH
+            if (opponent.playerState == Player.STATE.enemyKilled || attachedPlayer.playerState == Player.STATE.enemyKilled)
+            {
+                ManageMovementsInputs(0);
+                foreach (Actions a in actionsList)
+                {
+                    ResetSelfWeight(a);
+                }
+                return;
+            }
+
+            UpdateWeightSum();
+
+            //MANAGE DISTANCE
+            distBetweenPlayers = Mathf.Abs(attachedPlayer.transform.position.x - opponent.transform.position.x);
+            isClose = distBetweenPlayers <= DistanceTolerance ? true : false;
+            timeToWait = isClose ? closeRate * IAMultiplicator : normalRate * IAMultiplicator;
+
+            //RESET INTERRUPTION
             if (attachedPlayer.playerState != Player.STATE.charging)
             {
-                actionsList[8].weight = 0;
+                actionsList[actionsList.Count - 1].weight = 0;
             }
 
             ShowWeight();
+
             //AI DRAW
             if (attachedPlayer.playerState == Player.STATE.sneathed && !isWaiting)
             {
                 isWaiting = true;
                 StartCoroutine(WaitABit("TriggerDraw", rand, false));
+                return;
             }
 
+            //WAIT IF THE PLAYER IS DRAWING
+            if (attachedPlayer.playerState == Player.STATE.drawing)
+                return;
+
+            if (opponent.playerState == Player.STATE.frozen)
+                return;
+
+            if (distBetweenPlayers > 5)
+            {
+                DisableWeight();
+                ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //MOVE TOWARD
+                return;
+            }
+            else
+            {
+                EnableWeight();
+            }
+
+            if (attachedPlayer.playerState == Player.STATE.charging && Mathf.Sign(attachedPlayer.transform.localScale.x) == Mathf.Sign(opponent.transform.localScale.x))
+            {
+                Debug.Log("<color=red>INTERUPT !!! He is behind you !</color>");
+                InterruptAttack();
+            }
+
+
+            //WHILE THE PLAYER IS FAR, GET CLOSER
+            if (distBetweenPlayers < 5 && distBetweenPlayers > 2)
+            {
+                float randDirection = Random.Range(0f, 1f);
+                if (attachedPlayer.stamina <= 2)
+                    ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //MOVE AWAY
+                else
+                    ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //MOVE TOWARD
+            }
+
+
+
+
+            //ADD WEIGHT TO ACTIONS
             if (canAddWeight)
                 AddWeights();
 
             if (!isChoosing && attachedPlayer.playerState == Player.STATE.normal)
             {
                 isChoosing = true;
-                float timeToWait = isClose ? closeRate : normalRate;
-
-                if (!isClose)
-                {
-                    IncreaseWeight("MoveToward", 5);
-                }
 
                 StartCoroutine(WaitABit(ChooseState(), timeToWait, true));
             }
-
-            distBetweenPlayers = Mathf.Abs(attachedPlayer.transform.position.x - opponent.transform.position.x);
-            isClose = distBetweenPlayers <= DistanceTolerance ? true : false;
         }
     }
 
     #endregion
+
+    void SetDifficulty(Difficulty targetDifficulty)
+    {
+        IADifficulty = targetDifficulty;
+        switch (IADifficulty)
+        {
+            case Difficulty.Easy:
+                Debug.Log("Difficulty set to :" + IADifficulty.ToString());
+                IAMultiplicator = EASY_DIFFICULTY;
+                break;
+
+            case Difficulty.Medium:
+                Debug.Log("Difficulty set to :" + IADifficulty.ToString());
+                IAMultiplicator = MEDIUM_DIFFICULTY;
+                break;
+
+            case Difficulty.Hard:
+                Debug.Log("Difficulty set to :" + IADifficulty.ToString());
+                IAMultiplicator = HARD_DIFFICULTY;
+                break;
+        }
+    }
 
     void ShowWeight()
     {
@@ -138,11 +225,9 @@ public class IAScript : MonoBehaviour
         attack = actionsList[1].weight;
         parry = actionsList[2].weight;
         pommel = actionsList[3].weight;
-        moveToward = actionsList[4].weight;
-        moveAway = actionsList[5].weight;
-        dashToward = actionsList[6].weight;
-        dashAway = actionsList[7].weight;
-        interruptAttack = actionsList[8].weight;
+        dashToward = actionsList[4].weight;
+        dashAway = actionsList[5].weight;
+        interruptAttack = actionsList[6].weight;
     }
 
     void FindOpponent()
@@ -165,78 +250,88 @@ public class IAScript : MonoBehaviour
 
     void AddWeights()
     {
-        if (opponent.playerState == Player.STATE.dead || attachedPlayer.playerState == Player.STATE.dead)
-        {
-            foreach (Actions a in actionsList)
-            {
-                ResetSelfWeight(a);
-            }
+
+        if (distBetweenPlayers > 5)
             return;
-        }
 
-        canAddWeight = false;
+        DisableWeight();
 
-        if (attachedPlayer.stamina <= 2 && isClose)
-        {
-            if (attachedPlayer.stamina <= 1)
-            {
-                IncreaseWeight("MoveAway", 2);
-            }
-            else
-            {
-                IncreaseWeight("DashAway", 1);
-                IncreaseWeight("MoveAway", 1);
-            }
-        }
+        if (attachedPlayer.playerState == Player.STATE.clashed)
+            IncreaseWeight("Parry", 2);
 
-        if (!isClose)
+        switch (opponent.playerState)
         {
-            IncreaseWeight("MoveToward", 1);
-            canAddWeight = true;
-        }
-        else
-        {
-            switch (opponent.playerState)
-            {
-                case Player.STATE.charging:
-                    IncreaseWeight("Parry", 3);
+            case Player.STATE.charging:
+                if (distBetweenPlayers <= hitDistance)
+                {
+                    IncreaseWeight("Parry", 5);
                     IncreaseWeight("Attack", 2);
-                    IncreaseWeight("DashToward", 1);
-                    break;
+                }
+                else if (attachedPlayer.stamina >= 2)
+                {
+                    IncreaseWeight("DashToward", 5);
+                }
+                break;
 
-                case Player.STATE.attacking:
-                    if (isClose)
+            case Player.STATE.attacking:
+                if (isClose)
+                {
+                    if (attachedPlayer.playerState == Player.STATE.charging)
                     {
-                        if (attachedPlayer.playerState == Player.STATE.charging)
-                        {
-                            Debug.Log("<color=red>INTERUPT !!!</color>");
-                            IncreaseWeight("InterruptAttack", 100);
-                        }
-                        IncreaseWeight("Parry", 5);
+                        Debug.Log("<color=red>INTERUPT !!!</color>");
+
+                        if (IADifficulty == Difficulty.Easy)
+                            IncreaseWeight("InterruptAttack", 1000);
+                        else if (IADifficulty == Difficulty.Medium)
+                            IncreaseWeight("InterruptAttack", 2000);
+                        else
+                            InterruptAttack();
                     }
-                    break;
+                }
+                break;
 
-                case Player.STATE.parrying:
-                    if (distBetweenPlayers <= hitDistance)
-                    {
-                        IncreaseWeight("Pommel", 4);
-                    }
-                    IncreaseWeight("Attack", 2);
-                    break;
+            case Player.STATE.parrying:
+                if (distBetweenPlayers <= hitDistance)
+                {
+                    IncreaseWeight("Pommel", 2);
+                }
+                IncreaseWeight("Attack", 2);
+                break;
 
-                case Player.STATE.dashing:
-                    if (distBetweenPlayers <= hitDistance)
-                        IncreaseWeight("Attack", 5);
-                    break;
-            }
+            case Player.STATE.dashing:
+                if (distBetweenPlayers <= hitDistance)
+                    IncreaseWeight("Attack", 5);
+                break;
 
-            StartCoroutine(WaitABit("EnableWeight", 0.15f));
+            case Player.STATE.normal:
+                if (attachedPlayer.stamina >= 2)
+                {
+                    IncreaseWeight("Attack", 1);
+                }
+                else
+                {
+                    ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x));
+                    IncreaseWeight("Wait", 3);
+                }
+                break;
+
+            case Player.STATE.clashed:
+                IncreaseWeight("Attack", 10);
+                break;
+
         }
+
+        StartCoroutine(WaitABit("EnableWeight", 0.15f));
     }
 
     void EnableWeight()
     {
         canAddWeight = true;
+    }
+
+    void DisableWeight()
+    {
+        canAddWeight = false;
     }
 
 
@@ -251,7 +346,24 @@ public class IAScript : MonoBehaviour
     {
         Debug.Log("Interrupt");
         StopCoroutine("WaitABit");
-        ReleaseAttack();
+
+        float randCancel = Random.Range(0f, 1f);
+        if (randCancel >= 0.75f)
+        {
+            ReleaseAttack();
+        }
+        else
+        {
+            if (distBetweenPlayers <= hitDistance - 2)
+            {
+                DashToward();
+            }
+            else
+            {
+                Parry();
+            }
+        }
+
         isChoosing = false;
     }
 
@@ -305,7 +417,7 @@ public class IAScript : MonoBehaviour
         isChoosing = false;
     }
 
-    void MoveToward()
+    /*void MoveToward()
     {
         ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x));
 
@@ -319,7 +431,7 @@ public class IAScript : MonoBehaviour
 
         StartCoroutine(WaitABit("ResetHorizontal", 0.35f));
         isChoosing = false;
-    }
+    }*/
 
     void DashToward()
     {
@@ -342,7 +454,7 @@ public class IAScript : MonoBehaviour
     }
     #endregion
 
-    string ChooseState()
+    void UpdateWeightSum()
     {
         //Calculate weight sum
         actionWeightSum = 0;
@@ -350,6 +462,10 @@ public class IAScript : MonoBehaviour
         {
             actionWeightSum += a.weight;
         }
+    }
+
+    string ChooseState()
+    {
 
         //Select a random action by weight
         int randomAction = Random.Range(1, actionWeightSum);
@@ -359,7 +475,7 @@ public class IAScript : MonoBehaviour
             randomAction -= item.weight;
             if (randomAction <= 0)
             {
-                IncreaseOtherWeights();
+                //IncreaseOtherWeights();
                 ResetSelfWeight(item);
 
                 rState = item.name;

@@ -88,7 +88,6 @@ public class AudioManager : MonoBehaviour
     float maxWinVolume = 0;
 
 
-
     // Selected music, stem, phase...
     [Header("STEMS & PHASES")]
     [SerializeField] bool useRandomStemSelection = true;
@@ -395,6 +394,7 @@ public class AudioManager : MonoBehaviour
 
 
 
+
     #region MUSIC INTENSITY / EVENT
     public void BattleEventIncreaseIntensity()
     {
@@ -477,8 +477,9 @@ public class AudioManager : MonoBehaviour
                 decrementCurrentPhaseAtNextLoop = false;
                 ImmediatelySwitchPhase(-1, false, 0);
 
-                if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio)
-                    phaseTransitionStemAudioSource.clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio;
+                if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count > 0)
+                    if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio)
+                        phaseTransitionStemAudioSource.clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio;
 
 
                 phaseTransitionStemAudioSource.Play();
@@ -498,6 +499,7 @@ public class AudioManager : MonoBehaviour
                 // Sets next stem strikes if there are for this stem
                 else if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[i].stems[currentMusicStem].stemStrikesAudio)
                     phasesStrikesAudioSources[i].clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[i].stems[currentMusicStem].stemStrikesAudio;
+
 
                 phasesStrikesAudioSources[i].Play();
             }

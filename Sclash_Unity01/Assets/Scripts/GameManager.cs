@@ -138,6 +138,7 @@ public class GameManager : MonoBehaviourPun
     [Header("PLAYERS")]
     [Tooltip("The player prefab reference")]
     [SerializeField] GameObject player = null;
+    [SerializeField] GameObject playerAI = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
     [SerializeField] public GameObject[] playerSpawns = { null, null };
     public List<GameObject> playersList = new List<GameObject>(2);
@@ -576,7 +577,18 @@ public class GameManager : MonoBehaviourPun
             //PlayerAttack playerAttack;
             Player playerScript = null;
 
-            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+#if UNITY_EDITOR
+            playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+#else
+            if (i == 0)
+            {
+                playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            }
+            else
+            {
+                playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            }
+#endif
             //playerStats = playersList[i].GetComponent<PlayerStats>();
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
             //playerAttack = playersList[i].GetComponent<PlayerAttack>();
@@ -906,7 +918,7 @@ public class GameManager : MonoBehaviourPun
         cameraManager.cameraComponent.transform.position = cameraManager.cameraBasePos;
 
 
-        
+
 
 
         // Restarts a new match right after it is finished being set up

@@ -2121,7 +2121,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
         {
             dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) * transform.localScale.x;
-            Debug.Log("Dash direction : " + dashDirection);
             dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[playerNum].horizontal), 0, 0);
 
 
