@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class IAScript : MonoBehaviour
 {
-    const float EASY_DIFFICULTY = 1.5f;
+    const float EASY_DIFFICULTY = 1.125f;
     const float MEDIUM_DIFFICULTY = 1f;
     const float HARD_DIFFICULTY = 0.25f;
 
@@ -154,7 +154,10 @@ public class IAScript : MonoBehaviour
             if (distBetweenPlayers > 5)
             {
                 DisableWeight();
-                ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //MOVE TOWARD
+                if (attachedPlayer.stamina >= 2)
+                {
+                    ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //MOVE TOWARD
+                }
                 return;
             }
             else
@@ -170,14 +173,11 @@ public class IAScript : MonoBehaviour
 
 
             //WHILE THE PLAYER IS FAR, GET CLOSER
-            if (distBetweenPlayers < 5 && distBetweenPlayers > 2)
-            {
-                float randDirection = Random.Range(0f, 1f);
-                if (attachedPlayer.stamina <= 2)
-                    ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //MOVE AWAY
-                else
-                    ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //MOVE TOWARD
-            }
+            if (attachedPlayer.stamina <= 2)
+                ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //MOVE AWAY
+            else
+                ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //MOVE TOWARD
+
 
 
 
@@ -250,8 +250,7 @@ public class IAScript : MonoBehaviour
 
     void AddWeights()
     {
-
-        if (distBetweenPlayers > 5)
+        if (distBetweenPlayers > 5 && attachedPlayer.stamina > 2)
             return;
 
         DisableWeight();
@@ -280,21 +279,62 @@ public class IAScript : MonoBehaviour
                     {
                         Debug.Log("<color=red>INTERUPT !!!</color>");
 
-                        if (IADifficulty == Difficulty.Easy)
-                            IncreaseWeight("InterruptAttack", 1000);
-                        else if (IADifficulty == Difficulty.Medium)
-                            IncreaseWeight("InterruptAttack", 2000);
-                        else
-                            InterruptAttack();
+                        switch (IADifficulty)
+                        {
+                            case Difficulty.Easy:
+                                IncreaseWeight("InterruptAttack", 1000);
+                                break;
+
+                            case Difficulty.Medium:
+                                IncreaseWeight("InterruptAttack", 2000);
+                                break;
+
+                            case Difficulty.Hard:
+                                InterruptAttack();
+                                break;
+                        }
                     }
                 }
                 break;
 
             case Player.STATE.parrying:
-                if (distBetweenPlayers <= hitDistance)
+                if (distBetweenPlayers <= 1)
                 {
-                    IncreaseWeight("Pommel", 2);
+                    switch (IADifficulty)
+                    {
+                        case Difficulty.Easy:
+                            IncreaseWeight("Pommel", 2);
+                            break;
+
+                        case Difficulty.Medium:
+                            IncreaseWeight("Pommel", 4);
+                            break;
+
+                        case Difficulty.Hard:
+                            IncreaseWeight("Pommel", 8);
+                            break;
+                    }
+
                 }
+
+                if (attachedPlayer.stamina >= 2)
+                {
+                    switch (IADifficulty)
+                    {
+                        case Difficulty.Easy:
+                            IncreaseWeight("DashToward", 2);
+                            break;
+
+                        case Difficulty.Medium:
+                            IncreaseWeight("DashToward", 4);
+                            break;
+
+                        case Difficulty.Hard:
+                            IncreaseWeight("DashToward", 8);
+                            break;
+                    }
+                }
+
                 IncreaseWeight("Attack", 2);
                 break;
 
@@ -317,6 +357,7 @@ public class IAScript : MonoBehaviour
 
             case Player.STATE.clashed:
                 IncreaseWeight("Attack", 10);
+                IncreaseWeight("DashAway", 10);
                 break;
 
         }

@@ -1649,6 +1649,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Stamina recup anim
     IEnumerator TriggerStaminaRecupAnim()
     {
+        Debug.Log("Stamina recup");
         // COLOR
         for (int i = 0; i < staminaSliders.Count; i++)
         {
@@ -1694,6 +1695,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // FX
         staminaGainFX.Play();
         staminaRecupFX.Stop();
+        Debug.Log("Stamina recup ended");
     }
 
     // Stamina break anim
@@ -2187,7 +2189,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // STATE SWITCH
-        StopAllCoroutines();
+        //NE PAS SUPPRIMER
+        /*StopAllCoroutines();
+        Debug.Log("Stop coroutines");*/
         SwitchState(STATE.attacking);
     }
 
@@ -2518,7 +2522,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
 
 
-
+            //NE PAS SUPPRIMER
             //StopAllCoroutines();
             SwitchState(STATE.clashed);
             ApplyOrientation(-gameManager.playersList[otherPlayerNum].transform.localScale.x);
@@ -2573,8 +2577,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         SwitchState(STATE.clashed);
 
-
-        StopAllCoroutines();
+        //NE PAS SUPPRIMER
+        /*StopAllCoroutines();
+        Debug.Log("Stop coroutines");*/
         gameManager.clashCameraShake.shakeDuration = gameManager.clashCameraShakeDuration;
         gameManager.TriggerSlowMoCoroutine(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
 
@@ -2791,8 +2796,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // STAMINA
             StaminaCost(staminaCostForMoves, true);
 
-
-            StopAllCoroutines();
+            //NE PAS SUPPRIMER
+            /* StopAllCoroutines();
+             Debug.Log("Stop coroutines");*/
             dashTime = 0;
 
 

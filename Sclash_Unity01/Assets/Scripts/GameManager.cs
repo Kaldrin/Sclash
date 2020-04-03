@@ -253,7 +253,8 @@ public class GameManager : MonoBehaviourPun
     #endregion
     #endregion
 
-
+    [SerializeField]
+    bool letThemFight;
 
 
 
@@ -578,16 +579,30 @@ public class GameManager : MonoBehaviourPun
             Player playerScript = null;
 
 #if UNITY_EDITOR
-            playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-#else
-            if (i == 0)
-            {
-                playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-            }
-            else
+            if (letThemFight)
             {
                 playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
             }
+            else
+            {
+                if (i == 0)
+                {
+                    playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+                }
+                else
+                {
+                    playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+                }
+            }
+#else
+            if (i == 0)
+                {
+                    playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+                }
+                else
+                {
+                    playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+                }
 #endif
             //playerStats = playersList[i].GetComponent<PlayerStats>();
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
