@@ -24,18 +24,39 @@ public class MenuBrowser : MonoBehaviour
     int sens = 1;
 
     [SerializeField] bool invertVerticalAxis = false;
-    [SerializeField] bool
+    [SerializeField]
+    bool
         canBack = false,
-        swapAxis = false;
+        swapAxis = false,
+        allowHorizontalJump = false;
+    [SerializeField] int horizontalJumpAmount = 4;
+    #endregion
+
+
+
+
+    #region SPECIAL
+    [Header("SPECIAL")]
+    [SerializeField] bool callSpecialElementWHenHorizontal = false;
+    [SerializeField] public GameObject positiveHorizontalSpecialElement = null;
+    [SerializeField] public GameObject negativeHorizontalSpecialElement = null;
+    #endregion
+
+
+
+
+
+    #region INPUTS
+    [Header("INPUTS")]
+    [Tooltip("Names of the inputs axis created in the input settings")]
+    [SerializeField] string horizontalAxis = "Horizontal";
+    [SerializeField] string
+        verticalAxis = "Vertical",
+        backButton = "Back";
+
     bool
         vAxisInUse = false,
         hAxisInUse = false;
-
-    [Tooltip("Names of the inputs axis created in the input settings")]
-    [SerializeField] string
-        horizontalAxis = "Horizontal",
-        verticalAxis = "Vertical",
-        backButton = "Back";
 
     [Tooltip("Dead zones for joystick browsing so that it's more comfortable")]
     [SerializeField] float
@@ -67,10 +88,11 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-    // SOUND
+    #region SOUND
     [Header("SOUND")]
     [Tooltip("The PlayRandomSoundInList script to play a random sound from the given source on it whenever browsing through menu elements")]
     [SerializeField] PlayRandomSoundInList hoverSound = null;
+    #endregion
     #endregion
 
 
@@ -87,12 +109,13 @@ public class MenuBrowser : MonoBehaviour
 
 
     #region FUNCTIONS
-    // BASE FUNCTIONS
+    #region BASE FUNCTIONS
     void Awake()
     {
         FixButtonColorUsageList();
 
 
+        // BROWSING DIRECTION
         if (invertVerticalAxis)
         {
             sens = -1;
@@ -103,6 +126,7 @@ public class MenuBrowser : MonoBehaviour
         }
 
 
+        // SWAP VERTICAL / HORIZONTAL AXIS TO BROWSE
         if (swapAxis)
         {
             string storeVerticalAxis = verticalAxis;
@@ -136,21 +160,42 @@ public class MenuBrowser : MonoBehaviour
 
 
             // Move sliders with horizontal
+            
             if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
             {
-                if (elements[browseIndex].GetComponent<SliderToVolume>())
+                if (callSpecialElementWHenHorizontal)
+                {
+                    positiveHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
+                }
+                else if (allowHorizontalJump)
+                {
+                    VerticalBrowse(horizontalJumpAmount);
+                }
+                else if (elements[browseIndex].GetComponent<SliderToVolume>())
                 {
                     elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
-                    hAxisInUse = true;
                 }
+                
+
+                hAxisInUse = true;
             }
             else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
             {
-                if (elements[browseIndex].GetComponent<SliderToVolume>())
+                if (callSpecialElementWHenHorizontal)
+                {
+                    negativeHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
+                }
+                else if (allowHorizontalJump)
+                {
+                    VerticalBrowse(- horizontalJumpAmount);
+                }
+                else if (elements[browseIndex].GetComponent<SliderToVolume>())
                 {
                     elements[browseIndex].GetComponent<SliderToVolume>().slider.value--;
-                    hAxisInUse = true;
                 }
+
+
+                hAxisInUse = true;
             }
 
 
@@ -165,7 +210,6 @@ public class MenuBrowser : MonoBehaviour
             {
                 vAxisInUse = false;
             }
-
 
             
             if (!vAxisInUse)
@@ -183,18 +227,6 @@ public class MenuBrowser : MonoBehaviour
                     VerticalBrowse(-1);
                 }
             }
-
-            Select(true);
-            /*
-            if (elements[browseIndex].GetComponent<Button>() || elements[browseIndex].GetComponent<TMP_InputField>())
-            {
-                Select(true);
-            }
-            else
-            {
-                Select(false);
-            }
-            */
         }
 
 
@@ -214,20 +246,19 @@ public class MenuBrowser : MonoBehaviour
         if (applyDefaultIndexOnEnable)
             browseIndex = defaultIndex;
 
-        if (elements.Length > 0)
-        {
-            if (elements[browseIndex].GetComponent<Button>())
-            {
-                Select(true);
-            }
-            else
-            {
-                Select(false);
-            }
 
-            UpdateColors();
-        }
+        VerticalBrowse(0);
+        Select(true);
+        UpdateColors();
     }
+
+    private void OnDisable()
+    {
+        UpdateColors();
+    }
+    #endregion
+
+
 
 
 
@@ -240,24 +271,46 @@ public class MenuBrowser : MonoBehaviour
     void VerticalBrowse(int direction)
     {
         vAxisInUse = true;
-        hoverSound.Play();
         browseIndex += sens * direction;
 
+
+        // AUDIO
+        hoverSound.Play();
+        
 
         // Loop index navigation
         if (browseIndex > elements.Length - 1)
         {
-            browseIndex = 0;
+            if (allowHorizontalJump)
+            {
+                browseIndex = 0 + (browseIndex - (elements.Length));
+            }
+            else
+            {
+                browseIndex = 0;
+            }
         }
         else if (browseIndex < 0)
         {
-            browseIndex = elements.Length - 1;
+            if (allowHorizontalJump)
+            {
+                browseIndex = (elements.Length) - Mathf.Abs(browseIndex);
+            }
+            else
+            {
+                browseIndex = elements.Length - 1;
+            }
         }
 
 
+        // VISUAL
         UpdateColors();
+
+
+        Select(true);
     }
     #endregion
+
 
 
 
@@ -275,6 +328,9 @@ public class MenuBrowser : MonoBehaviour
         }
         else
         {
+            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements[browseIndex]);
+
+
             if (elements[browseIndex].GetComponent<Button>())
             {
                 elements[browseIndex].GetComponent<Button>().Select();
@@ -285,11 +341,6 @@ public class MenuBrowser : MonoBehaviour
             }
             else if (elements[browseIndex].GetComponent<EventTrigger>())
             {
-                /*
-                BaseEventData baseEventData = null;
-                elements[browseIndex].GetComponent<EventTrigger>().OnSelect(baseEventData);
-                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements[browseIndex]);
-                */
             }
         }
 
@@ -300,50 +351,23 @@ public class MenuBrowser : MonoBehaviour
     // Sets the browse index to the mouse hovered element
     public void SelectHoveredElement(GameObject hoveredObject)
     {
-        if (ArrayContainsGameObject(hoveredObject, elements))
+        if (enabled)
         {
-            browseIndex = IndexOfGameObjectInArray(hoveredObject, elements);
-        }
+            if (isObjectInGameObjectArray(hoveredObject, elements))
+            {
+                browseIndex = FindObjectIndexInGameObjectArray(hoveredObject, elements);
+            }
 
         
-        if (elements[browseIndex].GetComponent<Button>() || elements[browseIndex].GetComponent<TMP_InputField>())
-        {
-            Select(true);
-        }
-        else
-        {
-            Select(false);
-        }
-    }
-
-    // Returns true if element is contained in referenced array
-    bool ArrayContainsGameObject(GameObject objectToCheck, GameObject[] array)
-    {
-        for (int i = 0; i < array.Length; i++)
-        {
-            if (objectToCheck == array[i])
+            if (elements[browseIndex].GetComponent<Button>() || elements[browseIndex].GetComponent<TMP_InputField>())
             {
-                return true;
+                Select(true);
+            }
+            else
+            {
+                Select(false);
             }
         }
-
-
-        return false;
-    }
-
-    // Returns the index of the given game object in the given game objects array
-    int IndexOfGameObjectInArray(GameObject objectToCheck, GameObject[] array)
-    {
-        for (int i = 0; i < array.Length; i++)
-        {
-            if (objectToCheck == array[i])
-            {
-                return i;
-            }
-        }
-
-
-        return 0;
     }
     #endregion
 
@@ -366,7 +390,6 @@ public class MenuBrowser : MonoBehaviour
 
 
         elements = newElementsList;
-
         shouldUseButtonColorSwitch.Add(true);
     }
 
@@ -392,15 +415,12 @@ public class MenuBrowser : MonoBehaviour
 
             elements = newElements;
         }
-        else
-        {
-        }
+        else {}
     }
 
     public void ChangeBackButton(GameObject newBackButton)
     {
         backElement = newBackButton;
-        Debug.Log("Change back button");
     }
     #endregion
 
@@ -409,7 +429,8 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-    #region OTHER
+
+    #region COLORS / VISUAL
     public void FixButtonColorUsageList()
     {
         if (shouldUseButtonColorSwitch.Count < elements.Length)
@@ -421,6 +442,73 @@ public class MenuBrowser : MonoBehaviour
         }
     }
 
+    // Updates the color of each element of the menu screen depending on wether it's selected or not
+    void UpdateColors()
+    {
+        // Browses through all elements
+        for (int i = 0; i < elements.Length; i++)
+        {
+            GameObject g = elements[i];
+
+
+            // If the checked element is the currently selected one
+            if (i == browseIndex && enabled)
+            {
+                try
+                {
+                    // If the element is set to change its color when selected, changes it
+                    if (shouldUseButtonColorSwitch[i])
+                    {
+                        if (g.GetComponent<Image>())
+                            g.GetComponent<Image>().color = buttonSelectedColor;
+                    }
+                }
+                catch {}
+
+
+                // Changes text color of the element's children
+                for (int j = 0; j < g.transform.childCount; j++)
+                {
+                    if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
+                    {
+                        g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textSelectedColor;
+                    }
+                }
+            }
+            // if the checked element is not the currently selected one
+            else
+            {
+                try
+                {
+                    // If the element is set to change its color when selected, changes it
+                    if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
+                    {
+                        g.GetComponent<Image>().color = buttonDefaultColor;
+                    }
+                }
+                catch {}
+
+
+                // Changes text color of the element's children
+                for (int j = 0; j < g.transform.childCount; j++)
+                {
+                    if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
+                    {
+                        g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textDefaultColor;
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
+
+
+
+
+
+    #region SECONDARY FUNCTIONS
+    // Returns true if element is contained in referenced array
     bool isObjectInGameObjectArray(GameObject objectToFind, GameObject[] array)
     {
         for (int i = 0; i < array.Length; i++)
@@ -447,72 +535,6 @@ public class MenuBrowser : MonoBehaviour
 
 
         return 0;
-    }
-    #endregion
-
-
-
-
-
-
-
-
-    #region COLOR
-    // Updates the color of each element of the menu screen depending on wether it's selected or not
-    void UpdateColors()
-    {
-        for (int i = 0; i < elements.Length; i++)
-        {
-            GameObject g = elements[i];
-
-
-            if (i == browseIndex)
-            {
-                try
-                {
-                    if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
-                    {
-                        g.GetComponent<Image>().color = buttonSelectedColor;
-                    }
-                }
-                catch
-                {
-
-                }
-
-
-                for (int j = 0; j < g.transform.childCount; j++)
-                {
-                    if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
-                    {
-                        g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textSelectedColor;
-                    }
-                }
-            }
-            else
-            {
-                try
-                {
-                    if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
-                    {
-                        g.GetComponent<Image>().color = buttonDefaultColor;
-                    }
-                }
-                catch
-                {
-
-                }
-
-
-                for (int j = 0; j < g.transform.childCount; j++)
-                {
-                    if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
-                    {
-                        g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textDefaultColor;
-                    }
-                }
-            }
-        }
     }
     #endregion
     #endregion

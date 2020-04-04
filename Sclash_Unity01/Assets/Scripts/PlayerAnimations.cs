@@ -449,7 +449,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region POMMEL ANIMATION
-    // POMMEL ANIMATION
     // Trigger on pommel animation
     public void TriggerPommel()
     {
@@ -513,7 +512,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region  CLASHED
-    // CLASHED ANIMATION
     // Trigger on clashed animation
     public void TriggerClashed(bool state)
     {

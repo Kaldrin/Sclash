@@ -34,7 +34,7 @@ public class MapLoader : MonoBehaviour
 
 
     # region MAP LOADING
-    // MAP LOADING
+    [Header("MAP LOADING")]
     bool canLoadNewMap = true;
     [SerializeField] bool loadMapOnStart = false;
     #endregion
@@ -51,13 +51,11 @@ public class MapLoader : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    // BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
         mapMenuLoader.LoadParameters();
-
-
+        mapMenuLoader.SetUpMenu();
 
 
         // Load map
@@ -121,10 +119,14 @@ public class MapLoader : MonoBehaviour
         if (currentMap != null)
             Destroy(currentMap);
 
+
         currentMap = Instantiate(mapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
         currentMapIndex = mapIndex;
+
         gameManager.gameParameters.lastLoadedStageIndex = currentMapIndex;
-        mapMenuLoader.SaveParameters();
+        JsonSave save = SaveGameManager.GetCurrentSave();
+        save.lastLoadedStageIndex = gameManager.gameParameters.lastLoadedStageIndex;
+        //mapMenuLoader.SaveParameters();
     }
 
     // Starts the LoadNewMap coroutine, launched by the play in the maps menu
@@ -139,14 +141,6 @@ public class MapLoader : MonoBehaviour
         if (canLoadNewMap)
         {
             int index = 0;
-
-            /*
-            if (randomIndex)
-                index = mapsMenuBrowser.browseIndex - 1;
-            else
-                index = newMapIndex;
-                */
-
             index = newMapIndex;
 
 
@@ -154,23 +148,19 @@ public class MapLoader : MonoBehaviour
             gameManager.roundTransitionLeavesFX.gameObject.SetActive(true);
             gameManager.roundTransitionLeavesFX.Play();
             canLoadNewMap = false;
-            //mapMenuObjectsParent.SetActive(false);
 
 
             yield return new WaitForSeconds(1.5f);
 
-
+            Debug.Log("New music : " + mapsData.stagesLists[index].musicIndex);
+            audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[index].musicIndex);
             SetMap(index);
 
 
             yield return new WaitForSeconds(2f);
 
 
-            //mapMenuObjectsParent.SetActive(true);
-            canLoadNewMap = true;
-            currentMapIndex = index;
-
-            audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[currentMapIndex].musicIndex);
+            canLoadNewMap = true; 
         }
     }
 

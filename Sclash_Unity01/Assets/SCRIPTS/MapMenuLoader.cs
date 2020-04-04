@@ -55,6 +55,14 @@ public class MapMenuLoader : MonoBehaviour
 
 
 
+    #region BROWSING
+    [SerializeField] MenuBrowser2D stagesListBrowser2D = null;
+    [SerializeField] int numberOfElementsPerLine = 4;
+    #endregion
+
+
+
+
     #region STAGE PARAMETERS
     [SerializeField] GameObject dayNightCycleCheck = null;
     [SerializeField] GameObject randomStageAfterGameCheck = null;
@@ -85,8 +93,8 @@ public class MapMenuLoader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LoadParameters();
-        SetUpMenu();
+        //LoadParameters();
+        //SetUpMenu();
         ChangeStageMode(0);
     }
 
@@ -150,7 +158,7 @@ public class MapMenuLoader : MonoBehaviour
 
 
         UpdateDisplayedMapListTypeIndication();
-        LoadStagesList();
+        StartCoroutine(LoadStagesList());
     }
 
     void UpdateDisplayedMapListTypeIndication()
@@ -177,6 +185,7 @@ public class MapMenuLoader : MonoBehaviour
     {
         stageButtonObject.SetActive(false);
         currentlyDisplayedStagesList.Clear();
+        stagesListBrowser2D.elements2D = new MenuBrowser2D.ElementsLine[0];
 
 
         for (int i = 0; i < stagesListParent.childCount; i++)
@@ -186,12 +195,66 @@ public class MapMenuLoader : MonoBehaviour
         }
     }
 
-    void LoadStagesList()
+    IEnumerator LoadStagesList()
     {
+        // CLEAR LIST
+        StopCoroutine(LoadStagesList());
         ClearStagesList();
-        stageButtonObject.SetActive(true);
 
 
+
+
+        // BROWSING
+        int numberOfElementsOnThisLine = 0;
+        int numberOfLinesForBrowsing = 0;
+
+
+        for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
+        {
+            if ((mapsDatabase01.stagesLists[i].type.ToString() == stagesModes[currentStageMode]) || stagesModes[currentStageMode] == "all" || (mapsDatabase01.stagesLists[i].inCustomList && (stagesModes[currentStageMode] == stagesModes[3])))
+            {
+                numberOfElementsOnThisLine++;
+
+
+                if (numberOfElementsOnThisLine == numberOfElementsPerLine)
+                {
+                    numberOfLinesForBrowsing++;
+                    stagesListBrowser2D.elements2D = new MenuBrowser2D.ElementsLine[numberOfLinesForBrowsing];
+                    
+                    for (int y = 0; y < stagesListBrowser2D.elements2D.Length - 1; y++)
+                    {
+                        stagesListBrowser2D.elements2D[y] = new MenuBrowser2D.ElementsLine();
+                        stagesListBrowser2D.elements2D[y].line = new GameObject[numberOfElementsPerLine];
+                    }
+                    stagesListBrowser2D.elements2D[numberOfLinesForBrowsing - 1] = new MenuBrowser2D.ElementsLine();
+                    stagesListBrowser2D.elements2D[numberOfLinesForBrowsing - 1].line = new GameObject[numberOfElementsOnThisLine];
+                    
+                    numberOfElementsOnThisLine = 0;
+                }
+            }
+        }
+
+
+        if (numberOfElementsOnThisLine > 0)
+        {
+            numberOfLinesForBrowsing++;
+            stagesListBrowser2D.elements2D = new MenuBrowser2D.ElementsLine[numberOfLinesForBrowsing];
+            for (int y = 0; y < stagesListBrowser2D.elements2D.Length - 1; y++)
+            {
+                stagesListBrowser2D.elements2D[y] = new MenuBrowser2D.ElementsLine();
+                stagesListBrowser2D.elements2D[y].line = new GameObject[numberOfElementsPerLine];
+            }
+            stagesListBrowser2D.elements2D[numberOfLinesForBrowsing - 1] = new MenuBrowser2D.ElementsLine();
+            stagesListBrowser2D.elements2D[numberOfLinesForBrowsing - 1].line = new GameObject[numberOfElementsOnThisLine];
+            numberOfElementsOnThisLine = 0;
+        }
+
+
+        numberOfElementsOnThisLine = 0;
+        numberOfLinesForBrowsing = 0;
+
+
+        // FILL LIST
         for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
         {
             if ((mapsDatabase01.stagesLists[i].type.ToString() == stagesModes[currentStageMode]) || stagesModes[currentStageMode] == "all" || (mapsDatabase01.stagesLists[i].inCustomList && (stagesModes[currentStageMode] == stagesModes[3])   )   )
@@ -201,6 +264,7 @@ public class MapMenuLoader : MonoBehaviour
 
 
                 newMapMenuObject = Instantiate(stageButtonObject, stagesListParent);
+                newMapMenuObject.SetActive(true);
                 newMapMenuObjectScript = newMapMenuObject.GetComponent<MapMenuObject>();
 
 
@@ -209,6 +273,18 @@ public class MapMenuLoader : MonoBehaviour
                 newMapMenuObjectScript.stageIndex = i;
                 newMapMenuObjectScript.UpdateCustomListCheckBox();
                 currentlyDisplayedStagesList.Add(i);
+
+                // BROWSING
+                stagesListBrowser2D.elements2D[numberOfLinesForBrowsing].line[numberOfElementsOnThisLine] = newMapMenuObjectScript.mapButtonObject;
+                numberOfElementsOnThisLine++;
+                if (numberOfElementsOnThisLine == numberOfElementsPerLine)
+                {
+                    numberOfElementsOnThisLine = 0;
+                    numberOfLinesForBrowsing++;
+                }
+
+
+                yield return new WaitForSeconds(0.05f);
             }
         }
 
@@ -227,7 +303,7 @@ public class MapMenuLoader : MonoBehaviour
 
     # region SAVE / LOAD PARAMETERS
     // Sets up the menu from scriptable object
-    void SetUpMenu()
+    public void SetUpMenu()
     {
         dayNightCycleCheck.SetActive(parametersData.dayNightCycle);
         randomStageAfterGameCheck.SetActive(parametersData.randomStage);
@@ -241,8 +317,6 @@ public class MapMenuLoader : MonoBehaviour
     public void LoadParameters()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();
-
-
         
         parametersData.dayNightCycle = save.dayNightCycle;
         parametersData.randomStage = save.randomStage;
@@ -252,13 +326,15 @@ public class MapMenuLoader : MonoBehaviour
         parametersData.lastLoadedStageIndex = save.lastLoadedStageIndex;
 
 
-        // Custom stages list
+        // Favourite stages list
         parametersData.customList = save.customList;
 
 
         if (parametersData.customList.Count < mapsDatabase01.stagesLists.Count)
         {
             parametersData.customList.Clear();
+
+
             for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
                 parametersData.customList.Add(mapsDatabase01.stagesLists[i].inCustomList);
         }
@@ -268,6 +344,7 @@ public class MapMenuLoader : MonoBehaviour
         for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
         {
             Map newMap = mapLoader.mapsData.stagesLists[i];
+
 
             if (parametersData.customList[i])
                 newMap.inCustomList = true;

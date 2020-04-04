@@ -533,9 +533,7 @@ public class GameManager : MonoBehaviourPun
             for (int i = 0; i < playersList.Count; i++)
             {
                 if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
-                {
                     allPlayersHaveDrawn = false;
-                }
             }
 
 

@@ -24,6 +24,7 @@ public class InputManager : MonoBehaviour
         public bool parryDown;
         public bool jump;
         public bool score;
+        public bool scoreUp;
     }
 
     [SerializeField] float
@@ -93,7 +94,6 @@ public class InputManager : MonoBehaviour
 
 
     #region ANY KEY
-    // ANY KEY
     void ManageAnyKeyInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
@@ -107,12 +107,15 @@ public class InputManager : MonoBehaviour
 
 
     # region SCORE
-    // PAUSE
     void ManageScoreInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
         {
+            playerInputs[i].scoreUp = playerInputs[i].score && !Input.GetButton(scoreAxis + i);
             playerInputs[i].score = Input.GetButton(scoreAxis + i);
+            
+
+            Debug.Log(playerInputs[i].scoreUp);
         }
     }
     # endregion
@@ -122,7 +125,7 @@ public class InputManager : MonoBehaviour
 
 
     # region PAUSE
-    // PAUSE
+
     void ManagePauseInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
@@ -139,7 +142,6 @@ public class InputManager : MonoBehaviour
 
 
     # region HORIZONTAL
-    // HORIZONTAL
     void ManageHorizontalInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
@@ -156,7 +158,6 @@ public class InputManager : MonoBehaviour
 
 
     # region DASH
-    // DASH
     void ManageDashInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
@@ -174,7 +175,6 @@ public class InputManager : MonoBehaviour
 
 
     #region ATTACK
-    // KICK
     void ManageAttackInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
@@ -193,7 +193,6 @@ public class InputManager : MonoBehaviour
 
 
     # region KICK
-    // KICK
     void ManageKickInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
@@ -210,7 +209,6 @@ public class InputManager : MonoBehaviour
 
 
     # region PARRY
-    // KICK
     void ManageParryInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)
@@ -228,7 +226,6 @@ public class InputManager : MonoBehaviour
 
 
     #region JUMP
-    // JUMP
     void ManageJumpInput()
     {
         for (int i = 0; i < playerInputs.Length; i++)

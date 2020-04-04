@@ -540,6 +540,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Header("AUDIO")]
     [Tooltip("The reference to the stamina charged audio FX AudioSource")]
     [SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
+    [SerializeField] AudioSource staminaBreakAudioFX = null;
     [SerializeField] PlayRandomSoundInList notEnoughStaminaSFX = null;
     #endregion
 
@@ -642,7 +643,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         switch (playerState)
         {
             case STATE.frozen:
-                ManageOrientation();
                 break;
 
             case STATE.sneathing:
@@ -733,26 +733,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void FixedUpdate()
     {
         if (kickFrame)
-        {
             ApplyPommelHitbox();
-        }
 
 
         if (untouchableFrame)
-        {
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
-        }
         else
-        {
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
-        }
 
 
         // Behaviour depending on state
         switch (playerState)
         {
             case STATE.frozen:
-                ManageOrientation();
+                //ManageOrientation();
                 SetStaminaBarsOpacity(0);
                 rb.velocity = Vector3.zero;
                 break;
@@ -788,9 +782,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 ManageMovementsInputs();
                 ManageOrientation();
                 ManageStaminaRegen();
-                //UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
-                //UpdateStaminaColor();
                 playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
                 break;
 
@@ -815,9 +807,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 UpdateStaminaColor();
                 // Apply damages if the current attack animation has entered active frame, thus activating the bool in the animation
                 if (activeFrame)
-                {
                     ApplyAttackHitbox();
-                }
                 break;
 
             case STATE.recovering:
@@ -861,9 +851,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.maintainParrying:
                 RunDash();
                 if (hasFinishedAnim)
-                {
                     SwitchState(STATE.normal);
-                }
                 StaminaCost(maintainParryStaminaCostOverTime, false);
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -872,9 +860,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.preparingToJump:
                 if (hasFinishedAnim)
-                {
                     ActuallyJump();
-                }
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
@@ -882,9 +868,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.jumping:
                 if (hasAttackRecoveryAnimFinished)
-                {
                     SwitchState(STATE.normal);
-                }
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
@@ -969,9 +953,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 
                 playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
-                {
                     playerColliders[i].isTrigger = false;
-                }
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
                 break;
@@ -986,9 +968,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeFlareFX.gameObject.SetActive(true);
                 playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
-                {
                     playerColliders[i].isTrigger = false;
-                }
                 break;
 
             case STATE.attacking:
@@ -999,9 +979,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 actualMovementsSpeed = attackingMovementsSpeed;
                 playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
-                {
                     playerColliders[i].isTrigger = true;
-                }
                 PauseStaminaRegen();
                 
                 break;
@@ -1054,9 +1032,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 playerCollider.isTrigger = true;
                 isDashing = true;
                 for (int i = 0; i < playerColliders.Length; i++)
-                {
                     playerColliders[i].isTrigger = true;
-                }
                 
                 PauseStaminaRegen();
                 chargeFlareFX.gameObject.SetActive(false);
@@ -1070,9 +1046,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeLevel = 1;
                 playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
-                {
                     playerColliders[i].isTrigger = true;
-                }
+
                 PauseStaminaRegen();
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
@@ -1098,9 +1073,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 SetStaminaBarsOpacity(0);
                 playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
-                {
                     playerColliders[i].isTrigger = true;
-                }
+
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
                 attackDashFXFront.Stop();
@@ -1262,6 +1236,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     statsManager.AddAction(ACTION.clash, playerNum, 0);
                     statsManager.AddAction(ACTION.clash, otherPlayerNum, 0);
+                    Debug.Log("Clash");
                 }
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
@@ -1703,6 +1678,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         TriggerNotEnoughStaminaAnim(false);
         TriggerNotEnoughStaminaAnim(true);
         StaminaCost(staminaCostForMoves, false);
+        staminaBreakAudioFX.Play();
 
 
         // FX
@@ -1862,7 +1838,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region CHARGE
-    //CHARGE
     // Manages the detection of attack charge inputs
     void ManageChargeInput()
     {
@@ -1906,9 +1881,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // Player releases attack button
             if (!inputManager.playerInputs[0].attack)
-            {
                 canCharge = true;
-            }
         }
         else
         {
@@ -1924,6 +1897,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     chargeStartTime = Time.time;
 
 
+                    // STATS
+                    if (statsManager)
+                        statsManager.AddAction(ACTION.charge, playerNum, 0);
+                    else
+                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+
+
                     // FX
                     chargeFlareFX.Play();
 
@@ -1936,15 +1916,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // ANIMATION STAMINA
             if (inputManager.playerInputs[playerNum].attackDown && canCharge && stamina <= staminaCostForMoves)
-            {
                 TriggerNotEnoughStaminaAnim(true);
-            }
 
             // Player releases attack button
             if (!inputManager.playerInputs[playerNum].attack)
-            {
                 canCharge = true;
-            }
         }
     }
 
@@ -1957,17 +1933,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)
-            {
                 photonView.RPC("ReleaseAttack", RpcTarget.All);
-            }
         }
         else
         {
             //Player releases attack button
             if (!inputManager.playerInputs[playerNum].attack)
-            {
                 ReleaseAttack();
-            }
         }
 
 
@@ -1977,13 +1949,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
                 if (ConnectManager.Instance.enableMultiplayer)
-                {
                     photonView.RPC("ReleaseAttack", RpcTarget.All);
-                }
                 else
-                {
                     ReleaseAttack();
-                }
             }
         }
         // Pass charge levels
@@ -2379,7 +2347,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region POMMEL
-    // POMMEL
     // Detect pommel inputs
     void ManagePommel()
     {
@@ -2486,11 +2453,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!kickFrame)
         {
+            bool wasSneathed = false;
+
+
+            // ASKS TO START MATCH IF SNEATHED
+            if (playerState == STATE.sneathed || playerState == STATE.drawing)
+            {
+                wasSneathed = true;
+                Debug.Log("WassNEATHED");
+            }
+
+
             // ANIMATIONs
             playerAnimations.CancelCharge(true);
-            playerAnimations.ResetClashedTrigger();
-            playerAnimations.TriggerClashed(true);
-
+            playerAnimations.ResetPommeledTrigger();
+            playerAnimations.TriggerPommeled();
 
 
             // Stamina
@@ -2500,10 +2477,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
                 
 
-
             //StopAllCoroutines();
             SwitchState(STATE.clashed);
             ApplyOrientation(-gameManager.playersList[otherPlayerNum].transform.localScale.x);
+
+
+            // STARTS MATCH IF PLAYER WAS SNEATHED
+            if (wasSneathed)
+            {
+                Debug.Log("Draw");
+                gameManager.SaberDrawn(playerNum);
+            }
 
 
             canCharge = false;
@@ -2511,7 +2495,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // Dash knockback
-            
             dashDirection = transform.localScale.x;
             actualUsedDashDistance = kickKnockbackDistance;
             initPos = transform.position;

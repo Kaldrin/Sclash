@@ -33,26 +33,28 @@ public class JsonSave
     public bool isEmpty = true;
 
 
-    // AUDIO
-    public float masterVolume;
-    public float musicVolume;
-    public float menuFXVolume;
-    public float fxVolume;
-    public float voiceVolume;
+    [Header("AUDIO")]
+    [SerializeField] public float masterVolume = 40;
+    [SerializeField] public float menuMusicVolume = 40;
+    [SerializeField] public float battleMusicVolume = 40;
+    [SerializeField] public float menuFXVolume = 40;
+    [SerializeField] public float fxVolume = 40;
+    [SerializeField] public float voiceVolume = 40;
 
 
-    // GAME
-    public int roundsToWin;
+    [Header("GAME")]
+    [SerializeField] public int roundsToWin = 5;
+    [SerializeField] public bool displayHelp = true;
 
 
-    // STAGES
-    public List<bool> customList = new List<bool>();
-    public bool dayNightCycle = true;
-    public bool randomStage = true;
-    public bool useCustomListForRandom = false;
-    public bool keepLastLoadedStage = true;
-    public bool useCustomListForRandomStartStage = false;
-    public int lastLoadedStageIndex = 0;
+    [Header("STAGES")]
+    [SerializeField] public List<bool> customList = new List<bool>();
+    [SerializeField] public bool dayNightCycle = false;
+    [SerializeField] public bool randomStage = false;
+    [SerializeField] public bool useCustomListForRandom = false;
+    [SerializeField] public bool keepLastLoadedStage = true;
+    [SerializeField] public bool useCustomListForRandomStartStage = true;
+    [SerializeField] public int lastLoadedStageIndex = 0;
 
     public Stats stats;
     //public bool hasBeenSavedOnce = false;
