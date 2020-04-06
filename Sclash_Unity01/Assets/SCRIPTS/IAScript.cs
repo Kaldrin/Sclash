@@ -90,7 +90,6 @@ public class IAScript : MonoBehaviour
     #region Built-in methods
     void OnEnable()
     {
-        SetDifficulty(IADifficulty);
 
         attachedPlayer = GetComponent<Player>();
 
@@ -190,14 +189,22 @@ public class IAScript : MonoBehaviour
             {
                 isChoosing = true;
 
-                StartCoroutine(WaitABit(ChooseState(), timeToWait, true));
+                string calledAct = ChooseState();
+
+                if (IADifficulty == Difficulty.Hard && calledAct == "Pommel" && hitDistance > 1)
+                {
+                    calledAct = "Wait";
+                }
+
+
+                StartCoroutine(WaitABit(calledAct, timeToWait, true));
             }
         }
     }
 
     #endregion
 
-    void SetDifficulty(Difficulty targetDifficulty)
+    public void SetDifficulty(Difficulty targetDifficulty)
     {
         IADifficulty = targetDifficulty;
         switch (IADifficulty)
@@ -258,6 +265,28 @@ public class IAScript : MonoBehaviour
         if (attachedPlayer.playerState == Player.STATE.clashed)
             IncreaseWeight("Parry", 2);
 
+        if (opponent.stamina <= 1)
+        {
+            switch (IADifficulty)
+            {
+                case Difficulty.Medium:
+                    IncreaseWeight("Attack", 5);
+                    break;
+
+                case Difficulty.Hard:
+                    if (distBetweenPlayers > hitDistance)
+                    {
+                        DashToward();
+                        IncreaseWeight("Attack", 10);
+                    }
+                    else
+                    {
+                        Attack();
+                    }
+                    break;
+            }
+        }
+
         switch (opponent.playerState)
         {
             case Player.STATE.charging:
@@ -307,14 +336,13 @@ public class IAScript : MonoBehaviour
                             break;
 
                         case Difficulty.Medium:
-                            IncreaseWeight("Pommel", 4);
+                            IncreaseWeight("Pommel", 8);
                             break;
 
                         case Difficulty.Hard:
-                            IncreaseWeight("Pommel", 8);
+                            Pommel();
                             break;
                     }
-
                 }
 
                 if (attachedPlayer.stamina >= 2)
@@ -326,11 +354,12 @@ public class IAScript : MonoBehaviour
                             break;
 
                         case Difficulty.Medium:
-                            IncreaseWeight("DashToward", 4);
+                            IncreaseWeight("DashToward", 8);
                             break;
 
                         case Difficulty.Hard:
-                            IncreaseWeight("DashToward", 8);
+                            DashToward();
+                            IncreaseWeight("Attack", 25);
                             break;
                     }
                 }
@@ -507,7 +536,6 @@ public class IAScript : MonoBehaviour
 
     string ChooseState()
     {
-
         //Select a random action by weight
         int randomAction = Random.Range(1, actionWeightSum);
         string rState = null;

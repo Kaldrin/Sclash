@@ -578,32 +578,29 @@ public class GameManager : MonoBehaviourPun
             //PlayerAttack playerAttack;
             Player playerScript = null;
 
+            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            IAScript ia = null;
+
 #if UNITY_EDITOR
             if (letThemFight)
             {
-                playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+                ia = playersList[i].AddComponent<IAScript>();
             }
             else
             {
-                if (i == 0)
+                if (i == 1)
                 {
-                    playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-                }
-                else
-                {
-                    playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+                    ia = playersList[i].AddComponent<IAScript>();
                 }
             }
 #else
-            if (i == 0)
-                {
-                    playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-                }
-                else
-                {
-                    playersList.Add(Instantiate(playerAI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-                }
+            if (i == 1)
+            {
+                    ia = playersList[i].AddComponent<IAScript>();
+            }
 #endif
+            ia.SetDifficulty(IAScript.Difficulty.Hard);
+
             //playerStats = playersList[i].GetComponent<PlayerStats>();
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
             //playerAttack = playersList[i].GetComponent<PlayerAttack>();
