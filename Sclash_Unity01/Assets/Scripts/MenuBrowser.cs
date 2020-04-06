@@ -117,13 +117,9 @@ public class MenuBrowser : MonoBehaviour
 
         // BROWSING DIRECTION
         if (invertVerticalAxis)
-        {
             sens = -1;
-        }
         else
-        {
             sens = 1;
-        }
 
 
         // SWAP VERTICAL / HORIZONTAL AXIS TO BROWSE
@@ -154,9 +150,7 @@ public class MenuBrowser : MonoBehaviour
             // H AXIS
             // Detects H axis let go
             if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
-            {
                 hAxisInUse = false;
-            }
 
 
             // Move sliders with horizontal
@@ -164,17 +158,11 @@ public class MenuBrowser : MonoBehaviour
             if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
             {
                 if (callSpecialElementWHenHorizontal)
-                {
                     positiveHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
-                }
                 else if (allowHorizontalJump)
-                {
                     VerticalBrowse(horizontalJumpAmount);
-                }
                 else if (elements[browseIndex].GetComponent<SliderToVolume>())
-                {
                     elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
-                }
                 
 
                 hAxisInUse = true;
@@ -182,17 +170,11 @@ public class MenuBrowser : MonoBehaviour
             else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
             {
                 if (callSpecialElementWHenHorizontal)
-                {
                     negativeHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
-                }
                 else if (allowHorizontalJump)
-                {
                     VerticalBrowse(- horizontalJumpAmount);
-                }
                 else if (elements[browseIndex].GetComponent<SliderToVolume>())
-                {
                     elements[browseIndex].GetComponent<SliderToVolume>().slider.value--;
-                }
 
 
                 hAxisInUse = true;
@@ -207,25 +189,19 @@ public class MenuBrowser : MonoBehaviour
             // V AXIS
             // Detects V axis let go
             if (Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
-            {
                 vAxisInUse = false;
-            }
 
             
             if (!vAxisInUse)
             {
                 // Detects positive V axis input
                 if (Input.GetAxis(verticalAxis) > verticalInputDetectionZone)
-                {
                     VerticalBrowse(1);
-                }
 
 
                 // Detects negative V axis input
                 if (Input.GetAxis(verticalAxis) < -verticalInputDetectionZone)
-                {
                     VerticalBrowse(-1);
-                }
             }
         }
 
@@ -234,9 +210,7 @@ public class MenuBrowser : MonoBehaviour
         if (canBack)
         {
             if (Input.GetButtonUp(backButton))
-            {
                 backElement.GetComponent<Button>().onClick.Invoke();
-            }
         }
     }
 
@@ -282,24 +256,16 @@ public class MenuBrowser : MonoBehaviour
         if (browseIndex > elements.Length - 1)
         {
             if (allowHorizontalJump)
-            {
                 browseIndex = 0 + (browseIndex - (elements.Length));
-            }
             else
-            {
                 browseIndex = 0;
-            }
         }
         else if (browseIndex < 0)
         {
             if (allowHorizontalJump)
-            {
                 browseIndex = (elements.Length) - Mathf.Abs(browseIndex);
-            }
             else
-            {
                 browseIndex = elements.Length - 1;
-            }
         }
 
 
@@ -322,25 +288,20 @@ public class MenuBrowser : MonoBehaviour
     // Selects or unselects not the specified object
     public void Select(bool state)
     {
-        if (!state)
+        if (enabled && elements.Length > 0)
         {
-            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
-        }
-        else
-        {
-            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements[browseIndex]);
+            if (!state)
+                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
+            else
+            {
+                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements[browseIndex]);
 
 
-            if (elements[browseIndex].GetComponent<Button>())
-            {
-                elements[browseIndex].GetComponent<Button>().Select();
-            }
-            else if (elements[browseIndex].GetComponent<TMP_InputField>())
-            {
-                elements[browseIndex].GetComponent<TMP_InputField>().Select();
-            }
-            else if (elements[browseIndex].GetComponent<EventTrigger>())
-            {
+                if (elements[browseIndex].GetComponent<Button>())
+                    elements[browseIndex].GetComponent<Button>().Select();
+                else if (elements[browseIndex].GetComponent<TMP_InputField>())
+                    elements[browseIndex].GetComponent<TMP_InputField>().Select();
+                else if (elements[browseIndex].GetComponent<EventTrigger>()) {}
             }
         }
 
@@ -354,19 +315,13 @@ public class MenuBrowser : MonoBehaviour
         if (enabled)
         {
             if (isObjectInGameObjectArray(hoveredObject, elements))
-            {
                 browseIndex = FindObjectIndexInGameObjectArray(hoveredObject, elements);
-            }
 
         
             if (elements[browseIndex].GetComponent<Button>() || elements[browseIndex].GetComponent<TMP_InputField>())
-            {
                 Select(true);
-            }
             else
-            {
                 Select(false);
-            }
         }
     }
     #endregion
@@ -384,9 +339,7 @@ public class MenuBrowser : MonoBehaviour
 
 
         for (int i = 0; i < elements.Length; i++)
-        {
             newElementsList[i] = elements[i];
-        }
 
 
         elements = newElementsList;
@@ -436,9 +389,7 @@ public class MenuBrowser : MonoBehaviour
         if (shouldUseButtonColorSwitch.Count < elements.Length)
         {
             for (int i = 0; i <= elements.Length - shouldUseButtonColorSwitch.Count; i++)
-            {
                 shouldUseButtonColorSwitch.Add(true);
-            }
         }
     }
 
@@ -470,9 +421,7 @@ public class MenuBrowser : MonoBehaviour
                 for (int j = 0; j < g.transform.childCount; j++)
                 {
                     if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
-                    {
                         g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textSelectedColor;
-                    }
                 }
             }
             // if the checked element is not the currently selected one
@@ -482,9 +431,7 @@ public class MenuBrowser : MonoBehaviour
                 {
                     // If the element is set to change its color when selected, changes it
                     if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
-                    {
                         g.GetComponent<Image>().color = buttonDefaultColor;
-                    }
                 }
                 catch {}
 
@@ -493,9 +440,7 @@ public class MenuBrowser : MonoBehaviour
                 for (int j = 0; j < g.transform.childCount; j++)
                 {
                     if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
-                    {
                         g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textDefaultColor;
-                    }
                 }
             }
         }
@@ -512,12 +457,8 @@ public class MenuBrowser : MonoBehaviour
     bool isObjectInGameObjectArray(GameObject objectToFind, GameObject[] array)
     {
         for (int i = 0; i < array.Length; i++)
-        {
             if (array[i] == objectToFind)
-            {
                 return true;
-            }
-        }
 
 
         return false;
@@ -526,12 +467,8 @@ public class MenuBrowser : MonoBehaviour
     int FindObjectIndexInGameObjectArray(GameObject objectToFind, GameObject[] array)
     {
         for (int i = 0; i < array.Length; i++)
-        {
             if (array[i] == objectToFind)
-            {
                 return i;
-            }
-        }
 
 
         return 0;

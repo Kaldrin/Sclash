@@ -35,6 +35,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] public PlayerInputs[] playerInputs = new PlayerInputs[2];
 
     [HideInInspector] public bool scoreInput = false;
+    [HideInInspector] public bool submitInput = false;
+    [HideInInspector] public bool submitInputUp = false;
 
 
 
@@ -76,6 +78,9 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         scoreInput = Input.GetButton("Score");
+        submitInputUp = (submitInput && !Input.GetButton("Submit"));
+        submitInput = Input.GetButton("Submit");
+
         for (int i = 0; i < playerInputs.Length; i++)
         {
             if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
@@ -119,9 +124,6 @@ public class InputManager : MonoBehaviour
         {
             playerInputs[i].scoreUp = playerInputs[i].score && !Input.GetButton(scoreAxis + i);
             playerInputs[i].score = Input.GetButton(scoreAxis + i);
-
-
-            Debug.Log(playerInputs[i].scoreUp);
         }
     }
     # endregion
