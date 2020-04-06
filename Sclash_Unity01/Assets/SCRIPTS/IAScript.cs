@@ -274,7 +274,7 @@ public class IAScript : MonoBehaviour
                     break;
 
                 case Difficulty.Hard:
-                    if (distBetweenPlayers > hitDistance)
+                    if (distBetweenPlayers > hitDistance && attachedPlayer.stamina >= 2)
                     {
                         DashToward();
                         IncreaseWeight("Attack", 10);
@@ -424,14 +424,7 @@ public class IAScript : MonoBehaviour
         }
         else
         {
-            if (distBetweenPlayers <= hitDistance - 2)
-            {
-                DashToward();
-            }
-            else
-            {
-                Parry();
-            }
+            DashAway();
         }
 
         isChoosing = false;
