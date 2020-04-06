@@ -23,6 +23,8 @@ public class InputManager : MonoBehaviour
         public bool parry;
         public bool parryDown;
         public bool jump;
+        public bool score;
+        public bool scoreUp;
     }
 
     [SerializeField]
@@ -46,8 +48,8 @@ public class InputManager : MonoBehaviour
         attackAxis = "Fire",
         pommelAxis = "Kick",
         parryAxis = "Parry",
-        jumpAxis = "Jump";
-
+        jumpAxis = "Jump",
+        scoreAxis = "Score";
 
 
 
@@ -85,10 +87,13 @@ public class InputManager : MonoBehaviour
             ManageDashInput(i);
             ManageKickInput(i);
             ManageAnyKeyInput(i);
-            ManagePauseInput(i);
+
             ManageJumpInput(i);
             ManageParryInput(i);
             ManageAttackInput(i);
+
+            ManageScoreInput();
+            ManagePauseInput(i);
         }
     }
 
@@ -106,6 +111,20 @@ public class InputManager : MonoBehaviour
 
 
 
+
+    # region SCORE
+    void ManageScoreInput()
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            playerInputs[i].scoreUp = playerInputs[i].score && !Input.GetButton(scoreAxis + i);
+            playerInputs[i].score = Input.GetButton(scoreAxis + i);
+
+
+            Debug.Log(playerInputs[i].scoreUp);
+        }
+    }
+    # endregion
 
 
 

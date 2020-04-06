@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc32d6deac0686647b2375359aae7cca, type: 3}
   m_Name: MenuParametersSave01
   m_EditorClassIdentifier: 
-  masterVolume: 50
-  musicVolume: 50
-  fxVolume: 50
-  voiceVolume: 50
-  roundToWin: 10
+  masterVolume: 0
+  musicVolume: -6
+  menuFXVolume: 2
+  fxVolume: 7
+  voiceVolume: 4
+  roundToWin: 1
+  customList: 01000000000000000000
+  dayNightCycle: 0
+  randomStage: 0
+  useCustomListForRandom: 1
+  keepLastLoadedStage: 1
+  useCustomListForRandomStartStage: 1
+  lastLoadedStageIndex: 0

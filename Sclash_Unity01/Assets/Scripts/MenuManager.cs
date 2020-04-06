@@ -9,37 +9,59 @@ using TMPro;
 // Created for Unity 2019.1.1f1
 public class MenuManager : MonoBehaviour
 {
-    # region FUNCTIONS
+    # region VARIABLES
     # region MANAGERS
     [Header("MANAGERS")]
     [Tooltip("The references to the GameManager script instance component")]
     [SerializeField] GameManager gameManager = null;
-    
+
     [Tooltip("The AudioManager script instance reference")]
     [SerializeField] AudioManager audioManager = null;
 
     [Tooltip("The references to the InputManager script instance component")]
     [SerializeField] InputManager inputManager = null;
+    #endregion
+
+
+
+
+    #region DATA
+    [Header("DATA")]
+    [SerializeField] CharactersDatabase charactersData = null;
+    #endregion
+
+
+
+
+    # region SAVE DATA
+    [Header("SAVE DATA")]
+    [SerializeField] MenuParameters menuParametersSaveScriptableObject = null;
     # endregion
 
 
 
 
-
-
-    # region SAVE PARAMETERS
-    // SAVE PARAMETERS
-    [Header("SAVE PARAMETERS")] [SerializeField] MenuParameters menuParametersSave = null;
+    #region AUDIO SETTINGS
+    [Header("AUDIO SETTINGS")]
     [Tooltip("The references to the Sliders components in the options menu controlling the volumes of the different tracks of the game")]
     [SerializeField]
-    SliderToVolume
-        masterVolume = null,
-        musicVolume = null,
+    SliderToVolume masterVolume = null;
+    [SerializeField]
+    SliderToVolume menuMusicVolume = null,
+        battleMusicVolume = null,
         menuFXVolume = null,
         fxVolume = null,
         voiceVolume = null;
+    # endregion
+
+
+
+
+    #region GAME SETTINGS
+    [Header("GAME SETTINGS")]
     [Tooltip("The reference to the Slider component in the options menu controlling the number of rounds needed to win the game")]
     [SerializeField] Slider roundsToWinSlider = null;
+    [SerializeField] GameObject displayHelpCheckBox = null;
     # endregion
 
 
@@ -48,7 +70,6 @@ public class MenuManager : MonoBehaviour
 
 
     # region PAUSE
-    // PAUSE
     [Header("PAUSE MENU")]
     [Tooltip("The reference to the menu's blur panel game object")]
     [SerializeField]
@@ -79,6 +100,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] public GameObject winMessage = null;
     [Tooltip("The reference to the TextMeshProUGUI component containing the name of the winner")]
     [SerializeField] public TextMeshProUGUI winName = null;
+    [SerializeField] public List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
+    [SerializeField] public List<Text> scoresDisplays = new List<Text>(2);
     # endregion
     # endregion
 
@@ -102,7 +125,10 @@ public class MenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LoadParameters();
+        LoadAudioSaveInScriptableObject();
+        LoadGameSaveInScriptableObject();
+        SetUpAudioSettingsFromScriptableObject();
+        SetUpGameSettingsFromScriptableObject();
         Cursor.visible = true;
     }
 
@@ -113,7 +139,7 @@ public class MenuManager : MonoBehaviour
         {
             case GameManager.GAMESTATE.game:
                 ManagePauseOnInput();
-                ManageScoreDisplayInput();
+                ManageInfosDisplayInput();
                 break;
 
             case GameManager.GAMESTATE.paused:
@@ -134,10 +160,9 @@ public class MenuManager : MonoBehaviour
 
 
 
-    # region SCORE
-    // SCORE
-    //Update score display
-    void ManageScoreDisplayInput()
+    # region SCORE DISPLAY IN GAME
+    // Update info display
+    void ManageInfosDisplayInput()
     {
         bool playerDead = false;
 
@@ -149,11 +174,25 @@ public class MenuManager : MonoBehaviour
             }
         }
 
-
-        if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game && gameManager.gameState == GameManager.GAMESTATE.game)
+        // Display score & in game help
+        if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
         {
-            //gameManager.scoreObject.SetActive(inputManager.scoreInput);
             gameManager.scoreObject.GetComponent<Animator>().SetBool("On", inputManager.scoreInput);
+
+
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                gameManager.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
+                gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
+            }
+        }
+        // Display in game help key indication
+        if (!playerDead && audioManager.audioState == AudioManager.AUDIOSTATE.battle)
+        {
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                gameManager.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
+            }
         }
     }
     # endregion
@@ -164,7 +203,6 @@ public class MenuManager : MonoBehaviour
 
 
     # region PAUSE
-    // PAUSE
     // Input to activate pause
     void ManagePauseOnInput()
     {
@@ -205,7 +243,7 @@ public class MenuManager : MonoBehaviour
             TriggerPause(true);
     }
 
-    void TriggerPause(bool state)
+    public void TriggerPause(bool state)
     {
         if (state)
         {
@@ -221,36 +259,19 @@ public class MenuManager : MonoBehaviour
 
         blurPanel.SetActive(state);
         pauseMenu.SetActive(state);
-        //gameManager.scoreObject.SetActive(state);
+
         gameManager.scoreObject.GetComponent<Animator>().SetBool("On", state);
 
-        //backButton.SetActive(!state);
-        //resumeButton.SetActive(state);
-        //quitButton.SetActive(state);
-        //mainMenuButton.SetActive(state);
-        //changeMapButton.SetActive(false);
-        //scoreToWinSlider.SetActive(false);
-        //backIndicator.SetActive(state);
 
-        //pauseOptionMenuBrowser.SetActive(state);
-        //mainOptionMenuBrowser.SetActive(false);
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            gameManager.inGameHelp[i].SetBool("On", state);
+            gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+            gameManager.playerKeysIndicators[i].SetBool("On", !state);
+        }
 
 
         Cursor.visible = state;
-
-
-        /*
-        for (int i = 0; i < gameManager.playersList.Count; i++)
-        {
-            if (state)
-                gameManager.playersList[i].GetComponent<Animator>().speed = 0;
-            else
-                gameManager.playersList[i].GetComponent<Animator>().speed = 1;
-        }
-        */
-
-
-        //SaveParameters();
     }
     # endregion
 
@@ -259,75 +280,119 @@ public class MenuManager : MonoBehaviour
 
 
 
-    # region SAVE
-    // SAVE / LOAD PARAMETERS
-    // Load menu parameters
-    void LoadParameters()
+    public void SetUpWinMenu(string winnerName, Color winnerColor, Vector2 score, Color[] playersColors)
     {
-        // Save from current session saves
-        masterVolume.slider.value = menuParametersSave.masterVolume;
-        masterVolume.UpdateVolume();
+        winName.text = winnerName;
+        winName.color = winnerColor;
 
-        musicVolume.slider.value = menuParametersSave.musicVolume;
-        musicVolume.UpdateVolume();
 
-        menuFXVolume.slider.value = menuParametersSave.menuFXVolume;
-        menuFXVolume.UpdateVolume();
-
-        fxVolume.slider.value = menuParametersSave.fxVolume;
-        fxVolume.UpdateVolume();
-
-        voiceVolume.slider.value = menuParametersSave.voiceVolume;
-        voiceVolume.UpdateVolume();
-
-        roundsToWinSlider.value = menuParametersSave.roundToWin;
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            scoresNames[i].text = charactersData.charactersList[gameManager.playersList[i].GetComponent<Player>().characterIndex].name;
+            scoresNames[i].color = playersColors[i];
+            scoresDisplays[i].text = score[i].ToString();
+            scoresDisplays[i].color = playersColors[i];
+        }
+    }
 
 
 
-        // Loads actual saves
+
+    # region SAVE / LOAD PARAMETERS
+    public void LoadGameSaveInScriptableObject()
+    {
         JsonSave save = SaveGameManager.GetCurrentSave();
 
+        menuParametersSaveScriptableObject.displayHelp = save.displayHelp;
+        menuParametersSaveScriptableObject.roundToWin = save.roundsToWin;
+    }
 
-        masterVolume.slider.value = save.masterVolume;
+    public void LoadAudioSaveInScriptableObject()
+    {
+        JsonSave save = SaveGameManager.GetCurrentSave();
+
+        menuParametersSaveScriptableObject.masterVolume = save.masterVolume;
+        menuParametersSaveScriptableObject.menuMusicVolume = save.menuMusicVolume;
+        menuParametersSaveScriptableObject.battleMusicVolume = save.battleMusicVolume;
+        menuParametersSaveScriptableObject.menuFXVolume = save.menuFXVolume;
+        menuParametersSaveScriptableObject.fxVolume = save.fxVolume;
+        menuParametersSaveScriptableObject.voiceVolume = save.voiceVolume;
+    }
+
+    public void SetUpGameSettingsFromScriptableObject()
+    {
+        roundsToWinSlider.value = menuParametersSaveScriptableObject.roundToWin;
+        displayHelpCheckBox.SetActive(menuParametersSaveScriptableObject.displayHelp);
+
+
+        for (int i = 0; i < gameManager.inGameHelp.Length; i++)
+        {
+            gameManager.inGameHelp[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
+            gameManager.playerKeysIndicators[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
+        }
+    }
+
+    public void SetUpAudioSettingsFromScriptableObject()
+    {
+        masterVolume.slider.value = menuParametersSaveScriptableObject.masterVolume;
         masterVolume.UpdateVolume();
 
-        musicVolume.slider.value = save.musicVolume;
-        musicVolume.UpdateVolume();
+        menuMusicVolume.slider.value = menuParametersSaveScriptableObject.menuMusicVolume;
+        menuMusicVolume.UpdateVolume();
 
-        menuFXVolume.slider.value = save.menuFXVolume;
+        battleMusicVolume.slider.value = menuParametersSaveScriptableObject.battleMusicVolume;
+        battleMusicVolume.UpdateVolume();
+
+        menuFXVolume.slider.value = menuParametersSaveScriptableObject.menuFXVolume;
         menuFXVolume.UpdateVolume();
 
-        fxVolume.slider.value = save.fxVolume;
+        fxVolume.slider.value = menuParametersSaveScriptableObject.fxVolume;
         fxVolume.UpdateVolume();
 
-        voiceVolume.slider.value = save.voiceVolume;
+        voiceVolume.slider.value = menuParametersSaveScriptableObject.voiceVolume;
         voiceVolume.UpdateVolume();
+    }
 
-        roundsToWinSlider.value = save.roundsToWin;
+    public void SaveGameSettingsInScriptableObject()
+    {
+        menuParametersSaveScriptableObject.roundToWin = Mathf.FloorToInt(roundsToWinSlider.value);
+        menuParametersSaveScriptableObject.displayHelp = displayHelpCheckBox.activeInHierarchy;
+    }
+
+    public void SaveAudioSettingsInScriptableObject()
+    {
+        menuParametersSaveScriptableObject.masterVolume = masterVolume.slider.value;
+        menuParametersSaveScriptableObject.menuMusicVolume = menuMusicVolume.slider.value;
+        menuParametersSaveScriptableObject.battleMusicVolume = battleMusicVolume.slider.value;
+        menuParametersSaveScriptableObject.menuFXVolume = menuFXVolume.slider.value;
+        menuParametersSaveScriptableObject.fxVolume = fxVolume.slider.value;
+        menuParametersSaveScriptableObject.voiceVolume = voiceVolume.slider.value;
+        menuParametersSaveScriptableObject.roundToWin = gameManager.scoreToWin;
+    }
+
+    public void SaveGameSettingsFromScriptableObject()
+    {
+        JsonSave save = SaveGameManager.GetCurrentSave();
+
+        save.roundsToWin = menuParametersSaveScriptableObject.roundToWin;
+        save.displayHelp = menuParametersSaveScriptableObject.displayHelp;
+
+        SaveGameManager.Save();
     }
 
     // Save menu parameters
-    public void SaveParameters()
+    public void SaveAudioSettingsFromScriptableObject()
     {
-        // Save for current session
-        menuParametersSave.masterVolume = masterVolume.slider.value;
-        menuParametersSave.musicVolume = musicVolume.slider.value;
-        menuParametersSave.menuFXVolume = menuFXVolume.slider.value;
-        menuParametersSave.fxVolume = fxVolume.slider.value;
-        menuParametersSave.voiceVolume = voiceVolume.slider.value;
-        menuParametersSave.roundToWin = gameManager.scoreToWin;
-
-
-        // Save forever
         JsonSave save = SaveGameManager.GetCurrentSave();
 
 
-        save.masterVolume = masterVolume.slider.value;
-        save.musicVolume = musicVolume.slider.value;
-        save.menuFXVolume = menuFXVolume.slider.value;
-        save.fxVolume = fxVolume.slider.value;
-        save.voiceVolume = voiceVolume.slider.value;
-        save.roundsToWin = Mathf.FloorToInt(roundsToWinSlider.value);
+        save.masterVolume = menuParametersSaveScriptableObject.masterVolume;
+        save.menuMusicVolume = menuParametersSaveScriptableObject.menuMusicVolume;
+        save.battleMusicVolume = menuParametersSaveScriptableObject.battleMusicVolume;
+        save.menuFXVolume = menuParametersSaveScriptableObject.menuFXVolume;
+        save.fxVolume = menuParametersSaveScriptableObject.fxVolume;
+        save.voiceVolume = menuParametersSaveScriptableObject.voiceVolume;
+
 
         SaveGameManager.Save();
     }

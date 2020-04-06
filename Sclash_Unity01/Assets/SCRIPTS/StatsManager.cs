@@ -22,7 +22,7 @@ public class StatsManager : MonoBehaviour
 
 
     [Header("SAVE DATA")]
-    [SerializeField] string statsSaveFilName = "StatsAsset.txt";
+    [SerializeField] string statsSaveFileName = "StatsAsset.txt";
 
 
 
@@ -410,7 +410,7 @@ public class StatsManager : MonoBehaviour
                                         break;
 
                                     case ACTION.clash:
-                                        successfulParry++;
+                                        clash++;
                                         break;
 
                                     case ACTION.dodge:
@@ -650,7 +650,7 @@ public class StatsManager : MonoBehaviour
         */
 
         string json = JsonUtility.ToJson(statsAsset);
-        File.WriteAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName, json);
+        File.WriteAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFileName, json);
     }
 
     void LoadStats()
@@ -676,10 +676,10 @@ public class StatsManager : MonoBehaviour
         //Stats data = null;
         //Debug.Log(File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName));
 
-        if (File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName))
+        if (File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFileName))
         {
             //data = ScriptableObject.CreateInstance<Stats>();
-            string json = File.ReadAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName);
+            string json = File.ReadAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFileName);
             JsonUtility.FromJsonOverwrite(json, statsAsset);
 
             //statsAsset = data;

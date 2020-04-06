@@ -29,13 +29,32 @@ public class stickerOnBoardAndPosition
 [Serializable]
 public class JsonSave
 {
+    
     public bool isEmpty = true;
-    public float masterVolume;
-    public float musicVolume;
-    public float menuFXVolume;
-    public float fxVolume;
-    public float voiceVolume;
-    public int roundsToWin;
+
+
+    [Header("AUDIO")]
+    [SerializeField] public float masterVolume = 40;
+    [SerializeField] public float menuMusicVolume = 40;
+    [SerializeField] public float battleMusicVolume = 40;
+    [SerializeField] public float menuFXVolume = 40;
+    [SerializeField] public float fxVolume = 40;
+    [SerializeField] public float voiceVolume = 40;
+
+
+    [Header("GAME")]
+    [SerializeField] public int roundsToWin = 5;
+    [SerializeField] public bool displayHelp = true;
+
+
+    [Header("STAGES")]
+    [SerializeField] public List<bool> customList = new List<bool>();
+    [SerializeField] public bool dayNightCycle = false;
+    [SerializeField] public bool randomStage = false;
+    [SerializeField] public bool useCustomListForRandom = false;
+    [SerializeField] public bool keepLastLoadedStage = true;
+    [SerializeField] public bool useCustomListForRandomStartStage = true;
+    [SerializeField] public int lastLoadedStageIndex = 0;
 
     public Stats stats;
     //public bool hasBeenSavedOnce = false;

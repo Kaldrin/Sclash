@@ -60,7 +60,7 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region MUSIC
+    #region MUSIC SOURCES
     [Header("MUSIC SOURCES")]
     // MUSIC SOURCES
     [SerializeField] AudioSource menuAudioSource = null;
@@ -69,8 +69,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public AudioSource winMusicAudioSource = null;
     [SerializeField] AudioSource phaseTransitionFXAudioSource = null;
     [SerializeField] AudioSource phaseTransitionStemAudioSource = null;
+    [SerializeField] AudioSource windAudioSource = null;
+    #endregion
 
 
+
+    #region MUSIC SOURCES VOLUMES PARAMETERS
     // SOURCES VOLUMES OBJECTIVES (The volumes towards which the sources' volumes will move slowly)
     [Header("MUSIC SOURCES VOLUMES PARAMETERS")]
     float menuVolumeObjective = 0;
@@ -78,19 +82,31 @@ public class AudioManager : MonoBehaviour
     List<float> phasesStrikesVolumeObjectives = new List<float>(3) { 0, 0, 0 };
     [SerializeField] Vector2 playersDistanceForStrikesVolumeLimits = new Vector2(6, 15);
     float winVolumeObjective = 0;
+    float windVolumeObjective = 0;
     [SerializeField] float volumeFadeSpeed = 0.01f;
+    #endregion
 
 
+
+    #region SOURCES MAX VOLUMES
     // SOURCES MAX VOLUME (Default max volume objectives)
     float maxMenuVolume = 0;
     List<float> maxPhasesMainVolumes = new List<float>(3) { 0, 0, 0 };
     List<float> maxPhasesStrikesVolumes = new List<float>(3) { 0, 0, 0 };
     float maxWinVolume = 0;
+    float maxWindVolume = 0;
+    #endregion
 
 
+
+    #region SELECTED MUSIC, STEM, PHASE
     // Selected music, stem, phase...
     [Header("STEMS & PHASES")]
     [SerializeField] bool useRandomStemSelection = true;
+    [SerializeField]
+    int
+        maxPhase = 2,
+        scoreFromMaxScoreToAutoMaxPhase = 1;
     bool decrementCurrentPhaseAtNextLoop = false;
     [HideInInspector] public int currentlySelectedMusicIndex = 0;
     [SerializeField]
@@ -98,8 +114,10 @@ public class AudioManager : MonoBehaviour
         currentMusicPhase = 0,
         currentMusicStem = 0,
         previousMusicStem = 0;
+    #endregion
 
 
+    #region BATTLE INTENSITY
     // BATTLE INTENSITY
     [Header("MUSIC BATTLE INTENSITY")]
     [SerializeField] float decreaseBattleIntensityEveryDuration = 3f;
@@ -109,7 +127,6 @@ public class AudioManager : MonoBehaviour
         lastBattleIntensityLevel = 0;
     [SerializeField] int maxBattleIntensityLevel = 12;
     [SerializeField] List<int> battleIntensityLevelsForPhaseUp = new List<int>(2) { 3, 8, 1000 };
-
     #endregion
 
 
@@ -269,7 +286,7 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region STATES
+    #region AUDIO STATES
     public void SwitchAudioState(AUDIOSTATE newAudioState)
     {
         oldAudioState = audioState;
@@ -280,17 +297,14 @@ public class AudioManager : MonoBehaviour
         {
             case AUDIOSTATE.none:
                 for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
-                {
                     phasesMainVolumeObjectives[i] = 0;
-                }
                 for (int i = 0; i < phasesStrikesVolumeObjectives.Count; i++)
-                {
                     phasesStrikesVolumeObjectives[i] = 0;
-                }
                 break;
 
 
             case AUDIOSTATE.menu:
+                windVolumeObjective = 0;
                 menuVolumeObjective = maxMenuVolume;
                 menuAudioSource.Play();
                 break;
@@ -298,32 +312,28 @@ public class AudioManager : MonoBehaviour
 
             case AUDIOSTATE.beforeBattle:
                 menuVolumeObjective = 0;
+                windAudioSource.Play();
+                windVolumeObjective = maxWindVolume;
                 SetUpAudioElementsDependingOnSelectedMusic(currentlySelectedMusicIndex);
                 phasesMainVolumeObjectives[currentMusicPhase] = maxPhasesMainVolumes[currentMusicPhase];
 
                 for (int i = 0; i < phasesMainAudioSources.Count; i++)
-                {
                     phasesMainAudioSources[i].Stop();
-                }
                 for (int i = 0; i < phasesStrikesAudioSources.Count; i++)
-                {
                     phasesStrikesAudioSources[i].Stop();
-                }
                 break;
 
 
             case AUDIOSTATE.battle:
+                windVolumeObjective = 0;
                 phasesMainAudioSources[currentMusicPhase].Play();
                 phasesStrikesAudioSources[currentMusicPhase].Play();
 
+
                 for (int i = 0; i < phasesMainAudioSources.Count; i++)
-                {
                     phasesMainAudioSources[i].Play();
-                }
                 for (int i = 0; i < phasesStrikesAudioSources.Count; i++)
-                {
                     phasesStrikesAudioSources[i].Play();
-                }
                 break;
 
 
@@ -332,27 +342,21 @@ public class AudioManager : MonoBehaviour
 
 
             case AUDIOSTATE.won:
+                windVolumeObjective = maxWindVolume;
                 for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
-                {
                     phasesMainVolumeObjectives[i] = 0;
-                }
                 for (int i = 0; i < phasesStrikesVolumeObjectives.Count; i++)
-                {
                     phasesStrikesVolumeObjectives[i] = 0;
-                }
 
                 for (int i = 0; i < phasesMainAudioSources.Count; i++)
-                {
                     phasesMainAudioSources[i].Stop();
-                }
                 for (int i = 0; i < phasesStrikesAudioSources.Count; i++)
-                {
                     phasesStrikesAudioSources[i].Stop();
-                }
                 break;
         }
     }
     #endregion
+
 
 
 
@@ -407,13 +411,15 @@ public class AudioManager : MonoBehaviour
 
 
         UpdateMusicDependingOnBattleIntensity();
-
         decreaseBattleIntensityLoopStartTime = Time.time;
     }
 
     void DecreaseIntensityWithTime()
     {
-        if (currentBattleIntensity > 0)
+        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+
+
+        if (currentBattleIntensity > 0 && !(currentMaxScore < gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase || gameManager.scoreToWin <= scoreFromMaxScoreToAutoMaxPhase))
         {
             if (Time.time - decreaseBattleIntensityLoopStartTime >= decreaseBattleIntensityEveryDuration)
             {
@@ -421,7 +427,6 @@ public class AudioManager : MonoBehaviour
                 currentBattleIntensity--;
 
                 UpdateMusicDependingOnBattleIntensity();
-
                 decreaseBattleIntensityLoopStartTime = Time.time;
             }
         }
@@ -431,14 +436,14 @@ public class AudioManager : MonoBehaviour
     {
         int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
 
-        if (currentMaxScore < gameManager.scoreToWin - 1 || gameManager.scoreToWin <= 1)
+
+        if (!(currentMaxScore >= gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase && gameManager.scoreToWin > scoreFromMaxScoreToAutoMaxPhase))
         {
             if (currentMusicPhase < phasesMainAudioSources.Count - 1)
             {
                 if (currentBattleIntensity >= battleIntensityLevelsForPhaseUp[currentMusicPhase] && lastBattleIntensityLevel < battleIntensityLevelsForPhaseUp[currentMusicPhase])
                 {
                     ImmediatelySwitchPhase(1, false, 0);
-                    Debug.Log(currentMusicPhase);
                     phaseTransitionFXAudioSource.clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseUpFX;
                     phaseTransitionFXAudioSource.Play();
                 }
@@ -446,14 +451,9 @@ public class AudioManager : MonoBehaviour
             if (currentMusicPhase > 0)
             {
                 if (currentBattleIntensity < battleIntensityLevelsForPhaseUp[currentMusicPhase - 1] && lastBattleIntensityLevel >= battleIntensityLevelsForPhaseUp[currentMusicPhase - 1])
-                {
-                    Debug.Log(battleIntensityLevelsForPhaseUp[currentMusicPhase - 1]);
                     decrementCurrentPhaseAtNextLoop = true;
-                }
                 if (decrementCurrentPhaseAtNextLoop && currentBattleIntensity >= battleIntensityLevelsForPhaseUp[currentMusicPhase - 1] && lastBattleIntensityLevel < battleIntensityLevelsForPhaseUp[currentMusicPhase - 1])
-                {
                     decrementCurrentPhaseAtNextLoop = false;
-                }
             }
         }
     }
@@ -468,18 +468,26 @@ public class AudioManager : MonoBehaviour
         //!phasesMainAudioSources[currentMusicPhase].isPlaying
         if (phasesMainAudioSources[currentMusicPhase].time >= 11.98f)
         {
+            bool isMaxPhase = false;
             SwitchStem(useRandomStemSelection);
+            int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
 
 
-            // Adds phase down transition stem on top of normal stem
-            if (decrementCurrentPhaseAtNextLoop)
+            if (currentMaxScore >= gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase & gameManager.scoreToWin > scoreFromMaxScoreToAutoMaxPhase)
             {
-                decrementCurrentPhaseAtNextLoop = false;
+                if (currentMusicPhase < maxPhase)
+                    phaseTransitionStemAudioSource.Play();
+
+                isMaxPhase = true;
+                ImmediatelySwitchPhase(0, true, maxPhase);
+            }
+            // Adds phase down transition stem on top of normal stem
+            else if (decrementCurrentPhaseAtNextLoop)
+            {
                 ImmediatelySwitchPhase(-1, false, 0);
 
                 if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count > 0)
-                    if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio)
-                        phaseTransitionStemAudioSource.clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio;
+                    phaseTransitionStemAudioSource.clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemAudio;
 
 
                 phaseTransitionStemAudioSource.Play();
@@ -494,7 +502,7 @@ public class AudioManager : MonoBehaviour
             for (int i = 0; i < phasesStrikesAudioSources.Count; i++)
             {
                 // Sets transitions stem strikes if there are for this stem
-                if (decrementCurrentPhaseAtNextLoop && musicDataBase.musicsList[currentlySelectedMusicIndex].phases[i].phaseDownStems.Count > 0)
+                if (!isMaxPhase && decrementCurrentPhaseAtNextLoop && musicDataBase.musicsList[currentlySelectedMusicIndex].phases[i].phaseDownStems.Count > 0)
                     phasesStrikesAudioSources[i].clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[i].phaseDownStems[Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseDownStems.Count - 1)].stemStrikesAudio;
                 // Sets next stem strikes if there are for this stem
                 else if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[i].stems[currentMusicStem].stemStrikesAudio)
@@ -504,6 +512,7 @@ public class AudioManager : MonoBehaviour
                 phasesStrikesAudioSources[i].Play();
             }
 
+            decrementCurrentPhaseAtNextLoop = false;
         }
     }
     #endregion
@@ -546,6 +555,7 @@ public class AudioManager : MonoBehaviour
     {
         previousMusicStem = currentMusicStem;
 
+
         if (!random)
         {
             currentMusicStem++;
@@ -566,12 +576,12 @@ public class AudioManager : MonoBehaviour
 
 
 
-
     #region MUSICS VOLUMES
     void GetSourcesDefaultVolume()
     {
         maxMenuVolume = menuAudioSource.volume;
         maxWinVolume = winMusicAudioSource.volume;
+        maxWindVolume = windAudioSource.volume;
 
 
         for (int i = 0; i < maxPhasesMainVolumes.Count; i++)
@@ -589,7 +599,20 @@ public class AudioManager : MonoBehaviour
         float volumeFadeDirection = 0;
 
 
-        // Menu
+        // WIND
+        if (windAudioSource.volume != windVolumeObjective)
+        {
+            volumeFadeDirection = Mathf.Sign(windVolumeObjective - windAudioSource.volume);
+
+            windAudioSource.volume += volumeFadeDirection * volumeFadeSpeed;
+
+            if (volumeFadeDirection >= 0 && windAudioSource.volume >= windVolumeObjective)
+                windAudioSource.volume = windVolumeObjective;
+            else if (volumeFadeDirection < 0 && windAudioSource.volume <= windVolumeObjective)
+                windAudioSource.volume = windVolumeObjective;
+        }
+
+        // MENU
         if (menuAudioSource.volume != menuVolumeObjective)
         {
             volumeFadeDirection = Mathf.Sign(menuVolumeObjective - menuAudioSource.volume);
@@ -602,7 +625,7 @@ public class AudioManager : MonoBehaviour
                 menuAudioSource.volume = menuVolumeObjective;
         }
 
-        // Main
+        // MAIN
         for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
         {
             if (phasesMainAudioSources[i].volume != phasesMainVolumeObjectives[i])
@@ -618,7 +641,7 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        // Strikes
+        // STRIKES
         for (int i = 0; i < phasesStrikesVolumeObjectives.Count; i++)
         {
             if (phasesStrikesAudioSources[i].volume != phasesStrikesVolumeObjectives[i])

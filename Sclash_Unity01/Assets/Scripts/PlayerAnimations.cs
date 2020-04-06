@@ -19,6 +19,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     [SerializeField] Animator legsAnimator = null;
     [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
     [SerializeField] Animator drawTextAnimator = null;
+    [SerializeField] public Animator nameDisplayAnimator = null;
 
     [Tooltip("The reference to the game object containing the sprite mask of the player's legs")]
     [SerializeField] public GameObject legsMask = null;
@@ -448,7 +449,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region POMMEL ANIMATION
-    // POMMEL ANIMATION
     // Trigger on pommel animation
     public void TriggerPommel()
     {
@@ -512,7 +512,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region  CLASHED
-    // CLASHED ANIMATION
     // Trigger on clashed animation
     public void TriggerClashed(bool state)
     {
