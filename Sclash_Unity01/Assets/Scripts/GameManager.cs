@@ -661,7 +661,8 @@ public class GameManager : MonoBehaviourPun
                     ia = playersList[i].AddComponent<IAScript>();
             }
 #endif
-            ia.SetDifficulty(IAScript.Difficulty.Hard);
+            if(ia != null)
+                ia.SetDifficulty(IAScript.Difficulty.Hard);
 
             //playerStats = playersList[i].GetComponent<PlayerStats>();*
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
