@@ -59,6 +59,7 @@ public class IAScript : MonoBehaviour
     bool nextState;
     float stateTimer;
 
+    bool ready = false;
 
     public float timeToWait;
 
@@ -90,7 +91,6 @@ public class IAScript : MonoBehaviour
     #region Built-in methods
     void OnEnable()
     {
-
         attachedPlayer = GetComponent<Player>();
 
         FindOpponent();
@@ -104,10 +104,20 @@ public class IAScript : MonoBehaviour
         attachedPlayer.playerIsAI = true;
     }
 
+    void OnDisable()
+    {
+        attachedPlayer.playerIsAI = false;
+    }
+
+    public void EnemyReady()
+    {
+        Debug.Log("Ready");
+        ready = true;
+    }
 
     void Update()
     {
-        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
+        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game && ready)
         {
             //RESET WEIGHTS ON DEATH
             if (opponent.playerState == Player.STATE.enemyKilled || attachedPlayer.playerState == Player.STATE.enemyKilled)
@@ -252,7 +262,11 @@ public class IAScript : MonoBehaviour
         {
             Debug.LogWarning("Couldn't find opponent !", gameObject);
             StartCoroutine(WaitABit("FindOpponent", 0.12f));
+            return;
         }
+
+        Debug.Log("Opponent found !");
+        opponent.DrawnEvent += EnemyReady;
     }
 
     void AddWeights()
@@ -461,7 +475,6 @@ public class IAScript : MonoBehaviour
 
     void Parry()
     {
-        Debug.Log("Parry");
 
         InputManager.Instance.playerInputs[attachedPlayer.playerNum].parry = true;
 

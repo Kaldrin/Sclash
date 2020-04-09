@@ -9,6 +9,12 @@ public class InputManager : MonoBehaviour
     public static InputManager Instance;
     #endregion  
 
+    #region Event
+    public delegate void OnPlayerInput();
+    public event OnPlayerInput P2Input;
+    public event OnPlayerInput SwitchChar;
+    #endregion
+
 
     [System.Serializable]
     public struct PlayerInputs
@@ -25,6 +31,7 @@ public class InputManager : MonoBehaviour
         public bool jump;
         public bool score;
         public bool scoreUp;
+        public bool switchChar;
     }
 
     [SerializeField]
@@ -51,7 +58,8 @@ public class InputManager : MonoBehaviour
         pommelAxis = "Kick",
         parryAxis = "Parry",
         jumpAxis = "Jump",
-        scoreAxis = "Score";
+        scoreAxis = "Score",
+        selectcharAxis = "SelectChar";
 
 
 
@@ -83,10 +91,10 @@ public class InputManager : MonoBehaviour
 
         for (int i = 0; i < playerInputs.Length; i++)
         {
+            ManageCharacSelectInput(i);
+
             if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
-            {
                 return;
-            }
 
             ManageHorizontalInput(i);
             ManageDashInput(i);
@@ -97,8 +105,9 @@ public class InputManager : MonoBehaviour
             ManageParryInput(i);
             ManageAttackInput(i);
 
-            ManageScoreInput();
+            ManageScoreInput(i);
             ManagePauseInput(i);
+
         }
     }
 
@@ -110,7 +119,8 @@ public class InputManager : MonoBehaviour
     // ANY KEY
     void ManageAnyKeyInput(int i)
     {
-        playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
+        playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
+
     }
     # endregion
 
@@ -118,18 +128,22 @@ public class InputManager : MonoBehaviour
 
 
     # region SCORE
-    void ManageScoreInput()
+    void ManageScoreInput(int i)
     {
-        for (int i = 0; i < playerInputs.Length; i++)
-        {
-            playerInputs[i].scoreUp = playerInputs[i].score && !Input.GetButton(scoreAxis + i);
-            playerInputs[i].score = Input.GetButton(scoreAxis + i);
-        }
+        playerInputs[i].scoreUp = playerInputs[i].score && !Input.GetButton(scoreAxis + i);
+        playerInputs[i].score = Input.GetButton(scoreAxis + i);
     }
     # endregion
 
 
+    void ManageCharacSelectInput(int i)
+    {
+        playerInputs[i].switchChar = Input.GetButtonDown(selectcharAxis + i);
 
+        if (i == 1 && playerInputs[i].switchChar)
+            if (P2Input != null)
+                P2Input();
+    }
 
 
     # region PAUSE
@@ -181,6 +195,8 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].attackDown = (!playerInputs[i].attack && (Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone));
         playerInputs[i].attack = Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone;
+
+
     }
     # endregion
 

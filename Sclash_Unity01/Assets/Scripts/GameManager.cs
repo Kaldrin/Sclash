@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The MapLoader script instance reference")]
     [SerializeField] MapLoader mapLoader = null;
 
+    InputManager inputManager = null;
+
     [Tooltip("The CameraShake scripts instances references in the scene")]
     [SerializeField]
     public CameraShake
@@ -179,6 +181,7 @@ public class GameManager : MonoBehaviourPun
     //[SerializeField] string[] playerNames = { "Aka", "Ao" };
     [HideInInspector] public bool playerDead = false;
     bool allPlayersHaveDrawn = false;
+    bool player2Detected = false;
     # endregion
 
 
@@ -306,11 +309,18 @@ public class GameManager : MonoBehaviourPun
     private void Awake()
     {
         Instance = this;
+
+        inputManager = InputManager.Instance;
     }
 
     // Start is called before the first frame update
     public void Start()
     {
+        if (inputManager == null)
+            inputManager = InputManager.Instance;
+
+        inputManager.P2Input += ConnectPlayer2;
+
         // Set variables
         score = new Vector2(0, 0);
         baseTimeScale = Time.timeScale;
@@ -319,6 +329,11 @@ public class GameManager : MonoBehaviourPun
 
         // START GAME
         StartCoroutine(SetupGame());
+    }
+
+    void OnEnable()
+    {
+
     }
 
     // Update is called once per graphic frame
@@ -445,6 +460,19 @@ public class GameManager : MonoBehaviourPun
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
+    }
+
+    void ConnectPlayer2()
+    {
+        Debug.Log("Player2 joined");
+        player2Detected = true;
+        if (playersList[1].GetComponent<Player>().playerIsAI)
+        {
+            playersList[1].GetComponent<Player>().playerIsAI = false;
+            Destroy(playersList[1].GetComponent<IAScript>());
+        }
+
+        inputManager.P2Input -= ConnectPlayer2;
     }
 
     // Begins the StartMatch coroutine, this function is called by the menu button Sclash
@@ -661,7 +689,7 @@ public class GameManager : MonoBehaviourPun
                     ia = playersList[i].AddComponent<IAScript>();
             }
 #endif
-            if(ia != null)
+            if (ia != null)
                 ia.SetDifficulty(IAScript.Difficulty.Hard);
 
             //playerStats = playersList[i].GetComponent<PlayerStats>();*

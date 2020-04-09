@@ -8,6 +8,15 @@ using Photon.Pun;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
+    #region Events
+
+    public delegate void OnDrawnEvent();
+    public event OnDrawnEvent DrawnEvent;
+
+
+    #endregion
+
+
     #region VARIABLES
     #region MANAGERS
     // MANAGERS
@@ -103,6 +112,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     int otherPlayerNum = 0;
     [HideInInspector] public int networkPlayerNum = 0;
     public bool playerIsAI;
+    Player opponent;
     #endregion
 
 
@@ -651,6 +661,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
+        if (opponent == null)
+        {
+            FindOpponent();
+        }
+
         // Action depending on state
         switch (playerState)
         {
@@ -662,6 +677,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.sneathed:
                 ManageOrientation();
+                ManageIA();
                 ManageDraw();
                 break;
 
@@ -783,6 +799,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 //UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
+
+                if (DrawnEvent != null)
+                    DrawnEvent();
+
                 if (hasFinishedAnim)
                 {
                     hasFinishedAnim = false;
@@ -1110,6 +1130,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region PLAYERS
     // PLAYERS
+
     IEnumerator GetOtherPlayerNum()
     {
         yield return new WaitForSeconds(0.2f);
@@ -1123,6 +1144,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
+
+    void FindOpponent()
+    {
+        foreach (Player p in FindObjectsOfType<Player>())
+        {
+            if (p != this)
+            {
+                opponent = p;
+                break;
+            }
+        }
+    }
+
     #endregion
 
 
@@ -1399,7 +1433,30 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
+    void ManageIA()
+    {
+        if (inputManager.playerInputs[playerNum].switchChar && opponent.playerIsAI)
+        {
+            IAScript enemyIA = opponent.GetComponent<IAScript>();
+            if (enemyIA != null)
+            {
+                switch (enemyIA.IADifficulty)
+                {
+                    case IAScript.Difficulty.Easy:
+                        enemyIA.SetDifficulty(IAScript.Difficulty.Medium);
+                        break;
 
+                    case IAScript.Difficulty.Medium:
+                        enemyIA.SetDifficulty(IAScript.Difficulty.Hard);
+                        break;
+
+                    case IAScript.Difficulty.Hard:
+                        enemyIA.SetDifficulty(IAScript.Difficulty.Easy);
+                        break;
+                }
+            }
+        }
+    }
 
 
     #region STAMINA
@@ -3105,4 +3162,5 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
     }
+
 }
