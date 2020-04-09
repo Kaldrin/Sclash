@@ -92,8 +92,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-    #region PLAYERS INFOS
-    // PLAYERS
+    #region PLAYERS IDENTIFICATION
     [Header("PLAYERS IDENTIFICATION")]
     
     [SerializeField] public Text characterNameDisplay = null;
@@ -594,7 +593,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    // BASE FUNCTIONS
     void Start()
     {
         // GET MANAGERS
@@ -604,8 +602,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         statsManager = GameObject.Find(statsManagerName).GetComponent<StatsManager>();
 
 
-        //deathBloodFXBaseRotation = deathBloodFX.transform.localEulerAngles;
-        //drawTextBaseScale = drawText.transform.localScale;
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
         oldStamina = maxStamina;
 

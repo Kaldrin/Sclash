@@ -10,6 +10,14 @@ using UnityEngine.EventSystems;
 public class MenuBrowser : MonoBehaviour
 {
     #region VARIABLES
+    #region MANAGERS
+    [Header("MANAGERS")]
+    [SerializeField] RumbleManager rumbleManager = null;
+    #endregion
+
+
+
+
     #region BROWSING
     [Header("BROWSING")]
     [Tooltip("The list of elements to browse in this menu page")]
@@ -271,6 +279,10 @@ public class MenuBrowser : MonoBehaviour
 
         // VISUAL
         UpdateColors();
+
+
+        // RUMBLE
+        rumbleManager.TriggerSimpleControllerVibrationForEveryone(rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationDuration);
 
 
         Select(true);

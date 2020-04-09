@@ -9,10 +9,16 @@ using UnityEngine.EventSystems;
 // Created for Unity 2019.1.1f1
 public class MenuBrowser2D : MonoBehaviour
 {
-    
-
-
     #region VARIABLES
+    #region MANAGERS
+    [Header("MANAGERS")]
+    [SerializeField] RumbleManager rumbleManager = null;
+    #endregion
+
+
+
+
+
     #region BROWSING
     [System.Serializable]
     public class ElementsLine
@@ -285,6 +291,10 @@ public class MenuBrowser2D : MonoBehaviour
         UpdateColors();
 
 
+        // RUMBLE
+        rumbleManager.TriggerSimpleControllerVibrationForEveryone(rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationDuration);
+
+
         Select(true);
     }
 
@@ -329,6 +339,10 @@ public class MenuBrowser2D : MonoBehaviour
         {
             // VISUAL
             UpdateColors();
+
+
+            // RUMBLE
+            rumbleManager.TriggerSimpleControllerVibrationForEveryone(rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationDuration);
 
 
             Select(true);
