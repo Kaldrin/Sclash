@@ -28,7 +28,8 @@ public class CameraManager : MonoBehaviour
     // CAMERA STATE
     [Header("CAMERA STATE")]
     [SerializeField] public CAMERASTATE camState = CAMERASTATE.inactive;
-    [HideInInspector] public enum CAMERASTATE
+    [HideInInspector]
+    public enum CAMERASTATE
     {
         inactive,
         battle,
@@ -48,7 +49,8 @@ public class CameraManager : MonoBehaviour
     [SerializeField] Vector2 playersDistanceLimitsForCameraZoomedUnzoomedLimits = new Vector2(5, 25);
 
     [SerializeField] float customEventZoom = -5f;
-    [SerializeField] public float
+    [SerializeField]
+    public float
         actualZoomSmoothDuration = 1f,
         battleZoomSmoothDuration = 0.25f,
         cinematicZoomSmoothDuration = 1f,
@@ -77,7 +79,7 @@ public class CameraManager : MonoBehaviour
     [HideInInspector] public float actualXSmoothMovementsMultiplier = 0.5f;
     float playersBaseYPos = 0;
 
-    [SerializeField] Vector2 cameraArmXLimitsZoomedAndUnzoomed = new Vector2(10, 5); 
+    [SerializeField] Vector2 cameraArmXLimitsZoomedAndUnzoomed = new Vector2(10, 5);
 
     Vector3 currentMovementSpeed = new Vector3(0, 0, 0);
     [HideInInspector] public Vector3 cameraArmBasePos = new Vector3(0, 0, 0);
@@ -123,7 +125,7 @@ public class CameraManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
         if (playersList == null)
         {
             playersList = FindPlayers();
@@ -133,14 +135,14 @@ public class CameraManager : MonoBehaviour
             playersList = FindPlayers();
         }
 
-        
+
         actualXSmoothMovementsMultiplier = cinematicXSmoothMovementsMultiplier;
         actualZoomSpeed = cinematicZoomSpeed;
         actualZoomSmoothDuration = cinematicZoomSmoothDuration;
         cameraBasePos = cameraComponent.transform.position;
         cameraArmBasePos = transform.position;
 
-        
+
         StartCoroutine(BehaviourDependingOnState());
     }
 
@@ -163,7 +165,7 @@ public class CameraManager : MonoBehaviour
     // FixedUpdate is called 50 times per second
     void FixedUpdate()
     {
-        
+
     }
 
 
@@ -254,7 +256,6 @@ public class CameraManager : MonoBehaviour
 
             return playersList;
         }
-            
         else
         {
             Debug.LogError("The camera couldn't find the players");

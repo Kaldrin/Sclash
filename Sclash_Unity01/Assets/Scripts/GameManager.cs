@@ -27,8 +27,11 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The MapLoader script instance reference")]
     [SerializeField] MapLoader mapLoader = null;
 
+    InputManager inputManager = null;
+
     [Tooltip("The CameraShake scripts instances references in the scene")]
-    [SerializeField] public CameraShake
+    [SerializeField]
+    public CameraShake
         deathCameraShake = null,
         clashCameraShake = null,
         pommelCameraShake = null,
@@ -113,7 +116,7 @@ public class GameManager : MonoBehaviourPun
     [Header("SCORE DISPLAY")]
     [Tooltip("The score display game object reference")]
     [SerializeField] public GameObject scoreObject = null;
-    
+
     [Tooltip("The score display text mesh pro component reference")]
     [SerializeField] List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
     [SerializeField] List<Text> scoresDisplays = new List<Text>(2);
@@ -163,18 +166,22 @@ public class GameManager : MonoBehaviourPun
     [Header("PLAYERS")]
     [Tooltip("The player prefab reference")]
     [SerializeField] GameObject player = null;
+    [SerializeField] GameObject playerAI = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
     [SerializeField] public GameObject[] playerSpawns = { null, null };
     [HideInInspector] public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
-    [SerializeField] public Color[]
+    [SerializeField]
+    public Color[]
         playersColors = { Color.red, Color.yellow },
         attackSignColors = { Color.red, Color.yellow },
         playerLightsColors = { Color.red, Color.yellow };
     [Tooltip("The names to identify the players")]
+    //[SerializeField] string[] playerNames = { "Aka", "Ao" };
     [HideInInspector] public bool playerDead = false;
     bool allPlayersHaveDrawn = false;
+    bool player2Detected = false;
     # endregion
 
 
@@ -207,7 +214,7 @@ public class GameManager : MonoBehaviourPun
         clashCameraShakeDuration = 0.3f,
         pommelCameraShakeDuration = 0.3f,
         finalCameraShakeDuration = 0.7f;
-    
+
 
 
     float
@@ -218,7 +225,8 @@ public class GameManager : MonoBehaviourPun
     bool runTimeScaleUpdate = true;
 
     [Tooltip("The round transition leaves effect object reference")]
-    [SerializeField] public ParticleSystem
+    [SerializeField]
+    public ParticleSystem
         roundTransitionLeavesFX = null,
         animeLinesFx = null;
     [SerializeField] ParticleSystem hajimeFX = null;
@@ -274,7 +282,8 @@ public class GameManager : MonoBehaviourPun
     #endregion
     #endregion
 
-
+    [SerializeField]
+    bool letThemFight;
 
 
 
@@ -300,11 +309,18 @@ public class GameManager : MonoBehaviourPun
     private void Awake()
     {
         Instance = this;
+
+        inputManager = InputManager.Instance;
     }
 
     // Start is called before the first frame update
     public void Start()
     {
+        if (inputManager == null)
+            inputManager = InputManager.Instance;
+
+        inputManager.P2Input += ConnectPlayer2;
+
         // Set variables
         score = new Vector2(0, 0);
         baseTimeScale = Time.timeScale;
@@ -313,6 +329,11 @@ public class GameManager : MonoBehaviourPun
 
         // START GAME
         StartCoroutine(SetupGame());
+    }
+
+    void OnEnable()
+    {
+
     }
 
     // Update is called once per graphic frame
@@ -441,10 +462,33 @@ public class GameManager : MonoBehaviourPun
         cameraManager.FindPlayers();
     }
 
+    void ConnectPlayer2()
+    {
+        Debug.Log("Player2 joined");
+        player2Detected = true;
+        if (playersList[1].GetComponent<Player>().playerIsAI)
+        {
+            playersList[1].GetComponent<Player>().playerIsAI = false;
+            Destroy(playersList[1].GetComponent<IAScript>());
+        }
+
+        inputManager.P2Input -= ConnectPlayer2;
+    }
+
     // Begins the StartMatch coroutine, this function is called by the menu button Sclash
     public void StartMatch()
     {
         StartCoroutine(StartMatchCoroutine());
+    }
+
+    public void ManageAI()
+    {
+        foreach (Player p in FindObjectsOfType<Player>())
+        {
+            p.gameObject.AddComponent<IAScript>();
+        }
+
+        StartMatch();
     }
 
     // Starts the match, activates the camera cinematic zoom and then switches to battle camera
@@ -464,6 +508,7 @@ public class GameManager : MonoBehaviourPun
 
         // SCORE DISPLAY
         UpdateMaxScoreDisplay();
+
         ResetScore();
         for (int i = 0; i < playersList.Count; i++)
         {
@@ -564,7 +609,53 @@ public class GameManager : MonoBehaviourPun
 
 
 
+    void SpawnAI()
+    {
+        playersList.Clear();
+        for (int i = 0; i < playerSpawns.Length; i++)
+        {
+            //PlayerStats playerStats;
+            PlayerAnimations playerAnimations;
+            //PlayerAttack playerAttack;
+            Player playerScript = null;
 
+            GameObject AI = (GameObject)Resources.Load("PlayerAI");
+
+            playersList.Add(Instantiate(AI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            //playerStats = playersList[i].GetComponent<PlayerStats>();
+            playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
+            //playerAttack = playersList[i].GetComponent<PlayerAttack>();
+            playerScript = playersList[i].GetComponent<Player>();
+
+            //playerStats.playerNum = i + 1;
+            //playerStats.ResetValues();
+            playerScript.playerNum = i;
+            playerScript.ResetAllPlayerValuesForNextMatch();
+
+
+
+
+
+            // ANIMATIONS
+            playerAnimations.spriteRenderer.color = playersColors[i];
+            playerAnimations.legsSpriteRenderer.color = playersColors[i];
+
+            playerAnimations.spriteRenderer.sortingOrder = 10 * i;
+            playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
+            playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
+            playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
+
+
+            // FX
+            //ParticleSystem attackSignParticles = playerAttack.attackSign.GetComponent<ParticleSystem>();
+            ParticleSystem attackSignParticles = playerScript.attackRangeFX.GetComponent<ParticleSystem>();
+            ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
+            attackSignParticlesMain.startColor = attackSignColors[i];
+
+
+            playerScript.playerLight.color = playerLightsColors[i];
+        }
+    }
 
     #region PLAYERS
     // Spawns the players
@@ -578,7 +669,30 @@ public class GameManager : MonoBehaviourPun
             Player playerScript = null;
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            IAScript ia = null;
 
+#if UNITY_EDITOR
+            if (letThemFight)
+            {
+                ia = playersList[i].AddComponent<IAScript>();
+            }
+            else
+            {
+                if (i == 1)
+                {
+                    ia = playersList[i].AddComponent<IAScript>();
+                }
+            }
+#else
+            if (i == 1)
+            {
+                    ia = playersList[i].AddComponent<IAScript>();
+            }
+#endif
+            if (ia != null)
+                ia.SetDifficulty(IAScript.Difficulty.Hard);
+
+            //playerStats = playersList[i].GetComponent<PlayerStats>();*
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
             playerScript = playersList[i].GetComponent<Player>();
 
@@ -603,7 +717,7 @@ public class GameManager : MonoBehaviourPun
 
 
             // VISUAL IDENTIFICATION
-            playerScript.characterNameDisplay.text = charactersData.charactersList[0].name; 
+            playerScript.characterNameDisplay.text = charactersData.charactersList[0].name;
             playerScript.characterNameDisplay.color = playersColors[i];
             playerScript.characterIdentificationArrow.color = playersColors[i];
             playerScript.playerLight.color = playerLightsColors[i];
@@ -674,7 +788,7 @@ public class GameManager : MonoBehaviourPun
         return null;
     }
 
-    # endregion
+    #endregion
 
 
 
@@ -767,7 +881,7 @@ public class GameManager : MonoBehaviourPun
         // AUDIO
         //audioManager.UpdateMusicPhaseThatShouldPlayDependingOnScore();
 
-        
+
         // STATS
         try
         {
@@ -911,7 +1025,6 @@ public class GameManager : MonoBehaviourPun
 
         ResetPlayersForNextMatch();
         TriggerMatchEndFilterEffect(false);
-        
 
         // PLAYERS LIGHTS / COLORS
         for (int i = 0; i < playersList.Count; i++)
@@ -951,7 +1064,7 @@ public class GameManager : MonoBehaviourPun
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
         }
     }
-    # endregion
+    #endregion
 
 
 
@@ -960,7 +1073,7 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    # region MATCH END
+    #region MATCH END
     // MATCH END
     IEnumerator APlayerWon(int winningPlayerIndex)
     {
@@ -978,7 +1091,7 @@ public class GameManager : MonoBehaviourPun
         // AUDIO
         audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.won);
 
-        
+
         // SCORE
         scoreObject.GetComponent<Animator>().SetBool("On", false);
         for (int i = 0; i < playersList.Count; i++)
@@ -1028,7 +1141,7 @@ public class GameManager : MonoBehaviourPun
         // AUDIO
         audioManager.winMusicAudioSource.Play();
     }
-    # endregion
+    #endregion
 
 
 
@@ -1037,7 +1150,7 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    # region EFFECTS
+    #region EFFECTS
     // EFFECTS
     public void TriggerMatchEndFilterEffect(bool on)
     {
@@ -1111,7 +1224,7 @@ public class GameManager : MonoBehaviourPun
                     originalLightsIntensities.Add(lights[i].intensity);
                     lights[i].intensity = 0;
                 }
-            }          
+            }
         }
         else
         {
@@ -1256,7 +1369,7 @@ public class GameManager : MonoBehaviourPun
         Time.timeScale = timeScaleObjective;
         // FX
         animeLinesFx.Stop();
-    } 
+    }
 
 
     // Update the timescale smoothly for smooth slow mo effects in FixedUpdate
@@ -1281,10 +1394,7 @@ public class GameManager : MonoBehaviourPun
             }
         }
     }
-    # endregion
-
-
-
+    #endregion
 
 
 
@@ -1344,7 +1454,7 @@ public class GameManager : MonoBehaviourPun
                                 break;
                             }
                         }
-                            
+
                     }
                 }
             }
@@ -1394,7 +1504,7 @@ public class GameManager : MonoBehaviourPun
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
     }
     #endregion
-   
+
     #endregion
 
 }

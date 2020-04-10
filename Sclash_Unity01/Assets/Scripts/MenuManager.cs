@@ -14,7 +14,7 @@ public class MenuManager : MonoBehaviour
     [Header("MANAGERS")]
     [Tooltip("The references to the GameManager script instance component")]
     [SerializeField] GameManager gameManager = null;
-    
+
     [Tooltip("The AudioManager script instance reference")]
     [SerializeField] AudioManager audioManager = null;
 
@@ -46,7 +46,8 @@ public class MenuManager : MonoBehaviour
     [Tooltip("The references to the Sliders components in the options menu controlling the volumes of the different tracks of the game")]
     [SerializeField]
     SliderToVolume masterVolume = null;
-    [SerializeField] SliderToVolume menuMusicVolume = null,
+    [SerializeField]
+    SliderToVolume menuMusicVolume = null,
         battleMusicVolume = null,
         menuFXVolume = null,
         fxVolume = null,
@@ -71,10 +72,12 @@ public class MenuManager : MonoBehaviour
     # region PAUSE
     [Header("PAUSE MENU")]
     [Tooltip("The reference to the menu's blur panel game object")]
-    [SerializeField] GameObject
+    [SerializeField]
+    GameObject
         blurPanel = null;
     [Tooltip("Menu elements references")]
-    [SerializeField] public GameObject
+    [SerializeField]
+    public GameObject
         pauseMenu = null,
         mainMenu = null,
         winScreen = null;
@@ -132,7 +135,7 @@ public class MenuManager : MonoBehaviour
     // Update is called once per grahic frame
     void Update()
     {
-        switch(gameManager.gameState)
+        switch (gameManager.gameState)
         {
             case GameManager.GAMESTATE.game:
                 ManagePauseOnInput();
@@ -175,7 +178,7 @@ public class MenuManager : MonoBehaviour
         if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
         {
             gameManager.scoreObject.GetComponent<Animator>().SetBool("On", inputManager.scoreInput);
-            
+
 
             for (int i = 0; i < gameManager.playersList.Count; i++)
             {
@@ -225,7 +228,7 @@ public class MenuManager : MonoBehaviour
         {
             if (inputManager.playerInputs[playerWhoPaused].pauseUp)
             {
-                pauseCooldownOn = true;
+                pauseCooldownOn = false;
                 pauseCooldownStartTime = Time.time;
                 TriggerPause(false);
             }
@@ -256,7 +259,6 @@ public class MenuManager : MonoBehaviour
 
         blurPanel.SetActive(state);
         pauseMenu.SetActive(state);
-
 
         gameManager.scoreObject.GetComponent<Animator>().SetBool("On", state);
 
@@ -292,8 +294,6 @@ public class MenuManager : MonoBehaviour
             scoresDisplays[i].color = playersColors[i];
         }
     }
-
-
 
 
 
@@ -351,7 +351,7 @@ public class MenuManager : MonoBehaviour
 
         voiceVolume.slider.value = menuParametersSaveScriptableObject.voiceVolume;
         voiceVolume.UpdateVolume();
-    } 
+    }
 
     public void SaveGameSettingsInScriptableObject()
     {

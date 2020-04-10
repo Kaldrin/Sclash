@@ -103,11 +103,13 @@ public class AudioManager : MonoBehaviour
     // Selected music, stem, phase...
     [Header("STEMS & PHASES")]
     [SerializeField] bool useRandomStemSelection = true;
-    [SerializeField] int
+    [SerializeField]
+    int
         maxPhase = 2,
         scoreFromMaxScoreToAutoMaxPhase = 1;
     bool decrementCurrentPhaseAtNextLoop = false;
     [HideInInspector] public int currentlySelectedMusicIndex = 0;
+    [SerializeField]
     int
         currentMusicPhase = 0,
         currentMusicStem = 0,
@@ -124,7 +126,7 @@ public class AudioManager : MonoBehaviour
         currentBattleIntensity = 0,
         lastBattleIntensityLevel = 0;
     [SerializeField] int maxBattleIntensityLevel = 12;
-    [SerializeField] List<int> battleIntensityLevelsForPhaseUp = new List<int>(2) {3, 8, 1000}; 
+    [SerializeField] List<int> battleIntensityLevelsForPhaseUp = new List<int>(2) { 3, 8, 1000 };
     #endregion
 
 
@@ -291,7 +293,7 @@ public class AudioManager : MonoBehaviour
         audioState = newAudioState;
 
 
-        switch(newAudioState)
+        switch (newAudioState)
         {
             case AUDIOSTATE.none:
                 for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
@@ -317,7 +319,7 @@ public class AudioManager : MonoBehaviour
 
                 for (int i = 0; i < phasesMainAudioSources.Count; i++)
                     phasesMainAudioSources[i].Stop();
-                for (int i = 0; i <phasesStrikesAudioSources.Count; i++)
+                for (int i = 0; i < phasesStrikesAudioSources.Count; i++)
                     phasesStrikesAudioSources[i].Stop();
                 break;
 
@@ -490,7 +492,7 @@ public class AudioManager : MonoBehaviour
 
                 phaseTransitionStemAudioSource.Play();
             }
-            
+
 
             for (int i = 0; i < phasesMainAudioSources.Count; i++)
             {
@@ -505,11 +507,10 @@ public class AudioManager : MonoBehaviour
                 // Sets next stem strikes if there are for this stem
                 else if (musicDataBase.musicsList[currentlySelectedMusicIndex].phases[i].stems[currentMusicStem].stemStrikesAudio)
                     phasesStrikesAudioSources[i].clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[i].stems[currentMusicStem].stemStrikesAudio;
-                
+
 
                 phasesStrikesAudioSources[i].Play();
             }
-
 
             decrementCurrentPhaseAtNextLoop = false;
         }
@@ -567,7 +568,7 @@ public class AudioManager : MonoBehaviour
             int oldStem = currentMusicStem;
 
             while (oldStem == currentMusicStem || previousMusicStem == currentMusicStem)
-                currentMusicStem = Random.Range(0 , musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].stems.Count - 1);
+                currentMusicStem = Random.Range(0, musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].stems.Count - 1);
         }
     }
     #endregion
@@ -602,7 +603,7 @@ public class AudioManager : MonoBehaviour
         if (windAudioSource.volume != windVolumeObjective)
         {
             volumeFadeDirection = Mathf.Sign(windVolumeObjective - windAudioSource.volume);
-            
+
             windAudioSource.volume += volumeFadeDirection * volumeFadeSpeed;
 
             if (volumeFadeDirection >= 0 && windAudioSource.volume >= windVolumeObjective)

@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 
 
 // Created for Unity 2019.1.1f1
-public class SceneManage : MonoBehaviour {
+public class SceneManage : MonoBehaviour
+{
 
     // SCENE CHANGE
     [Header("SCENE CHANGE")]
@@ -21,8 +22,8 @@ public class SceneManage : MonoBehaviour {
 
     Scene sceneToLoad;
 
-    
-    
+
+
 
 
 
@@ -45,16 +46,18 @@ public class SceneManage : MonoBehaviour {
 
     // BASE FUNCTIONS
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         // If chosen, starts the coroutine that will load the indicated scene after the indicated duration
         if (autoLoadSceneAfterDuration)
             StartCoroutine(AutoLoadSceneAfterDuration());
     }
-	
-	// Update is called once per graphic frame
-	void Update () {
-		
-	}
+
+    // Update is called once per graphic frame
+    void Update()
+    {
+
+    }
 
     // FixedUpdate is called 50 times per second
     void FixedUpdate()
@@ -78,7 +81,7 @@ public class SceneManage : MonoBehaviour {
         }
     }
 
-    
+
 
 
 
@@ -89,12 +92,12 @@ public class SceneManage : MonoBehaviour {
         yield return new WaitForSecondsRealtime(durationBeforeAutoLoadScene);
 
 
-        SceneManager.LoadScene(sceneToAutoLoadIndex);
+        SceneManager.LoadSceneAsync(sceneToAutoLoadIndex);
     }
 
     void LoadScene(Scene scene)
     {
-        SceneManager.LoadScene(scene.name);
+        SceneManager.LoadSceneAsync(scene.name);
     }
 
     // Set which scene should be loaded after the close scene anim

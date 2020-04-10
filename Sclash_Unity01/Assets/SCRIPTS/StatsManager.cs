@@ -70,7 +70,7 @@ public class StatsManager : MonoBehaviour
         // Characters
         currentGame.character1 = 0;
         currentGame.character2 = 0;
- 
+
 
         // Rounds
         currentGame.rounds = new List<Round>(0);
@@ -99,7 +99,6 @@ public class StatsManager : MonoBehaviour
         try
         {
             newGlobalStats.gamesList.Add(currentGame);
-            Debug.Log(statsAsset.globalStats[gameType].gamesList.Count);
         }
         catch
         {
@@ -236,7 +235,7 @@ public class StatsManager : MonoBehaviour
         {
             newGlobalStat.statName = statsAsset.globalStats[o].statName;
             newGlobalStat.gamesList = statsAsset.globalStats[o].gamesList;
-            
+
 
             // Total play time
             totalPlayTime = 0;
@@ -266,7 +265,7 @@ public class StatsManager : MonoBehaviour
 
 
             newGlobalStat.totalGamesFinished = totalGamesFinished;
-            
+
 
 
 
@@ -463,7 +462,7 @@ public class StatsManager : MonoBehaviour
 
 
 
-        
+
 
 
 
@@ -472,9 +471,9 @@ public class StatsManager : MonoBehaviour
         newGlobalStat.totalPlayTime = statsAsset.globalStats[1].totalPlayTime + statsAsset.globalStats[2].totalPlayTime;
         newGlobalStat.totalGamesPlayed = statsAsset.globalStats[1].gamesList.Count + statsAsset.globalStats[2].gamesList.Count;
         newGlobalStat.totalGamesFinished = statsAsset.globalStats[1].totalGamesFinished + statsAsset.globalStats[2].totalGamesFinished;
-        
+
         newGlobalStat.totalRoundsPlayed = statsAsset.globalStats[1].totalRoundsPlayed + statsAsset.globalStats[2].totalRoundsPlayed;
-        
+
 
 
 
