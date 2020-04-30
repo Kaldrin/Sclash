@@ -1455,6 +1455,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
+
+
+
     #region STAMINA
     // Set up stamina bar system
     void SetUpStaminaBars()
@@ -2311,12 +2314,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Maintain parry coroutine
     void TriggerMaintainParry()
     {
-        SwitchState(STATE.maintainParrying);
-
-
         // ANIMATION
         playerAnimations.ResetMaintainParry();
         playerAnimations.TriggerMaintainParry();
+
+
+        // STATE
+        SwitchState(STATE.maintainParrying); 
 
 
         // STATS

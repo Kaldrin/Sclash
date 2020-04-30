@@ -34,8 +34,7 @@ public class InputManager : MonoBehaviour
         public bool switchChar;
     }
 
-    [SerializeField]
-    float
+    [SerializeField] float
         axisDeadZone = 0.1f,
         dashDeadZone = 0.5f;
 
@@ -50,8 +49,7 @@ public class InputManager : MonoBehaviour
 
     [Header("INPUTS")]
     [SerializeField] string pauseAxis = "Pause";
-    [SerializeField]
-    string
+    [SerializeField] string
         horizontalAxis = "Horizontal",
         dashAxis = "Dash",
         attackAxis = "Fire",
@@ -93,8 +91,10 @@ public class InputManager : MonoBehaviour
         {
             ManageCharacSelectInput(i);
 
+
             if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
                 return;
+
 
             ManageHorizontalInput(i);
             ManageDashInput(i);
@@ -107,7 +107,6 @@ public class InputManager : MonoBehaviour
 
             ManageScoreInput(i);
             ManagePauseInput(i);
-
         }
     }
 
