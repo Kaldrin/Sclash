@@ -111,10 +111,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public void InitMultiplayerMatch(bool isJoining = true)
     {
         // DELETE EXISTING PLAYERS IN SCENE //
-        Player[] oldPlayers = FindObjectsOfType<Player>();
-        foreach (Player p in oldPlayers)
+        foreach (GameObject p in GameManager.Instance.playersList)
         {
-            Destroy(p.gameObject);
+            Destroy(p);
         }
 
         GameManager.Instance.playersList.Clear();

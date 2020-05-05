@@ -10,11 +10,6 @@ using UnityEngine.EventSystems;
 public class MenuBrowser : MonoBehaviour
 {
     #region VARIABLES
-    #region MANAGERS
-    [Header("MANAGERS")]
-    [SerializeField] RumbleManager rumbleManager = null;
-    #endregion
-
 
 
 
@@ -120,6 +115,7 @@ public class MenuBrowser : MonoBehaviour
     #region BASE FUNCTIONS
     void Awake()
     {
+
         FixButtonColorUsageList();
 
 
@@ -282,7 +278,11 @@ public class MenuBrowser : MonoBehaviour
 
 
         // RUMBLE
-        rumbleManager.TriggerSimpleControllerVibrationForEveryone(rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationDuration);
+        if(RumbleManager.Instance != null){
+            RumbleManager.Instance.TriggerSimpleControllerVibrationForEveryone(RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationDuration);
+        }else{
+            Debug.Log("RumbleManager.Instance was not found");
+        }
 
 
         Select(true);

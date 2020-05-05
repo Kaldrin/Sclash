@@ -93,8 +93,9 @@ public class InputManager : MonoBehaviour
         {
             ManageCharacSelectInput(i);
 
-            if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
-                return;
+            if(GameManager.Instance.playersList.Count >0)
+                if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
+                    return;
 
             ManageHorizontalInput(i);
             ManageDashInput(i);

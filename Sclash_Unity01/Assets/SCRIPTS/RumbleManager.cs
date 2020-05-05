@@ -5,11 +5,19 @@ using XInputDotNetPure; // Required in C#
 
 public class RumbleManager : MonoBehaviour
 {
+    #region Singleton
+        public static RumbleManager Instance;
+    #endregion
+
+
     bool vibrating = false;
     [SerializeField] public float menuBrowseVibrationIntensity = 0.08f;
     [SerializeField] public float menuBrowseVibrationDuration = 0.06f;
     Coroutine[] vibrationCoroutines = new Coroutine[4];
 
+    private void Awake(){
+        Instance = this;
+    }
 
     private void Update()
     {

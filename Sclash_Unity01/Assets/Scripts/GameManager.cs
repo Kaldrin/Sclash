@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] GameObject playerAI = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
     [SerializeField] public GameObject[] playerSpawns = { null, null };
-    [HideInInspector] public List<GameObject> playersList = new List<GameObject>(2);
+    public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
     [SerializeField]
@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviourPun
 
     [SerializeField]
     bool letThemFight;
-
+    int winningPlayerIndex;
 
 
 
@@ -672,22 +672,11 @@ public class GameManager : MonoBehaviourPun
             IAScript ia = null;
 
 #if UNITY_EDITOR
-            if (letThemFight)
-            {
+            if (letThemFight || i == 1)
                 ia = playersList[i].AddComponent<IAScript>();
-            }
-            else
-            {
-                if (i == 1)
-                {
-                    ia = playersList[i].AddComponent<IAScript>();
-                }
-            }
 #else
             if (i == 1)
-            {
                     ia = playersList[i].AddComponent<IAScript>();
-            }
 #endif
             if (ia != null)
                 ia.SetDifficulty(IAScript.Difficulty.Hard);
@@ -799,8 +788,10 @@ public class GameManager : MonoBehaviourPun
 
     #region ROUND TO ROUND & SCORE
     // Executed when a player dies, starts the score display and next round parameters
-    public void APlayerIsDead(int winningPlayerIndex)
+    public void APlayerIsDead(int incomingWinning)
     {
+        winningPlayerIndex = incomingWinning;
+
         // STATS
         try
         {
@@ -814,13 +805,14 @@ public class GameManager : MonoBehaviourPun
 
 
         playerDead = true;
-        UpdatePlayersScoreValues(winningPlayerIndex);
+        UpdatePlayersScoreValues();
         SwitchState(GAMESTATE.roundFinished);
 
 
-        if (CheckIfThePlayerWon(winningPlayerIndex))
+        if (CheckIfThePlayerWon())
         {
-            StartCoroutine(APlayerWon(winningPlayerIndex));
+            APlayerWon();
+           // StartCoroutine(APlayerWon(winningPlayerIndex));
         }
         else
         {
@@ -828,7 +820,7 @@ public class GameManager : MonoBehaviourPun
         }
     }
 
-    void UpdatePlayersScoreValues(int winningPlayerIndex)
+    void UpdatePlayersScoreValues()
     {
         score[winningPlayerIndex] += 1;
 
@@ -846,7 +838,7 @@ public class GameManager : MonoBehaviourPun
         return scoreString;
     }
 
-    bool CheckIfThePlayerWon(int winningPlayerIndex)
+    bool CheckIfThePlayerWon()
     {
         if (score[winningPlayerIndex] >= scoreToWin)
         {
@@ -1075,7 +1067,7 @@ public class GameManager : MonoBehaviourPun
 
     #region MATCH END
     // MATCH END
-    IEnumerator APlayerWon(int winningPlayerIndex)
+    void APlayerWon()
     {
         // STATS
         try
@@ -1102,9 +1094,15 @@ public class GameManager : MonoBehaviourPun
         }
 
 
-        yield return new WaitForSecondsRealtime(4f);
+        //yield return new WaitForSecondsRealtime(4f);
+        Invoke("TestCoroutine",4f);
 
+        
+    }
+    #endregion
 
+    //RENAME HERE IF WORKING
+    void TestCoroutine(){
         // GAME STATE
         SwitchState(GAMESTATE.finished);
 
@@ -1129,9 +1127,13 @@ public class GameManager : MonoBehaviourPun
         //playersList[winningPlayerIndex].GetComponent<PlayerAnimations>().ResetDrawText();
 
 
-        yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
+        //yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
+        Invoke("ShowMenu", timeBeforeWinScreenAppears);
 
+       
+    }
 
+    void ShowMenu(){
         // MENU
         blurPanel.SetActive(false);
         menuManager.winScreen.SetActive(true);
@@ -1141,14 +1143,6 @@ public class GameManager : MonoBehaviourPun
         // AUDIO
         audioManager.winMusicAudioSource.Play();
     }
-    #endregion
-
-
-
-
-
-
-
 
     #region EFFECTS
     // EFFECTS
