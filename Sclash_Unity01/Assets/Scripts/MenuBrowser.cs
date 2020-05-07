@@ -53,7 +53,8 @@ public class MenuBrowser : MonoBehaviour
     [Header("INPUTS")]
     [Tooltip("Names of the inputs axis created in the input settings")]
     [SerializeField] string horizontalAxis = "Horizontal";
-    [SerializeField] string
+    [SerializeField]
+    string
         verticalAxis = "Vertical",
         backButton = "Back";
 
@@ -62,7 +63,8 @@ public class MenuBrowser : MonoBehaviour
         hAxisInUse = false;
 
     [Tooltip("Dead zones for joystick browsing so that it's more comfortable")]
-    [SerializeField] float
+    [SerializeField]
+    float
         verticalInputDetectionZone = 0.5f,
         verticalInputRestZone = 0.1f,
         horizontalInputDetectionZone = 0.5f,
@@ -158,7 +160,7 @@ public class MenuBrowser : MonoBehaviour
 
 
             // Move sliders with horizontal
-            
+
             if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
             {
                 if (callSpecialElementWHenHorizontal)
@@ -167,7 +169,7 @@ public class MenuBrowser : MonoBehaviour
                     VerticalBrowse(horizontalJumpAmount);
                 else if (elements[browseIndex].GetComponent<SliderToVolume>())
                     elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
-                
+
 
                 hAxisInUse = true;
             }
@@ -176,7 +178,7 @@ public class MenuBrowser : MonoBehaviour
                 if (callSpecialElementWHenHorizontal)
                     negativeHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
                 else if (allowHorizontalJump)
-                    VerticalBrowse(- horizontalJumpAmount);
+                    VerticalBrowse(-horizontalJumpAmount);
                 else if (elements[browseIndex].GetComponent<SliderToVolume>())
                     elements[browseIndex].GetComponent<SliderToVolume>().slider.value--;
 
@@ -195,7 +197,7 @@ public class MenuBrowser : MonoBehaviour
             if (Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
                 vAxisInUse = false;
 
-            
+
             if (!vAxisInUse)
             {
                 // Detects positive V axis input
@@ -254,7 +256,7 @@ public class MenuBrowser : MonoBehaviour
 
         // AUDIO
         hoverSound.Play();
-        
+
 
         // Loop index navigation
         if (browseIndex > elements.Length - 1)
@@ -278,9 +280,12 @@ public class MenuBrowser : MonoBehaviour
 
 
         // RUMBLE
-        if(RumbleManager.Instance != null){
+        if (RumbleManager.Instance != null)
+        {
             RumbleManager.Instance.TriggerSimpleControllerVibrationForEveryone(RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationDuration);
-        }else{
+        }
+        else
+        {
             Debug.Log("RumbleManager.Instance was not found");
         }
 
@@ -313,7 +318,7 @@ public class MenuBrowser : MonoBehaviour
                     elements[browseIndex].GetComponent<Button>().Select();
                 else if (elements[browseIndex].GetComponent<TMP_InputField>())
                     elements[browseIndex].GetComponent<TMP_InputField>().Select();
-                else if (elements[browseIndex].GetComponent<EventTrigger>()) {}
+                else if (elements[browseIndex].GetComponent<EventTrigger>()) { }
             }
         }
 
@@ -329,7 +334,7 @@ public class MenuBrowser : MonoBehaviour
             if (isObjectInGameObjectArray(hoveredObject, elements))
                 browseIndex = FindObjectIndexInGameObjectArray(hoveredObject, elements);
 
-        
+
             if (elements[browseIndex].GetComponent<Button>() || elements[browseIndex].GetComponent<TMP_InputField>())
                 Select(true);
             else
@@ -380,7 +385,7 @@ public class MenuBrowser : MonoBehaviour
 
             elements = newElements;
         }
-        else {}
+        else { }
     }
 
     public void ChangeBackButton(GameObject newBackButton)
@@ -426,7 +431,7 @@ public class MenuBrowser : MonoBehaviour
                             g.GetComponent<Image>().color = buttonSelectedColor;
                     }
                 }
-                catch {}
+                catch { }
 
 
                 // Changes text color of the element's children
@@ -445,8 +450,10 @@ public class MenuBrowser : MonoBehaviour
                     if (shouldUseButtonColorSwitch[i] && g.GetComponent<Button>())
                         g.GetComponent<Image>().color = buttonDefaultColor;
                 }
-                catch {}
+                catch { }
 
+                if (g == null)
+                    return;
 
                 // Changes text color of the element's children
                 for (int j = 0; j < g.transform.childCount; j++)
