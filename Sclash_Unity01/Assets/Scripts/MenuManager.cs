@@ -182,8 +182,11 @@ public class MenuManager : MonoBehaviour
 
             for (int i = 0; i < gameManager.playersList.Count; i++)
             {
-                gameManager.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
-                gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
+                if (gameManager.playersList[i] != null)
+                {
+                    gameManager.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
+                    gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
+                }
             }
         }
         // Display in game help key indication
