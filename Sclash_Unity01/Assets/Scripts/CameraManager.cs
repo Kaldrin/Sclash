@@ -323,7 +323,7 @@ public class CameraManager : MonoBehaviour
 
 
             // Translates the camera arm towards the new X position if there is at least one player in the scene
-            transform.position = transform.position + (temporaryCalculationPosition - transform.position) * actualXSmoothMovementsMultiplier;
+            transform.position += (temporaryCalculationPosition - transform.position) * actualXSmoothMovementsMultiplier;
         }
     }
     # endregion

@@ -676,7 +676,7 @@ public class GameManager : MonoBehaviourPun
                 ia = playersList[i].AddComponent<IAScript>();
 #else
             if (i == 1)
-                    ia = playersList[i].AddComponent<IAScript>();
+                ia = playersList[i].AddComponent<IAScript>();
 #endif
             if (ia != null)
                 ia.SetDifficulty(IAScript.Difficulty.Hard);
@@ -812,7 +812,7 @@ public class GameManager : MonoBehaviourPun
         if (CheckIfThePlayerWon())
         {
             APlayerWon();
-           // StartCoroutine(APlayerWon(winningPlayerIndex));
+            // StartCoroutine(APlayerWon(winningPlayerIndex));
         }
         else
         {
@@ -1095,14 +1095,15 @@ public class GameManager : MonoBehaviourPun
 
 
         //yield return new WaitForSecondsRealtime(4f);
-        Invoke("TestCoroutine",4f);
+        Invoke("TestCoroutine", 4f);
 
-        
+
     }
     #endregion
 
     //RENAME HERE IF WORKING
-    void TestCoroutine(){
+    void TestCoroutine()
+    {
         // GAME STATE
         SwitchState(GAMESTATE.finished);
 
@@ -1130,10 +1131,11 @@ public class GameManager : MonoBehaviourPun
         //yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
         Invoke("ShowMenu", timeBeforeWinScreenAppears);
 
-       
+
     }
 
-    void ShowMenu(){
+    void ShowMenu()
+    {
         // MENU
         blurPanel.SetActive(false);
         menuManager.winScreen.SetActive(true);

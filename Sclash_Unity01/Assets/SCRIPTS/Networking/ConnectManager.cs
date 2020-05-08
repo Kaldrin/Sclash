@@ -244,8 +244,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     }
 
+    public void LeaveLobby()
+    {
+        PhotonNetwork.Disconnect();
+    }
+
     public override void OnDisconnected(DisconnectCause cause)
     {
+        connectedToMaster = true;
         Debug.LogWarning(cause);
     }
 
@@ -340,6 +346,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player other)
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+            {
+                PhotonNetwork.CurrentRoom.IsVisible = false;
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+            }
+        }
+
         Debug.LogFormat("{0} joined the room", other.NickName);
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
@@ -385,22 +400,22 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void WaitSceneLoading()
     {
-        StartCoroutine("WaitSceneLoadingCoroutine");
+        Invoke("WaitScene", 2f);
     }
 
-    IEnumerator WaitSceneLoadingCoroutine()
+    void WaitScene()
     {
-        yield return new WaitForSeconds(2f);
-
         GameObject.Find("RightPanel").GetComponent<Animator>().Play("SlideOut");
         GameObject.Find("LeftPanel").GetComponent<Animator>().Play("SlideOut");
         GameObject.Find("MenuLayout").SetActive(false);
         GameObject.Find("BackIndicator").SetActive(false);
 
-        yield return new WaitForSeconds(0.3f);
+        Invoke("DisableMenu", 0.3f);
+    }
 
+    void DisableMenu()
+    {
         GameObject.Find("MultiplayerMenu").SetActive(false);
-
     }
 
     #endregion
