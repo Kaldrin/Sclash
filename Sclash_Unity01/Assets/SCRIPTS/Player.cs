@@ -643,7 +643,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // ONLINE
         if (photonView != null && !photonView.IsMine)
         {
-            if (lerpToTarget)
+            //TEST REPLACE LERP BY MOVE TOWARDS
+            /*if (lerpToTarget)
             {
                 if (lerpValue >= 1f)
                 {
@@ -653,7 +654,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 lerpValue += Time.deltaTime * 5;
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
-            }
+            }*/
+
+            transform.position = Vector3.MoveTowards(transform.position, netTargetPos, Time.deltaTime);
+
             return;
         }
 
