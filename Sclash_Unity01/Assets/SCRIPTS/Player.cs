@@ -656,7 +656,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
             }*/
 
-            transform.position = Vector3.MoveTowards(transform.position, netTargetPos, Time.deltaTime);
+            //transform.position = Vector3.MoveTowards(transform.position, netTargetPos, Time.deltaTime);
 
             return;
         }
@@ -3157,13 +3157,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
 
-            oldPos = transform.position;
+            /*oldPos = transform.position;
             netTargetPos = new Vector3(xPos, transform.position.y, transform.position.z);
             if (oldPos != netTargetPos)
             {
                 lerpValue = 0f;
                 lerpToTarget = true;
-            }
+            }*/
+
+            rb.position = new Vector3(xPos, rb.position.y);
+
+            Debug.Log(rb.position);
+            Debug.Log(transform.position);
+
+
+            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+
+            rb.position += rb.velocity * lag;
 
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
