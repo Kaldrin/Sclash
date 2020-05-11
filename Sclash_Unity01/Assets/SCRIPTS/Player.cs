@@ -640,26 +640,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per graphic frame
     void Update()
     {
-        // ONLINE
-        if (photonView != null && !photonView.IsMine)
-        {
-            //TEST REPLACE LERP BY MOVE TOWARDS
-            /*if (lerpToTarget)
-            {
-                if (lerpValue >= 1f)
-                {
-                    lerpToTarget = false;
-                    return;
-                }
-
-                lerpValue += Time.deltaTime * 5;
-                transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
-            }*/
-
-            //transform.position = Vector3.MoveTowards(transform.position, netTargetPos, Time.deltaTime);
-
+        if(photonView != null && !photonView.IsMine)
             return;
-        }
 
         if (opponent == null)
         {
@@ -760,6 +742,27 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // FixedUpdate is called 50 times per second
     void FixedUpdate()
     {
+        // ONLINE
+        if (photonView != null && !photonView.IsMine)
+        {
+            //TEST REPLACE LERP BY MOVE TOWARDS
+            /*if (lerpToTarget)
+            {
+                if (lerpValue >= 1f)
+                {
+                    lerpToTarget = false;
+                    return;
+                }
+
+                lerpValue += Time.deltaTime * 5;
+                transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
+            }*/
+
+            rb.position = Vector2.MoveTowards(rb.position, netTargetPos, baseMovementsSpeed);
+
+            return;
+        }
+
         if (kickFrame)
             ApplyPommelHitbox();
 
@@ -3157,23 +3160,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
 
-            /*oldPos = transform.position;
-            netTargetPos = new Vector3(xPos, transform.position.y, transform.position.z);
-            if (oldPos != netTargetPos)
-            {
-                lerpValue = 0f;
-                lerpToTarget = true;
-            }*/
-
-            rb.position = new Vector3(xPos, rb.position.y);
-
-            Debug.Log(rb.position);
-            Debug.Log(transform.position);
-
+            netTargetPos = new Vector2(xPos, rb.position.y);
 
             float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
-
-            rb.position += rb.velocity * lag;
+            netTargetPos += (Vector3)(rb.velocity*lag);
 
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
