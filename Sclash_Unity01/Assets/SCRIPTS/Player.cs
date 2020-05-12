@@ -745,7 +745,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // ONLINE
         if (photonView != null && !photonView.IsMine)
         {
-            //TEST REPLACE LERP BY MOVE TOWARDS
+            //TEST REPLACE LERP BY MOVE TOWARDSm
             /*if (lerpToTarget)
             {
                 if (lerpValue >= 1f)
@@ -758,7 +758,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
             }*/
 
-            rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * baseMovementsSpeed);
+            float lagCompensationMovement;
+            if(playerState == STATE.dashing)
+                lagCompensationMovement = actualUsedDashDistance;
+            else
+                lagCompensationMovement = actualMovementsSpeed;
+
+            rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * actualMovementsSpeed);
 
             return;
         }
@@ -3151,6 +3157,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
+            stream.SendNext(rb.velocity);
         }
         else if (stream.IsReading)
         {
@@ -3159,7 +3166,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
+            rb.velocity = (Vector2)stream.ReceiveNext();
 
+            //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
 
             float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
