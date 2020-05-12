@@ -640,7 +640,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per graphic frame
     void Update()
     {
-        if(photonView != null && !photonView.IsMine)
+        if (photonView != null && !photonView.IsMine)
             return;
 
         if (opponent == null)
@@ -758,7 +758,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
             }*/
 
-            rb.position = Vector2.MoveTowards(rb.position, netTargetPos, baseMovementsSpeed);
+            rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * baseMovementsSpeed);
 
             return;
         }
@@ -3163,7 +3163,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             netTargetPos = new Vector2(xPos, rb.position.y);
 
             float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
-            netTargetPos += (Vector3)(rb.velocity*lag);
+            netTargetPos += (Vector3)(rb.velocity * lag);
 
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
