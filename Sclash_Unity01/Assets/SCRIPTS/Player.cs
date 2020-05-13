@@ -756,8 +756,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // FixedUpdate is called 50 times per second
     void FixedUpdate()
     {
-
-
         if (kickFrame)
             ApplyPommelHitbox();
 
@@ -2950,10 +2948,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             GameObject z = null, p1 = null, p2 = null;
             Vector3 self = Vector3.zero, other = Vector3.zero;
-            Player[] stats = FindObjectsOfType<Player>();
+            Player[] stats = new Player[2];
+            for(int i =0; i < GameManager.Instance.playersList.Count; i++)
+                stats[i] = GameManager.Instance.playersList[i].GetComponent<Player>();
 
             foreach (Player stat in stats)
             {
+                if(stat == null)
+                    return;
+
                 switch (stat.playerNum)
                 {
                     case 0:
