@@ -126,7 +126,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     IEnumerator JoinRoomCoroutine()
     {
-
         // INSTANTIATE PLAYER //
         ///Get player spawns
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
@@ -353,6 +352,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 PhotonNetwork.CurrentRoom.IsVisible = false;
                 PhotonNetwork.CurrentRoom.IsOpen = false;
             }
+
+            photonView.RPC("SyncMap", RpcTarget.Others);
         }
 
         Debug.LogFormat("{0} joined the room", other.NickName);
@@ -416,6 +417,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     void DisableMenu()
     {
         GameObject.Find("MultiplayerMenu").SetActive(false);
+    }
+
+    [PunRPC]
+    void SyncMap(){
+        MapLoader.Instance.SetMap(MapLoader.Instance.currentMapIndex);
     }
 
     #endregion

@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The duration the score lasts on screen when a round has finished")]
     [SerializeField] float betweenRoundsScoreShowDuration = 4f;
     [Tooltip("The score to reach to win")]
-    [SerializeField] public int scoreToWin = 10;
+    public int scoreToWin = 10;
     [Tooltip("The slider component reference in the options menu to change the number of rounds to win")]
     [SerializeField] Slider scoreToWinSliderComponent = null;
     # endregion
@@ -371,8 +371,8 @@ public class GameManager : MonoBehaviourPun
         // EFFECTS
         RunTimeScaleUpdate();
 
-
-        scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
+        if(!ConnectManager.Instance.connectedToMaster)
+            scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
     }
     #endregion
 

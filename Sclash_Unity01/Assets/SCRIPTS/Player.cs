@@ -760,11 +760,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             float lagCompensationMovement;
             if(playerState == STATE.dashing)
-                lagCompensationMovement = actualUsedDashDistance;
+                lagCompensationMovement = 15;
             else
                 lagCompensationMovement = actualMovementsSpeed;
 
-            rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * actualMovementsSpeed);
+            Debug.Log(lagCompensationMovement);
+
+            rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * lagCompensationMovement);
 
             return;
         }
@@ -3153,15 +3155,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(playerNum);
+            
             stream.SendNext(playerState);
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
+
+
             stream.SendNext(rb.velocity);
+
         }
         else if (stream.IsReading)
         {
             playerNum = (int)stream.ReceiveNext();
+
             playerState = (STATE)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
