@@ -191,6 +191,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         CameraManager.Instance.actualXSmoothMovementsMultiplier = CameraManager.Instance.battleXSmoothMovementsMultiplier;
         CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
         CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
+
+        if(PhotonNetwork.IsMasterClient)
+            photonView.RPC("SyncMap", RpcTarget.OthersBuffered, MapLoader.Instance.currentMapIndex);
     }
 
     #endregion
@@ -358,8 +361,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 PhotonNetwork.CurrentRoom.IsVisible = false;
                 PhotonNetwork.CurrentRoom.IsOpen = false;
             }
-
-            photonView.RPC("SyncMap", RpcTarget.OthersBuffered, MapLoader.Instance.currentMapIndex);
         }
 
         Debug.LogFormat("{0} joined the room", other.NickName);
