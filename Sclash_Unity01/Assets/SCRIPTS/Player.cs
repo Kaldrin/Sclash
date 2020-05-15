@@ -3156,17 +3156,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
     #endregion
 
-    [PunRPC]
-    void SyncPlayerNums(int targetPlayernum)
-    {
-        photonView.GetComponent<Player>().playerNum = targetPlayernum;
-    }
-
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(playerNum);
             stream.SendNext(playerState);
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
@@ -3180,6 +3175,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else if (stream.IsReading)
         {
+            playerNum = (int)stream.ReceiveNext();
             playerState = (STATE)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();

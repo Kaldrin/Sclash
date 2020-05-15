@@ -327,11 +327,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 Debug.Log("All players are here");
                 CameraManager.Instance.FindPlayers();
             }
-
-            if (PhotonNetwork.IsMasterClient && p2 != null)
-            {
-                photonView.RPC("SyncPlayerNums", RpcTarget.Others, p2.playerNum);
-            }
         }
     }
 
@@ -433,8 +428,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.Log("SyncMap called");
         MapLoader.Instance.SetMap(targetMapIndex);
     }
-
-
 
     #endregion
 }
