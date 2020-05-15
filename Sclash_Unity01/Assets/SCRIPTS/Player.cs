@@ -1264,7 +1264,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (Mathf.Sign(instigator.transform.localScale.x) == Mathf.Sign(transform.localScale.x))
             {
                 hit = true;
-                if(ConnectManager.Instance.connectedToMaster)
+                if (ConnectManager.Instance.connectedToMaster)
                     photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
                 else
                     TriggerHit();
@@ -2272,7 +2272,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (g != gameObject && !targetsHit.Contains(g))
             {
                 targetsHit.Add(g);
-                
+
                 enemyDead = g.GetComponent<Player>().TakeDamage(gameObject, chargeLevel);
 
 
@@ -3156,16 +3156,24 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
     #endregion
 
+    [PunRPC]
+    void SyncPlayerNums(int targetPlayernum)
+    {
+        photonView.GetComponent<Player>().playerNum = targetPlayernum;
+    }
+
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
-        {        
+        {
             stream.SendNext(playerState);
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
 
-            if(rb.velocity != prevVelocity){
+            if (rb.velocity != prevVelocity)
+            {
                 stream.SendNext(rb.velocity);
                 prevVelocity = rb.velocity;
             }
@@ -3177,10 +3185,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
 
-            if(stream.PeekNext() != null){
+            if (stream.PeekNext() != null)
+            {
+                Debug.Log(stream.PeekNext());
                 Debug.Log("Velocity received");
                 rb.velocity = (Vector2)stream.ReceiveNext();
-            }else{
+            }
+            else
+            {
                 Debug.Log("Velocity is the same");
             }
 

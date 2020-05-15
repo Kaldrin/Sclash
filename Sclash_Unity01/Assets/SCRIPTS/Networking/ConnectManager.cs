@@ -192,7 +192,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
         CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
 
-        if(PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
             photonView.RPC("SyncMap", RpcTarget.OthersBuffered, MapLoader.Instance.currentMapIndex);
     }
 
@@ -301,7 +301,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
             if (PhotonNetwork.CurrentRoom.PlayerCount != GameManager.Instance.playersList.Count)
             {
-                Invoke("WaitForInstantiation",0.5f);
+                Invoke("WaitForInstantiation", 0.5f);
             }
             else
             {
@@ -314,7 +314,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
                     if (GameManager.Instance.playersList[i] == null)
                     {
-                        Invoke("WaitForInstantiation",0.5f);
+                        Invoke("WaitForInstantiation", 0.5f);
                         return;
                     }
                 }
@@ -328,7 +328,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 CameraManager.Instance.FindPlayers();
             }
 
-            if(PhotonNetwork.IsMasterClient && p2 != null){
+            if (PhotonNetwork.IsMasterClient && p2 != null)
+            {
                 photonView.RPC("SyncPlayerNums", RpcTarget.Others, p2.playerNum);
             }
         }
@@ -427,15 +428,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     }
 
     [PunRPC]
-    void SyncMap(int targetMapIndex){
+    void SyncMap(int targetMapIndex)
+    {
         Debug.Log("SyncMap called");
         MapLoader.Instance.SetMap(targetMapIndex);
     }
 
-    [PunRPC]
-    void SyncPlayerNums(int targetPlayernum){
-        photonView.GetComponent<Player>().playerNum = targetPlayernum;
-    }
+
 
     #endregion
 }
