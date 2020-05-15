@@ -3154,7 +3154,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(playerNum);
+            //stream.SendNext(playerNum);
             
             stream.SendNext(playerState);
             stream.SendNext(stamina);
@@ -3167,7 +3167,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else if (stream.IsReading)
         {
-            playerNum = (int)stream.ReceiveNext();
+            //playerNum = (int)stream.ReceiveNext();
 
             playerState = (STATE)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();

@@ -269,13 +269,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
             Debug.Log("Update playerlists");
 
+            Player p2 = null;
             Player[] playersStats = FindObjectsOfType<Player>();
             for (int i = 0; i < playersStats.Length; i++)
             {
                 GameManager.Instance.playersList.Add(playersStats[i].gameObject);
 
                 //Instantiate 2nd player
-                Player p2 = playersStats[i];
+                p2 = playersStats[i];
                 PlayerAnimations p2Anim = playersStats[i].gameObject.GetComponent<PlayerAnimations>();
 
                 p2Anim.spriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
@@ -297,7 +298,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
             if (PhotonNetwork.CurrentRoom.PlayerCount != GameManager.Instance.playersList.Count)
             {
-                StartCoroutine(WaitForInstantiation());
+                Invoke("WaitForInstantiation",0.5f);
             }
             else
             {
@@ -310,7 +311,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
                     if (GameManager.Instance.playersList[i] == null)
                     {
-                        StartCoroutine(WaitForInstantiation());
+                        Invoke("WaitForInstantiation",0.5f);
                         return;
                     }
                 }
@@ -323,12 +324,17 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 Debug.Log("All players are here");
                 CameraManager.Instance.FindPlayers();
             }
+
+            if(PhotonNetwork.IsMasterClient && p2 != null){
+                photonView.RPC("SyncPlayerNums", RpcTarget.Others, p2, p2.playerNum);
+            }
         }
     }
 
-    IEnumerator WaitForInstantiation()
+
+
+    void WaitForInstantiation()
     {
-        yield return new WaitForSeconds(0.5f);
         photonView.RPC("GetAllPlayers", RpcTarget.All);
     }
 
@@ -353,7 +359,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 PhotonNetwork.CurrentRoom.IsOpen = false;
             }
 
-            photonView.RPC("SyncMap", RpcTarget.Others);
+            photonView.RPC("SyncMap", RpcTarget.Others, MapLoader.Instance.currentMapIndex);
         }
 
         Debug.LogFormat("{0} joined the room", other.NickName);
@@ -420,8 +426,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     }
 
     [PunRPC]
-    void SyncMap(){
-        MapLoader.Instance.SetMap(MapLoader.Instance.currentMapIndex);
+    void SyncMap(int targetMapIndex){
+        Debug.Log("SyncMap called");
+        MapLoader.Instance.SetMap(targetMapIndex);
+    }
+
+    [PunRPC]
+    void SyncPlayerNums(Player p , int targetPlayernum){
+        p.playerNum = targetPlayernum;
     }
 
     #endregion
