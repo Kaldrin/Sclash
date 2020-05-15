@@ -759,7 +759,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }*/
 
             float lagCompensationMovement;
-            if(playerState == STATE.dashing)
+            if (playerState == STATE.dashing)
                 lagCompensationMovement = 15;
             else
                 lagCompensationMovement = actualMovementsSpeed;
@@ -2019,7 +2019,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //currentChargeFramesPressed++;
 
 
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance.connectedToMaster)
         {
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)
@@ -2153,20 +2153,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Vector3 dashDirection3D = new Vector3(0, 0, 0);
         float dashDirection = 0;
 
+        int inputNum;
+        if (ConnectManager.Instance.connectedToMaster)
+            inputNum = 0;
+        else
+            inputNum = playerNum;
 
-        if (ConnectManager.Instance.enableMultiplayer)  // Ici c'est pour Victor
+        if (Mathf.Abs(inputManager.playerInputs[inputNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
         {
-        }
-
-
-        if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
-        {
-            dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) * transform.localScale.x;
-            dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[playerNum].horizontal), 0, 0);
+            dashDirection = Mathf.Sign(inputManager.playerInputs[inputNum].horizontal) * transform.localScale.x;
+            dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[inputNum].horizontal), 0, 0);
 
 
             // Dash distance
-            if (Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) == -Mathf.Sign(transform.localScale.x))
+            if (Mathf.Sign(inputManager.playerInputs[inputNum].horizontal) == -Mathf.Sign(transform.localScale.x))
             {
                 actualUsedDashDistance = forwardAttackDashDistance;
                 actualBackAttackRangeDisjoint = forwardAttackBackrangeDisjoint;
@@ -2178,7 +2178,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 // STATS
                 if (statsManager)
-                    statsManager.AddAction(ACTION.forwardAttack, playerNum, saveChargeLevelForStats);
+                    statsManager.AddAction(ACTION.forwardAttack, inputNum, saveChargeLevelForStats);
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
@@ -2193,7 +2193,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 // STATS
                 if (statsManager)
-                    statsManager.AddAction(ACTION.backwardsAttack, playerNum, saveChargeLevelForStats);
+                    statsManager.AddAction(ACTION.backwardsAttack, inputNum, saveChargeLevelForStats);
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
@@ -2206,7 +2206,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // STATS
             if (statsManager)
-                statsManager.AddAction(ACTION.neutralAttack, playerNum, saveChargeLevelForStats);
+                statsManager.AddAction(ACTION.neutralAttack, inputNum, saveChargeLevelForStats);
             else
                 Debug.Log("Couldn't access statsManager to record action, ignoring");
         }
@@ -3155,7 +3155,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             //stream.SendNext(playerNum);
-            
+
             stream.SendNext(playerState);
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
