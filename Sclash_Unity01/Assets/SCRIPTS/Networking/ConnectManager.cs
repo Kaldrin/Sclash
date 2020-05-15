@@ -329,7 +329,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             }
 
             if(PhotonNetwork.IsMasterClient && p2 != null){
-                photonView.RPC("SyncPlayerNums", RpcTarget.Others, p2, p2.playerNum);
+                photonView.RPC("SyncPlayerNums", RpcTarget.Others, p2.playerNum);
             }
         }
     }
@@ -433,8 +433,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     }
 
     [PunRPC]
-    void SyncPlayerNums(Player p , int targetPlayernum){
-        p.playerNum = targetPlayernum;
+    void SyncPlayerNums(int targetPlayernum){
+        photonView.GetComponent<Player>().playerNum = targetPlayernum;
     }
 
     #endregion

@@ -768,7 +768,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else
                 lagCompensationMovement = actualMovementsSpeed;
 
-            Debug.Log(lagCompensationMovement);
 
             rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * lagCompensationMovement);
 
@@ -1260,13 +1259,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         bool hit = false;
 
-
         if (playerState != STATE.dead)
         {
             if (Mathf.Sign(instigator.transform.localScale.x) == Mathf.Sign(transform.localScale.x))
             {
                 hit = true;
-                TriggerHit();
+                if(ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
+                else
+                    TriggerHit();
 
 
                 // SOUND
@@ -1350,8 +1351,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // SOUND
-                if (ConnectManager.Instance.enableMultiplayer)
-                    photonView.RPC("TriggerHit", RpcTarget.All);
+                if (ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
                 else
                     TriggerHit();
 
@@ -2271,6 +2272,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (g != gameObject && !targetsHit.Contains(g))
             {
                 targetsHit.Add(g);
+                
                 enemyDead = g.GetComponent<Player>().TakeDamage(gameObject, chargeLevel);
 
 
