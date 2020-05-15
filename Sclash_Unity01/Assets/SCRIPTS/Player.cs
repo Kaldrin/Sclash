@@ -565,6 +565,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
 
 
+    #region NETWORK
+    Vector2 prevVelocity;
+    #endregion
 
 
 
@@ -628,6 +631,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
         oldStamina = maxStamina;
 
+        prevVelocity = rb.velocity;
 
         // Begin by reseting all the player's values and variable to start fresh
         StartCoroutine(GetOtherPlayerNum());
@@ -3153,27 +3157,30 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
-        {
-            //stream.SendNext(playerNum);
-
+        {        
             stream.SendNext(playerState);
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
 
-
-            stream.SendNext(rb.velocity);
-
+            if(rb.velocity != prevVelocity){
+                stream.SendNext(rb.velocity);
+                prevVelocity = rb.velocity;
+            }
         }
         else if (stream.IsReading)
         {
-            //playerNum = (int)stream.ReceiveNext();
-
             playerState = (STATE)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
-            rb.velocity = (Vector2)stream.ReceiveNext();
+
+            if(stream.PeekNext() != null){
+                Debug.Log("Velocity received");
+                rb.velocity = (Vector2)stream.ReceiveNext();
+            }else{
+                Debug.Log("Velocity is the same");
+            }
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
