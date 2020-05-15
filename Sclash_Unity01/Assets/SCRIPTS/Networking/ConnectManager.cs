@@ -335,7 +335,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     void WaitForInstantiation()
     {
-        photonView.RPC("GetAllPlayers", RpcTarget.All);
+        photonView.RPC("GetAllPlayers", RpcTarget.AllViaServer);
     }
 
     public override void OnLeftRoom()
@@ -359,7 +359,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 PhotonNetwork.CurrentRoom.IsOpen = false;
             }
 
-            photonView.RPC("SyncMap", RpcTarget.Others, MapLoader.Instance.currentMapIndex);
+            photonView.RPC("SyncMap", RpcTarget.OthersBuffered, MapLoader.Instance.currentMapIndex);
         }
 
         Debug.LogFormat("{0} joined the room", other.NickName);
@@ -368,7 +368,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         GameObject otherPlayer = GameManager.Instance.GetOtherPlayer(localPlayer);
         if (otherPlayer == null)
         {
-            photonView.RPC("GetAllPlayers", RpcTarget.All);
+            photonView.RPC("GetAllPlayers", RpcTarget.AllViaServer);
             return;
         }
 
