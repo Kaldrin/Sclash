@@ -846,8 +846,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
                 // Apply damages if the current attack animation has entered active frame, thus activating the bool in the animation
-                if (activeFrame)
-                    ApplyAttackHitbox();
+                if (activeFrame){
+                    if(ConnectManager.Instance.connectedToMaster)
+                        photonView.RPC("ApplyAttackHitbox", RpcTarget.All);
+                    else
+                        ApplyAttackHitbox();
+                }
                 break;
 
             case STATE.recovering:
@@ -1306,13 +1310,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // CLASH
-                if(instigator.GetComponent<Player>() != this){
-                    if(ConnectManager.Instance.connectedToMaster)
-                    {
-                        photonView.RPC("TriggerClash", RpcTarget.Others);
-                    }
-                }
-
                 instigator.GetComponent<Player>().TriggerClash();
 
 
@@ -2242,6 +2239,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Hits with a phantom collider to apply the attack's damage during active frames
+    [PunRPC]
     void ApplyAttackHitbox()
     {
         bool enemyDead = false;
