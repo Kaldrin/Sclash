@@ -3167,12 +3167,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
 
-            if (rb.velocity.x != prevVelocity.x)
+            /*if (rb.velocity.x != prevVelocity.x)
             {
                 Debug.Log("Velocity sent");
                 stream.SendNext(rb.velocity.x);
                 prevVelocity = rb.velocity;
-            }
+            }*/
         }
         else if (stream.IsReading)
         {
@@ -3182,7 +3182,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
     
-            if (stream.Count > 5)
+            /*if (stream.Count > 5)
             {
                 Debug.Log("Velocity received");
                 Debug.Log(stream.ReceiveNext());
@@ -3191,7 +3191,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else
             {
                 Debug.Log("Velocity not received");
-            }
+            }*/
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
