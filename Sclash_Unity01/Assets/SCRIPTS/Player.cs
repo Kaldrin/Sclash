@@ -3167,9 +3167,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
 
-            if (rb.velocity != prevVelocity)
+            if (rb.velocity.x != prevVelocity.x)
             {
-                stream.SendNext(rb.velocity);
+                Debug.Log("Velocity sent");
+                stream.SendNext(rb.velocity.x);
                 prevVelocity = rb.velocity;
             }
         }
@@ -3180,16 +3181,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
-
-            if (stream.PeekNext() != null)
+    
+            if (stream.Count > 5)
             {
-                Debug.Log(stream.PeekNext());
                 Debug.Log("Velocity received");
-                rb.velocity = (Vector2)stream.ReceiveNext();
+                Debug.Log(stream.ReceiveNext());
+                rb.velocity = new Vector2((float)stream.ReceiveNext(), rb.velocity.y );
             }
             else
             {
-                Debug.Log("Velocity is the same");
+                Debug.Log("Velocity not received");
             }
 
             //Calculate target position based on lag
