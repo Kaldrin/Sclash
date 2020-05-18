@@ -565,10 +565,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
 
 
-    #region NETWORK
-    Vector2 prevVelocity;
-    #endregion
-
 
 
 
@@ -631,7 +627,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
         oldStamina = maxStamina;
 
-        prevVelocity = rb.velocity;
 
         // Begin by reseting all the player's values and variable to start fresh
         StartCoroutine(GetOtherPlayerNum());
@@ -3166,13 +3161,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
-
-            /*if (rb.velocity.x != prevVelocity.x)
-            {
-                Debug.Log("Velocity sent");
-                stream.SendNext(rb.velocity.x);
-                prevVelocity = rb.velocity;
-            }*/
+            stream.SendNext(rb.velocity);
         }
         else if (stream.IsReading)
         {
@@ -3181,17 +3170,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
-    
-            /*if (stream.Count > 5)
-            {
-                Debug.Log("Velocity received");
-                Debug.Log(stream.ReceiveNext());
-                rb.velocity = new Vector2((float)stream.ReceiveNext(), rb.velocity.y );
-            }
-            else
-            {
-                Debug.Log("Velocity not received");
-            }*/
+            rb.velocity = (Vector2)stream.ReceiveNext();
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
