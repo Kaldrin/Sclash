@@ -759,7 +759,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             float lagCompensationMovement;
             if (playerState == STATE.dashing)
-                lagCompensationMovement = 15;
+                lagCompensationMovement = 50;
             else
                 lagCompensationMovement = actualMovementsSpeed;
 
@@ -1306,6 +1306,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // CLASH
+                if(instigator.GetComponent<Player>() != this){
+                    if(ConnectManager.Instance.connectedToMaster)
+                    {
+                        photonView.RPC("TriggerClash", RpcTarget.Others);
+                    }
+                }
+
                 instigator.GetComponent<Player>().TriggerClash();
 
 
