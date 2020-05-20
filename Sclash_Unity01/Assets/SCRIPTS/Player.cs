@@ -1276,7 +1276,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 foreach (GameObject p in GameManager.Instance.playersList)
                 {
                     if (ConnectManager.Instance.connectedToMaster)
-                        p.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.All);
+                        p.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
                     else
                         p.GetComponent<Player>().TriggerClash();
                 }
@@ -1312,7 +1312,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 // CLASH
                 if (ConnectManager.Instance.connectedToMaster)
-                    instigator.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.All);
+                    instigator.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
                 else
                     instigator.GetComponent<Player>().TriggerClash();
 
@@ -1865,7 +1865,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (inputManager.playerInputs[0].anyKey)
             {
-                photonView.RPC("TriggerDraw", RpcTarget.All);
+                photonView.RPC("TriggerDraw", RpcTarget.AllViaServer);
             }
         }
         else
@@ -2040,7 +2040,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)
-                photonView.RPC("ReleaseAttack", RpcTarget.All);
+                photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
         }
         else
         {
@@ -2056,7 +2056,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
                 if (ConnectManager.Instance.enableMultiplayer)
-                    photonView.RPC("ReleaseAttack", RpcTarget.All);
+                    photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
                 else
                     ReleaseAttack();
             }
@@ -2386,7 +2386,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     canParry = false;
                     if (stamina >= staminaCostForMoves)
                     {
-                        photonView.RPC("TriggerParry", RpcTarget.All);
+                        photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
                     }
 
                     currentParryFramesPressed = 0;
@@ -2472,7 +2472,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 canPommel = false;
 
-                photonView.RPC("TriggerPommel", RpcTarget.All);
+                photonView.RPC("TriggerPommel", RpcTarget.AllViaServer);
             }
         }
         else
@@ -2544,7 +2544,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
                 {
                     if (ConnectManager.Instance.connectedToMaster)
-                        g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.All);
+                        g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.AllViaServer);
                     else
                         g.GetComponent<Player>().Pommeled();
                 }
