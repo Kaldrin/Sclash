@@ -585,7 +585,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
 
 
-
+    #region Network
+    bool enemyDead = false;
+    #endregion
 
 
 
@@ -1381,7 +1383,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         return hit;
     }
 
+    [PunRPC]
     public void CheckDeath(int instigatorNum){
+        Debug.Log("He ded ?");
         bool wasSneathed = false;
 
 
@@ -2249,7 +2253,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Hits with a phantom collider to apply the attack's damage during active frames
     void ApplyAttackHitbox()
     {
-        bool enemyDead = false;
+        enemyDead = false;
         //Debug.Log(actualAttackRange);
 
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
@@ -2280,9 +2284,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (g != gameObject && !targetsHit.Contains(g))
             {
                 targetsHit.Add(g);
-
+                
                 enemyDead = g.GetComponent<Player>().TakeDamage(gameObject, chargeLevel);
-
 
                 // FX
                 attackRangeFX.gameObject.SetActive(false);
@@ -3173,21 +3176,25 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(currentHealth);
             stream.SendNext(playerNum);
             stream.SendNext(playerState);
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
             stream.SendNext(rb.velocity);
+            stream.SendNext(enemyDead);
         }
         else if (stream.IsReading)
         {
+            currentHealth = (float)stream.ReceiveNext();
             playerNum = (int)stream.ReceiveNext();
             playerState = (STATE)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
             rb.velocity = (Vector2)stream.ReceiveNext();
+            enemyDead = (bool)stream.ReceiveNext();
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
