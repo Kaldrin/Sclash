@@ -1365,10 +1365,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // IS DEAD ?
+            Debug.Log($"{instigator.name} hit {gameObject.name}, {gameObject.name} health = {currentHealth}, {gameObject.name} state = {playerState}");
             if (currentHealth <= 0 && playerState != STATE.dead)
             {
                 if(ConnectManager.Instance.connectedToMaster)
-                    photonView.RPC("CheckDeath", RpcTarget.All, instigator.GetComponent<Player>().playerNum);
+                    photonView.RPC("CheckDeath", RpcTarget.AllViaServer, instigator.GetComponent<Player>().playerNum);
                 else
                     CheckDeath(instigator.GetComponent<Player>().playerNum);
             }
@@ -1860,7 +1861,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detects draw input
     void ManageDraw()
     {
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance.connectedToMaster)
         {
             if (inputManager.playerInputs[0].anyKey)
             {

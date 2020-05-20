@@ -248,12 +248,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void LeaveLobby()
     {
+        Debug.Log("Leave Lobby called");
         PhotonNetwork.Disconnect();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        connectedToMaster = true;
+        connectedToMaster = false;
         Debug.LogWarning(cause);
     }
 

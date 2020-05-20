@@ -252,7 +252,7 @@ public class CameraManager : MonoBehaviour
             {
                 playersBaseYPos += playersList[i].transform.position.y;
             }
-            playersBaseYPos = playersBaseYPos / playersList.Length;
+            playersBaseYPos = playersBaseYPos / 2/*playersList.Length*/;
 
             return playersList;
         }
