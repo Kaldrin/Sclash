@@ -283,7 +283,7 @@ public class GameManager : MonoBehaviourPun
     #endregion
 
     [SerializeField]
-    bool letThemFight;
+    public bool letThemFight;
     int winningPlayerIndex;
 
 

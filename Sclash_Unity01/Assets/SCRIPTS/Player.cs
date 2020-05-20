@@ -849,7 +849,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 UpdateStaminaColor();
                 // Apply damages if the current attack animation has entered active frame, thus activating the bool in the animation
                 if (activeFrame)
-                        ApplyAttackHitbox();
+                    ApplyAttackHitbox();
                 break;
 
             case STATE.recovering:
@@ -1273,8 +1273,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // CLASH
             else if (clashFrames)
             {
-                foreach(GameObject p in GameManager.Instance.playersList){
-                    if(ConnectManager.Instance.connectedToMaster)
+                foreach (GameObject p in GameManager.Instance.playersList)
+                {
+                    if (ConnectManager.Instance.connectedToMaster)
                         p.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.All);
                     else
                         p.GetComponent<Player>().TriggerClash();
@@ -1310,7 +1311,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // CLASH
-                if(ConnectManager.Instance.connectedToMaster)
+                if (ConnectManager.Instance.connectedToMaster)
                     instigator.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.All);
                 else
                     instigator.GetComponent<Player>().TriggerClash();
@@ -1363,16 +1364,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 audioManager.BattleEventIncreaseIntensity();
             }
 
-
-            // IS DEAD ?
-            Debug.Log($"{instigator.name} hit {gameObject.name}, {gameObject.name} health = {currentHealth}, {gameObject.name} state = {playerState}");
-            if (currentHealth <= 0 && playerState != STATE.dead)
-            {
-                if(ConnectManager.Instance.connectedToMaster)
-                    photonView.RPC("CheckDeath", RpcTarget.AllViaServer, instigator.GetComponent<Player>().playerNum);
-                else
-                    CheckDeath(instigator.GetComponent<Player>().playerNum);
-            }
+            if (ConnectManager.Instance.connectedToMaster)
+                photonView.RPC("CheckDeath", RpcTarget.AllViaServer, instigator.GetComponent<Player>().playerNum);
+            else
+                CheckDeath(instigator.GetComponent<Player>().playerNum);
         }
 
 
@@ -1385,51 +1380,56 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [PunRPC]
-    public void CheckDeath(int instigatorNum){
-        Debug.Log("He ded ?");
-        bool wasSneathed = false;
-
-
-        // ASKS TO START MATCH IF SNEATHED
-        if (playerState == STATE.sneathed || playerState == STATE.drawing)
-            wasSneathed = true;
-
-
-        // STATE
-        SwitchState(STATE.dead);
-
-
-        // STARTS MATCH IF PLAYER WAS SNEATHED
-        if (wasSneathed)
-            gameManager.SaberDrawn(playerNum);
-
-
-        // HAS WON ?
-        if (gameManager.score[instigatorNum] + 1 >= gameManager.scoreToWin)
+    public void CheckDeath(int instigatorNum)
+    {
+        // IS DEAD ?
+        Debug.Log($"{gameObject.name} hit , {gameObject.name} health = {currentHealth}, {gameObject.name} state = {playerState}");
+        if (currentHealth <= 0 && playerState != STATE.dead)
         {
-            gameManager.TriggerMatchEndFilterEffect(true);
-            gameManager.finalCameraShake.shakeDuration = gameManager.finalCameraShakeDuration;
+            bool wasSneathed = false;
+
+
+            // ASKS TO START MATCH IF SNEATHED
+            if (playerState == STATE.sneathed || playerState == STATE.drawing)
+                wasSneathed = true;
+
+
+            // STATE
+            SwitchState(STATE.dead);
+
+
+            // STARTS MATCH IF PLAYER WAS SNEATHED
+            if (wasSneathed)
+                gameManager.SaberDrawn(playerNum);
+
+
+            // HAS WON ?
+            if (gameManager.score[instigatorNum] + 1 >= gameManager.scoreToWin)
+            {
+                gameManager.TriggerMatchEndFilterEffect(true);
+                gameManager.finalCameraShake.shakeDuration = gameManager.finalCameraShakeDuration;
+            }
+
+
+            // ANIMATIONS
+            playerAnimations.TriggerDeath();
+            playerAnimations.DeathActivated(true);
+
+
+            // FX
+            chargeFX.Stop();
+
+
+            // CAMERA FX
+            gameManager.APlayerIsDead(instigatorNum);
+    
+
+            // STATS
+            if (statsManager)
+                statsManager.AddAction(ACTION.death, playerNum, 0);
+            else
+                Debug.Log("Couldn't access statsManager to record action, ignoring");
         }
-
-
-        // ANIMATIONS
-        playerAnimations.TriggerDeath();
-        playerAnimations.DeathActivated(true);
-
-
-        // FX
-        chargeFX.Stop();
-
-
-        // CAMERA FX
-        gameManager.APlayerIsDead(instigatorNum);
-
-
-        // STATS
-        if (statsManager)
-            statsManager.AddAction(ACTION.death, playerNum, 0);
-        else
-            Debug.Log("Couldn't access statsManager to record action, ignoring");
     }
 
     // Hit
@@ -2285,7 +2285,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (g != gameObject && !targetsHit.Contains(g))
             {
                 targetsHit.Add(g);
-                
+
                 enemyDead = g.GetComponent<Player>().TakeDamage(gameObject, chargeLevel);
 
                 // FX
@@ -2543,7 +2543,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 //g.GetComponent<PlayerStats>().StaminaCost(kickedStaminaLoss);
                 if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
                 {
-                    if(ConnectManager.Instance.connectedToMaster)
+                    if (ConnectManager.Instance.connectedToMaster)
                         g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.All);
                     else
                         g.GetComponent<Player>().Pommeled();
