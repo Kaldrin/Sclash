@@ -1365,49 +1365,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // IS DEAD ?
             if (currentHealth <= 0 && playerState != STATE.dead)
             {
-                bool wasSneathed = false;
-
-
-                // ASKS TO START MATCH IF SNEATHED
-                if (playerState == STATE.sneathed || playerState == STATE.drawing)
-                    wasSneathed = true;
-
-
-                // STATE
-                SwitchState(STATE.dead);
-
-
-                // STARTS MATCH IF PLAYER WAS SNEATHED
-                if (wasSneathed)
-                    gameManager.SaberDrawn(playerNum);
-
-
-                // HAS WON ?
-                if (gameManager.score[instigator.GetComponent<Player>().playerNum] + 1 >= gameManager.scoreToWin)
-                {
-                    gameManager.TriggerMatchEndFilterEffect(true);
-                    gameManager.finalCameraShake.shakeDuration = gameManager.finalCameraShakeDuration;
-                }
-
-
-                // ANIMATIONS
-                playerAnimations.TriggerDeath();
-                playerAnimations.DeathActivated(true);
-
-
-                // FX
-                chargeFX.Stop();
-
-
-                // CAMERA FX
-                gameManager.APlayerIsDead(instigator.GetComponent<Player>().playerNum);
-
-
-                // STATS
-                if (statsManager)
-                    statsManager.AddAction(ACTION.death, playerNum, 0);
+                if(ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("CheckDeath", RpcTarget.All, instigator.GetComponent<Player>().playerNum);
                 else
-                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+                    CheckDeath(instigator.GetComponent<Player>().playerNum);
             }
         }
 
@@ -1418,6 +1379,52 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         return hit;
+    }
+
+    public void CheckDeath(int instigatorNum){
+        bool wasSneathed = false;
+
+
+        // ASKS TO START MATCH IF SNEATHED
+        if (playerState == STATE.sneathed || playerState == STATE.drawing)
+            wasSneathed = true;
+
+
+        // STATE
+        SwitchState(STATE.dead);
+
+
+        // STARTS MATCH IF PLAYER WAS SNEATHED
+        if (wasSneathed)
+            gameManager.SaberDrawn(playerNum);
+
+
+        // HAS WON ?
+        if (gameManager.score[instigatorNum] + 1 >= gameManager.scoreToWin)
+        {
+            gameManager.TriggerMatchEndFilterEffect(true);
+            gameManager.finalCameraShake.shakeDuration = gameManager.finalCameraShakeDuration;
+        }
+
+
+        // ANIMATIONS
+        playerAnimations.TriggerDeath();
+        playerAnimations.DeathActivated(true);
+
+
+        // FX
+        chargeFX.Stop();
+
+
+        // CAMERA FX
+        gameManager.APlayerIsDead(instigatorNum);
+
+
+        // STATS
+        if (statsManager)
+            statsManager.AddAction(ACTION.death, playerNum, 0);
+        else
+            Debug.Log("Couldn't access statsManager to record action, ignoring");
     }
 
     // Hit
@@ -2449,7 +2456,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detect pommel inputs
     void ManagePommel()
     {
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance.connectedToMaster)
         {
             if (!inputManager.playerInputs[0].kick)
             {
@@ -2533,9 +2540,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
                 {
                     if(ConnectManager.Instance.connectedToMaster)
-                    g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.All);
+                        g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.All);
                     else
-                    g.GetComponent<Player>().Pommeled();
+                        g.GetComponent<Player>().Pommeled();
                 }
             }
         }
