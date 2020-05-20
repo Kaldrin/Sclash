@@ -192,8 +192,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
         CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient){
             photonView.RPC("SyncMap", RpcTarget.OthersBuffered, MapLoader.Instance.currentMapIndex);
+            photonView.RPC("SyncRoundCount", RpcTarget.OthersBuffered, GameManager.Instance.scoreToWin);
+        }
     }
 
     #endregion
@@ -428,6 +430,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         Debug.Log("SyncMap called");
         MapLoader.Instance.SetMap(targetMapIndex);
+    }
+
+    [PunRPC]
+    void SyncRoundCount(int targetScoreWin){
+        GameManager.Instance.scoreToWin = targetScoreWin;
     }
 
     #endregion

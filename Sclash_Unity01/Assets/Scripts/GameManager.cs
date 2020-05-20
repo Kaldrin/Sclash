@@ -841,13 +841,9 @@ public class GameManager : MonoBehaviourPun
     bool CheckIfThePlayerWon()
     {
         if (score[winningPlayerIndex] >= scoreToWin)
-        {
             return true;
-        }
         else
-        {
             return false;
-        }
     }
 
     // Start next round
