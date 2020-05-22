@@ -758,6 +758,7 @@ public class GameManager : MonoBehaviourPun
 
 
             p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
+            p.GetComponent<Player>().ResetPos();
         }
 
 

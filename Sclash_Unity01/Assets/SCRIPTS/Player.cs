@@ -3173,6 +3173,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
 
 
+    #region Network
+    public void ResetPos(){
+        netTargetPos = rb.position;
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -3206,5 +3211,5 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
     }
-
+    #endregion
 }
