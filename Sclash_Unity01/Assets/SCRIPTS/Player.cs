@@ -1422,7 +1422,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // CAMERA FX
             gameManager.APlayerIsDead(instigatorNum);
-    
+
 
             // STATS
             if (statsManager)
@@ -3174,7 +3174,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region Network
-    public void ResetPos(){
+    [PunRPC]
+    public void ResetPos()
+    {
         netTargetPos = rb.position;
     }
 

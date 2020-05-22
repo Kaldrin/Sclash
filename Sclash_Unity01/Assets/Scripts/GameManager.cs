@@ -371,7 +371,7 @@ public class GameManager : MonoBehaviourPun
         // EFFECTS
         RunTimeScaleUpdate();
 
-        if(!ConnectManager.Instance.connectedToMaster)
+        if (!ConnectManager.Instance.connectedToMaster)
             scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
     }
     #endregion
@@ -758,7 +758,11 @@ public class GameManager : MonoBehaviourPun
 
 
             p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
-            p.GetComponent<Player>().ResetPos();
+
+            if (ConnectManager.Instance.connectedToMaster)
+            {
+                p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
+            }
         }
 
 
