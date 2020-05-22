@@ -107,7 +107,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] public Text characterNameDisplay = null;
     [SerializeField] public Image characterIdentificationArrow = null;
     [HideInInspector] public int characterIndex = 0;
-    [HideInInspector] public int playerNum = 0;
+    public int playerNum = 0;
     int otherPlayerNum = 0;
     [HideInInspector] public int networkPlayerNum = 0;
     public bool playerIsAI;
@@ -617,6 +617,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region BASE FUNCTIONS
     void Start()
     {
+
         // GET MANAGERS
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
