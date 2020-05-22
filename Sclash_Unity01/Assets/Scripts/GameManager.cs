@@ -744,28 +744,42 @@ public class GameManager : MonoBehaviourPun
     // Reset all the players' variables for next round
     void ResetPlayersForNextRound()
     {
-        //if()
-        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+        if (playerSpawns.Length < 2)
+            playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
-        for (int i = 0; i < playersList.Count; i++)
+        if (ConnectManager.Instance.connectedToMaster)
         {
-            GameObject p = playersList[i];
-
-            p.transform.position = playerSpawns[i].transform.position;
-            p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
-            p.GetComponent<Player>().SwitchState(Player.STATE.normal);
-
-
-            p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
-
-            if (ConnectManager.Instance.connectedToMaster)
+            foreach (GameObject p in playersList)
             {
+                int _tempPNum = p.GetComponent<Player>().playerNum;
+
+                p.transform.position = playerSpawns[_tempPNum].transform.position;
+                p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+                p.GetComponent<Player>().SwitchState(Player.STATE.normal);
+
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
+
                 p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
             }
         }
+        else
+        {
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                GameObject p = playersList[i];
 
-        playerDead = false;
+                p.transform.position = playerSpawns[i].transform.position;
+                p.transform.rotation = playerSpawns[i].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+                p.GetComponent<Player>().SwitchState(Player.STATE.normal);
+
+
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
+            }
+
+            playerDead = false;
+        }
     }
 
     public GameObject GetOtherPlayer(GameObject o)

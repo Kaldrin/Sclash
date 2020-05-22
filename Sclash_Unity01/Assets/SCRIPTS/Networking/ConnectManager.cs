@@ -192,7 +192,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
         CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
 
-        if (PhotonNetwork.IsMasterClient){
+        if (PhotonNetwork.IsMasterClient)
+        {
             photonView.RPC("SyncMap", RpcTarget.AllBuffered, MapLoader.Instance.currentMapIndex);
             photonView.RPC("SyncRoundCount", RpcTarget.AllBuffered, GameManager.Instance.scoreToWin);
         }
@@ -242,7 +243,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 options.MaxPlayers = byte.Parse(parametersInputs[1].text);
             else
                 options.MaxPlayers = 2;
-        }  
+        }
 
         PhotonNetwork.CreateRoom(randRoomName, options);
 
@@ -434,7 +435,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     }
 
     [PunRPC]
-    void SyncRoundCount(int targetScoreWin){
+    void SyncRoundCount(int targetScoreWin)
+    {
         GameManager.Instance.scoreToWin = targetScoreWin;
     }
 
