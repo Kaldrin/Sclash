@@ -716,7 +716,8 @@ public class GameManager : MonoBehaviourPun
     // Reset all the players' variables for next round
     void ResetPlayersForNextMatch()
     {
-        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+        if (playerSpawns.Length < 2)
+            playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
 
         for (int i = 0; i < playersList.Count; i++)
@@ -743,13 +744,12 @@ public class GameManager : MonoBehaviourPun
     // Reset all the players' variables for next round
     void ResetPlayersForNextRound()
     {
+        //if()
         GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
-
 
         for (int i = 0; i < playersList.Count; i++)
         {
             GameObject p = playersList[i];
-
 
             p.transform.position = playerSpawns[i].transform.position;
             p.transform.rotation = playerSpawns[i].transform.rotation;
@@ -764,7 +764,6 @@ public class GameManager : MonoBehaviourPun
                 p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
             }
         }
-
 
         playerDead = false;
     }

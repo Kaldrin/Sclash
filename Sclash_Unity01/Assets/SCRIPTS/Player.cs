@@ -765,7 +765,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else
                 lagCompensationMovement = actualMovementsSpeed;
 
-
             rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * lagCompensationMovement);
 
             return;
