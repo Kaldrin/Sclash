@@ -747,19 +747,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // ONLINE
         if (photonView != null && !photonView.IsMine)
         {
-            //TEST REPLACE LERP BY MOVE TOWARDSm
-            /*if (lerpToTarget)
-            {
-                if (lerpValue >= 1f)
-                {
-                    lerpToTarget = false;
-                    return;
-                }
-
-                lerpValue += Time.deltaTime * 5;
-                transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
-            }*/
-
             float lagCompensationMovement;
             if (playerState == STATE.dashing)
                 lagCompensationMovement = 50;
@@ -767,6 +754,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 lagCompensationMovement = actualMovementsSpeed;
 
             rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * lagCompensationMovement);
+
+            SetStaminaBarsOpacity(staminaBarsOpacity);
 
             return;
         }
