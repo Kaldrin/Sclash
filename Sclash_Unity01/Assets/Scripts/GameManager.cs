@@ -719,24 +719,43 @@ public class GameManager : MonoBehaviourPun
         if (playerSpawns.Length < 2)
             playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
-
-        for (int i = 0; i < playersList.Count; i++)
+        if (ConnectManager.Instance.connectedToMaster)
         {
-            GameObject p = playersList[i];
+            foreach (GameObject p in playersList)
+            {
+                int _tempPNum = p.GetComponent<Player>().playerNum;
 
+                p.GetComponent<PlayerAnimations>().TriggerSneath();
+                p.GetComponent<PlayerAnimations>().ResetDrawText();
 
-            playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
-            playersList[i].GetComponent<PlayerAnimations>().ResetDrawText();
+                p.transform.position = playerSpawns[_tempPNum].transform.position;
+                p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
 
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
 
-            p.transform.position = playerSpawns[i].transform.position;
-            p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
-
-
-            p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+            }
         }
+        else
+        {
 
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                GameObject p = playersList[i];
+
+
+                playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
+                playersList[i].GetComponent<PlayerAnimations>().ResetDrawText();
+
+
+                p.transform.position = playerSpawns[i].transform.position;
+                p.transform.rotation = playerSpawns[i].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
+
+
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+            }
+        }
 
         playerDead = false;
     }
@@ -777,9 +796,8 @@ public class GameManager : MonoBehaviourPun
 
                 p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
             }
-
-            playerDead = false;
         }
+        playerDead = false;
     }
 
     public GameObject GetOtherPlayer(GameObject o)
@@ -1107,11 +1125,7 @@ public class GameManager : MonoBehaviourPun
             playerKeysIndicators[i].SetBool("On", false);
         }
 
-
-        //yield return new WaitForSecondsRealtime(4f);
         Invoke("TestCoroutine", 4f);
-
-
     }
     #endregion
 
