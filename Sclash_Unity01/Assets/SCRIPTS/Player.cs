@@ -645,6 +645,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView != null && !photonView.IsMine)
         {
             UpdateStaminaSlidersValue();
+            UpdateStaminaColor();
 
             return;
         }
@@ -761,7 +762,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             SetStaminaBarsOpacity(staminaBarsOpacity);
 
-            return;
+            //return;
         }
 
         if (kickFrame)
@@ -1300,7 +1301,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 // STAMINA
                 //stamina += staminaCostForMoves;
-                StartCoroutine(TriggerStaminaRecupAnim());
+                if (ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("N_TriggerStaminaRecupAnim", RpcTarget.All);
+                else
+                    StartCoroutine(TriggerStaminaRecupAnim());
 
 
                 // CLASH
@@ -1700,6 +1704,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // AUDIO
         if (notEnoughStaminaSFX != null)
             notEnoughStaminaSFX.Play();
+    }
+
+    [PunRPC]
+    void N_TriggerStaminaRecupAnim()
+    {
+        StartCoroutine("TriggerStaminaRecupAnim");
     }
 
     // Stamina recup anim
