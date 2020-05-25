@@ -1158,8 +1158,6 @@ public class GameManager : MonoBehaviourPun
 
         //yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
         Invoke("ShowMenu", timeBeforeWinScreenAppears);
-
-
     }
 
     void ShowMenu()

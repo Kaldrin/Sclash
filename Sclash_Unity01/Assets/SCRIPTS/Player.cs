@@ -2040,13 +2040,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)
-                photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
+            {
+                photonView.RPC("ReleaseAttack", RpcTarget.All);
+                return;
+            }
         }
         else
         {
             //Player releases attack button
             if (!inputManager.playerInputs[playerNum].attack)
+            {
                 ReleaseAttack();
+                return;
+            }
         }
 
 
@@ -2056,7 +2062,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
                 if (ConnectManager.Instance.enableMultiplayer)
-                    photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
+                    photonView.RPC("ReleaseAttack", RpcTarget.All);
                 else
                     ReleaseAttack();
             }
@@ -3192,6 +3198,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.localScale.x);
             stream.SendNext(rb.velocity);
             stream.SendNext(enemyDead);
+            stream.SendNext(staminaBarsOpacity);
         }
         else if (stream.IsReading)
         {
@@ -3203,6 +3210,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             float xScale = (float)stream.ReceiveNext();
             rb.velocity = (Vector2)stream.ReceiveNext();
             enemyDead = (bool)stream.ReceiveNext();
+            staminaBarsOpacity = (float)stream.ReceiveNext();
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
