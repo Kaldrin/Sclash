@@ -643,7 +643,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void Update()
     {
         if (photonView != null && !photonView.IsMine)
+        {
+            UpdateStaminaSlidersValue();
+
             return;
+        }
 
         if (opponent == null)
         {
