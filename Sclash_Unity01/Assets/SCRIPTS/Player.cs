@@ -1205,6 +1205,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
+    [PunRPC]
     public void ResetAllPlayerValuesForNextRound()
     {
         SwitchState(STATE.normal);
@@ -2039,7 +2040,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //currentChargeFramesPressed++;
 
 
-        if (ConnectManager.Instance.connectedToMaster)
+        if (ConnectManager.Instance.connectedToMaster && photonView.IsMine)
         {
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)

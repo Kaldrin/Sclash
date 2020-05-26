@@ -374,6 +374,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
 
         GameManager.Instance.playersList.Add(otherPlayer);
+
+        foreach (GameObject g in GameManager.Instance.playersList)
+        {
+            int _tempPNum = g.GetComponent<Player>().playerNum;
+
+            g.transform.position = GameManager.Instance.playerSpawns[_tempPNum].transform.position;
+            g.transform.rotation = GameManager.Instance.playerSpawns[_tempPNum].transform.rotation;
+            g.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+        }
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
