@@ -375,13 +375,20 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         GameManager.Instance.playersList.Add(otherPlayer);
 
-        foreach (GameObject g in GameManager.Instance.playersList)
+        if (PhotonNetwork.IsMasterClient)
         {
-            int _tempPNum = g.GetComponent<Player>().playerNum;
+            foreach (GameObject p in GameManager.Instance.playersList)
+            {
+                int _tempPNum = p.GetComponent<Player>().playerNum;
 
-            g.transform.position = GameManager.Instance.playerSpawns[_tempPNum].transform.position;
-            g.transform.rotation = GameManager.Instance.playerSpawns[_tempPNum].transform.rotation;
-            g.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+                p.transform.position = GameManager.Instance.playerSpawns[_tempPNum].transform.position;
+                p.transform.rotation = GameManager.Instance.playerSpawns[_tempPNum].transform.rotation;
+
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+                p.GetComponent<Player>().SwitchState(Player.STATE.normal);
+
+                p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
+            }
         }
     }
 

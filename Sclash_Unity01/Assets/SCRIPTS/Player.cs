@@ -753,7 +753,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView != null && !photonView.IsMine)
         {
             float lagCompensationMovement;
-            if (playerState == STATE.dashing)
+            if (playerState == STATE.dashing || playerState == STATE.attacking)
                 lagCompensationMovement = 50;
             else
                 lagCompensationMovement = actualMovementsSpeed;
