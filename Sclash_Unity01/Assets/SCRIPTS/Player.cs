@@ -648,25 +648,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             UpdateStaminaSlidersValue();
             UpdateStaminaColor();
 
-            Vector2 lagDistance = netTargetPos - rb.position;
 
-            // HIGH DISTANCE -> TELEPORT PLAYER
-            if (lagDistance.magnitude > 3f)
-            {
-                rb.position = netTargetPos;
-                lagDistance = Vector2.zero;
-            }
-
-            if (lagDistance.magnitude < 0.11f)
-            {
-                // Player is nearly at the point
-                rb.velocity = Vector2.zero;
-            }
-            else
-            {
-                //Player must move to the point
-                rb.velocity = new Vector2(lagDistance.normalized.x * actualMovementsSpeed, rb.velocity.y);
-            }
 
 
             SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -776,6 +758,28 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void FixedUpdate()
     {
         // ONLINE
+        if (photonView != null && !photonView.IsMine)
+        {
+            Vector2 lagDistance = netTargetPos - rb.position;
+
+            // HIGH DISTANCE -> TELEPORT PLAYER
+            if (lagDistance.magnitude > 3f)
+            {
+                rb.position = netTargetPos;
+                lagDistance = Vector2.zero;
+            }
+
+            if (lagDistance.magnitude < 0.11f)
+            {
+                // Player is nearly at the point
+                rb.velocity = Vector2.zero;
+            }
+            else
+            {
+                //Player must move to the point
+                rb.velocity = new Vector2(lagDistance.normalized.x * actualMovementsSpeed, rb.velocity.y);
+            }
+        }
 
         if (kickFrame)
             ApplyPommelHitbox();
@@ -952,6 +956,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.dead:
                 break;
         }
+
+        if (photonView != null && !photonView.IsMine)
+            Debug.Log(rb.velocity);
     }
     #endregion
 
@@ -3214,6 +3221,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.localScale.x);
             stream.SendNext(enemyDead);
             stream.SendNext(staminaBarsOpacity);
+            stream.SendNext(rb.velocity);
         }
         else if (stream.IsReading)
         {
@@ -3225,6 +3233,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             float xScale = (float)stream.ReceiveNext();
             enemyDead = (bool)stream.ReceiveNext();
             staminaBarsOpacity = (float)stream.ReceiveNext();
+            rb.velocity = (Vector2)stream.ReceiveNext();
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);

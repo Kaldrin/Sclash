@@ -165,9 +165,6 @@ public class InputManager : MonoBehaviour
     // HORIZONTAL
     void ManageHorizontalInput(int i)
     {
-        if (ConnectManager.Instance.enableMultiplayer)
-            return;
-
         playerInputs[i].horizontal = Input.GetAxis(horizontalAxis + i);
     }
     # endregion
