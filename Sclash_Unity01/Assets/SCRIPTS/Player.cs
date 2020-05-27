@@ -206,7 +206,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         attackingMovementsSpeed = 2.2f;
     public float actualMovementsSpeed = 1;
 
-    Vector3 oldPos, netTargetPos = Vector3.zero;
+    Vector3 oldPos = Vector3.zero;
+    Vector2 netTargetPos = Vector2.zero;
     float lerpValue = 0f;
     bool lerpToTarget = false;
     #endregion
@@ -647,15 +648,25 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             UpdateStaminaSlidersValue();
             UpdateStaminaColor();
 
-            float lagCompensationMovement;
-            if (playerState == STATE.dashing)
-                lagCompensationMovement = 50;
-            else
-                lagCompensationMovement = actualMovementsSpeed;
+            Vector2 lagDistance = netTargetPos - rb.position;
 
-            //rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.deltaTime * lagCompensationMovement);
-            Vector2 computedPos = Vector2.Lerp(transform.position, netTargetPos, Time.deltaTime * lagCompensationMovement);
-            transform.position = new Vector3(computedPos.x, computedPos.y, transform.position.z);
+            if (lagDistance.magnitude > 5f)
+            {
+                rb.position = netTargetPos;
+                lagDistance = Vector2.zero;
+            }
+
+            if (lagDistance.magnitude < 0.11f)
+            {
+                // Player is nearly at the point
+                rb.velocity = Vector2.zero;
+            }
+            else
+            {
+                //Player must move to the point
+                rb.velocity = new Vector2(lagDistance.normalized.x * actualMovementsSpeed, rb.velocity.y);
+            }
+
 
             SetStaminaBarsOpacity(staminaBarsOpacity);
 
@@ -1817,7 +1828,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (!playerIsAI)
         {
-            if (ConnectManager.Instance.enableMultiplayer)
+            if (ConnectManager.Instance.connectedToMaster)
                 rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
             else
                 rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
@@ -3200,7 +3211,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
-            stream.SendNext(rb.velocity);
             stream.SendNext(enemyDead);
             stream.SendNext(staminaBarsOpacity);
         }
@@ -3212,15 +3222,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
-            rb.velocity = (Vector2)stream.ReceiveNext();
             enemyDead = (bool)stream.ReceiveNext();
             staminaBarsOpacity = (float)stream.ReceiveNext();
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
-
-            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
-            netTargetPos += (Vector3)(rb.velocity * lag);
 
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
