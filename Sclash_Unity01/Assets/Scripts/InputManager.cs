@@ -93,7 +93,7 @@ public class InputManager : MonoBehaviour
         {
             ManageCharacSelectInput(i);
 
-            if(GameManager.Instance.playersList.Count >0)
+            if (GameManager.Instance.playersList.Count > 0)
                 if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
                     return;
 
@@ -165,6 +165,9 @@ public class InputManager : MonoBehaviour
     // HORIZONTAL
     void ManageHorizontalInput(int i)
     {
+        if (ConnectManager.Instance.enableMultiplayer)
+            return;
+
         playerInputs[i].horizontal = Input.GetAxis(horizontalAxis + i);
     }
     # endregion

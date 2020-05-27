@@ -650,7 +650,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             Vector2 lagDistance = netTargetPos - rb.position;
 
-            if (lagDistance.magnitude > 5f)
+            // HIGH DISTANCE -> TELEPORT PLAYER
+            if (lagDistance.magnitude > 3f)
             {
                 rb.position = netTargetPos;
                 lagDistance = Vector2.zero;
@@ -791,7 +792,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.frozen:
                 //ManageOrientation();
                 SetStaminaBarsOpacity(0);
-                rb.velocity = Vector3.zero;
+                rb.velocity = Vector2.zero;
                 break;
 
             case STATE.sneathing:
