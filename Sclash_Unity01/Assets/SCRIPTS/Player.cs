@@ -647,6 +647,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             UpdateStaminaSlidersValue();
             UpdateStaminaColor();
 
+            float lagCompensationMovement;
+            if (playerState == STATE.dashing)
+                lagCompensationMovement = 50;
+            else
+                lagCompensationMovement = actualMovementsSpeed;
+
+            //rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.deltaTime * lagCompensationMovement);
+            Vector2 computedPos = Vector2.Lerp(transform.position, netTargetPos, Time.deltaTime * lagCompensationMovement);
+            transform.position = new Vector3(computedPos.x, computedPos.y, transform.position.z);
+
+            SetStaminaBarsOpacity(staminaBarsOpacity);
+
+            //return;
+
             return;
         }
 
@@ -750,20 +764,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void FixedUpdate()
     {
         // ONLINE
-        if (photonView != null && !photonView.IsMine)
-        {
-            float lagCompensationMovement;
-            if (playerState == STATE.dashing || playerState == STATE.attacking)
-                lagCompensationMovement = 50;
-            else
-                lagCompensationMovement = actualMovementsSpeed;
-
-            rb.position = Vector2.MoveTowards(rb.position, netTargetPos, Time.fixedDeltaTime * lagCompensationMovement);
-
-            SetStaminaBarsOpacity(staminaBarsOpacity);
-
-            //return;
-        }
 
         if (kickFrame)
             ApplyPommelHitbox();
