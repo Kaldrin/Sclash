@@ -648,12 +648,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             UpdateStaminaSlidersValue();
             UpdateStaminaColor();
 
-
-
-
             SetStaminaBarsOpacity(staminaBarsOpacity);
-
-            //return;
 
             return;
         }
@@ -771,14 +766,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             if (lagDistance.magnitude < 0.11f)
             {
+                Debug.Log("Stand still", gameObject);
                 // Player is nearly at the point
                 rb.velocity = Vector2.zero;
             }
             else
             {
+                Debug.Log("Move !", gameObject);
                 //Player must move to the point
                 rb.velocity = new Vector2(lagDistance.normalized.x * actualMovementsSpeed, rb.velocity.y);
             }
+
+            Debug.Log(rb.velocity, gameObject);
+
+            return;
         }
 
         if (kickFrame)
@@ -956,9 +957,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.dead:
                 break;
         }
-
-        if (photonView != null && !photonView.IsMine)
-            Debug.Log(rb.velocity);
     }
     #endregion
 
@@ -1888,7 +1886,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (inputManager.playerInputs[0].anyKey)
             {
-                photonView.RPC("TriggerDraw", RpcTarget.AllViaServer);
+                photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
             }
         }
         else
