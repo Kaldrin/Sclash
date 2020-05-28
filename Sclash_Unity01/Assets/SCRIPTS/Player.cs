@@ -1782,22 +1782,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log("Stamina recup ended");
     }
 
-    // Stamina break anim
-    IEnumerator TriggerStaminaBreakAnim()
+    // Stamina break 
+    void InitStaminaBreak()
     {
-        // COLOR   
         for (int i = 0; i < staminaSliders.Count; i++)
         {
             staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color = staminaBreakColor;
         }
 
-
         staminaBreakAnimOn = true;
+        Invoke("TriggerStaminaBreak", 0.4f);
+    }
 
-
-        yield return new WaitForSecondsRealtime(0.4f);
-
-
+    void TriggerStaminaBreak()
+    {
         TriggerNotEnoughStaminaAnim(false);
         TriggerNotEnoughStaminaAnim(true);
         StaminaCost(staminaCostForMoves, false);
@@ -1807,13 +1805,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // FX
         staminaBreakFX.Play();
 
+        Invoke("StopStaminaBreak", 0.6f);
+    }
 
-        yield return new WaitForSecondsRealtime(0.6f);
-
-
-
+    void StopStaminaBreak()
+    {
         staminaBreakAnimOn = false;
     }
+
     #endregion
 
 
@@ -2614,7 +2613,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // Stamina
             if (playerState == STATE.parrying || playerState == STATE.attacking)
             {
-                StartCoroutine(TriggerStaminaBreakAnim());
+                //StartCoroutine(TriggerStaminaBreakAnim());
+                InitStaminaBreak();
             }
 
             //NE PAS SUPPRIMER
