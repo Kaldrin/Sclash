@@ -3219,7 +3219,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.localScale.x);
             stream.SendNext(enemyDead);
             stream.SendNext(staminaBarsOpacity);
-            stream.SendNext(rb.velocity);
+            //stream.SendNext(rb.velocity);
+            stream.SendNext(actualMovementsSpeed);
         }
         else if (stream.IsReading)
         {
@@ -3231,7 +3232,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             float xScale = (float)stream.ReceiveNext();
             enemyDead = (bool)stream.ReceiveNext();
             staminaBarsOpacity = (float)stream.ReceiveNext();
-            rb.velocity = (Vector2)stream.ReceiveNext();
+            //rb.velocity = (Vector2)stream.ReceiveNext();
+            actualMovementsSpeed = (float)stream.ReceiveNext();
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
