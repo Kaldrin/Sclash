@@ -766,18 +766,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             if (lagDistance.magnitude < 0.11f)
             {
-                Debug.Log("Stand still", gameObject);
                 // Player is nearly at the point
                 rb.velocity = Vector2.zero;
             }
             else
             {
-                Debug.Log("Move !", gameObject);
                 //Player must move to the point
                 rb.velocity = new Vector2(lagDistance.normalized.x * actualMovementsSpeed, rb.velocity.y);
             }
-
-            Debug.Log(rb.velocity, gameObject);
 
             return;
         }
@@ -968,6 +964,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region STATE SWITCH
     public void SwitchState(STATE newState)
     {
+        if (ConnectManager.Instance.connectedToMaster)
+            if (!photonView.IsMine)
+                return;
+
         if (playerState != STATE.frozen)
             oldState = playerState;
 
@@ -1783,6 +1783,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Stamina break 
+    [PunRPC]
     void InitStaminaBreak()
     {
         for (int i = 0; i < staminaSliders.Count; i++)
@@ -2611,10 +2612,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // Stamina
+            Debug.Log($"Pommeled while {playerState}");
             if (playerState == STATE.parrying || playerState == STATE.attacking)
             {
                 //StartCoroutine(TriggerStaminaBreakAnim());
-                InitStaminaBreak();
+                Debug.Log("Stamina break");
+                if (ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("InitStaminaBreak", RpcTarget.All);
+                else
+                    InitStaminaBreak();
             }
 
             //NE PAS SUPPRIMER
@@ -3213,7 +3219,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             stream.SendNext(currentHealth);
             stream.SendNext(playerNum);
-            stream.SendNext(playerState);
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
             stream.SendNext(transform.localScale.x);
@@ -3221,12 +3226,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(staminaBarsOpacity);
             //stream.SendNext(rb.velocity);
             stream.SendNext(actualMovementsSpeed);
+
+            if (photonView.IsMine)
+                stream.SendNext(playerState);
         }
         else if (stream.IsReading)
         {
             currentHealth = (float)stream.ReceiveNext();
             playerNum = (int)stream.ReceiveNext();
-            playerState = (STATE)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
@@ -3234,6 +3241,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             staminaBarsOpacity = (float)stream.ReceiveNext();
             //rb.velocity = (Vector2)stream.ReceiveNext();
             actualMovementsSpeed = (float)stream.ReceiveNext();
+
+            if (!photonView.IsMine)
+                playerState = (STATE)stream.ReceiveNext();
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
