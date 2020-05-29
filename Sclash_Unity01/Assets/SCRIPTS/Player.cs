@@ -964,10 +964,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region STATE SWITCH
     public void SwitchState(STATE newState)
     {
-        if (ConnectManager.Instance.connectedToMaster)
-            if (!photonView.IsMine)
-                return;
-
         if (playerState != STATE.frozen)
             oldState = playerState;
 
@@ -3226,9 +3222,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(staminaBarsOpacity);
             //stream.SendNext(rb.velocity);
             stream.SendNext(actualMovementsSpeed);
-
-            if (photonView.IsMine)
-                stream.SendNext(playerState);
+            stream.SendNext(playerState);
         }
         else if (stream.IsReading)
         {
@@ -3241,9 +3235,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             staminaBarsOpacity = (float)stream.ReceiveNext();
             //rb.velocity = (Vector2)stream.ReceiveNext();
             actualMovementsSpeed = (float)stream.ReceiveNext();
-
-            if (!photonView.IsMine)
-                playerState = (STATE)stream.ReceiveNext();
+            SwitchState((STATE)stream.ReceiveNext());
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(xPos, rb.position.y);
