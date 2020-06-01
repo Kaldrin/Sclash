@@ -74,7 +74,7 @@ public class InputManager : MonoBehaviour
 
 
     #region BASE FUNCTIONS
-    // BASE FUNCTIONS   
+    // BASE FUNCTIONS
     private void Awake()
     {
         Instance = this;

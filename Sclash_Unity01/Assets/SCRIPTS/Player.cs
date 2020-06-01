@@ -1294,6 +1294,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 instigator.GetComponent<Player>().TriggerClash();
 
 
+                // ANIMATION
+                playerAnimations.TriggerPerfectParry();
+
+
                 // FX
                 clashFX.Play();
 
