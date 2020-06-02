@@ -774,8 +774,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 //Player must move to the point
                 rb.velocity = new Vector2(lagDistance.normalized.x * actualMovementsSpeed, rb.velocity.y);
             }
-
-            //return;
         }
 
         if (kickFrame)
@@ -1830,7 +1828,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (!playerIsAI)
         {
-            if (ConnectManager.Instance.connectedToMaster)
+            if (ConnectManager.Instance.connectedToMaster && photonView.IsMine)
                 rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
             else
                 rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
