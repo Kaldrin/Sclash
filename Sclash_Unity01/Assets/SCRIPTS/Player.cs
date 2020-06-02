@@ -775,7 +775,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 rb.velocity = new Vector2(lagDistance.normalized.x * actualMovementsSpeed, rb.velocity.y);
             }
 
-            return;
+            //return;
         }
 
         if (kickFrame)
@@ -968,7 +968,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             oldState = playerState;
 
         playerState = newState;
-
+        Debug.Log($"My new state is : {playerState}");
 
         switch (newState)
         {
