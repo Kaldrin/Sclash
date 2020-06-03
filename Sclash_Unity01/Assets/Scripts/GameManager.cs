@@ -1099,6 +1099,12 @@ public class GameManager : MonoBehaviourPun
 
     #region MATCH END
     // MATCH END
+    public void APlayerLeft()
+    {
+        APlayerWon();
+    }
+
+
     void APlayerWon()
     {
         // STATS
@@ -1125,12 +1131,12 @@ public class GameManager : MonoBehaviourPun
             playerKeysIndicators[i].SetBool("On", false);
         }
 
-        Invoke("TestCoroutine", 4f);
+        Invoke("EndGame", 4f);
     }
     #endregion
 
     //RENAME HERE IF WORKING
-    void TestCoroutine()
+    void EndGame()
     {
         // GAME STATE
         SwitchState(GAMESTATE.finished);

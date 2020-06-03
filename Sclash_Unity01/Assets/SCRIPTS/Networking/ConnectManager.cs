@@ -394,7 +394,17 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
-        Debug.Log("Player left room");
+        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
+        {
+            //GameManager.Instance.
+            Debug.LogError("Player Left in the middle of the game");
+            GameManager.Instance.APlayerLeft();
+        }
+        else
+        {
+            Debug.Log("Player left room");
+        }
+
         base.OnPlayerLeftRoom(otherPlayer);
     }
 

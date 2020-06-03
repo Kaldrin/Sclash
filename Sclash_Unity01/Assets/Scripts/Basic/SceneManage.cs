@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using Photon.Pun;
 
 // Created for Unity 2019.1.1f1
 public class SceneManage : MonoBehaviour
@@ -124,6 +124,7 @@ public class SceneManage : MonoBehaviour
     // Sets the instruction to quit the game after after the close scene anim
     public void Quit()
     {
+        PhotonNetwork.Disconnect();
         SetLoadScene(new Scene());
         quit = true;
     }
