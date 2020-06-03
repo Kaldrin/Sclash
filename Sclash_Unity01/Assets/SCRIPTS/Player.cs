@@ -966,7 +966,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             oldState = playerState;
 
         playerState = newState;
-        Debug.Log($"My new state is : {playerState}");
 
         switch (newState)
         {
@@ -1828,10 +1827,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (!playerIsAI)
         {
-            if (ConnectManager.Instance.connectedToMaster && photonView.IsMine)
-                rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+            if (ConnectManager.Instance.connectedToMaster)
+            {
+                if (photonView.IsMine)
+                {
+                    rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+                }
+            }
             else
+            {
                 rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+            }
         }
 
 
@@ -2407,7 +2413,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     canParry = false;
                     if (stamina >= staminaCostForMoves)
                     {
-                        photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
+                        photonView.RPC("TriggerParry", RpcTarget.All);
                     }
 
                     currentParryFramesPressed = 0;
@@ -2455,12 +2461,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // ANIMATION
         playerAnimations.TriggerParry();
 
-
         SwitchState(STATE.parrying);
         StaminaCost(staminaCostForMoves, true);
-
-
-
 
         // STATS
         if (statsManager)
@@ -2493,7 +2495,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 canPommel = false;
 
-                photonView.RPC("TriggerPommel", RpcTarget.AllViaServer);
+                photonView.RPC("TriggerPommel", RpcTarget.All);
             }
         }
         else
@@ -2565,7 +2567,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
                 {
                     if (ConnectManager.Instance.connectedToMaster)
-                        g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.AllViaServer);
+                        g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.All);
                     else
                         g.GetComponent<Player>().Pommeled();
                 }
