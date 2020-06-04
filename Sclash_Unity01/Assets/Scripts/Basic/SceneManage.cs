@@ -8,6 +8,8 @@ using Photon.Pun;
 public class SceneManage : MonoBehaviour
 {
 
+    public static SceneManage Instance;
+
     // SCENE CHANGE
     [Header("SCENE CHANGE")]
     [SerializeField] bool autoLoadSceneAfterDuration = false;
@@ -45,6 +47,11 @@ public class SceneManage : MonoBehaviour
 
 
     // BASE FUNCTIONS
+    void Awake()
+    {
+        Instance = this;
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -108,7 +115,7 @@ public class SceneManage : MonoBehaviour
     }
 
     // Triggers the restart of the current scene, called by the restart inputs
-    void Restart()
+    public void Restart()
     {
         SetLoadScene(SceneManager.GetActiveScene());
     }

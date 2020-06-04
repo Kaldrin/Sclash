@@ -289,6 +289,9 @@ public class CameraManager : MonoBehaviour
 
                 for (int i = 0; i < playersList.Length; i++)
                 {
+                    if (playersList[i] == null)
+                        return;
+
                     temporaryCalculationPosition.x += playersList[i].transform.position.x;
                 }
 
@@ -350,6 +353,9 @@ public class CameraManager : MonoBehaviour
 
             if (playersList.Length > 1)
             {
+                if (playersList[0] == null || playersList[1] == null)
+                    return;
+
                 actualDistanceBetweenPlayers = Mathf.Abs(Vector3.Distance(playersList[0].transform.position, playersList[1].transform.position));
             }
             else if (playersList.Length == 1)

@@ -3015,7 +3015,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             Vector3 self = Vector3.zero, other = Vector3.zero;
             Player[] stats = new Player[2];
             for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+            {
+                if (GameManager.Instance.playersList[i] == null)
+                    return;
+
                 stats[i] = GameManager.Instance.playersList[i].GetComponent<Player>();
+            }
 
             foreach (Player stat in stats)
             {

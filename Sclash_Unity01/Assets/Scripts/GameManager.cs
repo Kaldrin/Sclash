@@ -1101,6 +1101,19 @@ public class GameManager : MonoBehaviourPun
     // MATCH END
     public void APlayerLeft()
     {
+        foreach (GameObject p in playersList)
+        {
+            if (p != null)
+            {
+                continue;
+            }
+            else
+            {
+                playersList.Remove(p);
+                break;
+            }
+        }
+
         APlayerWon();
     }
 

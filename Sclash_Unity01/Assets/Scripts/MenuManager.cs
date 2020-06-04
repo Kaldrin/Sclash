@@ -168,9 +168,12 @@ public class MenuManager : MonoBehaviour
 
         for (int i = 0; i < gameManager.playersList.Count; i++)
         {
-            if (gameManager.playersList[i].GetComponent<Player>().playerState == Player.STATE.dead)
+            if (gameManager.playersList[i] != null)
             {
-                playerDead = true;
+                if (gameManager.playersList[i].GetComponent<Player>().playerState == Player.STATE.dead)
+                {
+                    playerDead = true;
+                }
             }
         }
 
@@ -186,7 +189,8 @@ public class MenuManager : MonoBehaviour
                     break;
 
                 gameManager.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
-                gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
+                if (gameManager.playersList[i] != null)
+                    gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
             }
         }
         // Display in game help key indication
@@ -276,7 +280,7 @@ public class MenuManager : MonoBehaviour
 
         Cursor.visible = state;
     }
-    # endregion
+    #endregion
 
 
 
@@ -301,7 +305,7 @@ public class MenuManager : MonoBehaviour
 
 
 
-    # region SAVE / LOAD PARAMETERS
+    #region SAVE / LOAD PARAMETERS
     public void LoadGameSaveInScriptableObject()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();

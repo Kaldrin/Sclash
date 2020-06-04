@@ -396,8 +396,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
         {
+
             //GameManager.Instance.
-            Debug.LogError("Player Left in the middle of the game");
+            Debug.LogWarning("Player Left in the middle of the game");
+            //SceneManage.Instance.Restart();
             GameManager.Instance.APlayerLeft();
         }
         else
