@@ -757,6 +757,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             Vector2 lagDistance = netTargetPos - rb.position;
 
+
             // HIGH DISTANCE -> TELEPORT PLAYER
             if (lagDistance.magnitude > 3f)
             {
@@ -2725,8 +2726,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void ManageDashInput()
     {
         // If multiplayer, only check for input 1
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance.connectedToMaster)
         {
+
             // Detects dash with basic input rather than double tap, shortcut
             if (Mathf.Abs(inputManager.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated && stamina >= staminaCostForMoves)
             {
@@ -3222,6 +3224,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(playerNum);
             stream.SendNext(stamina);
             stream.SendNext(transform.position.x);
+            stream.SendNext(transform.position.y);
             stream.SendNext(transform.localScale.x);
             stream.SendNext(enemyDead);
             stream.SendNext(staminaBarsOpacity);
@@ -3235,6 +3238,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             playerNum = (int)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
             float xPos = (float)stream.ReceiveNext();
+            float yPos = (float)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
             enemyDead = (bool)stream.ReceiveNext();
             staminaBarsOpacity = (float)stream.ReceiveNext();
@@ -3243,7 +3247,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             SwitchState((STATE)stream.ReceiveNext());
 
             //Calculate target position based on lag
-            netTargetPos = new Vector2(xPos, rb.position.y);
+            netTargetPos = new Vector2(xPos, yPos);
 
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
