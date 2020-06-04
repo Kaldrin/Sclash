@@ -426,8 +426,11 @@ public class GameManager : MonoBehaviourPun
             case GAMESTATE.paused:
                 for (int i = 0; i < playersList.Count; i++)
                 {
-                    playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-                    playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
+                    if (playersList[i] != null)
+                    {
+                        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
+                    }
                 }
                 break;
 

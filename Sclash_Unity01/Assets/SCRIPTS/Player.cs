@@ -756,7 +756,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView != null && !photonView.IsMine)
         {
             Vector2 lagDistance = netTargetPos - rb.position;
-
+            Debug.Log(lagDistance);
 
             // HIGH DISTANCE -> TELEPORT PLAYER
             if (lagDistance.magnitude > 3f)
@@ -773,8 +773,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else
             {
                 //Player must move to the point
-                rb.velocity = new Vector2(lagDistance.normalized.x * actualMovementsSpeed, rb.velocity.y);
+                if (playerState != STATE.dashing)
+                    rb.velocity = new Vector2(lagDistance.normalized.x * baseMovementsSpeed, rb.velocity.y);
+                else
+                    rb.velocity = new Vector2(lagDistance.normalized.x * 15, rb.velocity.y);
+
             }
+
+            return;
         }
 
         if (kickFrame)
