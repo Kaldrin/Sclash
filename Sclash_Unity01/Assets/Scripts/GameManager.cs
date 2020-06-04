@@ -1114,6 +1114,7 @@ public class GameManager : MonoBehaviourPun
             }
         }
 
+        Debug.Log("<color=red>The opponent left</color>");
         //APlayerWon();
     }
 

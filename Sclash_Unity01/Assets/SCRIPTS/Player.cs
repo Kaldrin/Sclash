@@ -2741,8 +2741,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 dashDirection = Mathf.Sign(inputManager.playerInputs[0].dash);
 
+                photonView.RPC("TriggerBasicDash", RpcTarget.All);
 
-                TriggerBasicDash();
+                //TriggerBasicDash();
             }
 
 
@@ -2788,7 +2789,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 else if (currentDashStep == DASHSTEP.firstRelease && dashDirection == temporaryDashDirectionForCalculation)
                 {
                     currentDashStep = DASHSTEP.invalidated;
-                    TriggerBasicDash();
+                    photonView.RPC("TriggerBasicDash", RpcTarget.All);
+                    //TriggerBasicDash();
                 }
             }
         }
@@ -2890,6 +2892,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Triggers the dash (Not the clash or attack dash) for it to run
+    [PunRPC]
     void TriggerBasicDash()
     {
         // Triggers dash if enough stamina
@@ -3223,8 +3226,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(currentHealth);
             stream.SendNext(playerNum);
             stream.SendNext(stamina);
-            stream.SendNext(transform.position.x);
-            stream.SendNext(transform.position.y);
+            stream.SendNext(transform.position);
             stream.SendNext(transform.localScale.x);
             stream.SendNext(enemyDead);
             stream.SendNext(staminaBarsOpacity);
@@ -3237,8 +3239,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             currentHealth = (float)stream.ReceiveNext();
             playerNum = (int)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
-            float xPos = (float)stream.ReceiveNext();
-            float yPos = (float)stream.ReceiveNext();
+            Vector3 DistantPos = (Vector3)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
             enemyDead = (bool)stream.ReceiveNext();
             staminaBarsOpacity = (float)stream.ReceiveNext();
@@ -3247,7 +3248,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             SwitchState((STATE)stream.ReceiveNext());
 
             //Calculate target position based on lag
-            netTargetPos = new Vector2(xPos, yPos);
+            netTargetPos = new Vector2(DistantPos.x, DistantPos.y);
 
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
