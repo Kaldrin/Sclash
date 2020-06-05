@@ -6,6 +6,8 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
+using Steamworks;
+
 [RequireComponent(typeof(PhotonView))]
 public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 {
@@ -31,6 +33,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     string[] newRoomParameters = { "rn", "pc", "rc" };
     ExitGames.Client.Photon.Hashtable customRoomProperties;
+    readonly string DefaultRoomName = "ROOM NAME";
 
     #region Base methods
 
@@ -44,6 +47,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     void Start()
     {
+
         if (enableMultiplayer)
             Connect();
 
@@ -93,7 +97,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         InitMultiplayerMatch(false);
 
-        PhotonNetwork.JoinRoom(roomName.text);
+        if (roomName.text != DefaultRoomName)
+        {
+            Debug.Log($"Join {roomName.text} room");
+            PhotonNetwork.JoinRoom(roomName.text);
+        }
+        else
+        {
+            Debug.Log("Join random room");
+            PhotonNetwork.JoinRandomRoom();
+        }
     }
 
     public void SetMultiplayer(bool multiplayer)
@@ -131,7 +144,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
 
         GameObject newPlayer = PhotonNetwork.Instantiate("PlayerNetwork", spawnPos, Quaternion.identity);
-        newPlayer.name = "Player" + PhotonNetwork.CurrentRoom.PlayerCount;
+
+        if (SteamManager.Initialized)
+            newPlayer.name = SteamFriends.GetPersonaName();
+        else
+            newPlayer.name = "Player" + PhotonNetwork.CurrentRoom.PlayerCount;
 
         CameraManager.Instance.FindPlayers();
 
@@ -224,6 +241,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.Log("PUN : CreateRoom called");
 
         string randRoomName = Time.time.ToString();
+
+        if (SteamManager.Initialized)
+        {
+            randRoomName = SteamFriends.GetPersonaName();
+            randRoomName += "'s room";
+        }
+
 
         RoomOptions options = new RoomOptions();
         options.CustomRoomPropertiesForLobby = newRoomParameters;

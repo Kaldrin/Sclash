@@ -1,0 +1,23 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Steamworks;
+
+public class SteamScript : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        if (SteamManager.Initialized)
+        {
+            string name = SteamFriends.GetPersonaName();
+        }
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+}
