@@ -368,6 +368,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public override void OnLeftRoom()
     {
         Debug.Log("PUN : OnLeftRoom() was called by PUN");
+        PhotonNetwork.Disconnect();
         CameraManager.Instance.FindPlayers();
         GameManager.Instance.playersList = new List<GameObject>(2);
 
@@ -468,10 +469,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         GameObject.Find("RightPanel").GetComponent<Animator>().Play("SlideOut");
         GameObject.Find("LeftPanel").GetComponent<Animator>().Play("SlideOut");
-        GameObject.Find("MenuLayout").SetActive(false);
+        //GameObject.Find("MenuLayout").SetActive(false);
         GameObject.Find("BackIndicator").SetActive(false);
 
-        Invoke("DisableMenu", 0.3f);
+        Invoke("DisableMenu", 0.25f);
     }
 
     void DisableMenu()

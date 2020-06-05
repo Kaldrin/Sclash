@@ -6,7 +6,7 @@ using XInputDotNetPure; // Required in C#
 public class RumbleManager : MonoBehaviour
 {
     #region Singleton
-        public static RumbleManager Instance;
+    public static RumbleManager Instance;
     #endregion
 
 
@@ -15,7 +15,8 @@ public class RumbleManager : MonoBehaviour
     [SerializeField] public float menuBrowseVibrationDuration = 0.06f;
     Coroutine[] vibrationCoroutines = new Coroutine[4];
 
-    private void Awake(){
+    private void Awake()
+    {
         Instance = this;
     }
 
@@ -137,7 +138,7 @@ public class RumbleManager : MonoBehaviour
         // Resets vibration
         vibrating = false;
         GamePad.SetVibration(index, 0, 0);
-        
+
 
         yield return new WaitForSeconds(0.01f);
 
@@ -145,15 +146,15 @@ public class RumbleManager : MonoBehaviour
         // Starts vibration
         vibrating = true;
         GamePad.SetVibration(index, leftIntensity, rightIntensity);
-        
+
 
         yield return new WaitForSeconds(duration);
 
 
         // Ends vibration
         vibrating = false;
-        Debug.Log("End vibration");
+        //Debug.Log("End vibration");
         GamePad.SetVibration(index, 0, 0);
-        
+
     }
 }

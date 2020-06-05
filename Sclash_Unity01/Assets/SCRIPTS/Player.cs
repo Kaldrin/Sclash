@@ -756,7 +756,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView != null && !photonView.IsMine)
         {
             Vector2 lagDistance = netTargetPos - rb.position;
-            Debug.Log(lagDistance);
+            //Debug.Log(lagDistance);
 
             // HIGH DISTANCE -> TELEPORT PLAYER
             if (lagDistance.magnitude > 3f)

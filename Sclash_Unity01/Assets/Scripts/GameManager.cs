@@ -994,7 +994,7 @@ public class GameManager : MonoBehaviourPun
 
 
         // ONLINE
-        if (photonView != null && ConnectManager.Instance.enableMultiplayer)
+        if (photonView != null && PhotonNetwork.InRoom)
         {
             PhotonNetwork.LeaveRoom();
         }
