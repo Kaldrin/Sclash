@@ -19,7 +19,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region VARIABLES
     #region MANAGERS
-    // MANAGERS
     [Header("MANAGERS")]
     // Audio manager
     [Tooltip("The name of the object in the scene containing the AudioManager script component, to find its reference")]
@@ -45,10 +44,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region PLAYER'S COMPONENTS
-    // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [SerializeField] public Rigidbody2D rb = null;
     [SerializeField] PlayerAnimations playerAnimations = null;
+    [SerializeField] CharacterChanger characterChanger = null;
+    [SerializeField] IAChanger iaChanger = null;
     [Tooltip("The basic collider of the player")]
     [SerializeField] public Collider2D playerCollider;
     [Tooltip("All of the player's 2D colliders")]
@@ -284,6 +284,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     float
         jumpPower = 10f;
     #endregion
+
 
 
 
@@ -636,7 +637,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         ResetAllPlayerValuesForNextMatch();
     }
 
-
     // Update is called once per graphic frame
     void Update()
     {
@@ -945,6 +945,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (playerState != STATE.frozen)
             oldState = playerState;
 
+
         playerState = newState;
 
 
@@ -956,6 +957,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 attackDashFXBack.Stop();
                 dashFXBack.Stop();
                 dashFXFront.Stop();
+                characterChanger.enabled = false;
                 break;
 
             case STATE.sneathing:
@@ -968,10 +970,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 staminaBarsOpacity = 0;
                 actualMovementsSpeed = sneathedMovementsSpeed;
                 rb.simulated = true;
+                characterChanger.enabled = true;
+
+                if (playerNum == 1)
+                    iaChanger.enabled = true;
                 break;
 
             case STATE.drawing:
                 rb.velocity = Vector3.zero;
+                characterChanger.enabled = false;
+
+                if (playerNum == 0)
+                    gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
 
             case STATE.normal:
@@ -1009,7 +1019,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
                 PauseStaminaRegen();
-
+                
+                chargeFlareFX.gameObject.SetActive(false);
+                chargeFlareFX.gameObject.SetActive(true);
+                
                 break;
 
             case STATE.pommeling:
@@ -1111,6 +1124,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXBack.Stop();
                 dashFXFront.Stop();
                 drawText.SetActive(false);
+                characterChanger.enabled = false;
                 break;
         }
     }
@@ -1829,23 +1843,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region DRAW
-    // DRAW
     // Detects draw input
     void ManageDraw()
     {
         if (ConnectManager.Instance.enableMultiplayer)
         {
             if (inputManager.playerInputs[0].anyKey)
-            {
                 photonView.RPC("TriggerDraw", RpcTarget.All);
-            }
         }
         else
         {
             if (inputManager.playerInputs[playerNum].anyKey)
-            {
                 TriggerDraw();
-            }
         }
     }
 

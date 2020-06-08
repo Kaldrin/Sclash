@@ -187,12 +187,12 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
                 // Walk anim speed depending on speed
-                if (playerScript.playerState == Player.STATE.normal)
+                if (playerScript.playerState == Player.STATE.normal && !playerScript.playerIsAI)
                     animator.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
                 else
                     animator.speed = animatorBaseSpeed;
 
-                if (playerScript.playerState == Player.STATE.charging)
+                if (playerScript.playerState == Player.STATE.charging && !playerScript.playerIsAI)
                     legsAnimator2.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
                 else
                     legsAnimator2.speed = 1;
@@ -202,7 +202,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         else
         {
             animator.SetFloat(moving, 0);
-            animator.speed = 1;
+
+            if (!playerScript.playerIsAI)
+                animator.speed = 1;
         }
 
 

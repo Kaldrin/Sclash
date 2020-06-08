@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] public List<Animator> playerKeysIndicators = new List<Animator>(2);
     [SerializeField] List<TextMeshProUGUI> playerHelpTextIdentifiers = new List<TextMeshProUGUI>(2);
     [SerializeField] List<Image> playerHelpIconIdentifiers = new List<Image>(2);
+    [SerializeField] Animator characterSelectionHelpAnimator = null;
     #endregion
 
 
@@ -402,6 +403,8 @@ public class GameManager : MonoBehaviourPun
                 menuManager.TriggerPause(false);
                 menuManager.winScreen.SetActive(false);
                 scoreObject.GetComponent<Animator>().SetBool("On", false);
+                // IN GAME HELP
+                characterSelectionHelpAnimator.SetBool("On", false);
                 Cursor.visible = false;
                 break;
 
@@ -417,6 +420,8 @@ public class GameManager : MonoBehaviourPun
                         playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
                     }
                 }
+
+
                 cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
                 mainMenu.SetActive(false);
                 blurPanel.SetActive(false);
@@ -497,8 +502,10 @@ public class GameManager : MonoBehaviourPun
         StopCoroutine(StartMatchCoroutine());
 
 
+
         // FX
         hajimeFX.Play();
+
 
 
         // AUDIO
@@ -506,10 +513,12 @@ public class GameManager : MonoBehaviourPun
         audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
 
 
+
         // SCORE DISPLAY
         UpdateMaxScoreDisplay();
-
         ResetScore();
+
+
         for (int i = 0; i < playersList.Count; i++)
         {
             scoresNames[i].name = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
@@ -526,25 +535,39 @@ public class GameManager : MonoBehaviourPun
         }
 
 
+
+        // IN GAME HELP
+        characterSelectionHelpAnimator.SetBool("On", true);
+
+
+
         yield return new WaitForSeconds(0.1f);
 
 
+
+        // STATE
         SwitchState(GAMESTATE.game);
         cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+
 
 
         yield return new WaitForSeconds(0.5f);
 
 
+
         yield return new WaitForSeconds(timeBeforeBattleCameraActivationWhenGameStarts);
 
 
+
+        // Change camera speeds
         cameraManager.actualXSmoothMovementsMultiplier = cameraManager.battleXSmoothMovementsMultiplier;
         cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
         cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
 
 
+
         yield return new WaitForSeconds(10f);
+
 
 
         // Appears draw text if both players haven't drawn
@@ -588,8 +611,12 @@ public class GameManager : MonoBehaviourPun
                 audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
 
 
+                // IN GAME HELP
+                characterSelectionHelpAnimator.SetBool("On", false);
+
+
                 // STATS
-                statsManager.InitalizeNewGame(1);
+                statsManager.InitalizeNewGame(1, playersList[0].GetComponent<CharacterChanger>().currentCharacter, playersList[1].GetComponent<CharacterChanger>().currentCharacter);
                 statsManager.InitializeNewRound();
 
 
@@ -670,7 +697,7 @@ public class GameManager : MonoBehaviourPun
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
             IAScript ia = null;
-
+            /*
 #if UNITY_EDITOR
             if (letThemFight || i == 1)
                 ia = playersList[i].AddComponent<IAScript>();
@@ -680,8 +707,8 @@ public class GameManager : MonoBehaviourPun
 #endif
             if (ia != null)
                 ia.SetDifficulty(IAScript.Difficulty.Hard);
-
-            //playerStats = playersList[i].GetComponent<PlayerStats>();*
+                */
+            //playerStats = playersList[i].GetComponent<PlayerStats>();
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
             playerScript = playersList[i].GetComponent<Player>();
 

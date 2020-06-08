@@ -15,6 +15,9 @@ public class RumbleManager : MonoBehaviour
     [SerializeField] public float menuBrowseVibrationDuration = 0.06f;
     Coroutine[] vibrationCoroutines = new Coroutine[4];
 
+
+    [SerializeField] bool rumbleOn = true;
+
     private void Awake(){
         Instance = this;
     }
@@ -133,27 +136,28 @@ public class RumbleManager : MonoBehaviour
                 break;
         }
 
-
-        // Resets vibration
-        vibrating = false;
-        GamePad.SetVibration(index, 0, 0);
+        if (rumbleOn)
+        {
+            // Resets vibration
+            vibrating = false;
+            GamePad.SetVibration(index, 0, 0);
         
 
-        yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.01f);
 
 
-        // Starts vibration
-        vibrating = true;
-        GamePad.SetVibration(index, leftIntensity, rightIntensity);
+            // Starts vibration
+            vibrating = true;
+            GamePad.SetVibration(index, leftIntensity, rightIntensity);
         
 
-        yield return new WaitForSeconds(duration);
+            yield return new WaitForSeconds(duration);
 
 
-        // Ends vibration
-        vibrating = false;
-        Debug.Log("End vibration");
-        GamePad.SetVibration(index, 0, 0);
-        
+            // Ends vibration
+            vibrating = false;
+            Debug.Log("End vibration");
+            GamePad.SetVibration(index, 0, 0);
+        }
     }
 }

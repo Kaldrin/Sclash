@@ -30329,6 +30329,7 @@ GameObject:
   - component: {fileID: 109574217010788412}
   - component: {fileID: 476191813883751613}
   - component: {fileID: 3178029957596824847}
+  - component: {fileID: 1530755180}
   m_Layer: 11
   m_Name: PaperLantern01
   m_TagString: Untagged
@@ -30392,9 +30393,23 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2142391189
+  m_SortingLayer: -1
   m_SortingOrder: 0
+--- !u!114 &1530755180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4046755377161027150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5e5174cba7f151429268b6264854bd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortingLayerName: ForeGround
+  SortingOrder: 0
 --- !u!1 &4048881639323180301
 GameObject:
   m_ObjectHideFlags: 0
@@ -51987,6 +52002,7 @@ GameObject:
   - component: {fileID: 2250432820993364714}
   - component: {fileID: 3266585608096755903}
   - component: {fileID: 7591467057851348754}
+  - component: {fileID: 1330674822}
   m_Layer: 11
   m_Name: PaperLantern01
   m_TagString: Untagged
@@ -52050,9 +52066,23 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1254970903
+  m_SortingLayer: -5
+  m_SortingOrder: 5
+--- !u!114 &1330674822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7214762432795868822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5e5174cba7f151429268b6264854bd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortingLayerName: Background
+  SortingOrder: 5
 --- !u!1 &7247174444430912378
 GameObject:
   m_ObjectHideFlags: 0
