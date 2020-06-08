@@ -188,9 +188,6 @@ public class IAScript : MonoBehaviour
                 ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //MOVE TOWARD
 
 
-
-
-
             //ADD WEIGHT TO ACTIONS
             if (canAddWeight)
                 AddWeights();
