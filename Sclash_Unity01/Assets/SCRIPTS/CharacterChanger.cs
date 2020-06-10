@@ -11,10 +11,12 @@ public class CharacterChanger : MonoBehaviour
     [SerializeField] Animator playerAnimator = null;
     [SerializeField] Animator legsAnimator = null;
     [SerializeField] Animator characterChangeAnimator = null;
+    [SerializeField] SpriteRenderer mask = null;
 
 
     [Header("DATA")]
     [SerializeField] CharactersDatabase charactersDatabase = null;
+    [SerializeField] MasksDatabase masksDatabase = null;
 
 
     [Header("CHARACTER CHANGE VISUAL OBJECTS NAMES")]
@@ -127,6 +129,7 @@ public class CharacterChanger : MonoBehaviour
 
         playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].animator;
         legsAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].legsAnimator;
+        mask.sprite = masksDatabase.masksList[charactersDatabase.charactersList[currentCharacter].defaultMask].sprite;
         illustrations[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacter].illustration;
         names[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
 

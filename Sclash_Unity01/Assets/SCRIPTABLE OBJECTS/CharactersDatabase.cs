@@ -11,6 +11,7 @@ public struct Character
     public Sprite illustration;
     public RuntimeAnimatorController animator;
     public RuntimeAnimatorController legsAnimator;
+    public int defaultMask;
 }
 
 [CreateAssetMenu(fileName = "CharactersDatabase01", menuName = "Scriptable objects/Characters database")]

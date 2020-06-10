@@ -12,16 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc32d6deac0686647b2375359aae7cca, type: 3}
   m_Name: MenuParametersSave01
   m_EditorClassIdentifier: 
-  masterVolume: 0
-  musicVolume: -6
-  menuFXVolume: 2
-  fxVolume: 7
-  voiceVolume: 4
-  roundToWin: 1
-  customList: 01000000000000000000
+  defaultMasterVolume: 4
+  defaultMenuMusicVolume: -5
+  defaultBattleMusicVolume: -3
+  defaultMenuFXVolume: 7
+  defaultFxVolume: 2
+  defaulvVoiceVolume: 5
+  masterVolume: 4
+  menuMusicVolume: -5
+  battleMusicVolume: -3
+  menuFXVolume: 7
+  fxVolume: 2
+  voiceVolume: 5
+  roundToWin: 5
+  displayHelp: 1
+  customList: 01010100000000000000
   dayNightCycle: 0
   randomStage: 0
-  useCustomListForRandom: 1
+  useCustomListForRandom: 0
   keepLastLoadedStage: 1
   useCustomListForRandomStartStage: 1
   lastLoadedStageIndex: 0

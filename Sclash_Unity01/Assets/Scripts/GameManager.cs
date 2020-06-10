@@ -190,7 +190,6 @@ public class GameManager : MonoBehaviourPun
 
 
     # region FX
-    // FX
     [Header("FX")]
     [Tooltip("The level of time slow down that is activated when a player dies")]
     [SerializeField] public float roundEndSlowMoTimeScale = 0.2f;
@@ -231,6 +230,7 @@ public class GameManager : MonoBehaviourPun
         roundTransitionLeavesFX = null,
         animeLinesFx = null;
     [SerializeField] ParticleSystem hajimeFX = null;
+    [SerializeField] bool useSlowMotion = true;
     # endregion
 
 
@@ -453,7 +453,6 @@ public class GameManager : MonoBehaviourPun
 
 
     #region BEGIN GAME
-    // BEGIN GAME
     // Setup the game before it starts
     IEnumerator SetupGame()
     {
@@ -465,6 +464,12 @@ public class GameManager : MonoBehaviourPun
         SpawnPlayers();
         yield return new WaitForSeconds(0.5f);
         cameraManager.FindPlayers();
+
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<Player>().ManageOrientation();
+        }
     }
 
     void ConnectPlayer2()
@@ -529,11 +534,6 @@ public class GameManager : MonoBehaviourPun
         }
 
 
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
-        }
-
 
 
         // IN GAME HELP
@@ -552,6 +552,13 @@ public class GameManager : MonoBehaviourPun
 
 
         yield return new WaitForSeconds(0.5f);
+
+
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
+        }
 
 
 
@@ -594,7 +601,7 @@ public class GameManager : MonoBehaviourPun
     // A saber has been drawn, stores it and checks if both players have drawn
     public void SaberDrawn(int playerNum)
     {
-        if (audioManager.audioState == AudioManager.AUDIOSTATE.beforeBattle)
+        if (audioManager.audioState == AudioManager.AUDIOSTATE.beforeBattle || audioManager.audioState == AudioManager.AUDIOSTATE.pause)
         {
             allPlayersHaveDrawn = true;
 
@@ -1172,7 +1179,6 @@ public class GameManager : MonoBehaviourPun
     }
 
     #region EFFECTS
-    // EFFECTS
     public void TriggerMatchEndFilterEffect(bool on)
     {
         if (on)
@@ -1336,8 +1342,11 @@ public class GameManager : MonoBehaviourPun
     // Starts the SlowMo coroutine
     public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
-        StopCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
-        StartCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
+        if (useSlowMotion)
+        {
+            StopCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
+            StartCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
+        }
     }
 
     // Slow motion and zoom for a given duration

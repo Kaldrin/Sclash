@@ -165,7 +165,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region UPDATE VISUALS
-    // UPDATE VISUALS
     // Update the animator's parameters in Update
     void UpdateAnims()
     {
@@ -389,7 +388,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region DRAW ANIMATION
-    // DRAW ANIMATION
     // Triggers the draw animation
     public void TriggerDraw()
     {

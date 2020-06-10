@@ -456,7 +456,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region FX
-    // FX
     [Header("FX")]
     [Tooltip("The references to the game objects holding the different FXs")]
     [SerializeField] GameObject clashFXPrefabRef = null;
@@ -571,6 +570,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
+
+
     #region CHEATS FOR DEVELOPMENT PURPOSES
     // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
@@ -583,6 +584,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         staminaCheatKey = KeyCode.Alpha4,
         stopStaminaRegenCheatKey = KeyCode.Alpha6,
         triggerStaminaRecupAnim = KeyCode.Alpha7;
+
+    [SerializeField] bool useTransparencyForDodgeFrames = true;
+    [SerializeField] bool useExtraDiegeticFX = true;
+    [SerializeField] bool infiniteStamina = false;
     #endregion
     #endregion
 
@@ -760,7 +765,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             ApplyPommelHitbox();
 
 
-        if (untouchableFrame)
+        if (useTransparencyForDodgeFrames && untouchableFrame)
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
         else
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
@@ -1558,21 +1563,24 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Function to decrement to stamina
     public void StaminaCost(float cost, bool playFX)
     {
-        stamina -= cost;
-
-
-        if (stamina < lowStaminaGap)
-            hasReachedLowStamina = true;
-
-        if (stamina <= 0)
+        if (!infiniteStamina)
         {
-            stamina = 0;
+            stamina -= cost;
+
+
+            if (stamina < lowStaminaGap)
+                hasReachedLowStamina = true;
+
+            if (stamina <= 0)
+            {
+                stamina = 0;
+            }
+
+
+            // FX
+            if (useExtraDiegeticFX && playFX)
+                staminaLossFX.Play();
         }
-
-
-        // FX
-        if (playFX)
-            staminaLossFX.Play();
     }
 
     // Update stamina slider value
@@ -1587,7 +1595,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     staminaBarChargedAudioEffectSource.Play();
 
-                    staminaGainFX.Play();
+                    if (useExtraDiegeticFX)
+                        staminaGainFX.Play();
+
                     staminaGainFX.GetComponent<ParticleSystem>().Play();
                 }
             }
@@ -1698,7 +1708,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Stamina recup anim
     IEnumerator TriggerStaminaRecupAnim()
     {
-        Debug.Log("Stamina recup");
         // COLOR
         for (int i = 0; i < staminaSliders.Count; i++)
         {
@@ -1716,7 +1725,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        staminaRecupFX.Play();
+        if (useExtraDiegeticFX)
+            staminaRecupFX.Play();
 
 
         while (regeneratedAmount < 1)
@@ -1732,8 +1742,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             yield return new WaitForSecondsRealtime(0.01f);
         }
 
-
-        staminaRecupFinishedFX.Play();
+        if (useExtraDiegeticFX)
+            staminaRecupFinishedFX.Play();
         staminaRecupAnimOn = false;
 
 
@@ -1742,9 +1752,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        staminaGainFX.Play();
-        staminaRecupFX.Stop();
-        Debug.Log("Stamina recup ended");
+        if (useExtraDiegeticFX)
+        {
+            staminaGainFX.Play();
+            staminaRecupFX.Stop();
+        }
     }
 
     // Stamina break anim
@@ -1770,7 +1782,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        staminaBreakFX.Play();
+        if (useExtraDiegeticFX)
+            staminaBreakFX.Play();
 
 
         yield return new WaitForSecondsRealtime(0.6f);
@@ -1853,7 +1866,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            if (inputManager.playerInputs[playerNum].anyKey)
+            if (inputManager.playerInputs[playerNum].anyKeyDown)
                 TriggerDraw();
         }
     }
@@ -2142,7 +2155,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // FX
         Vector3 attackSignPos = attackRangeFX.transform.localPosition;
         attackRangeFX.transform.localPosition = new Vector3(-(actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
-        attackRangeFX.Play();
+        if (useExtraDiegeticFX)
+            attackRangeFX.Play();
         chargeFlareFX.gameObject.SetActive(false);
         chargeFlareFX.gameObject.SetActive(true);
 

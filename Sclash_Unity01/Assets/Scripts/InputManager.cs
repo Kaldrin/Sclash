@@ -21,6 +21,7 @@ public class InputManager : MonoBehaviour
     {
         public bool pauseUp;
         public bool anyKey;
+        public bool anyKeyDown;
         public bool reallyanykey;
         public float horizontal;
         public float dash;
@@ -131,6 +132,8 @@ public class InputManager : MonoBehaviour
     #region ANY KEY
     void ManageAnyKeyInput(int i)
     {
+        playerInputs[i].anyKeyDown = (!playerInputs[i].anyKey && (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].kick));
+
         //playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
         playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].kick);
     }
