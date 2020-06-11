@@ -107,7 +107,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] public Text characterNameDisplay = null;
     [SerializeField] public Image characterIdentificationArrow = null;
     [HideInInspector] public int characterIndex = 0;
-    [HideInInspector] public int playerNum = 0;
+    public int playerNum = 0;
     int otherPlayerNum = 0;
     [HideInInspector] public int networkPlayerNum = 0;
     public bool playerIsAI;
@@ -206,7 +206,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         attackingMovementsSpeed = 2.2f;
     public float actualMovementsSpeed = 1;
 
-    Vector3 oldPos, netTargetPos = Vector3.zero;
+    Vector3 oldPos = Vector3.zero;
+    Vector2 netTargetPos = Vector2.zero;
     float lerpValue = 0f;
     bool lerpToTarget = false;
     #endregion
@@ -534,14 +535,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region STAGE DEPENDENT FX
     [Header("STAGE DEPENDENT FX")]
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         dashFXFront = null;
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         dashFXBack = null,
         attackDashFXFront = null,
         attackDashFXBack = null,
         attackNeutralFX = null;
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         walkFXFront = null,
         walkFXBack = null;
     #endregion
@@ -593,7 +597,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
 
 
-
+    #region Network
+    bool enemyDead = false;
+    #endregion
 
 
 
@@ -623,6 +629,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region BASE FUNCTIONS
     void Start()
     {
+
         // GET MANAGERS
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
@@ -646,20 +653,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per graphic frame
     void Update()
     {
-        // ONLINE
         if (photonView != null && !photonView.IsMine)
         {
-            if (lerpToTarget)
-            {
-                if (lerpValue >= 1f)
-                {
-                    lerpToTarget = false;
-                    return;
-                }
+            UpdateStaminaSlidersValue();
+            UpdateStaminaColor();
 
-                lerpValue += Time.deltaTime * 5;
-                transform.position = Vector3.Lerp(oldPos, netTargetPos, lerpValue);
-            }
+            SetStaminaBarsOpacity(staminaBarsOpacity);
+
             return;
         }
 
@@ -762,6 +762,37 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // FixedUpdate is called 50 times per second
     void FixedUpdate()
     {
+        // ONLINE
+        if (photonView != null && !photonView.IsMine)
+        {
+            Vector2 lagDistance = netTargetPos - rb.position;
+            //Debug.Log(lagDistance);
+
+            // HIGH DISTANCE -> TELEPORT PLAYER
+            if (lagDistance.magnitude > 3f)
+            {
+                rb.position = netTargetPos;
+                lagDistance = Vector2.zero;
+            }
+
+            if (lagDistance.magnitude < 0.11f)
+            {
+                // Player is nearly at the point
+                rb.velocity = Vector2.zero;
+            }
+            else
+            {
+                //Player must move to the point
+                if (playerState != STATE.dashing)
+                    rb.velocity = new Vector2(lagDistance.normalized.x * baseMovementsSpeed, rb.velocity.y);
+                else
+                    rb.velocity = new Vector2(lagDistance.normalized.x * 15, rb.velocity.y);
+
+            }
+
+            return;
+        }
+
         if (kickFrame)
             ApplyPommelHitbox();
 
@@ -777,7 +808,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.frozen:
                 //ManageOrientation();
                 SetStaminaBarsOpacity(0);
-                rb.velocity = Vector3.zero;
+                rb.velocity = Vector2.zero;
                 break;
 
             case STATE.sneathing:
@@ -954,7 +985,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         playerState = newState;
 
-
         switch (newState)
         {
             case STATE.frozen:
@@ -987,7 +1017,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 characterChanger.enabled = false;
 
                 if (playerNum == 0)
-                    gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
+                    if (!ConnectManager.Instance.connectedToMaster)
+                        gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
+
                 break;
 
             case STATE.normal:
@@ -1000,6 +1032,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     playerColliders[i].isTrigger = false;
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
+                dashFXBack.Stop();
+                dashFXFront.Stop();
                 break;
 
             case STATE.charging:
@@ -1025,10 +1059,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
                 PauseStaminaRegen();
-                
+
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
-                
+
                 break;
 
             case STATE.pommeling:
@@ -1216,6 +1250,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
+    [PunRPC]
     public void ResetAllPlayerValuesForNextRound()
     {
         SwitchState(STATE.normal);
@@ -1261,13 +1296,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         bool hit = false;
 
-
         if (playerState != STATE.dead)
         {
             if (Mathf.Sign(instigator.transform.localScale.x) == Mathf.Sign(transform.localScale.x))
             {
                 hit = true;
-                TriggerHit();
+                if (ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
+                else
+                    TriggerHit();
 
 
                 // SOUND
@@ -1276,10 +1313,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // CLASH
             else if (clashFrames)
             {
-                TriggerClash();
-                instigator.GetComponent<Player>().TriggerClash();
-
-
+                foreach (GameObject p in GameManager.Instance.playersList)
+                {
+                    if (ConnectManager.Instance.connectedToMaster)
+                        p.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
+                    else
+                        p.GetComponent<Player>().TriggerClash();
+                }
 
                 // FX
                 Vector3 fxPos = new Vector3((gameManager.playersList[0].transform.position.x + gameManager.playersList[1].transform.position.x) / 2, clashFX.transform.position.y, clashFX.transform.position.z);
@@ -1307,11 +1347,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 // STAMINA
                 //stamina += staminaCostForMoves;
-                StartCoroutine(TriggerStaminaRecupAnim());
+                if (ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("N_TriggerStaminaRecupAnim", RpcTarget.All);
+                else
+                    StartCoroutine(TriggerStaminaRecupAnim());
 
 
                 // CLASH
-                instigator.GetComponent<Player>().TriggerClash();
+                if (ConnectManager.Instance.connectedToMaster)
+                    instigator.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
+                else
+                    instigator.GetComponent<Player>().TriggerClash();
 
 
                 // ANIMATION
@@ -1355,8 +1401,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // SOUND
-                if (ConnectManager.Instance.enableMultiplayer)
-                    photonView.RPC("TriggerHit", RpcTarget.All);
+                if (ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
                 else
                     TriggerHit();
 
@@ -1365,54 +1411,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 audioManager.BattleEventIncreaseIntensity();
             }
 
-
-            // IS DEAD ?
-            if (currentHealth <= 0 && playerState != STATE.dead)
-            {
-                bool wasSneathed = false;
-
-
-                // ASKS TO START MATCH IF SNEATHED
-                if (playerState == STATE.sneathed || playerState == STATE.drawing)
-                    wasSneathed = true;
-
-
-                // STATE
-                SwitchState(STATE.dead);
-
-
-                // STARTS MATCH IF PLAYER WAS SNEATHED
-                if (wasSneathed)
-                    gameManager.SaberDrawn(playerNum);
-
-
-                // HAS WON ?
-                if (gameManager.score[instigator.GetComponent<Player>().playerNum] + 1 >= gameManager.scoreToWin)
-                {
-                    gameManager.TriggerMatchEndFilterEffect(true);
-                    gameManager.finalCameraShake.shakeDuration = gameManager.finalCameraShakeDuration;
-                }
-
-
-                // ANIMATIONS
-                playerAnimations.TriggerDeath();
-                playerAnimations.DeathActivated(true);
-
-
-                // FX
-                chargeFX.Stop();
-
-
-                // CAMERA FX
-                gameManager.APlayerIsDead(instigator.GetComponent<Player>().playerNum);
-
-
-                // STATS
-                if (statsManager)
-                    statsManager.AddAction(ACTION.death, playerNum, 0);
-                else
-                    Debug.Log("Couldn't access statsManager to record action, ignoring");
-            }
+            if (ConnectManager.Instance.connectedToMaster)
+                photonView.RPC("CheckDeath", RpcTarget.AllViaServer, instigator.GetComponent<Player>().playerNum);
+            else
+                CheckDeath(instigator.GetComponent<Player>().playerNum);
         }
 
 
@@ -1422,6 +1424,59 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         return hit;
+    }
+
+    [PunRPC]
+    public void CheckDeath(int instigatorNum)
+    {
+        // IS DEAD ?
+        Debug.Log($"{gameObject.name} hit , {gameObject.name} health = {currentHealth}, {gameObject.name} state = {playerState}");
+        if (currentHealth <= 0 && playerState != STATE.dead)
+        {
+            bool wasSneathed = false;
+
+
+            // ASKS TO START MATCH IF SNEATHED
+            if (playerState == STATE.sneathed || playerState == STATE.drawing)
+                wasSneathed = true;
+
+
+            // STATE
+            SwitchState(STATE.dead);
+
+
+            // STARTS MATCH IF PLAYER WAS SNEATHED
+            if (wasSneathed)
+                gameManager.SaberDrawn(playerNum);
+
+
+            // HAS WON ?
+            if (gameManager.score[instigatorNum] + 1 >= gameManager.scoreToWin)
+            {
+                gameManager.TriggerMatchEndFilterEffect(true);
+                gameManager.finalCameraShake.shakeDuration = gameManager.finalCameraShakeDuration;
+            }
+
+
+            // ANIMATIONS
+            playerAnimations.TriggerDeath();
+            playerAnimations.DeathActivated(true);
+
+
+            // FX
+            chargeFX.Stop();
+
+
+            // CAMERA FX
+            gameManager.APlayerIsDead(instigatorNum);
+
+
+            // STATS
+            if (statsManager)
+                statsManager.AddAction(ACTION.death, playerNum, 0);
+            else
+                Debug.Log("Couldn't access statsManager to record action, ignoring");
+        }
     }
 
     // Hit
@@ -1453,6 +1508,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     void ManageIA()
     {
+        if (ConnectManager.Instance.connectedToMaster)
+            return;
+
         if (inputManager.playerInputs[playerNum].switchChar && opponent.playerIsAI)
         {
             IAScript enemyIA = opponent.GetComponent<IAScript>();
@@ -1706,6 +1764,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             notEnoughStaminaSFX.Play();
     }
 
+    [PunRPC]
+    void N_TriggerStaminaRecupAnim()
+    {
+        StartCoroutine("TriggerStaminaRecupAnim");
+    }
+
     // Stamina recup anim
     IEnumerator TriggerStaminaRecupAnim()
     {
@@ -1760,22 +1824,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    // Stamina break anim
-    IEnumerator TriggerStaminaBreakAnim()
+    // Stamina break 
+    [PunRPC]
+    void InitStaminaBreak()
     {
-        // COLOR   
         for (int i = 0; i < staminaSliders.Count; i++)
         {
             staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color = staminaBreakColor;
         }
 
-
         staminaBreakAnimOn = true;
+        Invoke("TriggerStaminaBreak", 0.4f);
+    }
 
-
-        yield return new WaitForSecondsRealtime(0.4f);
-
-
+    void TriggerStaminaBreak()
+    {
         TriggerNotEnoughStaminaAnim(false);
         TriggerNotEnoughStaminaAnim(true);
         StaminaCost(staminaCostForMoves, false);
@@ -1786,13 +1849,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (useExtraDiegeticFX)
             staminaBreakFX.Play();
 
+        Invoke("StopStaminaBreak", 0.6f);
+    }
 
-        yield return new WaitForSecondsRealtime(0.6f);
-
-
-
+    void StopStaminaBreak()
+    {
         staminaBreakAnimOn = false;
     }
+
     #endregion
 
 
@@ -1813,10 +1877,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (!playerIsAI)
         {
-            if (ConnectManager.Instance.enableMultiplayer)
-                rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+            if (ConnectManager.Instance.connectedToMaster)
+            {
+                if (photonView.IsMine)
+                {
+                    rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+                }
+            }
             else
+            {
                 rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+            }
         }
 
 
@@ -1860,10 +1931,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detects draw input
     void ManageDraw()
     {
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance.connectedToMaster)
         {
             if (inputManager.playerInputs[0].anyKey)
-                photonView.RPC("TriggerDraw", RpcTarget.All);
+            {
+                photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
+            }
         }
         else
         {
@@ -2031,17 +2104,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //currentChargeFramesPressed++;
 
 
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance.connectedToMaster && photonView.IsMine)
         {
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)
-                photonView.RPC("ReleaseAttack", RpcTarget.All);
+            {
+                photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
+                return;
+            }
         }
         else
         {
             //Player releases attack button
             if (!inputManager.playerInputs[playerNum].attack)
+            {
                 ReleaseAttack();
+                return;
+            }
         }
 
 
@@ -2166,20 +2245,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Vector3 dashDirection3D = new Vector3(0, 0, 0);
         float dashDirection = 0;
 
+        int inputNum;
+        if (ConnectManager.Instance.connectedToMaster)
+            inputNum = 0;
+        else
+            inputNum = playerNum;
 
-        if (ConnectManager.Instance.enableMultiplayer)  // Ici c'est pour Victor
+        if (Mathf.Abs(inputManager.playerInputs[inputNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
         {
-        }
-
-
-        if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
-        {
-            dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) * transform.localScale.x;
-            dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[playerNum].horizontal), 0, 0);
+            dashDirection = Mathf.Sign(inputManager.playerInputs[inputNum].horizontal) * transform.localScale.x;
+            dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[inputNum].horizontal), 0, 0);
 
 
             // Dash distance
-            if (Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) == -Mathf.Sign(transform.localScale.x))
+            if (Mathf.Sign(inputManager.playerInputs[inputNum].horizontal) == -Mathf.Sign(transform.localScale.x))
             {
                 actualUsedDashDistance = forwardAttackDashDistance;
                 actualBackAttackRangeDisjoint = forwardAttackBackrangeDisjoint;
@@ -2191,7 +2270,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 // STATS
                 if (statsManager)
-                    statsManager.AddAction(ACTION.forwardAttack, playerNum, saveChargeLevelForStats);
+                    statsManager.AddAction(ACTION.forwardAttack, inputNum, saveChargeLevelForStats);
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
@@ -2206,7 +2285,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 // STATS
                 if (statsManager)
-                    statsManager.AddAction(ACTION.backwardsAttack, playerNum, saveChargeLevelForStats);
+                    statsManager.AddAction(ACTION.backwardsAttack, inputNum, saveChargeLevelForStats);
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
@@ -2219,7 +2298,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // STATS
             if (statsManager)
-                statsManager.AddAction(ACTION.neutralAttack, playerNum, saveChargeLevelForStats);
+                statsManager.AddAction(ACTION.neutralAttack, inputNum, saveChargeLevelForStats);
             else
                 Debug.Log("Couldn't access statsManager to record action, ignoring");
         }
@@ -2250,7 +2329,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Hits with a phantom collider to apply the attack's damage during active frames
     void ApplyAttackHitbox()
     {
-        bool enemyDead = false;
+        enemyDead = false;
         //Debug.Log(actualAttackRange);
 
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
@@ -2265,6 +2344,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     if ((c.transform.parent.position.x - transform.position.x) * transform.localScale.x > 0)
                     {
+
                     }
 
 
@@ -2280,8 +2360,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (g != gameObject && !targetsHit.Contains(g))
             {
                 targetsHit.Add(g);
-                enemyDead = g.GetComponent<Player>().TakeDamage(gameObject, chargeLevel);
 
+                enemyDead = g.GetComponent<Player>().TakeDamage(gameObject, chargeLevel);
 
                 // FX
                 attackRangeFX.gameObject.SetActive(false);
@@ -2346,7 +2426,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // STATE
-        SwitchState(STATE.maintainParrying); 
+        SwitchState(STATE.maintainParrying);
 
 
         // STATS
@@ -2382,7 +2462,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     canParry = false;
                     if (stamina >= staminaCostForMoves)
                     {
-                        photonView.RPC("TriggerParry", RpcTarget.All);
+                        photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
                     }
 
                     currentParryFramesPressed = 0;
@@ -2430,12 +2510,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // ANIMATION
         playerAnimations.TriggerParry();
 
-
         SwitchState(STATE.parrying);
         StaminaCost(staminaCostForMoves, true);
-
-
-
 
         // STATS
         if (statsManager)
@@ -2456,7 +2532,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detect pommel inputs
     void ManagePommel()
     {
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance.connectedToMaster)
         {
             if (!inputManager.playerInputs[0].kick)
             {
@@ -2492,6 +2568,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void TriggerPommel()
     {
+        Debug.Log("Trigger pommel");
+
         // ANIMATION
         playerAnimations.TriggerPommel();
 
@@ -2539,7 +2617,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 //g.GetComponent<PlayerStats>().StaminaCost(kickedStaminaLoss);
                 if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
                 {
-                    g.GetComponent<Player>().Pommeled();
+                    if (ConnectManager.Instance.connectedToMaster)
+                        g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.All);
+                    else
+                        g.GetComponent<Player>().Pommeled();
                 }
             }
         }
@@ -2555,6 +2636,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region POMMELED
     // The player have been kicked
+    [PunRPC]
     public void Pommeled()
     {
         if (!kickFrame)
@@ -2577,9 +2659,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // Stamina
+            Debug.Log($"Pommeled while {playerState}");
             if (playerState == STATE.parrying || playerState == STATE.attacking)
             {
-                StartCoroutine(TriggerStaminaBreakAnim());
+                //StartCoroutine(TriggerStaminaBreakAnim());
+                Debug.Log("Stamina break");
+                if (ConnectManager.Instance.connectedToMaster)
+                    photonView.RPC("InitStaminaBreak", RpcTarget.All);
+                else
+                    InitStaminaBreak();
             }
 
             //NE PAS SUPPRIMER
@@ -2688,8 +2776,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void ManageDashInput()
     {
         // If multiplayer, only check for input 1
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance.connectedToMaster)
         {
+
             // Detects dash with basic input rather than double tap, shortcut
             if (Mathf.Abs(inputManager.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated && stamina >= staminaCostForMoves)
             {
@@ -2702,8 +2791,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 dashDirection = Mathf.Sign(inputManager.playerInputs[0].dash);
 
+                photonView.RPC("TriggerBasicDash", RpcTarget.All);
 
-                TriggerBasicDash();
+                //TriggerBasicDash();
             }
 
 
@@ -2749,7 +2839,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 else if (currentDashStep == DASHSTEP.firstRelease && dashDirection == temporaryDashDirectionForCalculation)
                 {
                     currentDashStep = DASHSTEP.invalidated;
-                    TriggerBasicDash();
+                    photonView.RPC("TriggerBasicDash", RpcTarget.All);
+                    //TriggerBasicDash();
                 }
             }
         }
@@ -2851,6 +2942,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Triggers the dash (Not the clash or attack dash) for it to run
+    [PunRPC]
     void TriggerBasicDash()
     {
         // Triggers dash if enough stamina
@@ -2977,12 +3069,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             GameObject z = null, p1 = null, p2 = null;
             Vector3 self = Vector3.zero, other = Vector3.zero;
             Player[] stats = new Player[2];
-            for(int i =0; i < GameManager.Instance.playersList.Count; i++)
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+            {
+                if (GameManager.Instance.playersList[i] == null)
+                    return;
+
+
                 stats[i] = GameManager.Instance.playersList[i].GetComponent<Player>();
+            }
 
             foreach (Player stat in stats)
             {
-                if(stat == null)
+                if (stat == null)
                     return;
 
                 switch (stat.playerNum)
@@ -3164,34 +3262,49 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
     #endregion
 
+
+    #region Network
+    [PunRPC]
+    public void ResetPos()
+    {
+        netTargetPos = rb.position;
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(transform.name);
+            stream.SendNext(currentHealth);
             stream.SendNext(playerNum);
-            stream.SendNext(playerState);
             stream.SendNext(stamina);
-            stream.SendNext(transform.position.x);
+            stream.SendNext(transform.position);
             stream.SendNext(transform.localScale.x);
+            stream.SendNext(enemyDead);
+            stream.SendNext(staminaBarsOpacity);
+            //stream.SendNext(rb.velocity);
+            stream.SendNext(actualMovementsSpeed);
+            stream.SendNext(playerState);
         }
         else if (stream.IsReading)
         {
+            transform.name = (string)stream.ReceiveNext();
+            currentHealth = (float)stream.ReceiveNext();
             playerNum = (int)stream.ReceiveNext();
-            playerState = (STATE)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
-            float xPos = (float)stream.ReceiveNext();
+            Vector3 DistantPos = (Vector3)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
+            enemyDead = (bool)stream.ReceiveNext();
+            staminaBarsOpacity = (float)stream.ReceiveNext();
+            //rb.velocity = (Vector2)stream.ReceiveNext();
+            actualMovementsSpeed = (float)stream.ReceiveNext();
+            SwitchState((STATE)stream.ReceiveNext());
 
-            oldPos = transform.position;
-            netTargetPos = new Vector3(xPos, transform.position.y, transform.position.z);
-            if (oldPos != netTargetPos)
-            {
-                lerpValue = 0f;
-                lerpToTarget = true;
-            }
+            //Calculate target position based on lag
+            netTargetPos = new Vector2(DistantPos.x, DistantPos.y);
 
             transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
         }
     }
-
+    #endregion
 }

@@ -252,7 +252,7 @@ public class CameraManager : MonoBehaviour
             {
                 playersBaseYPos += playersList[i].transform.position.y;
             }
-            playersBaseYPos = playersBaseYPos / playersList.Length;
+            playersBaseYPos = playersBaseYPos / 2/*playersList.Length*/;
 
             return playersList;
         }
@@ -289,6 +289,9 @@ public class CameraManager : MonoBehaviour
 
                 for (int i = 0; i < playersList.Length; i++)
                 {
+                    if (playersList[i] == null)
+                        return;
+
                     temporaryCalculationPosition.x += playersList[i].transform.position.x;
                 }
 
@@ -323,7 +326,7 @@ public class CameraManager : MonoBehaviour
 
 
             // Translates the camera arm towards the new X position if there is at least one player in the scene
-            transform.position = transform.position + (temporaryCalculationPosition - transform.position) * actualXSmoothMovementsMultiplier;
+            transform.position += (temporaryCalculationPosition - transform.position) * actualXSmoothMovementsMultiplier;
         }
     }
     # endregion
@@ -350,6 +353,9 @@ public class CameraManager : MonoBehaviour
 
             if (playersList.Length > 1)
             {
+                if (playersList[0] == null || playersList[1] == null)
+                    return;
+
                 actualDistanceBetweenPlayers = Mathf.Abs(Vector3.Distance(playersList[0].transform.position, playersList[1].transform.position));
             }
             else if (playersList.Length == 1)

@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using Photon.Pun;
 
 // Created for Unity 2019.1.1f1
 public class SceneManage : MonoBehaviour
 {
+
+    public static SceneManage Instance;
+
+    // SCENE CHANGE
     #region SCENE CHANGE
     [Header("SCENE CHANGE")]
     [SerializeField] bool autoLoadSceneAfterDuration = false;
@@ -42,6 +46,13 @@ public class SceneManage : MonoBehaviour
 
 
 
+
+
+    // BASE FUNCTIONS
+    void Awake()
+    {
+        Instance = this;
+    }
 
     #region BASE FUNCTIONS
     // Use this for initialization
@@ -104,7 +115,7 @@ public class SceneManage : MonoBehaviour
     }
 
     // Triggers the restart of the current scene, called by the restart inputs
-    void Restart()
+    public void Restart()
     {
         SetLoadScene(SceneManager.GetActiveScene());
     }
@@ -120,6 +131,7 @@ public class SceneManage : MonoBehaviour
     // Sets the instruction to quit the game after after the close scene anim
     public void Quit()
     {
+        PhotonNetwork.Disconnect();
         SetLoadScene(new Scene());
         quit = true;
     }

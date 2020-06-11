@@ -7,9 +7,9 @@ using Photon.Pun;
 public class ColliderSync : MonoBehaviourPun, IPunObservable
 {
     [SerializeField]
-    GameObject colliderObject;
+    public GameObject colliderObject;
     [SerializeField]
-    Collider2D[] col;
+    public Collider2D[] col;
 
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
