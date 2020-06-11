@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class MapLoader : MonoBehaviour
 {
@@ -42,6 +43,10 @@ public class MapLoader : MonoBehaviour
     bool canLoadNewMap = true;
     [SerializeField] bool loadMapOnStart = false;
     #endregion
+
+
+    [Header("OTHER")]
+    [SerializeField] PostProcessVolume cameraPostProcessVolume = null;
     #endregion
 
 
@@ -131,6 +136,31 @@ public class MapLoader : MonoBehaviour
 
         currentMap = Instantiate(mapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
         currentMapIndex = mapIndex;
+
+        // POST PROCESS
+        cameraPostProcessVolume.profile = mapsData.stagesLists[mapIndex].postProcessProfile;
+
+
+        // PARTICLES
+        Debug.Log("Particles");
+        bool state = false;
+
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            for (int y = 0; y < gameManager.playersList[i].GetComponent<Player>().particlesSets.Count; y++)
+            {
+                if (y == (mapsData.stagesLists[mapIndex].particleSet))
+                    state = true;
+                else
+                    state = false;
+
+
+                for (int o = 0; o < gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems.Count; o++)
+                    gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems[o].SetActive(state);
+            }
+        }
+
+
 
         gameManager.gameParameters.lastLoadedStageIndex = currentMapIndex;
         JsonSave save = SaveGameManager.GetCurrentSave();

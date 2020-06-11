@@ -30,7 +30,6 @@ public class PressLongToCallButton : MonoBehaviour
 
             if (!lastPressState && !hasStartedPlayingSound && selected)
             {
-                Debug.Log(pressSoundAudioSource.pitch);
                 pressSoundAudioSource.loop = true;
                 hasStartedPlayingSound = true;
                 pressSoundAudioSource.Play();

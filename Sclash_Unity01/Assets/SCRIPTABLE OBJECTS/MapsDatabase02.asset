@@ -20,6 +20,9 @@ MonoBehaviour:
     musicIndex: 0
     type: 0
     inCustomList: 1
+    postProcessProfile: {fileID: 11400000, guid: 9b70ed9aa2802ee4f8488b6a54673e6b,
+      type: 2}
+    particleSet: 0
   - mapObject: {fileID: 1902809060101607206, guid: 6f98028bd83eb2440850416337b6d2a4,
       type: 3}
     stageName: BRIDGE NIGHT
@@ -27,6 +30,9 @@ MonoBehaviour:
     musicIndex: 0
     type: 1
     inCustomList: 1
+    postProcessProfile: {fileID: 11400000, guid: 9b70ed9aa2802ee4f8488b6a54673e6b,
+      type: 2}
+    particleSet: 0
   - mapObject: {fileID: 2989385763825353732, guid: a2da13060f4bd29499c92eb04974e488,
       type: 3}
     stageName: HIDDEN VILLAGE
@@ -34,13 +40,19 @@ MonoBehaviour:
     musicIndex: 4
     type: 0
     inCustomList: 1
+    postProcessProfile: {fileID: 11400000, guid: 8973304b2e54cb14fb781e7cd71c4469,
+      type: 2}
+    particleSet: 1
   - mapObject: {fileID: 8353733793514672581, guid: a85e4a4dc8d91a241accd338a619a3d8,
       type: 3}
     stageName: VILLAGE NIGHT
     mapImage: {fileID: 21300000, guid: aa074c531e9fb2c429f477268aca241a, type: 3}
     musicIndex: 4
     type: 1
-    inCustomList: 1
+    inCustomList: 0
+    postProcessProfile: {fileID: 11400000, guid: 8973304b2e54cb14fb781e7cd71c4469,
+      type: 2}
+    particleSet: 1
   - mapObject: {fileID: 2989385763825353732, guid: a897516342817b941bde271a3700d503,
       type: 3}
     stageName: SNOW TEMPLE
@@ -48,13 +60,19 @@ MonoBehaviour:
     musicIndex: 2
     type: 0
     inCustomList: 0
+    postProcessProfile: {fileID: 11400000, guid: 47f75f2d8df06984a92e0d302187b7f6,
+      type: 2}
+    particleSet: 1
   - mapObject: {fileID: 8435200525648808930, guid: 762265726ef08d14aac3593ba9780169,
       type: 3}
     stageName: TEMPLE NIGHT
     mapImage: {fileID: 21300000, guid: fabf9099c32b9ca4092009246da4e493, type: 3}
     musicIndex: 2
     type: 1
-    inCustomList: 1
+    inCustomList: 0
+    postProcessProfile: {fileID: 11400000, guid: 47f75f2d8df06984a92e0d302187b7f6,
+      type: 2}
+    particleSet: 1
   - mapObject: {fileID: 2989385763825353732, guid: b4d19f425ccea7b45b6a0b1ff80b1410,
       type: 3}
     stageName: TEMPLE INSIDE
@@ -62,6 +80,9 @@ MonoBehaviour:
     musicIndex: 3
     type: 0
     inCustomList: 0
+    postProcessProfile: {fileID: 11400000, guid: a49310f61ba4b9a44b972462c889f183,
+      type: 2}
+    particleSet: 1
   - mapObject: {fileID: 2923852211652448774, guid: 9f6720df0bee6a64aa7ba182d8428956,
       type: 3}
     stageName: INSIDE NIGHT
@@ -69,13 +90,19 @@ MonoBehaviour:
     musicIndex: 3
     type: 1
     inCustomList: 0
-  - mapObject: {fileID: 2989385763825353732, guid: 7701d0988a06dc247870db322a421b9e,
+    postProcessProfile: {fileID: 11400000, guid: a49310f61ba4b9a44b972462c889f183,
+      type: 2}
+    particleSet: 1
+  - mapObject: {fileID: 2989385763825353732, guid: d86968384907acc49a4a82e4607943bf,
       type: 3}
     stageName: BATTLEFIELD
     mapImage: {fileID: 21300000, guid: aa074c531e9fb2c429f477268aca241a, type: 3}
     musicIndex: 2
     type: 0
     inCustomList: 0
+    postProcessProfile: {fileID: 11400000, guid: b5beb4364622e874da302ddbd08f3206,
+      type: 2}
+    particleSet: 1
   - mapObject: {fileID: 2630106209289495221, guid: 1766e2bd41379f648ae58ed0fbc816d0,
       type: 3}
     stageName: BATTLEFIELD NIGHT
@@ -83,3 +110,6 @@ MonoBehaviour:
     musicIndex: 2
     type: 1
     inCustomList: 0
+    postProcessProfile: {fileID: 11400000, guid: b5beb4364622e874da302ddbd08f3206,
+      type: 2}
+    particleSet: 1

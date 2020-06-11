@@ -11,6 +11,7 @@ public class SceneManage : MonoBehaviour
     public static SceneManage Instance;
 
     // SCENE CHANGE
+    #region SCENE CHANGE
     [Header("SCENE CHANGE")]
     [SerializeField] bool autoLoadSceneAfterDuration = false;
     public bool proceedToLoadScene = false;
@@ -23,16 +24,17 @@ public class SceneManage : MonoBehaviour
     [SerializeField] Animator sceneSwitchAnimator = null;
 
     Scene sceneToLoad;
+    bool canLoadScene = true;
+    #endregion
 
 
 
 
-
-
-    // RESTART SCENE
+    #region RESTART SCENE
     [Header("RESTART SCENE")]
     public KeyCode[]
         pressSimultaneousKeysToRestart;
+    #endregion
 
 
 
@@ -52,18 +54,13 @@ public class SceneManage : MonoBehaviour
         Instance = this;
     }
 
+    #region BASE FUNCTIONS
     // Use this for initialization
     void Start()
     {
         // If chosen, starts the coroutine that will load the indicated scene after the indicated duration
         if (autoLoadSceneAfterDuration)
             StartCoroutine(AutoLoadSceneAfterDuration());
-    }
-
-    // Update is called once per graphic frame
-    void Update()
-    {
-
     }
 
     // FixedUpdate is called 50 times per second
@@ -83,11 +80,14 @@ public class SceneManage : MonoBehaviour
             {
                 Application.Quit();
             }
-            else
+            else if (canLoadScene)
+            {
+                canLoadScene = false;
                 LoadScene(sceneToLoad);
+            }
         }
     }
-
+    #endregion
 
 
 

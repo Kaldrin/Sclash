@@ -5702,15 +5702,15 @@ SpriteRenderer:
   m_SortingLayerID: -455963155
   m_SortingLayer: -3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 4ec95a18b371ba34fb34310e77b0ae43, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 30f9c5e067c283b4dac3cb0ac4fbb969, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.7306666, y: 2.7306666}
+  m_Size: {x: 3.4133334, y: 3.4133334}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 2
   m_SpriteSortPoint: 0
 --- !u!60 &6426593142658261902
@@ -5730,8 +5730,8 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.7306666, y: 2.7306666}
-    newSize: {x: 2.7306666, y: 2.7306666}
+    oldSize: {x: 3.4133334, y: 3.4133334}
+    newSize: {x: 3.4133334, y: 3.4133334}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -24150,7 +24150,9 @@ MonoBehaviour:
   rigid: {fileID: 7003620522291499887}
   animator: {fileID: 6065618468900711097}
   legsAnimator: {fileID: 5726792742987038183}
+  legsAnimator2: {fileID: 0}
   drawTextAnimator: {fileID: 9163605804612958320}
+  nameDisplayAnimator: {fileID: 0}
   legsMask: {fileID: 4627427731864077842}
   spriteRenderer: {fileID: 293502933573899569}
   legsSpriteRenderer: {fileID: 4284506712005801069}
@@ -24168,6 +24170,7 @@ MonoBehaviour:
   chargeOff: ChargeOff
   attackDirection: AttackDirection
   parryOn: ParryOn
+  perfectParry: PerfectParry
   maintainParry: MaintainParry
   maintainParryOn: MaintainParryOn
   maintainParryOff: MaintainParryOff
@@ -24185,7 +24188,9 @@ MonoBehaviour:
   jump: Jump
   land: Land
   verticalSpeed: VerticalSpeed
+  attackState: AttackState
   legsWalkDirection: WalkDirection
+  legs02WalkDirection: WalkDirection
   textDrawOn: DrawOn
   resetDrawText: ResetDraw
 --- !u!95 &6065618468900711097

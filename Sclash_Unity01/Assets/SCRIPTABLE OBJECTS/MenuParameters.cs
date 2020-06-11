@@ -5,6 +5,22 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MenuParameters01", menuName = "Scriptable objects/Menu parameters")]
 public class MenuParameters : ScriptableObject
 {
+    [Header("DEFAULT AUDIO VALUES")]
+    public float defaultMasterVolume = 0;
+    public float defaultMenuMusicVolume = 0;
+    public float defaultBattleMusicVolume = 0;
+    public float defaultMenuFXVolume = 0;
+    public float defaultFxVolume = 0;
+    public float defaultVoiceVolume = 0;
+
+    [Header("MAX AUDIO VALUES")]
+    public float maxMasterVolume = 10;
+    public float maxMenuMusicVolume = 10;
+    public float maxBattleMusicVolume = 10;
+    public float maxMenuFXVolume = 10;
+    public float maxFxVolume = 10;
+    public float maxVoiceVolume = 10;
+
     [Header("AUDIO")]
     public float masterVolume = 0;
     public float menuMusicVolume = 0;

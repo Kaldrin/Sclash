@@ -7,16 +7,16 @@ using Photon.Realtime;
 
 public class PlayerAnimations : MonoBehaviourPunCallbacks
 {
-
     #region PLAYER'S COMPONENTS
-    // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [Tooltip("The reference to the player's Rigidbody component")]
     [SerializeField] Rigidbody2D rigid = null;
 
     [Tooltip("The reference to the player's Animators components for the character and their legs")]
     [SerializeField] public Animator animator = null;
-    [SerializeField] Animator legsAnimator = null;
+    [SerializeField] Animator
+        legsAnimator = null,
+        legsAnimator2 = null;
     [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
     [SerializeField] Animator drawTextAnimator = null;
     [SerializeField] public Animator nameDisplayAnimator = null;
@@ -25,8 +25,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     [SerializeField] public GameObject legsMask = null;
 
     [Tooltip("The reference to the player's SpriteRenderers components for the character and their legs")]
-    [SerializeField]
-    public SpriteRenderer spriteRenderer, legsSpriteRenderer = null;
+    [SerializeField] public SpriteRenderer
+        spriteRenderer,
+        legsSpriteRenderer = null;
 
     [SerializeField] Player playerScript = null;
     # endregion
@@ -37,12 +38,14 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region ANIMATION VALUES
-    // ANIMATION VALUES
     [Header("ANIMATION VALUES")]
     [Tooltip("The minimum speed required for the walk anim to trigger")]
     [SerializeField] float minSpeedForWalkAnim = 0.05f;
-    [HideInInspector]
-    public float animatorBaseSpeed, legsAnimatorBaseSpeed = 0;
+    [HideInInspector] public float
+        animatorBaseSpeed,
+        legsAnimatorBaseSpeed = 0;
+
+    float nextAttackState = 0;
     #endregion
 
 
@@ -50,7 +53,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region ANIMATOR PARAMETERS
-    // ANIMATOR PARAMETERS
     [Header("PLAYER ANIMATOR PARAMETERS")]
     [SerializeField] string Walk = "Walk";
     [SerializeField]
@@ -64,6 +66,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         chargeOff = "ChargeOff",
         attackDirection = "AttackDirection",
         parryOn = "ParryOn",
+        perfectParry = "PerfectParry",
         maintainParry = "MaintainParry",
         maintainParryOn = "MaintainParryOn",
         maintainParryOff = "MaintainParryOff",
@@ -80,13 +83,15 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         sneath = "Sneath",
         jump = "Jump",
         land = "Land",
-        verticalSpeed = "VerticalSpeed";
+        verticalSpeed = "VerticalSpeed",
+        attackState = "AttackState";
 
-    // LEG ANIMATOR PARAMETERS
     [Header("LEG ANIMATOR PARAMETERS")]
     [SerializeField] string legsWalkDirection = "WalkDirection";
 
-    // DRAW TEXT ANIMATOR PARAMETERS
+    [Header("LEG02 ANIMATOR PARAMETERS")]
+    [SerializeField] string legs02WalkDirection = "WalkDirection";
+
     [Header("DRAW TEXT ANIMATOR PARAMETERS")]
     [SerializeField] string textDrawOn = "DrawOn";
     [SerializeField] string resetDrawText = "ResetDraw";
@@ -121,7 +126,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region BASE FUNCTIONS
-    // BASE FUNCTIONS
     private void Start()
     {
         animatorBaseSpeed = animator.speed;
@@ -161,7 +165,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region UPDATE VISUALS
-    // UPDATE VISUALS
     // Update the animator's parameters in Update
     void UpdateAnims()
     {
@@ -180,23 +183,43 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
             else
             {
                 animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal)));
+
+
+                // Walk anim speed depending on speed
+                if (playerScript.playerState == Player.STATE.normal && !playerScript.playerIsAI)
+                    animator.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
+                else
+                    animator.speed = animatorBaseSpeed;
+
+                if (playerScript.playerState == Player.STATE.charging && !playerScript.playerIsAI)
+                    legsAnimator2.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
+                else
+                    legsAnimator2.speed = 1;
             }
         }
         // If the player isn't really moving
         else
         {
             animator.SetFloat(moving, 0);
+
+            if (!playerScript.playerIsAI)
+                animator.speed = 1;
         }
 
 
         // CHARGE WALK ANIM
+        legsAnimator2.SetFloat("AttackState", nextAttackState);
+
+
         if (playerScript.playerState == Player.STATE.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
-            legsMask.SetActive(true);
+            //legsMask.SetActive(true);
+            legsAnimator2.gameObject.SetActive(true);
         }
         else
         {
-            legsMask.SetActive(false);
+            //legsMask.SetActive(false);
+            legsAnimator2.gameObject.SetActive(false);
         }
     }
     # endregion
@@ -296,15 +319,14 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region WALK DIRECTION
-    // WALK DIRECTION
     void UpdateWalkDirection()
     {
-        // WALK DIRECTION
         try
         {
             if ((rigid.velocity.x * -transform.localScale.x) < 0)
             {
                 animator.SetFloat(playerWalkDirection, 0);
+                legsAnimator2.SetFloat(legs02WalkDirection, 0);
 
 
                 if (legsAnimator.isActiveAndEnabled)
@@ -313,16 +335,14 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
             else
             {
                 animator.SetFloat(playerWalkDirection, 1);
+                legsAnimator2.SetFloat(legs02WalkDirection, 1);
 
 
                 if (legsAnimator.isActiveAndEnabled)
                     legsAnimator.SetFloat(legsWalkDirection, 1);
             }
         }
-        catch
-        {
-
-        }
+        catch {}
     }
 
     void ResetWalkDirecton()
@@ -335,9 +355,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
                 animator.SetFloat(playerWalkDirection, 0f);
             }
         }
-        catch
-        {
-        }
+        catch {}
     }
     #endregion
 
@@ -372,7 +390,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region DRAW ANIMATION
-    // DRAW ANIMATION
     // Triggers the draw animation
     public void TriggerDraw()
     {
@@ -411,7 +428,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region PARRY ANIMATION
-    // PARRY ANIMATION
     // Triggers on / off parry animation
     public void TriggerParry()
     {
@@ -422,6 +438,17 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     public void ResetParry()
     {
         animator.ResetTrigger(parryOn);
+    }
+
+    public void TriggerPerfectParry()
+    {
+        animator.SetTrigger(perfectParry);
+    }
+
+    // Resets the parry animation triggers
+    public void ResetPerfectParry()
+    {
+        animator.ResetTrigger(perfectParry);
     }
     #endregion
 
@@ -487,10 +514,13 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region CHARGE ANIMATIONS
-    // CHARGE ANIMATIONS
     // Trigger charge animation
     public void TriggerCharge(bool state)
     {
+        animator.SetFloat(attackState, nextAttackState);
+        //legsAnimator2.SetFloat("AttackState", nextAttackState);
+
+
         if (state)
             animator.SetTrigger(chargeOn);
         else
@@ -563,10 +593,15 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region ATTACK ANIMATIONS
-    // ATTACK ANIMATIONS
     // Trigger attack depending on the intended direction
     public void TriggerAttack(float attackDir)
     {
+        if (nextAttackState == 0)
+            nextAttackState = 1;
+        else
+            nextAttackState = 0;
+
+
         float tempAttackDirectionStock;
 
 

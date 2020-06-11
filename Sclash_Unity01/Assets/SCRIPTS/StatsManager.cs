@@ -32,7 +32,7 @@ public class StatsManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InitalizeNewGame(0);
+        InitalizeNewGame(0, 0, 0);
         //Debug.Log(statsAsset.globalStats[0].gamesList.Count);
 
         // Intializing variables to prevent null reference exceptions
@@ -46,7 +46,7 @@ public class StatsManager : MonoBehaviour
 
     #region GAME
     // GAME
-    public void InitalizeNewGame(int gameType)
+    public void InitalizeNewGame(int gameType, int character0, int character1)
     {
         currentGame.index = statsAsset.globalStats[gameType].gamesList.Count;
         currentGame.type = statsAsset.globalStats[gameType].statName;
@@ -68,8 +68,8 @@ public class StatsManager : MonoBehaviour
 
 
         // Characters
-        currentGame.character1 = 0;
-        currentGame.character2 = 0;
+        currentGame.character1 = character0;
+        currentGame.character2 = character1;
 
 
         // Rounds
@@ -107,7 +107,6 @@ public class StatsManager : MonoBehaviour
 
         statsAsset.globalStats[gameType] = newGlobalStats;
 
-        Debug.Log("Finalize game");
         ComputeGameDatas();
     }
     #endregion

@@ -317,13 +317,48 @@ public class MenuManager : MonoBehaviour
     public void LoadAudioSaveInScriptableObject()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();
+        
 
-        menuParametersSaveScriptableObject.masterVolume = save.masterVolume;
-        menuParametersSaveScriptableObject.menuMusicVolume = save.menuMusicVolume;
-        menuParametersSaveScriptableObject.battleMusicVolume = save.battleMusicVolume;
-        menuParametersSaveScriptableObject.menuFXVolume = save.menuFXVolume;
-        menuParametersSaveScriptableObject.fxVolume = save.fxVolume;
-        menuParametersSaveScriptableObject.voiceVolume = save.voiceVolume;
+        // Master volume
+        if (save.masterVolume > menuParametersSaveScriptableObject.maxMasterVolume)
+            menuParametersSaveScriptableObject.masterVolume = menuParametersSaveScriptableObject.defaultMasterVolume;
+        else
+            menuParametersSaveScriptableObject.masterVolume = save.masterVolume;
+
+
+        // Menu music volume
+        if (save.menuMusicVolume > menuParametersSaveScriptableObject.maxMenuMusicVolume)
+            menuParametersSaveScriptableObject.menuMusicVolume = menuParametersSaveScriptableObject.defaultMenuMusicVolume;
+        else
+            menuParametersSaveScriptableObject.menuMusicVolume = save.menuMusicVolume;
+
+
+        // Battle music volume
+        if (save.battleMusicVolume > menuParametersSaveScriptableObject.maxBattleMusicVolume)
+            menuParametersSaveScriptableObject.battleMusicVolume = menuParametersSaveScriptableObject.defaultBattleMusicVolume;
+        else
+            menuParametersSaveScriptableObject.battleMusicVolume = save.battleMusicVolume;
+
+
+        // Menu FX volume
+        if (save.menuFXVolume > menuParametersSaveScriptableObject.maxMenuFXVolume)
+            menuParametersSaveScriptableObject.menuFXVolume = menuParametersSaveScriptableObject.defaultMenuFXVolume;
+        else
+            menuParametersSaveScriptableObject.menuFXVolume = save.menuFXVolume;
+
+
+        // FX Volume
+        if (save.fxVolume > menuParametersSaveScriptableObject.maxFxVolume)
+            menuParametersSaveScriptableObject.fxVolume = menuParametersSaveScriptableObject.defaultFxVolume;
+        else
+            menuParametersSaveScriptableObject.fxVolume = save.fxVolume;
+
+
+        // Voices volume
+        if (save.voiceVolume > menuParametersSaveScriptableObject.maxVoiceVolume)
+            menuParametersSaveScriptableObject.voiceVolume = menuParametersSaveScriptableObject.defaultVoiceVolume;
+        else
+            menuParametersSaveScriptableObject.voiceVolume = save.voiceVolume;
     }
 
     public void SetUpGameSettingsFromScriptableObject()

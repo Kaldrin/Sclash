@@ -19,7 +19,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region VARIABLES
     #region MANAGERS
-    // MANAGERS
     [Header("MANAGERS")]
     // Audio manager
     [Tooltip("The name of the object in the scene containing the AudioManager script component, to find its reference")]
@@ -45,10 +44,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region PLAYER'S COMPONENTS
-    // PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [SerializeField] public Rigidbody2D rb = null;
     [SerializeField] PlayerAnimations playerAnimations = null;
+    [SerializeField] CharacterChanger characterChanger = null;
+    [SerializeField] IAChanger iaChanger = null;
     [Tooltip("The basic collider of the player")]
     [SerializeField] public Collider2D playerCollider;
     [Tooltip("All of the player's 2D colliders")]
@@ -290,6 +290,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
+
     #region CHARGE
     // CHARGE
     [Header("CHARGE")]
@@ -456,7 +457,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region FX
-    // FX
     [Header("FX")]
     [Tooltip("The references to the game objects holding the different FXs")]
     [SerializeField] GameObject clashFXPrefabRef = null;
@@ -534,25 +534,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region STAGE DEPENDENT FX
-    // STAGFE DEPENDENT FX
     [Header("STAGE DEPENDENT FX")]
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         dashFXFront = null;
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         dashFXBack = null,
         attackDashFXFront = null,
         attackDashFXBack = null,
         attackNeutralFX = null;
-    [Tooltip("The references to the particle systems components used for the walk leaves FX")]
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         walkFXFront = null,
         walkFXBack = null;
     #endregion
 
 
+    [System.Serializable]
+    public struct ParticleSet
+    {
+        public List<GameObject> particleSystems;
+    }
+    [SerializeField] public List<ParticleSet> particlesSets = new List<ParticleSet>();
 
 
 
@@ -564,6 +565,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] AudioSource staminaBreakAudioFX = null;
     [SerializeField] PlayRandomSoundInList notEnoughStaminaSFX = null;
     #endregion
+
+
+
 
 
 
@@ -582,6 +586,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         staminaCheatKey = KeyCode.Alpha4,
         stopStaminaRegenCheatKey = KeyCode.Alpha6,
         triggerStaminaRecupAnim = KeyCode.Alpha7;
+
+    [SerializeField] bool useTransparencyForDodgeFrames = true;
+    [SerializeField] bool useExtraDiegeticFX = true;
+    [SerializeField] bool infiniteStamina = false;
     #endregion
     #endregion
 
@@ -638,7 +646,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         deathFXbaseAngles = deathBloodFX.transform.localEulerAngles;
         ResetAllPlayerValuesForNextMatch();
     }
-
 
     // Update is called once per graphic frame
     void Update()
@@ -787,7 +794,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             ApplyPommelHitbox();
 
 
-        if (untouchableFrame)
+        if (useTransparencyForDodgeFrames && untouchableFrame)
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
         else
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
@@ -972,6 +979,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (playerState != STATE.frozen)
             oldState = playerState;
 
+
         playerState = newState;
 
         switch (newState)
@@ -982,6 +990,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 attackDashFXBack.Stop();
                 dashFXBack.Stop();
                 dashFXFront.Stop();
+                characterChanger.enabled = false;
                 break;
 
             case STATE.sneathing:
@@ -994,10 +1003,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 staminaBarsOpacity = 0;
                 actualMovementsSpeed = sneathedMovementsSpeed;
                 rb.simulated = true;
+                characterChanger.enabled = true;
+
+                if (playerNum == 1)
+                    iaChanger.enabled = true;
                 break;
 
             case STATE.drawing:
                 rb.velocity = Vector3.zero;
+                characterChanger.enabled = false;
+
+                if (playerNum == 0)
+                    gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
 
             case STATE.normal:
@@ -1037,7 +1054,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
                 PauseStaminaRegen();
-
+                
+                chargeFlareFX.gameObject.SetActive(false);
+                chargeFlareFX.gameObject.SetActive(true);
+                
                 break;
 
             case STATE.pommeling:
@@ -1139,6 +1159,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXBack.Stop();
                 dashFXFront.Stop();
                 drawText.SetActive(false);
+                characterChanger.enabled = false;
                 break;
         }
     }
@@ -1334,6 +1355,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     instigator.GetComponent<Player>().TriggerClash();
 
 
+                // ANIMATION
+                playerAnimations.TriggerPerfectParry();
+
+
                 // FX
                 clashFX.Play();
 
@@ -1505,6 +1530,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
+
+
+
     #region STAMINA
     // Set up stamina bar system
     void SetUpStaminaBars()
@@ -1589,21 +1617,24 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Function to decrement to stamina
     public void StaminaCost(float cost, bool playFX)
     {
-        stamina -= cost;
-
-
-        if (stamina < lowStaminaGap)
-            hasReachedLowStamina = true;
-
-        if (stamina <= 0)
+        if (!infiniteStamina)
         {
-            stamina = 0;
+            stamina -= cost;
+
+
+            if (stamina < lowStaminaGap)
+                hasReachedLowStamina = true;
+
+            if (stamina <= 0)
+            {
+                stamina = 0;
+            }
+
+
+            // FX
+            if (useExtraDiegeticFX && playFX)
+                staminaLossFX.Play();
         }
-
-
-        // FX
-        if (playFX)
-            staminaLossFX.Play();
     }
 
     // Update stamina slider value
@@ -1618,7 +1649,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     staminaBarChargedAudioEffectSource.Play();
 
-                    staminaGainFX.Play();
+                    if (useExtraDiegeticFX)
+                        staminaGainFX.Play();
+
                     staminaGainFX.GetComponent<ParticleSystem>().Play();
                 }
             }
@@ -1735,7 +1768,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Stamina recup anim
     IEnumerator TriggerStaminaRecupAnim()
     {
-        Debug.Log("Stamina recup");
         // COLOR
         for (int i = 0; i < staminaSliders.Count; i++)
         {
@@ -1753,7 +1785,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        staminaRecupFX.Play();
+        if (useExtraDiegeticFX)
+            staminaRecupFX.Play();
 
 
         while (regeneratedAmount < 1)
@@ -1769,8 +1802,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             yield return new WaitForSecondsRealtime(0.01f);
         }
 
-
-        staminaRecupFinishedFX.Play();
+        if (useExtraDiegeticFX)
+            staminaRecupFinishedFX.Play();
         staminaRecupAnimOn = false;
 
 
@@ -1779,9 +1812,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        staminaGainFX.Play();
-        staminaRecupFX.Stop();
-        Debug.Log("Stamina recup ended");
+        if (useExtraDiegeticFX)
+        {
+            staminaGainFX.Play();
+            staminaRecupFX.Stop();
+        }
     }
 
     // Stamina break 
@@ -1806,7 +1841,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        staminaBreakFX.Play();
+        if (useExtraDiegeticFX)
+            staminaBreakFX.Play();
 
         Invoke("StopStaminaBreak", 0.6f);
     }
@@ -1887,7 +1923,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region DRAW
-    // DRAW
     // Detects draw input
     void ManageDraw()
     {
@@ -1900,10 +1935,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            if (inputManager.playerInputs[playerNum].anyKey)
-            {
+            if (inputManager.playerInputs[playerNum].anyKeyDown)
                 TriggerDraw();
-            }
         }
     }
 
@@ -2197,7 +2230,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // FX
         Vector3 attackSignPos = attackRangeFX.transform.localPosition;
         attackRangeFX.transform.localPosition = new Vector3(-(actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
-        attackRangeFX.Play();
+        if (useExtraDiegeticFX)
+            attackRangeFX.Play();
         chargeFlareFX.gameObject.SetActive(false);
         chargeFlareFX.gameObject.SetActive(true);
 
@@ -2381,12 +2415,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Maintain parry coroutine
     void TriggerMaintainParry()
     {
-        SwitchState(STATE.maintainParrying);
-
-
         // ANIMATION
         playerAnimations.ResetMaintainParry();
         playerAnimations.TriggerMaintainParry();
+
+
+        // STATE
+        SwitchState(STATE.maintainParrying); 
 
 
         // STATS
