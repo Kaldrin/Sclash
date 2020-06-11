@@ -533,25 +533,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region STAGE DEPENDENT FX
-    // STAGFE DEPENDENT FX
     [Header("STAGE DEPENDENT FX")]
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         dashFXFront = null;
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         dashFXBack = null,
         attackDashFXFront = null,
         attackDashFXBack = null,
         attackNeutralFX = null;
-    [Tooltip("The references to the particle systems components used for the walk leaves FX")]
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         walkFXFront = null,
         walkFXBack = null;
     #endregion
 
 
+    [System.Serializable]
+    public struct ParticleSet
+    {
+        public List<GameObject> particleSystems;
+    }
+    [SerializeField] public List<ParticleSet> particlesSets = new List<ParticleSet>();
 
 
 
