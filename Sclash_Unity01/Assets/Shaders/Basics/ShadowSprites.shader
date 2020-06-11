@@ -12,6 +12,7 @@
 		Tags
 		{
 			"Queue" = "Transparent"
+			"IgnoreProjector"="True"
 			"RenderType" = "Transparent"
 		}
 
@@ -19,7 +20,7 @@
 		LOD 200
 
 		Cull Off
-
+		Blend One OneMinusSrcAlpha
 
 		CGPROGRAM
 		// Lambert lighting model, and enable shadows on all light types

@@ -9,7 +9,10 @@
 
     SubShader
     {
-        Tags { "Queue"="Transparent" }    
+        Tags { 
+            "Queue"="Transparent" 
+            "RenderType"="Transparent"
+            }    
         
         Cull Off
         Lighting Off
@@ -104,7 +107,7 @@
             }
             ENDCG
         }
-
         
     }
+    Fallback "Diffuse"
 }

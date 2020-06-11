@@ -1010,6 +1010,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     playerColliders[i].isTrigger = false;
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
+                dashFXBack.Stop();
+                dashFXFront.Stop();
                 break;
 
             case STATE.charging:
@@ -2069,7 +2071,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)
             {
-                photonView.RPC("ReleaseAttack", RpcTarget.All);
+                photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
                 return;
             }
         }
@@ -2420,7 +2422,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     canParry = false;
                     if (stamina >= staminaCostForMoves)
                     {
-                        photonView.RPC("TriggerParry", RpcTarget.All);
+                        photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
                     }
 
                     currentParryFramesPressed = 0;
@@ -2526,6 +2528,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void TriggerPommel()
     {
+        Debug.Log("Trigger pommel");
+
         // ANIMATION
         playerAnimations.TriggerPommel();
 
