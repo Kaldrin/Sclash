@@ -288,6 +288,12 @@ public class GameManager : MonoBehaviourPun
     int winningPlayerIndex;
 
 
+    #region Events
+
+    public delegate void OnResetGameEvent();
+    public event OnResetGameEvent ResetGameEvent;
+
+    #endregion
 
 
 
@@ -1007,6 +1013,8 @@ public class GameManager : MonoBehaviourPun
     // Calls ResetGame coroutine, called by main menu button at the end of the match
     public void ResetGameAndRematch()
     {
+        ResetGameEvent();
+
         StartCoroutine(ResetGameCoroutine(true));
     }
 

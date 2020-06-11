@@ -164,8 +164,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         stats.ResetAllPlayerValuesForNextMatch();
 
         ///Animation setup
-        playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
-        playerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
+        //playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
+        //splayerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
 
         playerAnimations.spriteRenderer.sortingOrder = 10 * stats.playerNum;
         playerAnimations.legsSpriteRenderer.sortingOrder = 10 * stats.playerNum;
@@ -310,8 +310,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 p2 = playersStats[i];
                 PlayerAnimations p2Anim = playersStats[i].gameObject.GetComponent<PlayerAnimations>();
 
-                p2Anim.spriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
-                p2Anim.legsSpriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
+                //p2Anim.spriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
+                //p2Anim.legsSpriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
 
                 p2Anim.spriteRenderer.sortingOrder = 10 * p2.playerNum;
                 p2Anim.legsSpriteRenderer.sortingOrder = 10 * p2.playerNum;

@@ -535,14 +535,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region STAGE DEPENDENT FX
     [Header("STAGE DEPENDENT FX")]
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         dashFXFront = null;
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         dashFXBack = null,
         attackDashFXFront = null,
         attackDashFXBack = null,
         attackNeutralFX = null;
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         walkFXFront = null,
         walkFXBack = null;
     #endregion
@@ -1014,7 +1017,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 characterChanger.enabled = false;
 
                 if (playerNum == 0)
-                    gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
+                    if (!ConnectManager.Instance.connectedToMaster)
+                        gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
+
                 break;
 
             case STATE.normal:
@@ -1054,10 +1059,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
                 PauseStaminaRegen();
-                
+
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
-                
+
                 break;
 
             case STATE.pommeling:
@@ -2421,7 +2426,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // STATE
-        SwitchState(STATE.maintainParrying); 
+        SwitchState(STATE.maintainParrying);
 
 
         // STATS
@@ -3068,6 +3073,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 if (GameManager.Instance.playersList[i] == null)
                     return;
+
 
                 stats[i] = GameManager.Instance.playersList[i].GetComponent<Player>();
             }

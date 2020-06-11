@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -89,8 +89,15 @@ public class IAScript : MonoBehaviour
     #endregion
 
     #region Built-in methods
+    void Awake()
+    {
+        GameManager.Instance.ResetGameEvent += OnDisable;
+    }
+
     void OnEnable()
     {
+        ready = false;
+
         attachedPlayer = GetComponent<Player>();
 
         FindOpponent();
@@ -106,12 +113,12 @@ public class IAScript : MonoBehaviour
 
     void OnDisable()
     {
-        attachedPlayer.playerIsAI = false;
+        if (attachedPlayer)
+            attachedPlayer.playerIsAI = false;
     }
 
     public void EnemyReady()
     {
-        Debug.Log("Ready");
         ready = true;
     }
 
@@ -176,7 +183,7 @@ public class IAScript : MonoBehaviour
 
             if (attachedPlayer.playerState == Player.STATE.charging && Mathf.Sign(attachedPlayer.transform.localScale.x) == Mathf.Sign(opponent.transform.localScale.x))
             {
-                Debug.Log("<color=red>INTERUPT !!! He is behind you !</color>");
+                //Debug.Log("<color=red>INTERUPT !!! He is behind you !</color>");
                 InterruptAttack();
             }
 
@@ -217,17 +224,17 @@ public class IAScript : MonoBehaviour
         switch (IADifficulty)
         {
             case Difficulty.Easy:
-                Debug.Log("Difficulty set to :" + IADifficulty.ToString());
+                //Debug.Log("Difficulty set to :" + IADifficulty.ToString());
                 IAMultiplicator = EASY_DIFFICULTY;
                 break;
 
             case Difficulty.Medium:
-                Debug.Log("Difficulty set to :" + IADifficulty.ToString());
+                //Debug.Log("Difficulty set to :" + IADifficulty.ToString());
                 IAMultiplicator = MEDIUM_DIFFICULTY;
                 break;
 
             case Difficulty.Hard:
-                Debug.Log("Difficulty set to :" + IADifficulty.ToString());
+                //Debug.Log("Difficulty set to :" + IADifficulty.ToString());
                 IAMultiplicator = HARD_DIFFICULTY;
                 break;
         }
@@ -262,7 +269,7 @@ public class IAScript : MonoBehaviour
             return;
         }
 
-        Debug.Log("Opponent found !");
+        //Debug.Log("Opponent found !");
         opponent.DrawnEvent += EnemyReady;
     }
 
@@ -317,7 +324,7 @@ public class IAScript : MonoBehaviour
                 {
                     if (attachedPlayer.playerState == Player.STATE.charging)
                     {
-                        Debug.Log("<color=red>INTERUPT !!!</color>");
+                        //Debug.Log("<color=red>INTERUPT !!!</color>");
 
                         switch (IADifficulty)
                         {
@@ -425,7 +432,7 @@ public class IAScript : MonoBehaviour
 
     void InterruptAttack()
     {
-        Debug.Log("Interrupt");
+        //Debug.Log("Interrupt");
         StopCoroutine("WaitABit");
 
         float randCancel = Random.Range(0f, 1f);
@@ -457,13 +464,13 @@ public class IAScript : MonoBehaviour
         {
             if (Random.Range(0f, 1f) > 0.5)
             {
-                Debug.Log("Back attack !");
+                //Debug.Log("Back attack !");
                 InputManager.Instance.playerInputs[attachedPlayer.playerNum].horizontal = Mathf.Sign(transform.position.x - opponent.transform.position.x);
             }
         }
         else
         {
-            Debug.Log("Forward attack !");
+            //Debug.Log("Forward attack !");
             InputManager.Instance.playerInputs[attachedPlayer.playerNum].horizontal = Mathf.Sign(opponent.transform.position.x - transform.position.x);
         }
 
@@ -481,7 +488,7 @@ public class IAScript : MonoBehaviour
 
     void Pommel()
     {
-        Debug.Log("Pommel");
+        //Debug.Log("Pommel");
 
         InputManager.Instance.playerInputs[attachedPlayer.playerNum].kick = true;
 
@@ -517,7 +524,7 @@ public class IAScript : MonoBehaviour
 
     void DashAway()
     {
-        Debug.Log("DashBackward");
+        //Debug.Log("DashBackward");
 
         if (attachedPlayer.stamina >= attachedPlayer.staminaCostForMoves)
             InputManager.Instance.playerInputs[attachedPlayer.playerNum].dash = Mathf.Sign(transform.position.x - opponent.transform.position.x);

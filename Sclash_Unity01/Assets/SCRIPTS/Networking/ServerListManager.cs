@@ -35,10 +35,7 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     private void FixedUpdate()
     {
         if (roomInfosList == null)
-        {
-            Debug.Log("roomInfoList is null");
             return;
-        }
 
         if (roomInfosList.Count == 0)
             placeholderText.enabled = true;
