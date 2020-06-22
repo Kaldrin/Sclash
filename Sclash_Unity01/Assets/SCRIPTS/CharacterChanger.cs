@@ -33,9 +33,9 @@ public class CharacterChanger : MonoBehaviour
 
     [HideInInspector] public int currentCharacter = 0;
     bool canChange = true;
-    
 
-    
+
+
     public List<Animator> fullObjectsAnimators = new List<Animator>();
     public List<Image> illustrations = new List<Image>();
     public List<TextMeshProUGUI> names = new List<TextMeshProUGUI>();
@@ -45,10 +45,24 @@ public class CharacterChanger : MonoBehaviour
 
 
 
-
-
+    void Awake()
+    {
+        // GameManager.Instance.ResetGameEvent +=
+    }
     void OnEnable()
     {
+        IAChanger iachanger = GetComponent<IAChanger>();
+        iachanger.SwitchIAMode(false);
+        iachanger.enabled = false;
+
+        GetComponent<IAScript>().enabled = false;
+
+
+
+
+        /* Destroy(GetComponent<IAScript>());
+         gameObject.AddComponent<IAScript>();
+ */
         currentCharacter = defaultCharacterIndex;
         characterChangeAnimator.enabled = true;
 

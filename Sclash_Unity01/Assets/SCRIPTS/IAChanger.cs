@@ -5,21 +5,22 @@ using UnityEngine;
 public class IAChanger : MonoBehaviour
 {
     [SerializeField] IAScript iaScript = null;
-    
+
     Animator IAindicatorAnimator = null;
 
     bool
         iaOn = false,
         canSwitch = false,
         canChangeDifficulty = false;
-    int currentDifficulty = 0; 
+    int currentDifficulty = 0;
     [SerializeField] float iaChangeDeadZone = 0.4f;
 
 
 
     [Header("DISPLAY OBJECTS")]
     [SerializeField] string IAIndicatorName = "IAIndicator";
-    [SerializeField] string
+    [SerializeField]
+    string
         easyDifficultyTextName = "easyDifficultyText",
         mediumDifficultyTextName = "mediumDifficultyText",
         hardDifficultyTextName = "hardDifficultyText";
@@ -34,13 +35,19 @@ public class IAChanger : MonoBehaviour
 
 
 
-    void OnEnable()
+    void Awake()
     {
         IAindicatorAnimator = GameObject.Find(IAIndicatorName).GetComponent<Animator>();
 
         diggicultyTextObjects.Add(GameObject.Find(easyDifficultyTextName));
         diggicultyTextObjects.Add(GameObject.Find(mediumDifficultyTextName));
         diggicultyTextObjects.Add(GameObject.Find(hardDifficultyTextName));
+    }
+
+    void OnEnable()
+    {
+        currentDifficulty = 0;
+
     }
 
     void Update()
@@ -85,7 +92,7 @@ public class IAChanger : MonoBehaviour
             currentDifficulty = 2;
 
 
-        switch(currentDifficulty)
+        switch (currentDifficulty)
         {
             case 0:
                 iaScript.SetDifficulty(IAScript.Difficulty.Easy);
@@ -113,7 +120,7 @@ public class IAChanger : MonoBehaviour
         Debug.Log("IA is now " + currentDifficulty);
     }
 
-    void SwitchIAMode(bool state)
+    public void SwitchIAMode(bool state)
     {
         iaOn = state;
         iaScript.enabled = state;

@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The duration the score lasts on screen when a round has finished")]
     [SerializeField] float betweenRoundsScoreShowDuration = 4f;
     [Tooltip("The score to reach to win")]
-    [SerializeField] public int scoreToWin = 10;
+    public int scoreToWin = 10;
     [Tooltip("The slider component reference in the options menu to change the number of rounds to win")]
     [SerializeField] Slider scoreToWinSliderComponent = null;
     # endregion
@@ -284,10 +284,16 @@ public class GameManager : MonoBehaviourPun
     #endregion
 
     [SerializeField]
-    bool letThemFight;
+    public bool letThemFight;
     int winningPlayerIndex;
 
 
+    #region Events
+
+    public delegate void OnResetGameEvent();
+    public event OnResetGameEvent ResetGameEvent;
+
+    #endregion
 
 
 
@@ -372,8 +378,8 @@ public class GameManager : MonoBehaviourPun
         // EFFECTS
         RunTimeScaleUpdate();
 
-
-        scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
+        if (!ConnectManager.Instance.connectedToMaster)
+            scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
     }
     #endregion
 
@@ -431,8 +437,11 @@ public class GameManager : MonoBehaviourPun
             case GAMESTATE.paused:
                 for (int i = 0; i < playersList.Count; i++)
                 {
-                    playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-                    playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
+                    if (playersList[i] != null)
+                    {
+                        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
+                    }
                 }
                 break;
 
@@ -710,7 +719,7 @@ public class GameManager : MonoBehaviourPun
                 ia = playersList[i].AddComponent<IAScript>();
 #else
             if (i == 1)
-                    ia = playersList[i].AddComponent<IAScript>();
+                ia = playersList[i].AddComponent<IAScript>();
 #endif
             if (ia != null)
                 ia.SetDifficulty(IAScript.Difficulty.Hard);
@@ -750,26 +759,46 @@ public class GameManager : MonoBehaviourPun
     // Reset all the players' variables for next round
     void ResetPlayersForNextMatch()
     {
-        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+        if (playerSpawns.Length < 2)
+            playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
-
-        for (int i = 0; i < playersList.Count; i++)
+        if (ConnectManager.Instance.connectedToMaster)
         {
-            GameObject p = playersList[i];
+            foreach (GameObject p in playersList)
+            {
+                int _tempPNum = p.GetComponent<Player>().playerNum;
 
+                p.GetComponent<PlayerAnimations>().TriggerSneath();
+                p.GetComponent<PlayerAnimations>().ResetDrawText();
 
-            playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
-            playersList[i].GetComponent<PlayerAnimations>().ResetDrawText();
+                p.transform.position = playerSpawns[_tempPNum].transform.position;
+                p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
 
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
 
-            p.transform.position = playerSpawns[i].transform.position;
-            p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
-
-
-            p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+            }
         }
+        else
+        {
 
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                GameObject p = playersList[i];
+
+
+                playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
+                playersList[i].GetComponent<PlayerAnimations>().ResetDrawText();
+
+
+                p.transform.position = playerSpawns[i].transform.position;
+                p.transform.rotation = playerSpawns[i].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
+
+
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+            }
+        }
 
         playerDead = false;
     }
@@ -777,24 +806,40 @@ public class GameManager : MonoBehaviourPun
     // Reset all the players' variables for next round
     void ResetPlayersForNextRound()
     {
-        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+        if (playerSpawns.Length < 2)
+            playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
-
-        for (int i = 0; i < playersList.Count; i++)
+        if (ConnectManager.Instance.connectedToMaster)
         {
-            GameObject p = playersList[i];
+            foreach (GameObject p in playersList)
+            {
+                int _tempPNum = p.GetComponent<Player>().playerNum;
 
+                p.transform.position = playerSpawns[_tempPNum].transform.position;
+                p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+                p.GetComponent<Player>().SwitchState(Player.STATE.normal);
 
-            p.transform.position = playerSpawns[i].transform.position;
-            p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
-            p.GetComponent<Player>().SwitchState(Player.STATE.normal);
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
 
-
-            p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
+                p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
+            }
         }
+        else
+        {
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                GameObject p = playersList[i];
+
+                p.transform.position = playerSpawns[i].transform.position;
+                p.transform.rotation = playerSpawns[i].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+                p.GetComponent<Player>().SwitchState(Player.STATE.normal);
 
 
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
+            }
+        }
         playerDead = false;
     }
 
@@ -846,7 +891,7 @@ public class GameManager : MonoBehaviourPun
         if (CheckIfThePlayerWon())
         {
             APlayerWon();
-           // StartCoroutine(APlayerWon(winningPlayerIndex));
+            // StartCoroutine(APlayerWon(winningPlayerIndex));
         }
         else
         {
@@ -875,13 +920,9 @@ public class GameManager : MonoBehaviourPun
     bool CheckIfThePlayerWon()
     {
         if (score[winningPlayerIndex] >= scoreToWin)
-        {
             return true;
-        }
         else
-        {
             return false;
-        }
     }
 
     // Start next round
@@ -972,6 +1013,8 @@ public class GameManager : MonoBehaviourPun
     // Calls ResetGame coroutine, called by main menu button at the end of the match
     public void ResetGameAndRematch()
     {
+        ResetGameEvent();
+
         StartCoroutine(ResetGameCoroutine(true));
     }
 
@@ -993,7 +1036,7 @@ public class GameManager : MonoBehaviourPun
 
 
         // ONLINE
-        if (photonView != null && ConnectManager.Instance.enableMultiplayer)
+        if (photonView != null && PhotonNetwork.InRoom)
         {
             PhotonNetwork.LeaveRoom();
         }
@@ -1101,6 +1144,26 @@ public class GameManager : MonoBehaviourPun
 
     #region MATCH END
     // MATCH END
+    public void APlayerLeft()
+    {
+        foreach (GameObject p in playersList)
+        {
+            if (p != null)
+            {
+                continue;
+            }
+            else
+            {
+                playersList.Remove(p);
+                break;
+            }
+        }
+
+        Debug.Log("<color=red>The opponent left</color>");
+        //APlayerWon();
+    }
+
+
     void APlayerWon()
     {
         // STATS
@@ -1127,16 +1190,13 @@ public class GameManager : MonoBehaviourPun
             playerKeysIndicators[i].SetBool("On", false);
         }
 
-
-        //yield return new WaitForSecondsRealtime(4f);
-        Invoke("TestCoroutine",4f);
-
-        
+        Invoke("EndGame", 4f);
     }
     #endregion
 
     //RENAME HERE IF WORKING
-    void TestCoroutine(){
+    void EndGame()
+    {
         // GAME STATE
         SwitchState(GAMESTATE.finished);
 
@@ -1163,11 +1223,10 @@ public class GameManager : MonoBehaviourPun
 
         //yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
         Invoke("ShowMenu", timeBeforeWinScreenAppears);
-
-       
     }
 
-    void ShowMenu(){
+    void ShowMenu()
+    {
         // MENU
         blurPanel.SetActive(false);
         menuManager.winScreen.SetActive(true);
