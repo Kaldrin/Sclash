@@ -16,6 +16,9 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     [SerializeField]
     TMP_InputField serverParameters;
 
+    [SerializeField]
+    TextMeshProUGUI placeholderText;
+
     public List<RoomInfo> roomInfosList;
 
     public ServerFinder serverFinder;
@@ -32,10 +35,12 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     private void FixedUpdate()
     {
         if (roomInfosList == null)
-        {
-            Debug.Log("roomInfoList is null");
             return;
-        }
+
+        if (roomInfosList.Count == 0)
+            placeholderText.enabled = true;
+        else
+            placeholderText.enabled = false;
     }
 
     public override void OnEnable()

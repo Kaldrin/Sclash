@@ -6,7 +6,7 @@ using XInputDotNetPure; // Required in C#
 public class RumbleManager : MonoBehaviour
 {
     #region Singleton
-        public static RumbleManager Instance;
+    public static RumbleManager Instance;
     #endregion
 
 

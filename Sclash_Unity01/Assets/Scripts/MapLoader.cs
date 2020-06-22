@@ -5,6 +5,10 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class MapLoader : MonoBehaviour
 {
+    #region Singleton
+    public static MapLoader Instance;
+    #endregion
+
 
     #region VARIABLES
     #region MANAGERS
@@ -56,6 +60,11 @@ public class MapLoader : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
+
+    void Awake(){
+        Instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

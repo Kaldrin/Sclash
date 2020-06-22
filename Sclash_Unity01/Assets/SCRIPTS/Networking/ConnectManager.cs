@@ -6,6 +6,8 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
+using Steamworks;
+
 [RequireComponent(typeof(PhotonView))]
 public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 {
@@ -31,6 +33,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     string[] newRoomParameters = { "rn", "pc", "rc" };
     ExitGames.Client.Photon.Hashtable customRoomProperties;
+    readonly string DefaultRoomName = "ROOM NAME";
 
     #region Base methods
 
@@ -44,6 +47,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     void Start()
     {
+
         if (enableMultiplayer)
             Connect();
 
@@ -93,7 +97,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         InitMultiplayerMatch(false);
 
-        PhotonNetwork.JoinRoom(roomName.text);
+        if (roomName.text != DefaultRoomName)
+        {
+            Debug.Log($"Join {roomName.text} room");
+            PhotonNetwork.JoinRoom(roomName.text);
+        }
+        else
+        {
+            Debug.Log("Join random room");
+            PhotonNetwork.JoinRandomRoom();
+        }
     }
 
     public void SetMultiplayer(bool multiplayer)
@@ -126,13 +139,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     IEnumerator JoinRoomCoroutine()
     {
-
         // INSTANTIATE PLAYER //
         ///Get player spawns
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
 
         GameObject newPlayer = PhotonNetwork.Instantiate("PlayerNetwork", spawnPos, Quaternion.identity);
-        newPlayer.name = "Player" + PhotonNetwork.CurrentRoom.PlayerCount;
+
+        if (SteamManager.Initialized)
+            newPlayer.name = SteamFriends.GetPersonaName();
+        else
+            newPlayer.name = "Player" + PhotonNetwork.CurrentRoom.PlayerCount;
 
         CameraManager.Instance.FindPlayers();
 
@@ -148,8 +164,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         stats.ResetAllPlayerValuesForNextMatch();
 
         ///Animation setup
-        playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
-        playerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
+        //playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
+        //splayerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
 
         playerAnimations.spriteRenderer.sortingOrder = 10 * stats.playerNum;
         playerAnimations.legsSpriteRenderer.sortingOrder = 10 * stats.playerNum;
@@ -192,6 +208,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         CameraManager.Instance.actualXSmoothMovementsMultiplier = CameraManager.Instance.battleXSmoothMovementsMultiplier;
         CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
         CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("SyncMap", RpcTarget.AllBuffered, MapLoader.Instance.currentMapIndex);
+            photonView.RPC("SyncRoundCount", RpcTarget.AllBuffered, GameManager.Instance.scoreToWin);
+        }
     }
 
     #endregion
@@ -220,6 +242,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         string randRoomName = Time.time.ToString();
 
+        if (SteamManager.Initialized)
+        {
+            randRoomName = SteamFriends.GetPersonaName();
+            randRoomName += "'s room";
+        }
+
+
         RoomOptions options = new RoomOptions();
         options.CustomRoomPropertiesForLobby = newRoomParameters;
 
@@ -244,8 +273,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     }
 
+    public void LeaveLobby()
+    {
+        Debug.Log("Leave Lobby called");
+        PhotonNetwork.Disconnect();
+    }
+
     public override void OnDisconnected(DisconnectCause cause)
     {
+        connectedToMaster = false;
         Debug.LogWarning(cause);
     }
 
@@ -264,17 +300,18 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
             Debug.Log("Update playerlists");
 
+            Player p2 = null;
             Player[] playersStats = FindObjectsOfType<Player>();
             for (int i = 0; i < playersStats.Length; i++)
             {
                 GameManager.Instance.playersList.Add(playersStats[i].gameObject);
 
                 //Instantiate 2nd player
-                Player p2 = playersStats[i];
+                p2 = playersStats[i];
                 PlayerAnimations p2Anim = playersStats[i].gameObject.GetComponent<PlayerAnimations>();
 
-                p2Anim.spriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
-                p2Anim.legsSpriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
+                //p2Anim.spriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
+                //p2Anim.legsSpriteRenderer.color = GameManager.Instance.playersColors[p2.playerNum];
 
                 p2Anim.spriteRenderer.sortingOrder = 10 * p2.playerNum;
                 p2Anim.legsSpriteRenderer.sortingOrder = 10 * p2.playerNum;
@@ -292,7 +329,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
             if (PhotonNetwork.CurrentRoom.PlayerCount != GameManager.Instance.playersList.Count)
             {
-                StartCoroutine(WaitForInstantiation());
+                Invoke("WaitForInstantiation", 0.5f);
             }
             else
             {
@@ -305,7 +342,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
                     if (GameManager.Instance.playersList[i] == null)
                     {
-                        StartCoroutine(WaitForInstantiation());
+                        Invoke("WaitForInstantiation", 0.5f);
                         return;
                     }
                 }
@@ -321,15 +358,17 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
     }
 
-    IEnumerator WaitForInstantiation()
+
+
+    void WaitForInstantiation()
     {
-        yield return new WaitForSeconds(0.5f);
-        photonView.RPC("GetAllPlayers", RpcTarget.All);
+        photonView.RPC("GetAllPlayers", RpcTarget.AllViaServer);
     }
 
     public override void OnLeftRoom()
     {
         Debug.Log("PUN : OnLeftRoom() was called by PUN");
+        PhotonNetwork.Disconnect();
         CameraManager.Instance.FindPlayers();
         GameManager.Instance.playersList = new List<GameObject>(2);
 
@@ -340,22 +379,59 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player other)
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+            {
+                PhotonNetwork.CurrentRoom.IsVisible = false;
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+            }
+        }
+
         Debug.LogFormat("{0} joined the room", other.NickName);
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
         GameObject otherPlayer = GameManager.Instance.GetOtherPlayer(localPlayer);
         if (otherPlayer == null)
         {
-            photonView.RPC("GetAllPlayers", RpcTarget.All);
+            photonView.RPC("GetAllPlayers", RpcTarget.AllViaServer);
             return;
         }
 
         GameManager.Instance.playersList.Add(otherPlayer);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            foreach (GameObject p in GameManager.Instance.playersList)
+            {
+                int _tempPNum = p.GetComponent<Player>().playerNum;
+
+                p.transform.position = GameManager.Instance.playerSpawns[_tempPNum].transform.position;
+                p.transform.rotation = GameManager.Instance.playerSpawns[_tempPNum].transform.rotation;
+
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+                p.GetComponent<Player>().SwitchState(Player.STATE.normal);
+
+                p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
+            }
+        }
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
-        Debug.Log("Player left room");
+        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
+        {
+
+            //GameManager.Instance.
+            Debug.LogWarning("Player Left in the middle of the game");
+            //SceneManage.Instance.Restart();
+            GameManager.Instance.APlayerLeft();
+        }
+        else
+        {
+            Debug.Log("Player left room");
+        }
+
         base.OnPlayerLeftRoom(otherPlayer);
     }
 
@@ -374,6 +450,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         };
 
         options.CustomRoomProperties = customRoomProperties;
+        GameManager.Instance.scoreToWin = int.Parse(parametersInputs[2].text);
 
         if (parametersInputs[1].text != "")
             options.MaxPlayers = byte.Parse(parametersInputs[1].text);
@@ -385,22 +462,35 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void WaitSceneLoading()
     {
-        StartCoroutine("WaitSceneLoadingCoroutine");
+        Invoke("WaitScene", 2f);
     }
 
-    IEnumerator WaitSceneLoadingCoroutine()
+    void WaitScene()
     {
-        yield return new WaitForSeconds(2f);
-
         GameObject.Find("RightPanel").GetComponent<Animator>().Play("SlideOut");
         GameObject.Find("LeftPanel").GetComponent<Animator>().Play("SlideOut");
-        GameObject.Find("MenuLayout").SetActive(false);
+        //GameObject.Find("MenuLayout").SetActive(false);
         GameObject.Find("BackIndicator").SetActive(false);
 
-        yield return new WaitForSeconds(0.3f);
+        Invoke("DisableMenu", 0.25f);
+    }
 
+    void DisableMenu()
+    {
         GameObject.Find("MultiplayerMenu").SetActive(false);
+    }
 
+    [PunRPC]
+    void SyncMap(int targetMapIndex)
+    {
+        Debug.Log("SyncMap called");
+        MapLoader.Instance.SetMap(targetMapIndex);
+    }
+
+    [PunRPC]
+    void SyncRoundCount(int targetScoreWin)
+    {
+        GameManager.Instance.scoreToWin = targetScoreWin;
     }
 
     #endregion

@@ -302,9 +302,11 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
         animator.speed = 1;
 
-
-        drawTextAnimator.ResetTrigger(textDrawOn);
-        drawTextAnimator.ResetTrigger(resetDrawText);
+        if (drawTextAnimator.gameObject.activeSelf)
+        {
+            drawTextAnimator.ResetTrigger(textDrawOn);
+            drawTextAnimator.ResetTrigger(resetDrawText);
+        }
 
         TriggerSneath();
     }
@@ -402,14 +404,20 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     public void TriggerDrawText()
     {
-        drawTextAnimator.SetTrigger(textDrawOn);
-        drawTextAnimator.ResetTrigger(resetDrawText);
+        if (drawTextAnimator.gameObject.activeSelf)
+        {
+            drawTextAnimator.SetTrigger(textDrawOn);
+            drawTextAnimator.ResetTrigger(resetDrawText);
+        }
     }
 
     public void ResetDrawText()
     {
-        drawTextAnimator.SetTrigger(resetDrawText);
-        drawTextAnimator.ResetTrigger(textDrawOn);
+        if (drawTextAnimator.gameObject.activeSelf)
+        {
+            drawTextAnimator.SetTrigger(resetDrawText);
+            drawTextAnimator.ResetTrigger(textDrawOn);
+        }
     }
     # endregion
 
