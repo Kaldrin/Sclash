@@ -24,7 +24,7 @@ public class IAChanger : MonoBehaviour
         easyDifficultyTextName = "easyDifficultyText",
         mediumDifficultyTextName = "mediumDifficultyText",
         hardDifficultyTextName = "hardDifficultyText";
-    List<GameObject> diggicultyTextObjects = new List<GameObject>();
+    [SerializeField] List<GameObject> diggicultyTextObjects = new List<GameObject>();
 
 
 
@@ -110,10 +110,13 @@ public class IAChanger : MonoBehaviour
 
         for (int i = 0; i < diggicultyTextObjects.Count; i++)
         {
-            if (i == currentDifficulty)
-                diggicultyTextObjects[i].SetActive(true);
-            else
-                diggicultyTextObjects[i].SetActive(false);
+            if (diggicultyTextObjects[i] != null)
+            {
+                if (i == currentDifficulty)
+                    diggicultyTextObjects[i].SetActive(true);
+                else
+                    diggicultyTextObjects[i].SetActive(false);
+            }
         }
 
 

@@ -379,7 +379,8 @@ public class GameManager : MonoBehaviourPun
         RunTimeScaleUpdate();
 
         if (!ConnectManager.Instance.connectedToMaster)
-            scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
+            if (scoreToWinSliderComponent != null)
+                scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
     }
     #endregion
 

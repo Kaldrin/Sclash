@@ -16,7 +16,7 @@ public class MapMenuLoader : MonoBehaviour
     #region DATA
     [Header("DATA")]
     [Tooltip("The reference to the scriptable object data containing all the maps")]
-    [SerializeField] MapsDataBase mapsDatabase01 = null;
+    [SerializeField] MapsDataBase mapsDatabase01;
     [SerializeField] MenuParameters parametersData = null;
     #endregion
 
@@ -47,7 +47,8 @@ public class MapMenuLoader : MonoBehaviour
     [Header("STAGE LIST")]
     [Tooltip("The reference to the game object in which all the menu elements of the maps to choose it will be instantiated")]
     [SerializeField] Transform stagesListParent = null;
-    [SerializeField] GameObject
+    [SerializeField]
+    GameObject
         stageButtonObject = null;
     [HideInInspector] public List<int> currentlyDisplayedStagesList = new List<int>();
     #endregion
@@ -220,7 +221,7 @@ public class MapMenuLoader : MonoBehaviour
                 {
                     numberOfLinesForBrowsing++;
                     stagesListBrowser2D.elements2D = new MenuBrowser2D.ElementsLine[numberOfLinesForBrowsing];
-                    
+
                     for (int y = 0; y < stagesListBrowser2D.elements2D.Length - 1; y++)
                     {
                         stagesListBrowser2D.elements2D[y] = new MenuBrowser2D.ElementsLine();
@@ -228,7 +229,7 @@ public class MapMenuLoader : MonoBehaviour
                     }
                     stagesListBrowser2D.elements2D[numberOfLinesForBrowsing - 1] = new MenuBrowser2D.ElementsLine();
                     stagesListBrowser2D.elements2D[numberOfLinesForBrowsing - 1].line = new GameObject[numberOfElementsOnThisLine];
-                    
+
                     numberOfElementsOnThisLine = 0;
                 }
             }
@@ -257,7 +258,7 @@ public class MapMenuLoader : MonoBehaviour
         // FILL LIST
         for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
         {
-            if ((mapsDatabase01.stagesLists[i].type.ToString() == stagesModes[currentStageMode]) || stagesModes[currentStageMode] == "all" || (mapsDatabase01.stagesLists[i].inCustomList && (stagesModes[currentStageMode] == stagesModes[3])   )   )
+            if ((mapsDatabase01.stagesLists[i].type.ToString() == stagesModes[currentStageMode]) || stagesModes[currentStageMode] == "all" || (mapsDatabase01.stagesLists[i].inCustomList && (stagesModes[currentStageMode] == stagesModes[3])))
             {
                 GameObject newMapMenuObject = null;
                 MapMenuObject newMapMenuObjectScript = null;
@@ -317,7 +318,7 @@ public class MapMenuLoader : MonoBehaviour
     public void LoadParameters()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();
-        
+
         parametersData.dayNightCycle = save.dayNightCycle;
         parametersData.randomStage = save.randomStage;
         parametersData.useCustomListForRandom = save.useCustomListForRandom;
@@ -329,6 +330,11 @@ public class MapMenuLoader : MonoBehaviour
         // Favourite stages list
         parametersData.customList = save.customList;
 
+        if (mapsDatabase01 == null)
+        {
+            Debug.LogWarning("Map database is null");
+            return;
+        }
 
         if (parametersData.customList.Count < mapsDatabase01.stagesLists.Count)
         {
@@ -340,7 +346,7 @@ public class MapMenuLoader : MonoBehaviour
         }
 
 
-        
+
         for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
         {
             Map newMap = mapLoader.mapsData.stagesLists[i];
