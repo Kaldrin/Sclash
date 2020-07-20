@@ -100,7 +100,7 @@ public class CharacterChanger : MonoBehaviour
     {
         if (canChange && (Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal) > 0.5f))
         {
-            StartCoroutine(ApplyCharacterChange());
+            ApplyCharacterChange();
             canChange = false;
         }
         else
@@ -110,7 +110,7 @@ public class CharacterChanger : MonoBehaviour
         }
     }
 
-    IEnumerator ApplyCharacterChange()
+    public void ApplyCharacterChange()
     {
         if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal > 0.5f)
         {
@@ -137,20 +137,18 @@ public class CharacterChanger : MonoBehaviour
             characterChangeAnimator.SetTrigger("Left");
         }
 
+        Invoke("ApplyCharacterChange_N", changeDelay);
+    }
 
-        yield return new WaitForSeconds(changeDelay);
-
+    void ApplyCharacterChange_N()
+    {
+        if (!enabled)
+            return;
 
         playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].animator;
         legsAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].legsAnimator;
         mask.sprite = masksDatabase.masksList[charactersDatabase.charactersList[currentCharacter].defaultMask].sprite;
         illustrations[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacter].illustration;
         names[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
-
-
-        /*
-        characterChangeAnimator.ResetTrigger("Left");
-        characterChangeAnimator.ResetTrigger("Right");
-        */
     }
 }
