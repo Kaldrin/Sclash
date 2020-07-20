@@ -6,6 +6,7 @@ using TMPro;
 
 public class CharacterChanger : MonoBehaviour
 {
+    #region VARIABLES
     [Header("PLAYER COMPONENTS")]
     [SerializeField] Player playerScript = null;
     [SerializeField] Animator playerAnimator = null;
@@ -15,7 +16,7 @@ public class CharacterChanger : MonoBehaviour
 
 
     [Header("DATA")]
-    [SerializeField] CharactersDatabase charactersDatabase = null;
+    [SerializeField] public CharactersDatabase charactersDatabase = null;
     [SerializeField] MasksDatabase masksDatabase = null;
 
 
@@ -26,7 +27,8 @@ public class CharacterChanger : MonoBehaviour
 
 
     [Header("OTHER")]
-    [SerializeField] int defaultCharacterIndex = 1;
+    [SerializeField] int defaultCharacterIndex = 0;
+    int lastChosenCharacter = 0;
     [SerializeField] float changeDelay = 0.1f;
 
 
@@ -43,6 +45,16 @@ public class CharacterChanger : MonoBehaviour
 
 
 
+    [Header("AUDIO")]
+    [SerializeField] AudioSource characterChangeWooshAudioSource = null;
+    #endregion*
+
+
+
+
+
+
+
 
 
     void Awake()
@@ -51,6 +63,7 @@ public class CharacterChanger : MonoBehaviour
     }
     void OnEnable()
     {
+        
         IAChanger iachanger = GetComponent<IAChanger>();
         iachanger.SwitchIAMode(false);
         iachanger.enabled = false;
@@ -63,9 +76,9 @@ public class CharacterChanger : MonoBehaviour
         /* Destroy(GetComponent<IAScript>());
          gameObject.AddComponent<IAScript>();
  */
-        currentCharacter = defaultCharacterIndex;
+        currentCharacter = lastChosenCharacter;
         characterChangeAnimator.enabled = true;
-
+        
 
         for (int i = 0; i < 2; i++)
         {
@@ -76,8 +89,8 @@ public class CharacterChanger : MonoBehaviour
 
         fullObjectsAnimators[playerScript.playerNum].SetBool("On", true);
 
-
-        ApplyCharacterChange();
+        
+        //StartCoroutine(ApplyCharacterChange());
     }
 
 
@@ -110,8 +123,19 @@ public class CharacterChanger : MonoBehaviour
         }
     }
 
-    IEnumerator ApplyCharacterChange()
+    public IEnumerator ApplyCharacterChange()
     {
+        // AUDIO
+        if (characterChangeWooshAudioSource)
+        {
+            //characterChangeWooshAudioSource.Stop();
+            characterChangeWooshAudioSource.Play();
+        }
+        else
+            Debug.Log("Warning, character change woosh audio source not found, can't play the sound, continuing anyway");
+
+
+        
         if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal > 0.5f)
         {
             currentCharacter++;
@@ -121,10 +145,11 @@ public class CharacterChanger : MonoBehaviour
                 currentCharacter = 0;
 
 
+            // ANIMATION
             fullObjectsAnimators[playerScript.playerNum].SetTrigger("Right");
             characterChangeAnimator.SetTrigger("Right");
         }
-        else if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal < 0.5f)
+        else if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal < -0.5f)
         {
             currentCharacter--;
 
@@ -133,14 +158,15 @@ public class CharacterChanger : MonoBehaviour
                 currentCharacter = charactersDatabase.charactersList.Count - 1;
 
 
+            // ANIMATION
             fullObjectsAnimators[playerScript.playerNum].SetTrigger("Left");
             characterChangeAnimator.SetTrigger("Left");
         }
 
+        lastChosenCharacter = currentCharacter;
 
         yield return new WaitForSeconds(changeDelay);
-
-
+;        
         playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].animator;
         legsAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].legsAnimator;
         mask.sprite = masksDatabase.masksList[charactersDatabase.charactersList[currentCharacter].defaultMask].sprite;
