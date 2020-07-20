@@ -213,7 +213,11 @@ public class MenuBrowser : MonoBehaviour
 
 
         // BACK
-        ManageBack();
+        if (canBack)
+        {
+            if (Input.GetButtonUp(backButton))
+                backElement.GetComponent<Button>().onClick.Invoke();
+        }
     }
 
     // OnEnable is called each time the object is set from inactive to active
@@ -287,22 +291,6 @@ public class MenuBrowser : MonoBehaviour
 
 
         Select(true);
-    }
-
-    void ManageBack()
-    {
-        if (canBack && backElement != null)
-        {
-            if (Input.GetButtonUp(backButton))
-                backElement.GetComponent<Button>().onClick.Invoke();
-        }
-    }
-
-    public void Back()
-    {
-        
-        if (canBack && backElement != null)
-            backElement.GetComponent<Button>().onClick.Invoke();
     }
     #endregion
 
