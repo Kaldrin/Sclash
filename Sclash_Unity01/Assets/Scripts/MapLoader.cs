@@ -142,7 +142,6 @@ public class MapLoader : MonoBehaviour
 
 
         // PARTICLES
-        Debug.Log("Particles");
         bool state = false;
 
         for (int i = 0; i < gameManager.playersList.Count; i++)

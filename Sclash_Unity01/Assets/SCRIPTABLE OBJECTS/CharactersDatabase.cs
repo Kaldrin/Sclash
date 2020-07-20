@@ -12,6 +12,7 @@ public struct Character
     public RuntimeAnimatorController animator;
     public RuntimeAnimatorController legsAnimator;
     public int defaultMask;
+    public bool locked;
 }
 
 [CreateAssetMenu(fileName = "CharactersDatabase01", menuName = "Scriptable objects/Characters database")]

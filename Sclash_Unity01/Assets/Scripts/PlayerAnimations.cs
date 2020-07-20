@@ -168,6 +168,20 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     // Update the animator's parameters in Update
     void UpdateAnims()
     {
+        // CHARGE WALK ANIM
+        legsAnimator2.SetFloat("AttackState", nextAttackState);
+
+
+
+        if (playerScript.playerState == Player.STATE.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
+            legsAnimator2.gameObject.SetActive(true);
+        else
+            legsAnimator2.gameObject.SetActive(false);
+
+        legsAnimator2.SetFloat("AttackState", nextAttackState);
+
+
+
         // DASHING STATE
         animator.SetBool(dashing, playerScript.playerState == Player.STATE.dashing);
 
@@ -204,22 +218,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
             if (!playerScript.playerIsAI)
                 animator.speed = 1;
-        }
-
-
-        // CHARGE WALK ANIM
-        legsAnimator2.SetFloat("AttackState", nextAttackState);
-
-
-        if (playerScript.playerState == Player.STATE.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
-        {
-            //legsMask.SetActive(true);
-            legsAnimator2.gameObject.SetActive(true);
-        }
-        else
-        {
-            //legsMask.SetActive(false);
-            legsAnimator2.gameObject.SetActive(false);
         }
     }
     # endregion
