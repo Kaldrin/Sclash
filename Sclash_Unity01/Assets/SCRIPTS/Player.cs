@@ -629,6 +629,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region BASE FUNCTIONS
     void Start()
     {
+
         // GET MANAGERS
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
@@ -647,9 +648,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         SetUpStaminaBars();
         deathFXbaseAngles = deathBloodFX.transform.localEulerAngles;
         ResetAllPlayerValuesForNextMatch();
-
-
-        StartCoroutine(characterChanger.ApplyCharacterChange());
     }
 
     // Update is called once per graphic frame
@@ -1942,7 +1940,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            if (inputManager.playerInputs[playerNum].anyKeyDown && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacter].locked)
+            if (inputManager.playerInputs[playerNum].anyKeyDown)
                 TriggerDraw();
         }
     }
@@ -2071,11 +2069,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     SwitchState(STATE.charging);
 
 
-                    // ANIMATION
-                    playerAnimations.CancelCharge(false);
-                    playerAnimations.TriggerCharge(true);
-
-
                     chargeStartTime = Time.time;
 
 
@@ -2087,7 +2080,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                     // FX
-                    chargeFlareFX.Play();   
+                    chargeFlareFX.Play();
+
+
+                    // ANIMATION
+                    playerAnimations.CancelCharge(false);
+                    playerAnimations.TriggerCharge(true);
                 }
             }
 
