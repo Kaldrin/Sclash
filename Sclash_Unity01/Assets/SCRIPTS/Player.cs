@@ -648,7 +648,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         deathFXbaseAngles = deathBloodFX.transform.localEulerAngles;
         ResetAllPlayerValuesForNextMatch();
 
-        characterChanger.ApplyCharacterChange();
+
+        StartCoroutine(characterChanger.ApplyCharacterChange());
     }
 
     // Update is called once per graphic frame
@@ -2086,7 +2087,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                     // FX
-                    chargeFlareFX.Play();
+                    chargeFlareFX.Play();   
                 }
             }
 

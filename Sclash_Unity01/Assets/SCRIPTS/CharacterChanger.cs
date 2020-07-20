@@ -63,7 +63,7 @@ public class CharacterChanger : MonoBehaviour
     }
     void OnEnable()
     {
-
+        
         IAChanger iachanger = GetComponent<IAChanger>();
         iachanger.SwitchIAMode(false);
         iachanger.enabled = false;
@@ -78,19 +78,18 @@ public class CharacterChanger : MonoBehaviour
  */
         currentCharacter = lastChosenCharacter;
         characterChangeAnimator.enabled = true;
-
+        
 
         for (int i = 0; i < 2; i++)
         {
             fullObjectsAnimators.Add(GameObject.Find(fullObjectName + i).GetComponent<Animator>());
             illustrations.Add(GameObject.Find(illustrationName + i).GetComponent<Image>());
-            Debug.Log(illustrationName + i);
             names.Add(GameObject.Find(nameName + i).GetComponent<TextMeshProUGUI>());
         }
 
         fullObjectsAnimators[playerScript.playerNum].SetBool("On", true);
 
-
+        
         //StartCoroutine(ApplyCharacterChange());
     }
 
@@ -114,9 +113,7 @@ public class CharacterChanger : MonoBehaviour
     {
         if (canChange && (Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal) > 0.5f))
         {
-
-            //StartCoroutine(ApplyCharacterChange());
-            ApplyCharacterChange();
+            StartCoroutine(ApplyCharacterChange());
             canChange = false;
         }
         else
@@ -126,7 +123,7 @@ public class CharacterChanger : MonoBehaviour
         }
     }
 
-    public void ApplyCharacterChange()
+    public IEnumerator ApplyCharacterChange()
     {
         // AUDIO
         if (characterChangeWooshAudioSource)
@@ -138,7 +135,7 @@ public class CharacterChanger : MonoBehaviour
             Debug.Log("Warning, character change woosh audio source not found, can't play the sound, continuing anyway");
 
 
-
+        
         if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal > 0.5f)
         {
             currentCharacter++;
@@ -168,18 +165,8 @@ public class CharacterChanger : MonoBehaviour
 
         lastChosenCharacter = currentCharacter;
 
-        Invoke("ApplyCharacterChange_N", changeDelay);
-
-    }
-
-    public void ApplyCharacterChange_N()
-    {
-        if (!enabled)
-        {
-            return;
-        }
-
-
+        yield return new WaitForSeconds(changeDelay);
+;        
         playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].animator;
         legsAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].legsAnimator;
         mask.sprite = masksDatabase.masksList[charactersDatabase.charactersList[currentCharacter].defaultMask].sprite;
