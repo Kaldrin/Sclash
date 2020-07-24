@@ -289,10 +289,8 @@ public class GameManager : MonoBehaviourPun
 
 
     #region Events
-
     public delegate void OnResetGameEvent();
     public event OnResetGameEvent ResetGameEvent;
-
     #endregion
 
 
@@ -430,6 +428,7 @@ public class GameManager : MonoBehaviourPun
 
                 cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
                 mainMenu.SetActive(false);
+                
                 blurPanel.SetActive(false);
                 Cursor.visible = false;
                 break;
@@ -964,6 +963,7 @@ public class GameManager : MonoBehaviourPun
 
 
         SwitchState(GAMESTATE.game);
+        
 
 
         // AUDIO
@@ -1037,9 +1037,7 @@ public class GameManager : MonoBehaviourPun
 
         // ONLINE
         if (photonView != null && PhotonNetwork.InRoom)
-        {
             PhotonNetwork.LeaveRoom();
-        }
 
 
         // NEXT STAGE
@@ -1048,9 +1046,7 @@ public class GameManager : MonoBehaviourPun
         if (gameState == GAMESTATE.finished)
         {
             if (rematchRightAfter)
-            {
                 newStageIndex = CalculateNextStageIndex();
-            }
         }
 
 
@@ -1089,7 +1085,7 @@ public class GameManager : MonoBehaviourPun
 
 
         // STATE
-        SwitchState(GAMESTATE.menu);
+        //SwitchState(GAMESTATE.menu);
 
 
         ResetPlayersForNextMatch();
@@ -1124,6 +1120,9 @@ public class GameManager : MonoBehaviourPun
             StartCoroutine(StartMatchCoroutine());
         else
         {
+            // STATE
+            SwitchState(GAMESTATE.menu);
+
             // Activates the main menu if it is not supposed to start a new match right after
             menuManager.mainMenu.SetActive(true);
             Cursor.visible = true;
@@ -1504,8 +1503,6 @@ public class GameManager : MonoBehaviourPun
                     nextStageIndex = mapLoader.currentMapIndex + 1;
                 if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.night)
                     nextStageIndex = mapLoader.currentMapIndex - 1;
-
-                Debug.Log(mapLoader.currentMapIndex);
             }
             else
             {
@@ -1534,7 +1531,6 @@ public class GameManager : MonoBehaviourPun
                         while (nextStageIndex == mapLoader.currentMapIndex || mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.night)
                         {
                             nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-                            Debug.Log(nextStageIndex == mapLoader.currentMapIndex);
                             loopCount++;
                             if (loopCount >= 100)
                             {

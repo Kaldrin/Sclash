@@ -256,11 +256,22 @@ public class MenuManager : MonoBehaviour
         {
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
             gameManager.SwitchState(GameManager.GAMESTATE.paused);
+
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                gameManager.playersList[i].GetComponent<Animator>().enabled = false;
+            }
         }
         else
         {
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
-            gameManager.SwitchState(GameManager.GAMESTATE.game);
+
+            if (gameManager.gameState == GameManager.GAMESTATE.paused)
+                gameManager.SwitchState(GameManager.GAMESTATE.game);
+
+
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+                gameManager.playersList[i].GetComponent<Animator>().enabled = true;
         }
 
 
