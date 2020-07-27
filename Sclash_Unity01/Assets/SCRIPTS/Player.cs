@@ -464,8 +464,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public ParticleSystem attackRangeFX = null;
-    [SerializeField]
-    ParticleSystem
+    [SerializeField] ParticleSystem
         clashKanasFX = null,
         kickKanasFX = null,
         kickedFX = null,
@@ -479,10 +478,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
     [SerializeField] float deathBloodFXRotationForDirectionChange = 240;
     [Tooltip("The width of the attack trail depending on the range of the attack")]
-    [SerializeField]
-    float
+    [SerializeField] GameObject attackSlashFXParent = null;
+    [SerializeField] float
         lightAttackSwordTrailWidth = 20f,
-        heavyAttackSwordTrailWidth = 65f;
+        heavyAttackSwordTrailWidth = 65f,
+        lightAttackSwordTrailScale = 1,
+        heavyAttackSwordTrailScale = 3;
     [Tooltip("The minimum speed required for the walk fx to trigger")]
     [SerializeField] float minSpeedForWalkFX = 0.05f;
 
@@ -629,7 +630,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region BASE FUNCTIONS
     void Start()
     {
-
         // GET MANAGERS
         audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
         gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
@@ -648,6 +648,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         SetUpStaminaBars();
         deathFXbaseAngles = deathBloodFX.transform.localEulerAngles;
         ResetAllPlayerValuesForNextMatch();
+
+        characterChanger.FindElements();
+        StartCoroutine(characterChanger.ApplyCharacterChange());
     }
 
     // Update is called once per graphic frame
@@ -1940,7 +1943,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            if (inputManager.playerInputs[playerNum].anyKeyDown)
+            if (inputManager.playerInputs[playerNum].anyKeyDown && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacter].locked)
                 TriggerDraw();
         }
     }
@@ -2069,6 +2072,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     SwitchState(STATE.charging);
 
 
+                    // ANIMATION
+                    playerAnimations.CancelCharge(false);
+                    playerAnimations.TriggerCharge(true);
+
+
                     chargeStartTime = Time.time;
 
 
@@ -2080,12 +2088,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                     // FX
-                    chargeFlareFX.Play();
-
-
-                    // ANIMATION
-                    playerAnimations.CancelCharge(false);
-                    playerAnimations.TriggerCharge(true);
+                    chargeFlareFX.Play();   
                 }
             }
 
@@ -2187,30 +2190,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         int saveChargeLevelForStats = chargeLevel;
 
 
-        // FX
-        // Trail color and width depending on attack range
-        if (chargeLevel == 1)
-        {
-            swordTrail.startColor = lightAttackColor;
-            swordTrail.startWidth = lightAttackSwordTrailWidth;
-        }
-        else if (chargeLevel == maxChargeLevel)
-        {
-            swordTrail.startColor = heavyAttackColor;
-            swordTrail.startWidth = heavyAttackSwordTrailWidth;
-        }
-        else
-        {
-            swordTrail.startColor = new Color(
-                lightAttackColor.r + (heavyAttackColor.r - lightAttackColor.r) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange,
-                lightAttackColor.g + (heavyAttackColor.g - lightAttackColor.g) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange,
-                lightAttackColor.b + (heavyAttackColor.b - lightAttackColor.b) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange);
-
-
-            swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * (actualAttackRange - lightAttackRange) / (heavyAttackRange - lightAttackRange);
-        }
-
-
         // Calculates attack range
         if (chargeLevel == 1)
             actualAttackRange = lightAttackRange;
@@ -2220,6 +2199,42 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             actualAttackRange = lightAttackRange + (heavyAttackRange - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
 
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
+
+
+
+        // FX
+        // Trail color and width depending on attack range
+        if (chargeLevel == 1)
+        {
+            swordTrail.startColor = lightAttackColor;
+            swordTrail.startWidth = lightAttackSwordTrailWidth;
+            attackSlashFXParent.transform.localScale = new Vector3(lightAttackSwordTrailScale, attackSlashFXParent.transform.localScale.y, attackSlashFXParent.transform.localScale.z);
+        }
+        else if (chargeLevel == maxChargeLevel)
+        {
+            swordTrail.startColor = heavyAttackColor;
+            swordTrail.startWidth = heavyAttackSwordTrailWidth;
+            attackSlashFXParent.transform.localScale = new Vector3(heavyAttackSwordTrailScale, attackSlashFXParent.transform.localScale.y, attackSlashFXParent.transform.localScale.z);
+        }
+        else
+        {
+            swordTrail.startColor = new Color(
+                lightAttackColor.r + (heavyAttackColor.r - lightAttackColor.r) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange,
+                lightAttackColor.g + (heavyAttackColor.g - lightAttackColor.g) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange,
+                lightAttackColor.b + (heavyAttackColor.b - lightAttackColor.b) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange);
+
+
+
+            attackSlashFXParent.transform.localScale = new Vector3(
+                lightAttackSwordTrailScale + (heavyAttackSwordTrailScale - lightAttackSwordTrailScale) * (actualAttackRange - lightAttackRange) / (heavyAttackRange - lightAttackRange),
+                attackSlashFXParent.transform.localScale.y,
+                attackSlashFXParent.transform.localScale.z);
+
+            swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * (actualAttackRange - lightAttackRange) / (heavyAttackRange - lightAttackRange);
+
+            
+        }
+        //Debug.Log(actualAttackRange);
 
 
 
