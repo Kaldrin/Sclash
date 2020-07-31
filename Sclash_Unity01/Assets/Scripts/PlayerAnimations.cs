@@ -73,6 +73,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         clashedOn = "ClashedOn",
         clashedOff = "ClashedOff",
         deathOn = "DeathOn",
+        reallyDead = "ReallyDead",
         dead = "Dead",
         dashOn = "DashOn",
         dashing = "Dashing",
@@ -571,7 +572,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region DEATH ANIMATION
-    // DEATH ANIMATION
     // Trigger death animation
     public void TriggerDeath()
     {
@@ -581,6 +581,11 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     public void DeathActivated(bool state)
     {
         animator.SetBool(dead, state);
+    }
+
+    public void TriggerRealDeath()
+    {
+        animator.SetTrigger(reallyDead);
     }
     # endregion
 

@@ -179,6 +179,8 @@ public class CharacterChanger : MonoBehaviour
         mask.sprite = masksDatabase.masksList[charactersDatabase.charactersList[currentCharacter].defaultMask].sprite;
         illustrations[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacter].illustration;
         names[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
+        playerScript.characterNameDisplay.text = charactersDatabase.charactersList[currentCharacter].name;
+        playerScript.gameManager.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
 
 
         /*

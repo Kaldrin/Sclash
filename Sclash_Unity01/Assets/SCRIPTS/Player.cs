@@ -28,7 +28,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Game manager
     [Tooltip("The name of the object in the scene containing the GlobalManager script component, to find its reference")]
     [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager;
+    [HideInInspector] public GameManager gameManager;
 
     // Input manager
     [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
@@ -54,6 +54,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Tooltip("All of the player's 2D colliders")]
     [SerializeField] public Collider2D[] playerColliders = null;
     [SerializeField] SpriteRenderer spriteRenderer = null;
+    [SerializeField] SpriteRenderer maskSpriteRenderer = null;
+    [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
     [SerializeField] public Light playerLight = null;
     #endregion
@@ -77,6 +79,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         normal,
         charging,
         attacking,
+        canAttackAfterAttack,
         pommeling,
         parrying,
         maintainParrying,
@@ -94,6 +97,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public STATE oldState = STATE.normal;
 
     [SerializeField] bool hasFinishedAnim = false;
+    [SerializeField] bool waitingForNextAttack = false;
+    [SerializeField] bool hasAttackRecoveryAnimFinished = false;
     #endregion
 
 
@@ -112,6 +117,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public int networkPlayerNum = 0;
     public bool playerIsAI;
     Player opponent;
+    [SerializeField] Color secondPlayerMaskColor = new Color(0, 0, 0, 1);
+    [SerializeField] Color secondPlayerSaberColor = new Color(0, 0, 0, 1);
+    [SerializeField] bool usePlayerColorsDifferenciation = false;
     #endregion
 
 
@@ -317,7 +325,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region ATTACK
-    // ATTACK
     [Header("ATTACK")]
     [Tooltip("Attack range parameters")]
     [SerializeField] public float lightAttackRange = 1.8f;
@@ -336,10 +343,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public bool isAttacking = false;
 
     List<GameObject> targetsHit = new List<GameObject>();
-
-    // ATTACK RECOVERY
-    [Header("ATTACK RECOVERY")]
-    [SerializeField] bool hasAttackRecoveryAnimFinished = false;
     #endregion
 
 
@@ -651,6 +654,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         characterChanger.FindElements();
         StartCoroutine(characterChanger.ApplyCharacterChange());
+
+
+        if (usePlayerColorsDifferenciation && playerNum == 1)
+        {
+            maskSpriteRenderer.color = secondPlayerMaskColor;
+            weaponSpriteRenderer.color = secondPlayerSaberColor;
+        }
     }
 
     // Update is called once per graphic frame
@@ -710,6 +720,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.attacking:
+                break;
+
+            case STATE.canAttackAfterAttack:
+                ManageJumpInput();
+                ManageChargeInput();
+                ManageDashInput();
+                ManagePommel();
+                ManageParryInput();
+                ManageMaintainParryInput();
+
+                UpdateStaminaSlidersValue();
+                UpdateStaminaColor();
                 break;
 
             case STATE.recovering:
@@ -864,6 +886,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.attacking:
                 RunDash();
                 ManageMovementsInputs();
+                /*
+                if (waitingForNextAttack)
+                    SwitchState(STATE.canAttackAfterAttack);
+                    */
                 if (hasFinishedAnim)
                 {
                     hasFinishedAnim = false;
@@ -877,9 +903,27 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     ApplyAttackHitbox();
                 break;
 
-            case STATE.recovering:
+            case STATE.canAttackAfterAttack:
+                //ManageMovementsInputs();
+                ManageOrientation();
+                ManageStaminaRegen();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
                 if (hasAttackRecoveryAnimFinished)
                 {
+                    hasFinishedAnim = false;
+                    SwitchState(STATE.normal);
+                }
+                //playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
+                break;
+
+            case STATE.recovering:
+                if (waitingForNextAttack)
+                {
+                    SwitchState(STATE.canAttackAfterAttack);
+                }
+                if (hasAttackRecoveryAnimFinished)
+                {
+                    Debug.Log("Normal");
                     hasFinishedAnim = false;
                     SwitchState(STATE.normal);
                 }
@@ -1066,6 +1110,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
 
+                break;
+
+            case STATE.canAttackAfterAttack:
+                actualMovementsSpeed = baseMovementsSpeed;
+                dashTime = 0;
+                isDashing = false;
+
+                playerCollider.isTrigger = false;
+                for (int i = 0; i < playerColliders.Length; i++)
+                    playerColliders[i].isTrigger = false;
+                attackDashFXFront.Stop();
+                attackDashFXBack.Stop();
+                dashFXBack.Stop();
+                dashFXFront.Stop();
                 break;
 
             case STATE.pommeling:
@@ -1340,7 +1398,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     statsManager.AddAction(ACTION.clash, playerNum, 0);
                     statsManager.AddAction(ACTION.clash, otherPlayerNum, 0);
-                    Debug.Log("Clash");
                 }
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
@@ -2462,7 +2519,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region PARRY
-    // PARRY
     // Detect parry inputs
     void ManageParryInput()
     {
@@ -2476,29 +2532,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     currentParryFramesPressed++;
                     canParry = false;
                     if (stamina >= staminaCostForMoves)
-                    {
                         photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
-                    }
 
                     currentParryFramesPressed = 0;
                 }
 
 
                 if (!inputManager.playerInputs[0].parry)
-                {
                     canParry = true;
-                }
             }
             else
             {
                 // Stamina animation
                 if (inputManager.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
-                {
                     TriggerNotEnoughStaminaAnim(true);
-                }
 
 
-                if (inputManager.playerInputs[playerNum].parry && canParry)
+                if (inputManager.playerInputs[playerNum].parryDown && canParry)
                 {
                     canParry = false;
 
@@ -2511,9 +2561,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 // Can input again if released the input
                 if (!inputManager.playerInputs[playerNum].parry)
-                {
                     canParry = true;
-                }
             }
         }
     }

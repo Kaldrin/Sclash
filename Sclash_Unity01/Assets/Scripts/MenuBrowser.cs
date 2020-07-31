@@ -53,8 +53,7 @@ public class MenuBrowser : MonoBehaviour
     [Header("INPUTS")]
     [Tooltip("Names of the inputs axis created in the input settings")]
     [SerializeField] string horizontalAxis = "Horizontal";
-    [SerializeField]
-    string
+    [SerializeField] string
         verticalAxis = "Vertical",
         backButton = "Back";
 
@@ -63,8 +62,7 @@ public class MenuBrowser : MonoBehaviour
         hAxisInUse = false;
 
     [Tooltip("Dead zones for joystick browsing so that it's more comfortable")]
-    [SerializeField]
-    float
+    [SerializeField] float
         verticalInputDetectionZone = 0.5f,
         verticalInputRestZone = 0.1f,
         horizontalInputDetectionZone = 0.5f,

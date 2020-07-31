@@ -119,7 +119,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] public GameObject scoreObject = null;
 
     [Tooltip("The score display text mesh pro component reference")]
-    [SerializeField] List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
+    [SerializeField] public List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
     [SerializeField] List<Text> scoresDisplays = new List<Text>(2);
     [SerializeField] TextMeshProUGUI maxScoreTextDisplay = null;
     #endregion
@@ -285,6 +285,7 @@ public class GameManager : MonoBehaviourPun
 
     [SerializeField]
     public bool letThemFight;
+    int losingPlayerIndex = 0;
     int winningPlayerIndex;
 
 
@@ -869,14 +870,13 @@ public class GameManager : MonoBehaviourPun
     public void APlayerIsDead(int incomingWinning)
     {
         winningPlayerIndex = incomingWinning;
+        losingPlayerIndex = 1 - winningPlayerIndex;
 
         // STATS
-        try
-        {
+        try {
             statsManager.FinalizeRound(winningPlayerIndex);
         }
-        catch
-        {
+        catch {
             Debug.Log("Error while finalizing the recording of the current round, ignoring");
         }
 
@@ -888,14 +888,9 @@ public class GameManager : MonoBehaviourPun
 
 
         if (CheckIfThePlayerWon())
-        {
             APlayerWon();
-            // StartCoroutine(APlayerWon(winningPlayerIndex));
-        }
         else
-        {
             StartCoroutine(NextRoundCoroutine());
-        }
     }
 
     void UpdatePlayersScoreValues()
@@ -1166,12 +1161,10 @@ public class GameManager : MonoBehaviourPun
     void APlayerWon()
     {
         // STATS
-        try
-        {
+        try {
             statsManager.FinalizeGame(true, 1);
         }
-        catch
-        {
+        catch {
             Debug.Log("Error while finalizing the recording of the current game, ignoring");
         }
 
@@ -1221,7 +1214,14 @@ public class GameManager : MonoBehaviourPun
 
 
         //yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
-        Invoke("ShowMenu", timeBeforeWinScreenAppears);
+        Invoke("TriggerFallDeadAnimation", 2f);
+        Invoke("ShowMenu", 2f + timeBeforeWinScreenAppears);
+    }
+
+    // Animation
+    void TriggerFallDeadAnimation()
+    {
+        playersList[losingPlayerIndex].GetComponent<PlayerAnimations>().TriggerRealDeath();
     }
 
     void ShowMenu()
