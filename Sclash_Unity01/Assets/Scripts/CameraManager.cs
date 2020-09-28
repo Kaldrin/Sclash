@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-// Created for Unity 2019.1.1f1
 public class CameraManager : MonoBehaviour
 {
     #region VARIABLES
@@ -123,9 +121,10 @@ public class CameraManager : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
-
+        playersList = FindPlayers();
+        /*
         if (playersList == null)
         {
             playersList = FindPlayers();
@@ -133,7 +132,7 @@ public class CameraManager : MonoBehaviour
         else if (playersList.Length <= 0)
         {
             playersList = FindPlayers();
-        }
+        }*/
 
 
         actualXSmoothMovementsMultiplier = cinematicXSmoothMovementsMultiplier;
@@ -162,12 +161,6 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    // FixedUpdate is called 50 times per second
-    void FixedUpdate()
-    {
-
-    }
-
 
     IEnumerator BehaviourDependingOnState()
     {
@@ -194,6 +187,7 @@ public class CameraManager : MonoBehaviour
             yield return new WaitForSeconds(Time.fixedDeltaTime / 10);
         }
     }
+
     #endregion
 
 
@@ -237,6 +231,7 @@ public class CameraManager : MonoBehaviour
     // Find the players to use in the script
     public GameObject[] FindPlayers()
     {
+        Debug.Log("CameraManager looking for players");
         Player[] playersScripts = FindObjectsOfType<Player>();
         playersList = new GameObject[playersScripts.Length];
 
@@ -274,7 +269,7 @@ public class CameraManager : MonoBehaviour
     # region X MOVEMENTS
     // X MOVEMENTS
     // Camera follows players positions
-    void MoveCameraWithPlayers()
+    protected virtual void MoveCameraWithPlayers()
     {
         // Only calculates camera movements with players if there is at least 1 player in the scene
         if (playersList.Length > 0 && playersList != null)

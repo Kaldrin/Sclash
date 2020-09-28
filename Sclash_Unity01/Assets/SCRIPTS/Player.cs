@@ -33,7 +33,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Input manager
     [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
     [SerializeField] string inputManagerName = "GlobalManager";
-    InputManager inputManager = null;
+
+    [SerializeField] protected InputManager inputManager = null;
 
     [SerializeField] string statsManagerName = "GlobalManager";
     StatsManager statsManager = null;
@@ -45,17 +46,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
-    [SerializeField] public Rigidbody2D rb = null;
-    [SerializeField] PlayerAnimations playerAnimations = null;
-    [SerializeField] CharacterChanger characterChanger = null;
-    [SerializeField] IAChanger iaChanger = null;
+    public Rigidbody2D rb = null;
+    public PlayerAnimations playerAnimations = null;
+    public CharacterChanger characterChanger = null;
+    public IAChanger iaChanger = null;
     [Tooltip("The basic collider of the player")]
-    [SerializeField] public Collider2D playerCollider;
+    public Collider2D playerCollider;
     [Tooltip("All of the player's 2D colliders")]
-    [SerializeField] public Collider2D[] playerColliders = null;
-    [SerializeField] SpriteRenderer spriteRenderer = null;
+    public Collider2D[] playerColliders = null;
+    public SpriteRenderer spriteRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
-    [SerializeField] public Light playerLight = null;
+    public Light playerLight = null;
     #endregion
 
 
@@ -237,11 +238,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region ACTIONS & RULES
     [Header("ACTIONS & RULES")]
-    [SerializeField] bool canJump = true;
-    [SerializeField] bool canMaintainParry = true;
-    [SerializeField] bool canBriefParry = false;
-    [SerializeField] bool quickRegen = false;
-    [SerializeField] bool quickRegenOnlyWhenReachedLowStaminaGap = true;
+    [SerializeField] protected bool canJump = true;
+    [SerializeField] protected bool canMaintainParry = true;
+    [SerializeField] protected bool canBriefParry = false;
+    [SerializeField] protected bool quickRegen = false;
+    [SerializeField] protected bool quickRegenOnlyWhenReachedLowStaminaGap = true;
     #endregion
 
 
@@ -304,7 +305,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         durationToNextChargeLevel = 0.7f,
         maxHoldDurationAtMaxCharge = 2f;
     [SerializeField] float attackReleaseAxisInputDeadZoneForDashAttack = 0.1f;
-    float
+    protected float
         maxChargeLevelStartTime = 0,
         chargeStartTime = 0;
 
@@ -358,20 +359,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         forwardDashDistance = 3,
         backwardsDashDistance = 2.5f;
     [SerializeField]
-    float
+    protected float
         allowanceDurationForDoubleTapDash = 0.3f,
         forwardAttackDashDistance = 2.5f,
         backwardsAttackDashDistance = 1.5f,
         dashDeadZone = 0.5f,
         shortcutDashDeadZone = 0.5f;
-    float
+    protected float
        dashDirection = 0,
        temporaryDashDirectionForCalculation = 0,
        dashInitializationStartTime = 0,
        actualUsedDashDistance = 0,
        dashTime = 0;
 
-    enum DASHSTEP
+    protected enum DASHSTEP
     {
         rest,
         firstInput,
@@ -379,8 +380,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         invalidated,
     }
 
-    DASHSTEP currentDashStep = DASHSTEP.invalidated;
-    DASHSTEP currentShortcutDashStep = DASHSTEP.invalidated;
+    protected DASHSTEP currentDashStep = DASHSTEP.invalidated;
+    protected DASHSTEP currentShortcutDashStep = DASHSTEP.invalidated;
 
     Vector3
         initPos,
@@ -464,7 +465,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public ParticleSystem attackRangeFX = null;
-    [SerializeField] ParticleSystem
+    [SerializeField]
+    ParticleSystem
         clashKanasFX = null,
         kickKanasFX = null,
         kickedFX = null,
@@ -479,13 +481,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] float deathBloodFXRotationForDirectionChange = 240;
     [Tooltip("The width of the attack trail depending on the range of the attack")]
     [SerializeField] GameObject attackSlashFXParent = null;
-    [SerializeField] float
+    [SerializeField]
+    float
         lightAttackSwordTrailWidth = 20f,
         heavyAttackSwordTrailWidth = 65f,
         lightAttackSwordTrailScale = 1,
         heavyAttackSwordTrailScale = 3;
     [Tooltip("The minimum speed required for the walk fx to trigger")]
-    [SerializeField] float minSpeedForWalkFX = 0.05f;
+    [SerializeField] protected float minSpeedForWalkFX = 0.05f;
 
     Vector3 deathFXbaseAngles = new Vector3(0, 0, 0);
 
@@ -509,7 +512,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Tooltip("The slider component reference to move the charging FX on the katana")]
     [SerializeField] Slider chargeSlider = null;
     [SerializeField]
-    ParticleSystem
+    protected ParticleSystem
         chargeFlareFX = null,
         chargeFX = null,
         chargeFullFX = null;
@@ -546,7 +549,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         attackDashFXBack = null,
         attackNeutralFX = null;
     [SerializeField]
-    ParticleSystem
+    protected ParticleSystem
         walkFXFront = null,
         walkFXBack = null;
     #endregion
@@ -628,13 +631,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    void Start()
+    public virtual void Start()
     {
         // GET MANAGERS
-        audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
-        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+        //audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
+        //gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
         // Get input manager
-        inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
+        //inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
+       
         // Get stats manager
         statsManager = GameObject.Find(statsManagerName).GetComponent<StatsManager>();
 
@@ -654,7 +658,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Update is called once per graphic frame
-    void Update()
+    public virtual void Update()
     {
         if (photonView != null && !photonView.IsMine)
         {
@@ -758,12 +762,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // Cheatcodes to use for development purposes
-        if (gameManager.cheatCodes)
+         if (GameManager.Instance.cheatCodes)
             CheatsInputs();
     }
 
     // FixedUpdate is called 50 times per second
-    void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         // ONLINE
         if (photonView != null && !photonView.IsMine)
@@ -841,7 +845,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     hasFinishedAnim = false;
                     SwitchState(STATE.normal);
-                    gameManager.SaberDrawn(playerNum);
+                    GameManager.Instance.SaberDrawn(playerNum);
                 }
                 break;
 
@@ -996,7 +1000,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 attackDashFXBack.Stop();
                 dashFXBack.Stop();
                 dashFXFront.Stop();
-                characterChanger.enabled = false;
+                if (characterChanger != null)
+                    characterChanger.enabled = false;
                 break;
 
             case STATE.sneathing:
@@ -1009,7 +1014,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 staminaBarsOpacity = 0;
                 actualMovementsSpeed = sneathedMovementsSpeed;
                 rb.simulated = true;
-                characterChanger.enabled = true;
+                if (characterChanger != null)
+                    characterChanger.enabled = true;
 
                 if (playerNum == 1)
                     iaChanger.enabled = true;
@@ -1017,11 +1023,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.drawing:
                 rb.velocity = Vector3.zero;
-                characterChanger.enabled = false;
+                if(characterChanger != null)
+                    characterChanger.enabled = false;
 
                 if (playerNum == 0)
                     if (!ConnectManager.Instance.connectedToMaster)
-                        gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
+                        if(GameManager.Instance.playersList.Count > 1)
+                            GameManager.Instance.playersList[1].GetComponent<IAChanger>().enabled = false;
 
                 break;
 
@@ -1167,7 +1175,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXBack.Stop();
                 dashFXFront.Stop();
                 drawText.SetActive(false);
-                characterChanger.enabled = false;
+                if (characterChanger != null)
+                    characterChanger.enabled = false;
                 break;
         }
     }
@@ -1187,7 +1196,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         yield return new WaitForSeconds(0.2f);
 
 
-        for (int i = 0; i < gameManager.playersList.Count; i++)
+        for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
         {
             if (i != playerNum)
             {
@@ -1311,7 +1320,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // SOUND
-                audioManager.BattleEventIncreaseIntensity();
+                AudioManager.Instance.BattleEventIncreaseIntensity();
             }
             // CLASH
             else if (clashFrames)
@@ -1325,13 +1334,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
 
                 // FX
-                Vector3 fxPos = new Vector3((gameManager.playersList[0].transform.position.x + gameManager.playersList[1].transform.position.x) / 2, clashFX.transform.position.y, clashFX.transform.position.z);
+                Vector3 fxPos = new Vector3((GameManager.Instance.playersList[0].transform.position.x + GameManager.Instance.playersList[1].transform.position.x) / 2, clashFX.transform.position.y, clashFX.transform.position.z);
                 Instantiate(clashFXPrefabRef, fxPos, clashFX.transform.rotation, null).GetComponent<ParticleSystem>().Play();
 
 
 
                 // AUDIO
-                audioManager.TriggerClashAudioCoroutine();
+                AudioManager.Instance.TriggerClashAudioCoroutine();
 
 
 
@@ -1372,7 +1381,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // SOUND
-                audioManager.TriggerParriedAudio();
+                AudioManager.Instance.TriggerParriedAudio();
 
 
                 // STATS
@@ -1384,11 +1393,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // UNTOUCHABLE FRAMES
             else if (untouchableFrame)
             {
-                gameManager.TriggerSlowMoCoroutine(gameManager.dodgeSlowMoDuration, gameManager.dodgeSlowMoTimeScale, gameManager.dodgeTimeScaleFadeSpeed);
+                GameManager.Instance.TriggerSlowMoCoroutine(GameManager.Instance.dodgeSlowMoDuration, GameManager.Instance.dodgeSlowMoTimeScale, GameManager.Instance.dodgeTimeScaleFadeSpeed);
 
 
                 // SOUND
-                audioManager.BattleEventIncreaseIntensity();
+                AudioManager.Instance.BattleEventIncreaseIntensity();
 
 
                 // STATS
@@ -1411,7 +1420,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // AUDIO
-                audioManager.BattleEventIncreaseIntensity();
+                AudioManager.Instance.BattleEventIncreaseIntensity();
             }
 
             if (ConnectManager.Instance.connectedToMaster)
@@ -1450,14 +1459,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // STARTS MATCH IF PLAYER WAS SNEATHED
             if (wasSneathed)
-                gameManager.SaberDrawn(playerNum);
+                GameManager.Instance.SaberDrawn(playerNum);
 
 
             // HAS WON ?
-            if (gameManager.score[instigatorNum] + 1 >= gameManager.scoreToWin)
+            if (GameManager.Instance.score[instigatorNum] + 1 >= GameManager.Instance.scoreToWin)
             {
-                gameManager.TriggerMatchEndFilterEffect(true);
-                gameManager.finalCameraShake.shakeDuration = gameManager.finalCameraShakeDuration;
+                GameManager.Instance.TriggerMatchEndFilterEffect(true);
+                GameManager.Instance.finalCameraShake.shakeDuration = GameManager.Instance.finalCameraShakeDuration;
             }
 
 
@@ -1471,7 +1480,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // CAMERA FX
-            gameManager.APlayerIsDead(instigatorNum);
+            GameManager.Instance.APlayerIsDead(instigatorNum);
 
 
             // STATS
@@ -1490,8 +1499,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // AUDIO
-        audioManager.TriggerSuccessfulAttackAudio();
-        audioManager.BattleEventIncreaseIntensity();
+        AudioManager.Instance.TriggerSuccessfulAttackAudio();
+        AudioManager.Instance.BattleEventIncreaseIntensity();
 
 
         // FX
@@ -1500,8 +1509,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // CAMERA FX
-        gameManager.deathCameraShake.shakeDuration = gameManager.deathCameraShakeDuration;
-        gameManager.TriggerSlowMoCoroutine(gameManager.roundEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
+        GameManager.Instance.deathCameraShake.shakeDuration = GameManager.Instance.deathCameraShakeDuration;
+        GameManager.Instance.TriggerSlowMoCoroutine(GameManager.Instance.roundEndSlowMoDuration, GameManager.Instance.roundEndSlowMoTimeScale, GameManager.Instance.roundEndTimeScaleFadeSpeed);
     }
     #endregion
 
@@ -1514,7 +1523,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (ConnectManager.Instance.connectedToMaster)
             return;
 
-        if (inputManager.playerInputs[playerNum].switchChar && opponent.playerIsAI)
+        if (InputManager.Instance.playerInputs[playerNum].switchChar && opponent.playerIsAI)
         {
             IAScript enemyIA = opponent.GetComponent<IAScript>();
             if (enemyIA != null)
@@ -1543,7 +1552,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region STAMINA
     // Set up stamina bar system
-    void SetUpStaminaBars()
+    public void SetUpStaminaBars()
     {
         staminaSliders.Add(staminaSlider);
 
@@ -1651,7 +1660,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // DETECT STAMINA CHARGE UP
         if (Mathf.FloorToInt(oldStamina) < Mathf.FloorToInt(stamina))
         {
-            if (!gameManager.playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
+            if (!GameManager.Instance.playerDead && GameManager.Instance.gameState == GameManager.GAMESTATE.game)
             {
                 if (!staminaRecupAnimOn && !staminaBreakAnimOn)
                 {
@@ -1751,7 +1760,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region STAMINA ANIMS
     // Not enough stamina anim
-    void TriggerNotEnoughStaminaAnim(bool state)
+    protected void TriggerNotEnoughStaminaAnim(bool state)
     {
         for (int i = 0; i < staminaSliders.Count; i++)
         {
@@ -1871,7 +1880,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region MOVEMENTS
     // MOVEMENTS
-    public void ManageMovementsInputs()
+    public virtual void ManageMovementsInputs()
     {
 
         // The player move if they can in their state
@@ -1884,12 +1893,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 if (photonView.IsMine)
                 {
-                    rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+                    rb.velocity = new Vector2(InputManager.Instance.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
                 }
             }
             else
             {
-                rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+                rb.velocity = new Vector2(InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
             }
         }
 
@@ -1936,14 +1945,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (ConnectManager.Instance.connectedToMaster)
         {
-            if (inputManager.playerInputs[0].anyKey)
+            if (InputManager.Instance.playerInputs[0].anyKey)
             {
                 photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
             }
         }
         else
         {
-            if (inputManager.playerInputs[playerNum].anyKeyDown && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacter].locked)
+            if (InputManager.Instance.playerInputs[playerNum].anyKeyDown && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacter].locked)
                 TriggerDraw();
         }
     }
@@ -1979,7 +1988,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             if (ConnectManager.Instance.enableMultiplayer)
             {
-                if (!inputManager.playerInputs[0].jump)
+                if (!InputManager.Instance.playerInputs[0].jump)
                 {
                     //StartCoroutine(JumpCoroutine());
                     TriggerJumpBeginning();
@@ -1987,7 +1996,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
             else
             {
-                if (inputManager.playerInputs[playerNum].jump)
+                if (InputManager.Instance.playerInputs[playerNum].jump)
                 {
                     TriggerJumpBeginning();
                 }
@@ -2017,12 +2026,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region CHARGE
     // Manages the detection of attack charge inputs
-    void ManageChargeInput()
+    public virtual void ManageChargeInput()
     {
         if (ConnectManager.Instance.enableMultiplayer)
         {
             // Player presses attack button
-            if (inputManager.playerInputs[0].attack && canCharge)
+            if (InputManager.Instance.playerInputs[0].attack && canCharge)
             {
                 if (stamina >= staminaCostForMoves)
                 {
@@ -2058,13 +2067,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
 
             // Player releases attack button
-            if (!inputManager.playerInputs[0].attack)
+            if (!InputManager.Instance.playerInputs[0].attack)
                 canCharge = true;
         }
         else
         {
             // Player presses attack button
-            if (inputManager.playerInputs[playerNum].attack && canCharge)
+            if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
             {
                 if (stamina >= staminaCostForMoves)
                 {
@@ -2088,16 +2097,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                     // FX
-                    chargeFlareFX.Play();   
+                    chargeFlareFX.Play();
                 }
             }
 
             // ANIMATION STAMINA
-            if (inputManager.playerInputs[playerNum].attackDown && canCharge && stamina <= staminaCostForMoves)
+            if (InputManager.Instance.playerInputs[playerNum].attackDown && canCharge && stamina <= staminaCostForMoves)
                 TriggerNotEnoughStaminaAnim(true);
 
             // Player releases attack button
-            if (!inputManager.playerInputs[playerNum].attack)
+            if (!InputManager.Instance.playerInputs[playerNum].attack)
                 canCharge = true;
         }
     }
@@ -2110,7 +2119,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (ConnectManager.Instance.connectedToMaster && photonView.IsMine)
         {
             //Player releases attack button
-            if (!inputManager.playerInputs[0].attack)
+            if (!InputManager.Instance.playerInputs[0].attack)
             {
                 photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
                 return;
@@ -2119,7 +2128,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             //Player releases attack button
-            if (!inputManager.playerInputs[playerNum].attack)
+            if (!InputManager.Instance.playerInputs[playerNum].attack)
             {
                 ReleaseAttack();
                 return;
@@ -2232,7 +2241,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * (actualAttackRange - lightAttackRange) / (heavyAttackRange - lightAttackRange);
 
-            
+
         }
         //Debug.Log(actualAttackRange);
 
@@ -2266,14 +2275,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         else
             inputNum = playerNum;
 
-        if (Mathf.Abs(inputManager.playerInputs[inputNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
+        if (Mathf.Abs(InputManager.Instance.playerInputs[inputNum].horizontal) > attackReleaseAxisInputDeadZoneForDashAttack)
         {
-            dashDirection = Mathf.Sign(inputManager.playerInputs[inputNum].horizontal) * transform.localScale.x;
-            dashDirection3D = new Vector3(Mathf.Sign(inputManager.playerInputs[inputNum].horizontal), 0, 0);
+            dashDirection = Mathf.Sign(InputManager.Instance.playerInputs[inputNum].horizontal) * transform.localScale.x;
+            dashDirection3D = new Vector3(Mathf.Sign(InputManager.Instance.playerInputs[inputNum].horizontal), 0, 0);
 
 
             // Dash distance
-            if (Mathf.Sign(inputManager.playerInputs[inputNum].horizontal) == -Mathf.Sign(transform.localScale.x))
+            if (Mathf.Sign(InputManager.Instance.playerInputs[inputNum].horizontal) == -Mathf.Sign(transform.localScale.x))
             {
                 actualUsedDashDistance = forwardAttackDashDistance;
                 actualBackAttackRangeDisjoint = forwardAttackBackrangeDisjoint;
@@ -2405,7 +2414,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (canMaintainParry)
         {
-            if (inputManager.playerInputs[playerNum].parry && canParry)
+            if (InputManager.Instance.playerInputs[playerNum].parry && canParry)
             {
                 currentParryFramesPressed++;
                 canParry = false;
@@ -2424,7 +2433,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 ReleaseMaintainParry();
             }
 
-            if (!inputManager.playerInputs[playerNum].parry)
+            if (!InputManager.Instance.playerInputs[playerNum].parry)
             {
                 ReleaseMaintainParry();
                 canParry = true;
@@ -2464,14 +2473,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region PARRY
     // PARRY
     // Detect parry inputs
-    void ManageParryInput()
+    public virtual void ManageParryInput()
     {
         // If online, only take inputs from player 1
         if (canBriefParry)
         {
             if (ConnectManager.Instance.enableMultiplayer)
             {
-                if (inputManager.playerInputs[0].parry && canParry)
+                if (InputManager.Instance.playerInputs[0].parry && canParry)
                 {
                     currentParryFramesPressed++;
                     canParry = false;
@@ -2484,7 +2493,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
 
 
-                if (!inputManager.playerInputs[0].parry)
+                if (!InputManager.Instance.playerInputs[0].parry)
                 {
                     canParry = true;
                 }
@@ -2492,13 +2501,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else
             {
                 // Stamina animation
-                if (inputManager.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
+                if (InputManager.Instance.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
                 {
                     TriggerNotEnoughStaminaAnim(true);
                 }
 
 
-                if (inputManager.playerInputs[playerNum].parry && canParry)
+                if (InputManager.Instance.playerInputs[playerNum].parry && canParry)
                 {
                     canParry = false;
 
@@ -2510,7 +2519,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // Can input again if released the input
-                if (!inputManager.playerInputs[playerNum].parry)
+                if (!InputManager.Instance.playerInputs[playerNum].parry)
                 {
                     canParry = true;
                 }
@@ -2520,7 +2529,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     // Parry coroutine
     [PunRPC]
-    void TriggerParry()
+    protected void TriggerParry()
     {
         // ANIMATION
         playerAnimations.TriggerParry();
@@ -2545,17 +2554,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region POMMEL
     // Detect pommel inputs
-    void ManagePommel()
+    public virtual void ManagePommel(
+        )
     {
         if (ConnectManager.Instance.connectedToMaster)
         {
-            if (!inputManager.playerInputs[0].kick)
+            if (!InputManager.Instance.playerInputs[0].kick)
             {
                 canPommel = true;
             }
 
 
-            if (inputManager.playerInputs[0].kick && canPommel)
+            if (InputManager.Instance.playerInputs[0].kick && canPommel)
             {
                 canPommel = false;
 
@@ -2564,13 +2574,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            if (!inputManager.playerInputs[playerNum].kick)
+            if (!InputManager.Instance.playerInputs[playerNum].kick)
             {
                 canPommel = true;
             }
 
 
-            if (inputManager.playerInputs[playerNum].kick && canPommel)
+            if (InputManager.Instance.playerInputs[playerNum].kick && canPommel)
             {
                 canPommel = false;
 
@@ -2581,7 +2591,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     // Pommel coroutine
     [PunRPC]
-    void TriggerPommel()
+    protected void TriggerPommel()
     {
         Debug.Log("Trigger pommel");
 
@@ -2688,14 +2698,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             //NE PAS SUPPRIMER
             //StopAllCoroutines();
             SwitchState(STATE.clashed);
-            ApplyOrientation(-gameManager.playersList[otherPlayerNum].transform.localScale.x);
+            ApplyOrientation(-GameManager.Instance.playersList[otherPlayerNum].transform.localScale.x);
 
 
             // STARTS MATCH IF PLAYER WAS SNEATHED
             if (wasSneathed)
             {
                 Debug.Log("Draw");
-                gameManager.SaberDrawn(playerNum);
+                GameManager.Instance.SaberDrawn(playerNum);
             }
 
 
@@ -2715,13 +2725,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // FX
             kickKanasFX.Play();
             kickedFX.Play();
-            gameManager.pommelCameraShake.shakeDuration = gameManager.pommelCameraShakeDuration;
+            GameManager.Instance.pommelCameraShake.shakeDuration = GameManager.Instance.pommelCameraShakeDuration;
 
 
 
             // AUDIO
             //audioManager.TriggerClashAudioCoroutine();
-            audioManager.BattleEventIncreaseIntensity();
+            AudioManager.Instance.BattleEventIncreaseIntensity();
 
 
             // STATS
@@ -2750,8 +2760,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //NE PAS SUPPRIMER
         /*StopAllCoroutines();
         Debug.Log("Stop coroutines");*/
-        gameManager.clashCameraShake.shakeDuration = gameManager.clashCameraShakeDuration;
-        gameManager.TriggerSlowMoCoroutine(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
+        GameManager.Instance.clashCameraShake.shakeDuration = GameManager.Instance.clashCameraShakeDuration;
+        GameManager.Instance.TriggerSlowMoCoroutine(GameManager.Instance.clashSlowMoDuration, GameManager.Instance.clashSlowMoTimeScale, GameManager.Instance.clashTimeScaleFadeSpeed);
 
 
         temporaryDashDirectionForCalculation = transform.localScale.x;
@@ -2769,11 +2779,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // SOUND
-        audioManager.BattleEventIncreaseIntensity();
+        AudioManager.Instance.BattleEventIncreaseIntensity();
 
 
         // FX
-        if (gameManager.playersList.Count > 1 && !gameManager.playersList[otherPlayerNum].GetComponent<Player>().clashKanasFX.isPlaying)
+        if (GameManager.Instance.playersList.Count > 1 && !GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().clashKanasFX.isPlaying)
             clashKanasFX.Play();
     }
     #endregion
@@ -2788,23 +2798,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region DASH
     //DASH
     // Functions to detect the dash input etc
-    void ManageDashInput()
+    public virtual void ManageDashInput()
     {
         // If multiplayer, only check for input 1
         if (ConnectManager.Instance.connectedToMaster)
         {
 
             // Detects dash with basic input rather than double tap, shortcut
-            if (Mathf.Abs(inputManager.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated && stamina >= staminaCostForMoves)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated && stamina >= staminaCostForMoves)
             {
                 //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
                 currentShortcutDashStep = DASHSTEP.rest;
             }
 
 
-            if (Mathf.Abs(inputManager.playerInputs[0].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[0].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
             {
-                dashDirection = Mathf.Sign(inputManager.playerInputs[0].dash);
+                dashDirection = Mathf.Sign(InputManager.Instance.playerInputs[0].dash);
 
                 photonView.RPC("TriggerBasicDash", RpcTarget.All);
 
@@ -2823,7 +2833,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // The player needs to let go the direction before pressing it again to dash
-            if (Mathf.Abs(inputManager.playerInputs[0].horizontal) < dashDeadZone)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) < dashDeadZone)
             {
                 if (currentDashStep == DASHSTEP.firstInput)
                 {
@@ -2839,9 +2849,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // When the player presses the direction
             // Presses the
-            if (Mathf.Abs(inputManager.playerInputs[0].horizontal) > dashDeadZone)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) > dashDeadZone)
             {
-                temporaryDashDirectionForCalculation = Mathf.Sign(inputManager.playerInputs[0].horizontal);
+                temporaryDashDirectionForCalculation = Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal);
 
                 if (currentDashStep == DASHSTEP.rest)
                 {
@@ -2865,16 +2875,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
 
-            if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[playerNum].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
             {
                 //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
                 currentShortcutDashStep = DASHSTEP.rest;
             }
 
             // Detects dash with basic input rather than double tap, shortcut
-            if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[playerNum].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
             {
-                dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].dash);
+                dashDirection = Mathf.Sign(InputManager.Instance.playerInputs[playerNum].dash);
 
 
                 TriggerBasicDash();
@@ -2892,7 +2902,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // The player needs to let go the direction before pressing it again to dash
-            if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) < dashDeadZone)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[playerNum].horizontal) < dashDeadZone)
             {
                 if (currentDashStep == DASHSTEP.firstInput)
                 {
@@ -2906,7 +2916,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
 
 
-            if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > dashDeadZone && Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) != temporaryDashDirectionForCalculation)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[playerNum].horizontal) > dashDeadZone && Mathf.Sign(InputManager.Instance.playerInputs[playerNum].horizontal) != temporaryDashDirectionForCalculation)
             {
                 if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
                 {
@@ -2916,9 +2926,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // When the player presses the direction
-            if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > dashDeadZone)
+            if (Mathf.Abs(InputManager.Instance.playerInputs[playerNum].horizontal) > dashDeadZone)
             {
-                temporaryDashDirectionForCalculation = Mathf.Sign(inputManager.playerInputs[playerNum].horizontal);
+                temporaryDashDirectionForCalculation = Mathf.Sign(InputManager.Instance.playerInputs[playerNum].horizontal);
 
                 if (currentDashStep == DASHSTEP.rest)
                 {
@@ -2958,7 +2968,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     // Triggers the dash (Not the clash or attack dash) for it to run
     [PunRPC]
-    void TriggerBasicDash()
+    protected void TriggerBasicDash()
     {
         // Triggers dash if enough stamina
         if (stamina >= staminaCostForMoves)
@@ -3182,7 +3192,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Vector3 deathBloodFXRotation = deathBloodFX.gameObject.transform.localEulerAngles;
 
 
-        if (gameManager.playersList[otherPlayerNum].transform.localScale.x >= 0)
+        if (GameManager.Instance.playersList[otherPlayerNum].transform.localScale.x >= 0)
         {
             deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, -deathBloodFXRotationForDirectionChange * transform.localScale.x);
 

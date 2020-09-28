@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The MapLoader script instance reference")]
     [SerializeField] MapLoader mapLoader = null;
 
-    InputManager inputManager = null;
+    protected InputManager inputManager = null;
 
     [Tooltip("The CameraShake scripts instances references in the scene")]
     [SerializeField]
@@ -311,7 +311,7 @@ public class GameManager : MonoBehaviourPun
     # region FUNCTIONS
     # region BASE FUNCTIONS
     // BASE FUNCTIONS
-    private void Awake()
+    public virtual void Awake()
     {
         Instance = this;
 
@@ -319,7 +319,7 @@ public class GameManager : MonoBehaviourPun
     }
 
     // Start is called before the first frame update
-    public void Start()
+    public virtual void Start()
     {
         if (inputManager == null)
             inputManager = InputManager.Instance;
@@ -342,7 +342,7 @@ public class GameManager : MonoBehaviourPun
     }
 
     // Update is called once per graphic frame
-    private void Update()
+    public virtual void Update()
     {
         if (cheatCodes)
         {
@@ -371,7 +371,7 @@ public class GameManager : MonoBehaviourPun
     }
 
     // FixedUpdate is called 50 times per second
-    private void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         // EFFECTS
         RunTimeScaleUpdate();
@@ -428,7 +428,7 @@ public class GameManager : MonoBehaviourPun
 
                 cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
                 mainMenu.SetActive(false);
-                
+
                 blurPanel.SetActive(false);
                 Cursor.visible = false;
                 break;
@@ -963,7 +963,7 @@ public class GameManager : MonoBehaviourPun
 
 
         SwitchState(GAMESTATE.game);
-        
+
 
 
         // AUDIO

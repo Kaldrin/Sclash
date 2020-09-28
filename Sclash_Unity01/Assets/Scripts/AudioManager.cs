@@ -5,6 +5,8 @@ using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager Instance;
+
     # region MANAGERS
     [Header("MANAGERS")]
     // Name of the GameManager to find it in the scene
@@ -202,6 +204,7 @@ public class AudioManager : MonoBehaviour
     # region BASE FUNCTIONS
     private void Awake()
     {
+        Instance = this;
         GetSourcesDefaultVolume();
     }
 
