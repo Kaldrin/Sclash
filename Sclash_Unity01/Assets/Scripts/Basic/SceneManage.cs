@@ -68,18 +68,14 @@ public class SceneManage : MonoBehaviour
     {
         // Checks if the inputs to restart the scene were pressed
         if (CheckIfAllKeysPressed(pressSimultaneousKeysToRestart))
-        {
             Restart();
-        }
 
 
         // Is called when the scene switch screen finished fading on
         if (proceedToLoadScene)
         {
             if (quit)
-            {
                 Application.Quit();
-            }
             else if (canLoadScene)
             {
                 canLoadScene = false;

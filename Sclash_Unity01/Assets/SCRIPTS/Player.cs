@@ -76,6 +76,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         sneathing,
         sneathed,
         drawing,
+        battleSneathing,
+        battleSneathedNormal,
+        battleDrawing,
         normal,
         charging,
         attacking,
@@ -248,6 +251,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] bool canJump = true;
     [SerializeField] bool canMaintainParry = true;
     [SerializeField] bool canBriefParry = false;
+    [SerializeField] bool canBattleSneath = false;
     [SerializeField] bool quickRegen = false;
     [SerializeField] bool quickRegenOnlyWhenReachedLowStaminaGap = true;
     #endregion
@@ -699,6 +703,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.drawing:
                 break;
 
+            case STATE.battleDrawing:
+                break;
+
+            case STATE.battleSneathing:
+                break;
+
+            case STATE.battleSneathedNormal:
+                ManageBattleDraw();
+                break;
+
             case STATE.normal:
                 ManageJumpInput();
                 ManageChargeInput();
@@ -706,6 +720,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 ManagePommel();
                 ManageParryInput();
                 ManageMaintainParryInput();
+                ManageBattleSneath();
 
                 UpdateStaminaSlidersValue();
                 UpdateStaminaColor();
@@ -865,6 +880,32 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     SwitchState(STATE.normal);
                     gameManager.SaberDrawn(playerNum);
                 }
+                break;
+
+            case STATE.battleDrawing:
+                UpdateStaminaSlidersValue();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+                UpdateStaminaColor();
+                rb.velocity = Vector2.zero;
+                if (hasFinishedAnim)
+                    SwitchState(STATE.normal);
+                break;
+
+            case STATE.battleSneathing:
+                if (hasFinishedAnim)
+                    SwitchState(STATE.battleSneathedNormal);
+                UpdateStaminaSlidersValue();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+                UpdateStaminaColor();
+                rb.velocity = Vector2.zero;
+                break;
+
+            case STATE.battleSneathedNormal:
+                UpdateStaminaSlidersValue();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+                UpdateStaminaColor();
+                ManageMovementsInputs();
+                ManageOrientation();
                 break;
 
             case STATE.normal:
@@ -1066,7 +1107,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 if (playerNum == 0)
                     if (!ConnectManager.Instance.connectedToMaster)
                         gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
+                break;
 
+            case STATE.battleDrawing:
+                break;
+
+            case STATE.battleSneathing:
+                break;
+
+            case STATE.battleSneathedNormal:
                 break;
 
             case STATE.normal:
@@ -1715,9 +1764,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     staminaBarChargedAudioEffectSource.Play();
 
                     if (useExtraDiegeticFX)
+                    {
                         staminaGainFX.Play();
-
-                    staminaGainFX.GetComponent<ParticleSystem>().Play();
+                        staminaGainFX.GetComponent<ParticleSystem>().Play();
+                    }
                 }
             }
         }
@@ -2021,7 +2071,40 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
 
 
+    #region BATTLE SNEATH / DRAW
+    void ManageBattleSneath()
+    {
+        if (canBattleSneath)
+            if (inputManager.playerInputs[playerNum].battleSneathDraw)
+                TriggerBattleSneath();
+    }
 
+    void ManageBattleDraw()
+    {
+        if (inputManager.playerInputs[playerNum].battleSneathDraw)
+            TriggerBattleDraw();
+    }
+
+    void TriggerBattleSneath()
+    {
+        // ANIMATION
+        playerAnimations.TriggerBattleSneath();
+
+
+        // STATE
+        SwitchState(STATE.battleSneathing);
+    }
+
+    void TriggerBattleDraw()
+    {
+        // ANIMATION
+        playerAnimations.TriggerBattleDraw();
+
+
+        // STATE
+        SwitchState(STATE.battleDrawing);
+    }
+    #endregion
 
 
 
@@ -2793,6 +2876,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void TriggerClash()
     {
+        // STATE
         SwitchState(STATE.clashed);
 
         //NE PAS SUPPRIMER
@@ -2802,9 +2886,25 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         gameManager.TriggerSlowMoCoroutine(gameManager.clashSlowMoDuration, gameManager.clashSlowMoTimeScale, gameManager.clashTimeScaleFadeSpeed);
 
 
+        // If is behind opponent when parried / clashed adds additional distance to evade the position and not look weird like they're fused together
+        float addedDistanceNotToBeBehindOpponent = 0;
+        if (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) <= 0.5f)
+        {
+            //addedDistanceNotToBeBehindOpponent = (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) - 0.3f) * -5;
+            Debug.Log(addedDistanceNotToBeBehindOpponent);
+            transform.position = new Vector3(gameManager.playersList[otherPlayerNum].transform.position.x + - Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1f, transform.position.y, transform.position.z);
+            //transform.position = new Vector3(20f, transform.position.y, transform.position.z);
+        }
+
+
         temporaryDashDirectionForCalculation = transform.localScale.x;
         actualUsedDashDistance = clashKnockback;
         initPos = transform.position;
+
+
+        
+
+        // DASH CALCULATION
         targetPos = transform.position + new Vector3(actualUsedDashDistance * temporaryDashDirectionForCalculation, 0, 0);
         dashTime = 0;
         isDashing = true;

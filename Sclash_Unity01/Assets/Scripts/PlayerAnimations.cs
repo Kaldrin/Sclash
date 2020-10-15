@@ -82,6 +82,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         pommeledOn = "PommeledOn",
         draw = "Draw",
         sneath = "Sneath",
+        battleSneath = "BattleSneath",
+        battleDraw = "BattleDraw",
         jump = "Jump",
         land = "Land",
         verticalSpeed = "VerticalSpeed",
@@ -255,6 +257,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animator.ResetTrigger(draw);
         animator.ResetTrigger(sneath);
         animator.ResetTrigger(dashOn);
+        ResetBattleSneath();
         ResetAllJumpParameters();
         ResetMaintainParry();
 
@@ -291,6 +294,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animator.ResetTrigger(draw);
         animator.ResetTrigger(sneath);
         animator.ResetTrigger(dashOn);
+        ResetBattleSneath();
         ResetAllJumpParameters();
         ResetMaintainParry();
 
@@ -417,6 +421,28 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
             drawTextAnimator.SetTrigger(resetDrawText);
             drawTextAnimator.ResetTrigger(textDrawOn);
         }
+    }
+    # endregion
+
+
+
+    #region BATTLE SNEATH / DRAW ANIMATIONS
+    public void TriggerBattleSneath()
+    {
+        animator.SetTrigger(battleSneath);
+        animator.ResetTrigger(battleDraw);
+    }
+
+    public void TriggerBattleDraw()
+    {
+        animator.SetTrigger(battleDraw);
+        animator.ResetTrigger(battleSneath);
+    }
+
+    public void ResetBattleSneath()
+    {
+        animator.ResetTrigger(battleSneath);
+        animator.ResetTrigger(battleDraw);
     }
     # endregion
 

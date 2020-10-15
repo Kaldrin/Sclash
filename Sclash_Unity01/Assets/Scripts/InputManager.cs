@@ -23,6 +23,7 @@ public class InputManager : MonoBehaviour
         public bool anyKey;
         public bool anyKeyDown;
         public bool reallyanykey;
+        public bool battleSneathDraw;
         public float horizontal;
         public float dash;
         public bool attack;
@@ -53,6 +54,7 @@ public class InputManager : MonoBehaviour
     [Header("INPUTS")]
     [SerializeField] string pauseAxis = "Pause";
     [SerializeField] string
+        battleSneathDrawAxis = "SneathDraw",
         horizontalAxis = "Horizontal",
         verticalAxis = "Vertical",
         dashAxis = "Dash",
@@ -110,6 +112,7 @@ public class InputManager : MonoBehaviour
             ManageKickInput(i);
             ManageJumpInput(i);
             ManageParryInput(i);
+            ManageBattleSneathDrawInput(i);
             ManageAttackInput(i);
 
             ManageAnyKeyInput(i);
@@ -212,13 +215,16 @@ public class InputManager : MonoBehaviour
 
 
 
-
-
+    #region BATTLE SNEATH DRAW
+    void ManageBattleSneathDrawInput(int i)
+    {
+        playerInputs[i].battleSneathDraw = Input.GetButton(battleSneathDrawAxis + i);
+    }
+    #endregion
 
 
 
     #region ATTACK
-    // KICK
     void ManageAttackInput(int i)
     {
         playerInputs[i].attackDown = (!playerInputs[i].attack && (Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone));
