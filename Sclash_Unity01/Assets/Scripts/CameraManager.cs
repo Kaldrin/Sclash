@@ -32,6 +32,7 @@ public class CameraManager : MonoBehaviour
         inactive,
         battle,
         eventcam,
+        solo
     }
     # endregion
 
@@ -158,6 +159,9 @@ public class CameraManager : MonoBehaviour
 
             case CAMERASTATE.inactive:
                 break;
+
+            case CAMERASTATE.solo:
+                break;
         }
     }
 
@@ -180,6 +184,11 @@ public class CameraManager : MonoBehaviour
                     break;
 
                 case CAMERASTATE.inactive:
+                    break;
+
+                case CAMERASTATE.solo:
+                    MoveCameraWithPlayers();
+                    ZoomCameraWithPlayers();
                     break;
             }
 
@@ -215,6 +224,10 @@ public class CameraManager : MonoBehaviour
 
             case CAMERASTATE.inactive:
                 break;
+
+            case CAMERASTATE.solo:
+                actualZoomSpeed = battleZoomSpeed;
+                break;
         }
     }
     #endregion
@@ -231,7 +244,6 @@ public class CameraManager : MonoBehaviour
     // Find the players to use in the script
     public GameObject[] FindPlayers()
     {
-        Debug.Log("CameraManager looking for players");
         Player[] playersScripts = FindObjectsOfType<Player>();
         playersList = new GameObject[playersScripts.Length];
 

@@ -222,11 +222,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // ORIENTATION
     [Header("ORIENTATION")]
     [Tooltip("The duration before the player can orient again towards the enemy if they need to once they applied the orientation")]
-    [SerializeField] float orientationCooldown = 0.1f;
-    float
-        orientationCooldownStartTime = 0;
+    [SerializeField] protected float orientationCooldown = 0.1f;
+    protected float
+         orientationCooldownStartTime = 0;
 
-    bool
+    protected bool
         orientationCooldownFinished = true,
         canOrientTowardsEnemy = true;
     #endregion
@@ -638,7 +638,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
         // Get input manager
         //inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
-       
+
         // Get stats manager
         statsManager = GameObject.Find(statsManagerName).GetComponent<StatsManager>();
 
@@ -762,7 +762,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // Cheatcodes to use for development purposes
-         if (GameManager.Instance.cheatCodes)
+        if (GameManager.Instance.cheatCodes)
             CheatsInputs();
     }
 
@@ -1023,12 +1023,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.drawing:
                 rb.velocity = Vector3.zero;
-                if(characterChanger != null)
+                if (characterChanger != null)
                     characterChanger.enabled = false;
 
                 if (playerNum == 0)
                     if (!ConnectManager.Instance.connectedToMaster)
-                        if(GameManager.Instance.playersList.Count > 1)
+                        if (GameManager.Instance.playersList.Count > 1)
                             GameManager.Instance.playersList[1].GetComponent<IAChanger>().enabled = false;
 
                 break;
@@ -3082,7 +3082,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region ORIENTATION
     // ORIENTATION CALLED IN UPDATE
-    public void ManageOrientation()
+    public virtual void ManageOrientation()
     {
         if (photonView != null)
             if (!photonView.IsMine)
@@ -3167,7 +3167,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     // Immediatly rotates the player
-    void ApplyOrientation(float sign)
+    protected void ApplyOrientation(float sign)
     {
         if (sign > 0)
         {

@@ -7,7 +7,7 @@ public class CameraManager_Solo : CameraManager
     protected override void Start()
     {
         base.Start();
-        SwitchState(CAMERASTATE.battle);
+        SwitchState(CAMERASTATE.solo);
     }
     protected override void MoveCameraWithPlayers()
     {

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class StoryPlayer : Player
 {
+    float soloOrientation = -1;
+
     void Awake()
     {
         if (inputManager == null)
@@ -30,9 +32,9 @@ public class StoryPlayer : Player
 
     public override void ManageChargeInput()
     {
-        if(InputManager.Instance.playerInputs[0].attack && canCharge)
+        if (InputManager.Instance.playerInputs[0].attack && canCharge)
         {
-            if(stamina >= staminaCostForMoves)
+            if (stamina >= staminaCostForMoves)
             {
                 canCharge = false;
                 SwitchState(STATE.charging);
@@ -68,7 +70,7 @@ public class StoryPlayer : Player
             if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
                 currentDashStep = DASHSTEP.invalidated;
 
-        if(Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) < dashDeadZone)
+        if (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) < dashDeadZone)
         {
             if (currentDashStep == DASHSTEP.firstInput)
                 currentDashStep = DASHSTEP.firstRelease;
@@ -80,7 +82,7 @@ public class StoryPlayer : Player
             if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
                 currentDashStep = DASHSTEP.invalidated;
 
-        if(Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) > dashDeadZone)
+        if (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) > dashDeadZone)
         {
             temporaryDashDirectionForCalculation = Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal);
 
@@ -90,7 +92,7 @@ public class StoryPlayer : Player
                 dashDirection = temporaryDashDirectionForCalculation;
                 dashInitializationStartTime = Time.time;
             }
-            else if(currentDashStep == DASHSTEP.firstRelease && dashDirection == temporaryDashDirectionForCalculation)
+            else if (currentDashStep == DASHSTEP.firstRelease && dashDirection == temporaryDashDirectionForCalculation)
             {
                 currentDashStep = DASHSTEP.invalidated;
                 TriggerBasicDash();
@@ -112,12 +114,12 @@ public class StoryPlayer : Player
 
     public override void ManageParryInput()
     {
-        if(canBriefParry)
+        if (canBriefParry)
         {
             if (InputManager.Instance.playerInputs[0].parryDown && stamina <= staminaCostForMoves && canParry)
                 TriggerNotEnoughStaminaAnim(true);
 
-            if(InputManager.Instance.playerInputs[0].parry && canParry)
+            if (InputManager.Instance.playerInputs[0].parry && canParry)
             {
                 canParry = false;
                 if (stamina >= staminaCostForMoves)
@@ -160,5 +162,19 @@ public class StoryPlayer : Player
             walkFXFront.Stop();
         }
 
+    }
+
+    public override void ManageOrientation()
+    {
+        if (InputManager.Instance.playerInputs[0].horizontal != 0)
+            soloOrientation = -InputManager.Instance.playerInputs[0].horizontal;
+
+        if (canOrientTowardsEnemy)
+        {
+            ApplyOrientation(Mathf.Sign(soloOrientation));
+        }
+
+        if (Time.time >= orientationCooldown + orientationCooldownStartTime)
+            orientationCooldownFinished = true;
     }
 }
