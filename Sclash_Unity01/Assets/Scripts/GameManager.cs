@@ -29,7 +29,8 @@ public class GameManager : MonoBehaviourPun
     protected InputManager inputManager = null;
 
     [Tooltip("The CameraShake scripts instances references in the scene")]
-    [SerializeField] public CameraShake
+    [SerializeField]
+    public CameraShake
         deathCameraShake = null,
         clashCameraShake = null,
         pommelCameraShake = null,
@@ -322,7 +323,7 @@ public class GameManager : MonoBehaviourPun
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    private void Awake()                                        // AWAKE
+    public virtual void Awake()                                        // AWAKE
     {
         Instance = this;
 
@@ -356,7 +357,7 @@ public class GameManager : MonoBehaviourPun
         StartCoroutine(SetupGame());
     }
 
-    
+
 
     // Update is called once per graphic frame
     public virtual void Update()
@@ -889,10 +890,12 @@ public class GameManager : MonoBehaviourPun
         losingPlayerIndex = 1 - winningPlayerIndex;
 
         // STATS
-        try {
+        try
+        {
             statsManager.FinalizeRound(winningPlayerIndex);
         }
-        catch {
+        catch
+        {
             Debug.Log("Error while finalizing the recording of the current round, ignoring");
         }
 
@@ -1181,10 +1184,12 @@ public class GameManager : MonoBehaviourPun
     void APlayerWon()
     {
         // STATS
-        try {
+        try
+        {
             statsManager.FinalizeGame(true, 1);
         }
-        catch {
+        catch
+        {
             Debug.Log("Error while finalizing the recording of the current game, ignoring");
         }
 
