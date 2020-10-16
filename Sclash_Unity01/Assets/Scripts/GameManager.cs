@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviourPun
 {
     #region VARIABLES
     #region MANAGERS
-    // MANAGERS
     public static GameManager Instance;
     [Header("MANAGERS")]
     [Tooltip("The AudioManager script instance reference")]
@@ -25,13 +24,12 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] CameraManager cameraManager = null;
 
     [Tooltip("The MapLoader script instance reference")]
-    [SerializeField] MapLoader mapLoader = null;
+    [SerializeField] public MapLoader mapLoader = null;
 
     protected InputManager inputManager = null;
 
     [Tooltip("The CameraShake scripts instances references in the scene")]
-    [SerializeField]
-    public CameraShake
+    [SerializeField] public CameraShake
         deathCameraShake = null,
         clashCameraShake = null,
         pommelCameraShake = null,
@@ -46,7 +44,7 @@ public class GameManager : MonoBehaviourPun
 
     #region DATA
     [Header("DATA")]
-    [SerializeField] CharactersDatabase charactersData = null;
+    [SerializeField] public CharactersDatabase charactersData = null;
     [SerializeField] public MenuParameters gameParameters = null;
     #endregion
 
@@ -119,7 +117,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] public GameObject scoreObject = null;
 
     [Tooltip("The score display text mesh pro component reference")]
-    [SerializeField] List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
+    [SerializeField] public List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
     [SerializeField] List<Text> scoresDisplays = new List<Text>(2);
     [SerializeField] TextMeshProUGUI maxScoreTextDisplay = null;
     #endregion
@@ -281,19 +279,28 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The key to activate the slow motion cheat")]
     [SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
     #endregion
-    #endregion
 
-    [SerializeField]
-    public bool letThemFight;
+
+    [SerializeField] public bool letThemFight;
+    int losingPlayerIndex = 0;
     int winningPlayerIndex;
 
 
-    #region Events
+    #region EVENTS
     public delegate void OnResetGameEvent();
     public event OnResetGameEvent ResetGameEvent;
     #endregion
 
 
+    #region DEMO
+    [Header("DEMO")]
+    [SerializeField] public bool demo = false;
+    [SerializeField] GameObject demoMark = null;
+    [SerializeField] MenuBrowser mainMenuBrowser = null;
+    [SerializeField] GameObject stagesButton = null;
+    [SerializeField] GameObject demoStagesButton = null;
+    #endregion
+    #endregion
 
 
 
@@ -308,14 +315,27 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    # region FUNCTIONS
-    # region BASE FUNCTIONS
-    // BASE FUNCTIONS
-    public virtual void Awake()
+
+
+
+
+
+    #region FUNCTIONS
+    #region BASE FUNCTIONS
+    private void Awake()                                        // AWAKE
     {
         Instance = this;
 
         inputManager = InputManager.Instance;
+
+        // DEMO
+        if (demo)
+        {
+            demoMark.SetActive(true);
+            demoStagesButton.SetActive(true);
+            mainMenuBrowser.elements[2] = demoStagesButton;
+            stagesButton.SetActive(false);
+        }
     }
 
     // Start is called before the first frame update
@@ -336,10 +356,7 @@ public class GameManager : MonoBehaviourPun
         StartCoroutine(SetupGame());
     }
 
-    void OnEnable()
-    {
-
-    }
+    
 
     // Update is called once per graphic frame
     public virtual void Update()
@@ -869,14 +886,13 @@ public class GameManager : MonoBehaviourPun
     public void APlayerIsDead(int incomingWinning)
     {
         winningPlayerIndex = incomingWinning;
+        losingPlayerIndex = 1 - winningPlayerIndex;
 
         // STATS
-        try
-        {
+        try {
             statsManager.FinalizeRound(winningPlayerIndex);
         }
-        catch
-        {
+        catch {
             Debug.Log("Error while finalizing the recording of the current round, ignoring");
         }
 
@@ -888,14 +904,9 @@ public class GameManager : MonoBehaviourPun
 
 
         if (CheckIfThePlayerWon())
-        {
             APlayerWon();
-            // StartCoroutine(APlayerWon(winningPlayerIndex));
-        }
         else
-        {
             StartCoroutine(NextRoundCoroutine());
-        }
     }
 
     void UpdatePlayersScoreValues()
@@ -1091,6 +1102,7 @@ public class GameManager : MonoBehaviourPun
         ResetPlayersForNextMatch();
         TriggerMatchEndFilterEffect(false);
 
+
         // PLAYERS LIGHTS / COLORS
         for (int i = 0; i < playersList.Count; i++)
         {
@@ -1100,7 +1112,10 @@ public class GameManager : MonoBehaviourPun
 
 
         // NEXT STAGE
-        mapLoader.SetMap(newStageIndex);
+        if (demo && mapLoader.halloween) // Halloween stage for demo
+            mapLoader.SetMap(0, true);
+        else
+            mapLoader.SetMap(newStageIndex, false);
 
 
 
@@ -1166,12 +1181,10 @@ public class GameManager : MonoBehaviourPun
     void APlayerWon()
     {
         // STATS
-        try
-        {
+        try {
             statsManager.FinalizeGame(true, 1);
         }
-        catch
-        {
+        catch {
             Debug.Log("Error while finalizing the recording of the current game, ignoring");
         }
 
@@ -1221,7 +1234,14 @@ public class GameManager : MonoBehaviourPun
 
 
         //yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
-        Invoke("ShowMenu", timeBeforeWinScreenAppears);
+        Invoke("TriggerFallDeadAnimation", 2f);
+        Invoke("ShowMenu", 2f + timeBeforeWinScreenAppears);
+    }
+
+    // Animation
+    void TriggerFallDeadAnimation()
+    {
+        playersList[losingPlayerIndex].GetComponent<PlayerAnimations>().TriggerRealDeath();
     }
 
     void ShowMenu()

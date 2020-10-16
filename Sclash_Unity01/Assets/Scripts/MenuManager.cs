@@ -24,6 +24,13 @@ public class MenuManager : MonoBehaviour
 
 
 
+    #region MENU ELEMENTS
+    [SerializeField] GameObject backIndicator = null;
+    #endregion
+
+
+
+
 
     #region DATA
     [Header("DATA")]
@@ -68,16 +75,13 @@ public class MenuManager : MonoBehaviour
 
 
 
-
     # region PAUSE
     [Header("PAUSE MENU")]
     [Tooltip("The reference to the menu's blur panel game object")]
-    [SerializeField]
-    GameObject
+    [SerializeField] GameObject
         blurPanel = null;
     [Tooltip("Menu elements references")]
-    [SerializeField]
-    public GameObject
+    [SerializeField] public GameObject
         pauseMenu = null,
         mainMenu = null,
         winScreen = null;
@@ -89,6 +93,7 @@ public class MenuManager : MonoBehaviour
     float pauseCooldownStartTime = 0f;
 
     bool pauseCooldownOn = false;
+    bool canPauseOn = true;
     # endregion
 
 
@@ -138,7 +143,8 @@ public class MenuManager : MonoBehaviour
         switch (gameManager.gameState)
         {
             case GameManager.GAMESTATE.game:
-                ManagePauseOnInput();
+                if (canPauseOn)
+                    ManagePauseOnInput();
                 ManageInfosDisplayInput();
                 break;
 
@@ -250,20 +256,31 @@ public class MenuManager : MonoBehaviour
             TriggerPause(true);
     }
 
+    public void PauseOff()
+    {
+        TriggerPause(false);
+    }
+
     public void TriggerPause(bool state)
     {
         if (state)
         {
+            backIndicator.SetActive(true);
+
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
             gameManager.SwitchState(GameManager.GAMESTATE.paused);
 
             for (int i = 0; i < gameManager.playersList.Count; i++)
-            {
                 gameManager.playersList[i].GetComponent<Animator>().enabled = false;
-            }
         }
         else
         {
+            backIndicator.SetActive(false);
+
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+                gameManager.playersList[i].GetComponent<Player>().canParry = false;
+
+            canPauseOn = false;
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
 
             if (gameManager.gameState == GameManager.GAMESTATE.paused)
@@ -272,6 +289,8 @@ public class MenuManager : MonoBehaviour
 
             for (int i = 0; i < gameManager.playersList.Count; i++)
                 gameManager.playersList[i].GetComponent<Animator>().enabled = true;
+
+            Invoke("RestoreCanPauseOn", 0.2f);
         }
 
 
@@ -290,6 +309,11 @@ public class MenuManager : MonoBehaviour
 
 
         Cursor.visible = state;
+    }
+
+    void RestoreCanPauseOn()
+    {
+        canPauseOn = true;
     }
     #endregion
 

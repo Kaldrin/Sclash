@@ -313,10 +313,58 @@ public class MapMenuLoader : MonoBehaviour
         customListForStartRandomStageCheck.SetActive(parametersData.useCustomListForRandomStartStage);
     }
 
+    public void LoadDemoParameters()
+    {
+        Debug.Log("Demo");
+        JsonSave save = SaveGameManager.GetCurrentSave();
+
+        parametersData.dayNightCycle = false;
+        parametersData.randomStage = false;
+        parametersData.useCustomListForRandom = false;
+        parametersData.keepLastLoadedStage = true;
+        parametersData.useCustomListForRandomStartStage = false;
+        parametersData.lastLoadedStageIndex = save.lastLoadedStageIndex;
+
+
+        // Favourite stages list
+        parametersData.customList = save.customList;
+
+        if (mapsDatabase01 == null)
+        {
+            Debug.LogWarning("Map database is null");
+            return;
+        }
+
+        if (parametersData.customList.Count < mapsDatabase01.stagesLists.Count)
+        {
+            parametersData.customList.Clear();
+
+
+            for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
+                parametersData.customList.Add(mapsDatabase01.stagesLists[i].inCustomList);
+        }
+
+
+
+        for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
+        {
+            Map newMap = mapLoader.mapsData.stagesLists[i];
+
+
+            if (parametersData.customList[i])
+                newMap.inCustomList = true;
+            else
+                newMap.inCustomList = false;
+
+
+            mapLoader.mapsData.stagesLists[i] = newMap;
+        }
+    }
 
     // Load menu parameters save in the scriptable object
     public void LoadParameters()
     {
+        Debug.Log("Not demo");
         JsonSave save = SaveGameManager.GetCurrentSave();
 
         parametersData.dayNightCycle = save.dayNightCycle;

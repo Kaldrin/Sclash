@@ -12,12 +12,14 @@ public class CharacterChanger : MonoBehaviour
     [SerializeField] Animator playerAnimator = null;
     [SerializeField] Animator legsAnimator = null;
     [SerializeField] Animator characterChangeAnimator = null;
-    [SerializeField] SpriteRenderer mask = null;
+    [SerializeField] public SpriteRenderer mask = null;
+    [SerializeField] public SpriteRenderer weapon = null;
 
 
     [Header("DATA")]
     [SerializeField] public CharactersDatabase charactersDatabase = null;
-    [SerializeField] MasksDatabase masksDatabase = null;
+    [SerializeField] public MasksDatabase masksDatabase = null;
+    [SerializeField] public WeaponsDatabase weaponsDatabase = null;
 
 
     [Header("CHARACTER CHANGE VISUAL OBJECTS NAMES")]
@@ -176,9 +178,16 @@ public class CharacterChanger : MonoBehaviour
 ;        
         playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].animator;
         legsAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].legsAnimator;
-        mask.sprite = masksDatabase.masksList[charactersDatabase.charactersList[currentCharacter].defaultMask].sprite;
+
+        if (playerScript.gameManager.mapLoader.halloween) // Halloween mask
+            mask.sprite = masksDatabase.masksList[6].sprite;
+        else
+            mask.sprite = masksDatabase.masksList[charactersDatabase.charactersList[currentCharacter].defaultMask].sprite;
+
         illustrations[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacter].illustration;
         names[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
+        playerScript.characterNameDisplay.text = charactersDatabase.charactersList[currentCharacter].name;
+        playerScript.gameManager.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
 
 
         /*

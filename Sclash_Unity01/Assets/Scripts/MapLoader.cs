@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using Unity.RemoteConfig;
 
 public class MapLoader : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class MapLoader : MonoBehaviour
 
     [Tooltip("Scriptable object data reference containing the maps objects, their image and names")]
     [SerializeField] public MapsDataBase mapsData = null;
+    [SerializeField] public MapsDataBase specialMapsData = null;
     # endregion
 
 
@@ -41,12 +43,18 @@ public class MapLoader : MonoBehaviour
     # region MAP LOADING
     [Header("MAP LOADING")]
     bool canLoadNewMap = true;
+    [HideInInspector] public bool halloween = false;
+    int season = 0;
     [SerializeField] bool loadMapOnStart = false;
     #endregion
 
 
     [Header("OTHER")]
     [SerializeField] PostProcessVolume cameraPostProcessVolume = null;
+
+    // REMOTE CONFIG
+    public struct userAttributes { }
+    public struct appAttributes { }
     #endregion
 
 
@@ -63,33 +71,86 @@ public class MapLoader : MonoBehaviour
 
     void Awake(){
         Instance = this;
+
+
+        // REMOTE CONFIG
+        if (gameManager.demo)
+        {
+            ConfigManager.FetchCompleted += SetRemoteVariables;
+            ConfigManager.FetchConfigs<userAttributes, appAttributes>(new userAttributes(), new appAttributes());
+        }
+        else
+            LoadMapOnStart();
+    }
+
+    void SetRemoteVariables(ConfigResponse response) // Get remote config variables
+    {
+        season = ConfigManager.appConfig.GetInt("season");
+        halloween = ConfigManager.appConfig.GetBool("halloween");
+
+
+        if (halloween) // HALLOWEEN SPRITES
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                gameManager.playersList[i].GetComponent<CharacterChanger>().mask.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().masksDatabase.masksList[6].sprite;
+                gameManager.playersList[i].GetComponent<CharacterChanger>().weapon.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase.weaponsList[1].sprite;
+            }
+            
+
+        LoadMapOnStart();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        mapMenuLoader.LoadParameters();
+        if (gameManager.demo)
+            mapMenuLoader.LoadDemoParameters();
+        else
+            mapMenuLoader.LoadParameters();
+
         mapMenuLoader.SetUpMenu();
+    }
+
+    void OnDestroy()
+    {
+        // REMOTE CONFIG
+        ConfigManager.FetchCompleted -= SetRemoteVariables;
+    }
+    # endregion
 
 
-        // Load map
+
+
+
+    # region MAP LOADING
+    void LoadMapOnStart()
+    {
         if (loadMapOnStart)
         {
+            if (mapContainer == null) // If reference to the map parent object is null, find it again with its name
+                mapContainer = GameObject.Find("MAP / ESTHETICS");
+
+
             for (int i = 0; i < mapContainer.transform.childCount; i++)
-            {
                 Destroy(mapContainer.transform.GetChild(i).gameObject);
-            }
 
 
             int nextStageIndex = Random.Range(0, mapsData.stagesLists.Count);
 
 
-            if (gameManager.gameParameters.keepLastLoadedStage)
-                SetMap(gameManager.gameParameters.lastLoadedStageIndex);
+            if (gameManager.demo)
+            {
+                if (halloween)
+                    SetMap(0, true); // HALLOWEEN STAGE REMOTE CONFIG
+                else
+                    SetMap(season * 2, false); // SEASON DEPENDANT STAGE REMOTE CONFIG
+            }
+            else if (gameManager.gameParameters.keepLastLoadedStage)
+                SetMap(gameManager.gameParameters.lastLoadedStageIndex, false);
             else if (gameManager.gameParameters.useCustomListForRandomStartStage)
             {
                 int loopCount = 0;
-            
+
                 while (!mapsData.stagesLists[nextStageIndex].inCustomList)
                 {
                     nextStageIndex = Random.Range(0, mapsData.stagesLists.Count);
@@ -102,56 +163,66 @@ public class MapLoader : MonoBehaviour
                     }
                 }
 
-                SetMap(nextStageIndex);
+
+                SetMap(nextStageIndex, false);
             }
             else
-            {
-                SetMap(Random.Range(0, mapsData.stagesLists.Count));
-            }
+                SetMap(Random.Range(0, mapsData.stagesLists.Count), false);
         }
         else
         {
             for (int i = 0; i < mapContainer.transform.childCount; i++)
             {
                 if (mapContainer.transform.GetChild(i).gameObject.activeInHierarchy)
-                {
                     currentMap = mapContainer.transform.GetChild(i).gameObject;
-                }
             }
         }
     }
-    # endregion
 
-
-
-
-
-    # region MAP LOADING
     // Immediatly changes the map
-    public void SetMap(int mapIndex)
+    public void SetMap(int mapIndex, bool special)
     {
         if (currentMap != null)
             Destroy(currentMap);
 
 
-        currentMap = Instantiate(mapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+        // STAGE LOAD
+        if (special) // IF SPECIAL MAP LIST (Halloween & stuff)
+            currentMap = Instantiate(specialMapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+        else
+            currentMap = Instantiate(mapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
         currentMapIndex = mapIndex;
 
+
         // POST PROCESS
-        cameraPostProcessVolume.profile = mapsData.stagesLists[mapIndex].postProcessProfile;
+        if (special) // IF SPECIAL MAP LIST (Halloween & stuff)
+            cameraPostProcessVolume.profile = specialMapsData.stagesLists[mapIndex].postProcessProfile;
+        else
+            cameraPostProcessVolume.profile = mapsData.stagesLists[mapIndex].postProcessProfile;
 
 
         // PARTICLES
         bool state = false;
 
+
         for (int i = 0; i < gameManager.playersList.Count; i++)
         {
             for (int y = 0; y < gameManager.playersList[i].GetComponent<Player>().particlesSets.Count; y++)
             {
-                if (y == (mapsData.stagesLists[mapIndex].particleSet))
-                    state = true;
+                if (special)
+                {
+                    if (y == (specialMapsData.stagesLists[mapIndex].particleSet))
+                        state = true;
+                    else
+                        state = false;
+                }
                 else
-                    state = false;
+                {
+                    if (y == (mapsData.stagesLists[mapIndex].particleSet))
+                        state = true;
+                    else
+                        state = false;
+                }
 
 
                 for (int o = 0; o < gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems.Count; o++)
@@ -161,9 +232,9 @@ public class MapLoader : MonoBehaviour
 
 
 
-        gameManager.gameParameters.lastLoadedStageIndex = currentMapIndex;
-        JsonSave save = SaveGameManager.GetCurrentSave();
-        save.lastLoadedStageIndex = gameManager.gameParameters.lastLoadedStageIndex;
+        gameManager.gameParameters.lastLoadedStageIndex = currentMapIndex; // Writes last loaded stage index variable in scriptable object
+        JsonSave save = SaveGameManager.GetCurrentSave(); // Gets save file
+        save.lastLoadedStageIndex = gameManager.gameParameters.lastLoadedStageIndex; // Writes last loaded stage index variable from scriptable object to save file
         //mapMenuLoader.SaveParameters();
     }
 
@@ -192,7 +263,7 @@ public class MapLoader : MonoBehaviour
 
             Debug.Log("New music : " + mapsData.stagesLists[index].musicIndex);
             audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[index].musicIndex);
-            SetMap(index);
+            SetMap(index, false);
 
 
             yield return new WaitForSeconds(2f);

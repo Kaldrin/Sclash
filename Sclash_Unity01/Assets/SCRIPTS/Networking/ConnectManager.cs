@@ -484,7 +484,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     void SyncMap(int targetMapIndex)
     {
         Debug.Log("SyncMap called");
-        MapLoader.Instance.SetMap(targetMapIndex);
+        MapLoader.Instance.SetMap(targetMapIndex, false);
     }
 
     [PunRPC]

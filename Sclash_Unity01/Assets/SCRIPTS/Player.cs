@@ -28,7 +28,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Game manager
     [Tooltip("The name of the object in the scene containing the GlobalManager script component, to find its reference")]
     [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager;
+    [HideInInspector] public GameManager gameManager;
 
     // Input manager
     [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
@@ -55,6 +55,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Tooltip("All of the player's 2D colliders")]
     public Collider2D[] playerColliders = null;
     public SpriteRenderer spriteRenderer = null;
+    [SerializeField] SpriteRenderer maskSpriteRenderer = null;
+    [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
     public Light playerLight = null;
     #endregion
@@ -75,9 +77,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         sneathing,
         sneathed,
         drawing,
+        battleSneathing,
+        battleSneathedNormal,
+        battleDrawing,
         normal,
         charging,
         attacking,
+        canAttackAfterAttack,
         pommeling,
         parrying,
         maintainParrying,
@@ -95,6 +101,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public STATE oldState = STATE.normal;
 
     [SerializeField] bool hasFinishedAnim = false;
+    [SerializeField] bool waitingForNextAttack = false;
+    [SerializeField] bool hasAttackRecoveryAnimFinished = false;
     #endregion
 
 
@@ -113,6 +121,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public int networkPlayerNum = 0;
     public bool playerIsAI;
     Player opponent;
+    [SerializeField] Color secondPlayerMaskColor = new Color(0, 0, 0, 1);
+    [SerializeField] Color secondPlayerSaberColor = new Color(0, 0, 0, 1);
+    [SerializeField] bool usePlayerColorsDifferenciation = false;
     #endregion
 
 
@@ -243,6 +254,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] protected bool canBriefParry = false;
     [SerializeField] protected bool quickRegen = false;
     [SerializeField] protected bool quickRegenOnlyWhenReachedLowStaminaGap = true;
+    [SerializeField] protected bool canBattleSneath = false;
     #endregion
 
 
@@ -318,7 +330,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region ATTACK
-    // ATTACK
     [Header("ATTACK")]
     [Tooltip("Attack range parameters")]
     [SerializeField] public float lightAttackRange = 1.8f;
@@ -337,10 +348,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public bool isAttacking = false;
 
     List<GameObject> targetsHit = new List<GameObject>();
-
-    // ATTACK RECOVERY
-    [Header("ATTACK RECOVERY")]
-    [SerializeField] bool hasAttackRecoveryAnimFinished = false;
     #endregion
 
 
@@ -655,6 +662,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         characterChanger.FindElements();
         StartCoroutine(characterChanger.ApplyCharacterChange());
+
+
+        if (usePlayerColorsDifferenciation && playerNum == 1)
+        {
+            maskSpriteRenderer.color = secondPlayerMaskColor;
+            weaponSpriteRenderer.color = secondPlayerSaberColor;
+        }
     }
 
     // Update is called once per graphic frame
@@ -693,6 +707,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.drawing:
                 break;
 
+            case STATE.battleDrawing:
+                break;
+
+            case STATE.battleSneathing:
+                break;
+
+            case STATE.battleSneathedNormal:
+                ManageBattleDraw();
+                break;
+
             case STATE.normal:
                 ManageJumpInput();
                 ManageChargeInput();
@@ -700,6 +724,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 ManagePommel();
                 ManageParryInput();
                 ManageMaintainParryInput();
+                ManageBattleSneath();
 
                 UpdateStaminaSlidersValue();
                 UpdateStaminaColor();
@@ -714,6 +739,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.attacking:
+                break;
+
+            case STATE.canAttackAfterAttack:
+                ManageJumpInput();
+                ManageChargeInput();
+                ManageDashInput();
+                ManagePommel();
+                ManageParryInput();
+                ManageMaintainParryInput();
+
+                UpdateStaminaSlidersValue();
+                UpdateStaminaColor();
                 break;
 
             case STATE.recovering:
@@ -849,6 +886,32 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
                 break;
 
+            case STATE.battleDrawing:
+                UpdateStaminaSlidersValue();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+                UpdateStaminaColor();
+                rb.velocity = Vector2.zero;
+                if (hasFinishedAnim)
+                    SwitchState(STATE.normal);
+                break;
+
+            case STATE.battleSneathing:
+                if (hasFinishedAnim)
+                    SwitchState(STATE.battleSneathedNormal);
+                UpdateStaminaSlidersValue();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+                UpdateStaminaColor();
+                rb.velocity = Vector2.zero;
+                break;
+
+            case STATE.battleSneathedNormal:
+                UpdateStaminaSlidersValue();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+                UpdateStaminaColor();
+                ManageMovementsInputs();
+                ManageOrientation();
+                break;
+
             case STATE.normal:
                 ManageMovementsInputs();
                 ManageOrientation();
@@ -868,6 +931,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.attacking:
                 RunDash();
                 ManageMovementsInputs();
+                /*
+                if (waitingForNextAttack)
+                    SwitchState(STATE.canAttackAfterAttack);
+                    */
                 if (hasFinishedAnim)
                 {
                     hasFinishedAnim = false;
@@ -881,9 +948,27 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     ApplyAttackHitbox();
                 break;
 
-            case STATE.recovering:
+            case STATE.canAttackAfterAttack:
+                //ManageMovementsInputs();
+                ManageOrientation();
+                ManageStaminaRegen();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
                 if (hasAttackRecoveryAnimFinished)
                 {
+                    hasFinishedAnim = false;
+                    SwitchState(STATE.normal);
+                }
+                //playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
+                break;
+
+            case STATE.recovering:
+                if (waitingForNextAttack)
+                {
+                    SwitchState(STATE.canAttackAfterAttack);
+                }
+                if (hasAttackRecoveryAnimFinished)
+                {
+                    Debug.Log("Normal");
                     hasFinishedAnim = false;
                     SwitchState(STATE.normal);
                 }
@@ -1030,7 +1115,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     if (!ConnectManager.Instance.connectedToMaster)
                         if (GameManager.Instance.playersList.Count > 1)
                             GameManager.Instance.playersList[1].GetComponent<IAChanger>().enabled = false;
+                break;
 
+            case STATE.battleDrawing:
+                break;
+
+            case STATE.battleSneathing:
+                break;
+
+            case STATE.battleSneathedNormal:
                 break;
 
             case STATE.normal:
@@ -1074,6 +1167,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
 
+                break;
+
+            case STATE.canAttackAfterAttack:
+                actualMovementsSpeed = baseMovementsSpeed;
+                dashTime = 0;
+                isDashing = false;
+
+                playerCollider.isTrigger = false;
+                for (int i = 0; i < playerColliders.Length; i++)
+                    playerColliders[i].isTrigger = false;
+                attackDashFXFront.Stop();
+                attackDashFXBack.Stop();
+                dashFXBack.Stop();
+                dashFXFront.Stop();
                 break;
 
             case STATE.pommeling:
@@ -1349,7 +1456,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     statsManager.AddAction(ACTION.clash, playerNum, 0);
                     statsManager.AddAction(ACTION.clash, otherPlayerNum, 0);
-                    Debug.Log("Clash");
                 }
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
@@ -1667,9 +1773,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     staminaBarChargedAudioEffectSource.Play();
 
                     if (useExtraDiegeticFX)
+                    {
                         staminaGainFX.Play();
-
-                    staminaGainFX.GetComponent<ParticleSystem>().Play();
+                        staminaGainFX.GetComponent<ParticleSystem>().Play();
+                    }
                 }
             }
         }
@@ -1973,7 +2080,40 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
 
 
+    #region BATTLE SNEATH / DRAW
+    void ManageBattleSneath()
+    {
+        if (canBattleSneath)
+            if (inputManager.playerInputs[playerNum].battleSneathDraw)
+                TriggerBattleSneath();
+    }
 
+    void ManageBattleDraw()
+    {
+        if (inputManager.playerInputs[playerNum].battleSneathDraw)
+            TriggerBattleDraw();
+    }
+
+    void TriggerBattleSneath()
+    {
+        // ANIMATION
+        playerAnimations.TriggerBattleSneath();
+
+
+        // STATE
+        SwitchState(STATE.battleSneathing);
+    }
+
+    void TriggerBattleDraw()
+    {
+        // ANIMATION
+        playerAnimations.TriggerBattleDraw();
+
+
+        // STATE
+        SwitchState(STATE.battleDrawing);
+    }
+    #endregion
 
 
 
@@ -2471,7 +2611,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region PARRY
-    // PARRY
     // Detect parry inputs
     public virtual void ManageParryInput()
     {
@@ -2485,26 +2624,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     currentParryFramesPressed++;
                     canParry = false;
                     if (stamina >= staminaCostForMoves)
-                    {
                         photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
-                    }
 
                     currentParryFramesPressed = 0;
                 }
 
 
                 if (!InputManager.Instance.playerInputs[0].parry)
-                {
                     canParry = true;
-                }
             }
             else
             {
                 // Stamina animation
                 if (InputManager.Instance.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
-                {
                     TriggerNotEnoughStaminaAnim(true);
-                }
 
 
                 if (InputManager.Instance.playerInputs[playerNum].parry && canParry)
@@ -2520,9 +2653,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 // Can input again if released the input
                 if (!InputManager.Instance.playerInputs[playerNum].parry)
-                {
                     canParry = true;
-                }
             }
         }
     }
@@ -2755,6 +2886,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void TriggerClash()
     {
+        // STATE
         SwitchState(STATE.clashed);
 
         //NE PAS SUPPRIMER
@@ -2764,9 +2896,25 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         GameManager.Instance.TriggerSlowMoCoroutine(GameManager.Instance.clashSlowMoDuration, GameManager.Instance.clashSlowMoTimeScale, GameManager.Instance.clashTimeScaleFadeSpeed);
 
 
+        // If is behind opponent when parried / clashed adds additional distance to evade the position and not look weird like they're fused together
+        float addedDistanceNotToBeBehindOpponent = 0;
+        if (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) <= 0.5f)
+        {
+            //addedDistanceNotToBeBehindOpponent = (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) - 0.3f) * -5;
+            Debug.Log(addedDistanceNotToBeBehindOpponent);
+            transform.position = new Vector3(gameManager.playersList[otherPlayerNum].transform.position.x + - Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1f, transform.position.y, transform.position.z);
+            //transform.position = new Vector3(20f, transform.position.y, transform.position.z);
+        }
+
+
         temporaryDashDirectionForCalculation = transform.localScale.x;
         actualUsedDashDistance = clashKnockback;
         initPos = transform.position;
+
+
+        
+
+        // DASH CALCULATION
         targetPos = transform.position + new Vector3(actualUsedDashDistance * temporaryDashDirectionForCalculation, 0, 0);
         dashTime = 0;
         isDashing = true;

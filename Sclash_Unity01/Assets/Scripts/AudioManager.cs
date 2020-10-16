@@ -421,9 +421,10 @@ public class AudioManager : MonoBehaviour
     {
         int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
 
-
-        if (currentBattleIntensity > 0 && !(currentMaxScore < gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase || gameManager.scoreToWin <= scoreFromMaxScoreToAutoMaxPhase))
+        if (currentBattleIntensity > 0 && (currentMaxScore < gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase))
         {
+
+            Debug.Log("DecreaseIntensityWithTimeRuns");
             if (Time.time - decreaseBattleIntensityLoopStartTime >= decreaseBattleIntensityEveryDuration)
             {
                 lastBattleIntensityLevel = currentBattleIntensity;
