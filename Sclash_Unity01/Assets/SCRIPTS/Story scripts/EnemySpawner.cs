@@ -16,7 +16,8 @@ public class EnemySpawner : MonoBehaviour
 
     public void SpawnEnemy()
     {
-        Instantiate(enemyPrefab, transform);
-        GameManager_Story.EnemySpawned();
+        GameObject enemySpawned = Instantiate(enemyPrefab, transform);
+
+        GameManager_Story.StoryInstance.EnemySpawned();
     }
 }

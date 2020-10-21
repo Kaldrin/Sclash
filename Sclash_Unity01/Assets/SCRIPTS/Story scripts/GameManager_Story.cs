@@ -5,6 +5,19 @@ using UnityEngine;
 
 public class GameManager_Story : GameManager
 {
+
+    public static GameManager_Story storyInstance = null;
+    public static GameManager_Story StoryInstance
+    {
+        get
+        {
+            if (storyInstance == null)
+                storyInstance = new GameManager_Story();
+
+            return storyInstance;
+        }
+    }
+
     public GameObject[] SpawnerList;
     public List<GameObject> enemyList;
 
