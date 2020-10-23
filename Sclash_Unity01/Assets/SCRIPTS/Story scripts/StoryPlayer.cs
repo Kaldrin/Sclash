@@ -9,6 +9,7 @@ public class StoryPlayer : Player
 
     void Awake()
     {
+
         if (inputManager == null)
             inputManager = InputManager_Story.Instance;
     }
@@ -32,6 +33,12 @@ public class StoryPlayer : Player
 
     public override void ManageChargeInput()
     {
+        if (playerIsAI)
+        {
+            base.ManageChargeInput();
+            return;
+        }
+
         if (InputManager.Instance.playerInputs[0].attack && canCharge)
         {
             if (stamina >= staminaCostForMoves)
@@ -57,6 +64,12 @@ public class StoryPlayer : Player
 
     public override void ManageDashInput()
     {
+        if (playerIsAI)
+        {
+            base.ManageDashInput();
+            return;
+        }
+
         if (Mathf.Abs(InputManager.Instance.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
             currentShortcutDashStep = DASHSTEP.rest;
 
@@ -102,6 +115,12 @@ public class StoryPlayer : Player
 
     public override void ManagePommel()
     {
+        if (playerIsAI)
+        {
+            base.ManagePommel();
+            return;
+        }
+
         if (!InputManager.Instance.playerInputs[0].kick)
             canPommel = true;
 
@@ -114,6 +133,12 @@ public class StoryPlayer : Player
 
     public override void ManageParryInput()
     {
+        if (playerIsAI)
+        {
+            base.ManageParryInput();
+            return;
+        }
+
         if (canBriefParry)
         {
             if (InputManager.Instance.playerInputs[0].parryDown && stamina <= staminaCostForMoves && canParry)
@@ -133,6 +158,12 @@ public class StoryPlayer : Player
 
     public override void ManageMovementsInputs()
     {
+        if (playerIsAI)
+        {
+            base.ManageMovementsInputs();
+            return;
+        }
+
         rb.simulated = true;
 
         rb.velocity = new Vector2(InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
@@ -166,6 +197,12 @@ public class StoryPlayer : Player
 
     public override void ManageOrientation()
     {
+        if (playerIsAI)
+        {
+            base.ManageOrientation();
+            return;
+        }
+
         if (InputManager.Instance.playerInputs[0].horizontal != 0)
             soloOrientation = -InputManager.Instance.playerInputs[0].horizontal;
 

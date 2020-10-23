@@ -65,7 +65,7 @@ public class CharacterChanger : MonoBehaviour
     }
     void OnEnable()
     {
-        
+
         IAChanger iachanger = GetComponent<IAChanger>();
         iachanger.SwitchIAMode(false);
         iachanger.enabled = false;
@@ -86,7 +86,7 @@ public class CharacterChanger : MonoBehaviour
 
         fullObjectsAnimators[playerScript.playerNum].SetBool("On", true);
 
-        
+
         //StartCoroutine(ApplyCharacterChange());
     }
 
@@ -144,7 +144,7 @@ public class CharacterChanger : MonoBehaviour
             Debug.Log("Warning, character change woosh audio source not found, can't play the sound, continuing anyway");
 
 
-        
+
         if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal > 0.5f)
         {
             currentCharacter++;
@@ -175,11 +175,11 @@ public class CharacterChanger : MonoBehaviour
         lastChosenCharacter = currentCharacter;
 
         yield return new WaitForSeconds(changeDelay);
-;        
+        ;
         playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].animator;
         legsAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacter].legsAnimator;
 
-        if (playerScript.gameManager.mapLoader.halloween) // Halloween mask
+        if (GameManager.Instance.mapLoader.halloween) // Halloween mask
             mask.sprite = masksDatabase.masksList[6].sprite;
         else
             mask.sprite = masksDatabase.masksList[charactersDatabase.charactersList[currentCharacter].defaultMask].sprite;
@@ -187,7 +187,7 @@ public class CharacterChanger : MonoBehaviour
         illustrations[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacter].illustration;
         names[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
         playerScript.characterNameDisplay.text = charactersDatabase.charactersList[currentCharacter].name;
-        playerScript.gameManager.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
+        GameManager.Instance.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
 
 
         /*

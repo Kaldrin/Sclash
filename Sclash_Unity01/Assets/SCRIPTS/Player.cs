@@ -2902,7 +2902,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             //addedDistanceNotToBeBehindOpponent = (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) - 0.3f) * -5;
             Debug.Log(addedDistanceNotToBeBehindOpponent);
-            transform.position = new Vector3(gameManager.playersList[otherPlayerNum].transform.position.x + - Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1f, transform.position.y, transform.position.z);
+            transform.position = new Vector3(gameManager.playersList[otherPlayerNum].transform.position.x + -Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1f, transform.position.y, transform.position.z);
             //transform.position = new Vector3(20f, transform.position.y, transform.position.z);
         }
 
@@ -2912,7 +2912,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         initPos = transform.position;
 
 
-        
+
 
         // DASH CALCULATION
         targetPos = transform.position + new Vector3(actualUsedDashDistance * temporaryDashDirectionForCalculation, 0, 0);

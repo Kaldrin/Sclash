@@ -20,7 +20,7 @@ MonoBehaviour:
   statsManagerName: GlobalManager
   rb: {fileID: 421221344336783824}
   playerAnimations: {fileID: 8481063011503797824}
-  characterChanger: {fileID: 3178065585436368578}
+  characterChanger: {fileID: 0}
   iaChanger: {fileID: 0}
   playerCollider: {fileID: 5847812729618219341}
   playerColliders:
@@ -41,7 +41,7 @@ MonoBehaviour:
   characterIndex: 0
   playerNum: 0
   networkPlayerNum: 0
-  playerIsAI: 0
+  playerIsAI: 1
   secondPlayerMaskColor: {r: 1, g: 0.43921572, b: 0.3529412, a: 1}
   secondPlayerSaberColor: {r: 1, g: 0.33333334, b: 0.3529412, a: 1}
   usePlayerColorsDifferenciation: 1
@@ -218,6 +218,34 @@ MonoBehaviour:
   useTransparencyForDodgeFrames: 1
   useExtraDiegeticFX: 1
   infiniteStamina: 0
+--- !u!114 &3519355493229144653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421221344336783828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2caae227c289014e99abb9e783505fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IADifficulty: 0
+  attachedPlayer: {fileID: -216021300556530859}
+  opponent: {fileID: 0}
+  DistanceTolerance: 3
+  distBetweenPlayers: 0
+  normalRate: 0.25
+  closeRate: 0.05
+  timeToWait: 0
+  actionWeightSum: 0
+  wait: 0
+  attack: 0
+  parry: 0
+  pommel: 0
+  dashToward: 0
+  dashAway: 0
+  interruptAttack: 0
 --- !u!1001 &6741644696181956710
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -289,7 +317,7 @@ PrefabInstance:
         type: 3}
       propertyPath: playerScript
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: -216021300556530859}
     - target: {fileID: 8952588851698205473, guid: 9a4ac4108c7244748a6a697bcfe45aad,
         type: 3}
       propertyPath: iaChanger
@@ -299,6 +327,16 @@ PrefabInstance:
         type: 3}
       propertyPath: playerScript
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: -5519181324398716715, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: attachedPlayer
+      value: 
+      objectReference: {fileID: -216021300556530859}
+    - target: {fileID: -5519181324398716715, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: IADifficulty
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3399316556180311010, guid: 9a4ac4108c7244748a6a697bcfe45aad,
         type: 3}
@@ -314,6 +352,8 @@ PrefabInstance:
     - {fileID: 5454985371685377168, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
     - {fileID: 2773012502423544874, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
     - {fileID: 8952588851698205473, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
+    - {fileID: 8184698509979975332, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
+    - {fileID: -5519181324398716715, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
 --- !u!50 &421221344336783824 stripped
 Rigidbody2D:
@@ -331,18 +371,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 724d1309752846640bd23eb1ca3a28b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3178065585436368578 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8184698509979975332, guid: 9a4ac4108c7244748a6a697bcfe45aad,
-    type: 3}
-  m_PrefabInstance: {fileID: 6741644696181956710}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 421221344336783828}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae60c098ca9262042ae8b8170e338bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &6988207878488633230 stripped

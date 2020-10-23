@@ -443,11 +443,17 @@ public class GameManager : MonoBehaviourPun
                     }
                 }
 
+                try
+                {
+                    cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+                    mainMenu.SetActive(false);
+                    blurPanel.SetActive(false);
+                }
+                catch
+                {
 
-                cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
-                mainMenu.SetActive(false);
+                }
 
-                blurPanel.SetActive(false);
                 Cursor.visible = false;
                 break;
 

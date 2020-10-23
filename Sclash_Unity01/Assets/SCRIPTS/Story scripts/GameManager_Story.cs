@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class GameManager_Story : GameManager
 {
-
     public static GameManager_Story storyInstance = null;
     public static GameManager_Story StoryInstance
     {
@@ -18,8 +17,7 @@ public class GameManager_Story : GameManager
         }
     }
 
-    public GameObject[] SpawnerList;
-    public List<GameObject> enemyList;
+    public List<GameObject> enemyList = new List<GameObject>();
 
     public override void Awake()
     {
@@ -28,7 +26,7 @@ public class GameManager_Story : GameManager
 
     public override void Start()
     {
-
+        SwitchState(GAMESTATE.game);
     }
 
     public override void FixedUpdate()
@@ -41,9 +39,10 @@ public class GameManager_Story : GameManager
 
     }
 
-    public void EnemySpawned()
+    public void EnemySpawned(GameObject enemy)
     {
         Debug.Log("An enemy has spawned");
+        enemyList.Add(enemy);
     }
 
 }
