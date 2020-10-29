@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class IAScript_Solo : IAScript
 {
+    private float
+        orientationCooldownStartTime = 0,
+        orientationCooldown = 0.1f;
+    private bool
+        orientationCooldownFinished = true,
+        canOrientTowardsEnemy = true;
+
     void Start()
     {
         attachedPlayer.Invoke("TriggerDraw", 0f);
@@ -12,6 +19,7 @@ public class IAScript_Solo : IAScript
 
     protected override void Update()
     {
+        ManageOrientation();
         UpdateWeightSum();
         timeToWait = CalculateDistance() ? closeRate * IAMultiplicator : normalRate * IAMultiplicator;
         if (distBetweenPlayers > 5)
@@ -53,6 +61,40 @@ public class IAScript_Solo : IAScript
         return distBetweenPlayers <= DistanceTolerance ? true : false;
     }
 
+    private void ManageOrientation()
+    {
+        float sign = Mathf.Sign(transform.position.x - opponent.transform.position.x);
+        if (orientationCooldownFinished)
+            ApplyOrientation(sign);
 
+        if (Time.time >= orientationCooldown + orientationCooldownStartTime)
+            orientationCooldownFinished = true;
+    }
 
+    private void ApplyOrientation(float sign)
+    {
+        if (sign > 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+
+        orientationCooldownStartTime = Time.time;
+        orientationCooldownFinished = false;
+    }
+
+    public void GetPlayer()
+    {
+        StoryPlayer[] entities = FindObjectsOfType<StoryPlayer>();
+        foreach (StoryPlayer s in entities)
+        {
+            if (!s.gameObject.GetComponent<IAScript>())
+            {
+                opponent = s;
+            }
+        }
+    }
 }
