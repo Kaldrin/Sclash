@@ -4,14 +4,15 @@ using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using Unity.RemoteConfig;
 
+// This class controls stage loading and most stage related stuff. Strongly tied to the MapMenuLoader and MapMenu stuff classes
 public class MapLoader : MonoBehaviour
 {
+    #region VARIABLES
     #region Singleton
     public static MapLoader Instance;
     #endregion
 
 
-    #region VARIABLES
     #region MANAGERS
     [Header("MANAGERS")]
     [Tooltip("The reference for the unique game manager script of the scene")]
@@ -24,24 +25,26 @@ public class MapLoader : MonoBehaviour
 
 
 
-    # region MAPS DATA
-    [Header("MAPS DATA")]
-    [Tooltip("Parent object of the currently instantiated map")]
+    # region STAGES DATA
+    [Header("STAGES DATA")]
+    [Tooltip("Parent object of the stages")]
     [SerializeField] GameObject mapContainer = null;
-    [Tooltip("Currently instantiated map, visible in game")]
     [HideInInspector] public GameObject currentMap = null;
     [HideInInspector] public int currentMapIndex = 0;
 
-    [Tooltip("Scriptable object data reference containing the maps objects, their image and names")]
+    [Tooltip("Scriptable object data reference containing the stages objects, their images and names")]
     [SerializeField] public MapsDataBase mapsData = null;
+    [Tooltip("Scriptable object data reference containing the special stages objects, their images and names")]
     [SerializeField] public MapsDataBase specialMapsData = null;
     # endregion
 
 
 
 
-    # region MAP LOADING
-    [Header("MAP LOADING")]
+
+
+    # region STAGE LOADING
+    [Header("STAGE LOADING")]
     bool canLoadNewMap = true;
     [HideInInspector] public bool halloween = false;
     int season = 0;
@@ -49,13 +52,31 @@ public class MapLoader : MonoBehaviour
     #endregion
 
 
+    int postProcessVolumeBlendState = 0;
+
+
+
     [Header("OTHER")]
     [SerializeField] PostProcessVolume cameraPostProcessVolume = null;
 
+
+
+
+
     // REMOTE CONFIG
-    public struct userAttributes { }
-    public struct appAttributes { }
+    [HideInInspector] public struct userAttributes { }
+    [HideInInspector] public struct appAttributes { }
     #endregion
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -82,31 +103,41 @@ public class MapLoader : MonoBehaviour
         else
             LoadMapOnStart();
     }
-
-    void SetRemoteVariables(ConfigResponse response) // Get remote config variables
+    
+    // Update is called once per graphic frame
+    void Update()
     {
-        season = ConfigManager.appConfig.GetInt("season");
-        halloween = ConfigManager.appConfig.GetBool("halloween");
+        // Blends last and current stages post process volumes profiles for smooth transition
+        if (postProcessVolumeBlendState == 1)
+        {
+            cameraPostProcessVolume.weight = Mathf.Lerp(cameraPostProcessVolume.weight, 0, Time.deltaTime * 3);
 
 
-        if (halloween) // HALLOWEEN SPRITES
-            for (int i = 0; i < gameManager.playersList.Count; i++)
+            if (cameraPostProcessVolume.weight < 0.05f)
             {
-                gameManager.playersList[i].GetComponent<CharacterChanger>().mask.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().masksDatabase.masksList[6].sprite;
-                gameManager.playersList[i].GetComponent<CharacterChanger>().weapon.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase.weaponsList[1].sprite;
+                cameraPostProcessVolume.profile = mapsData.stagesLists[currentMapIndex].postProcessProfile;
+                postProcessVolumeBlendState = 2;
             }
-            
+        }
+        else if (postProcessVolumeBlendState == 2)
+        {
+            cameraPostProcessVolume.weight = Mathf.Lerp(cameraPostProcessVolume.weight, 1, Time.deltaTime * 3);
 
-        LoadMapOnStart();
+
+            if (cameraPostProcessVolume.weight > 0.95f)
+                postProcessVolumeBlendState = 0;
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        // STAGES MENU
         if (gameManager.demo)
             mapMenuLoader.LoadDemoParameters();
         else
             mapMenuLoader.LoadParameters();
+
 
         mapMenuLoader.SetUpMenu();
     }
@@ -122,22 +153,57 @@ public class MapLoader : MonoBehaviour
 
 
 
-    # region MAP LOADING
+
+
+
+    void SetRemoteVariables(ConfigResponse response) // Get remote config variables
+    {
+        season = ConfigManager.appConfig.GetInt("season");
+        halloween = ConfigManager.appConfig.GetBool("halloween");
+
+
+        if (halloween) // HALLOWEEN SPRITES
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                gameManager.playersList[i].GetComponent<CharacterChanger>().mask.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().masksDatabase.masksList[6].sprite;
+                gameManager.playersList[i].GetComponent<CharacterChanger>().weapon.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase.weaponsList[1].sprite;
+            }
+
+
+        LoadMapOnStart();
+    }
+
+
+
+
+
+
+
+    # region STAGE LOADING
     void LoadMapOnStart()
     {
+        // TRIES TO LOAD A STAGE WHEN THE GAME STARTS IF IT IS SET TO DO SO
         if (loadMapOnStart)
         {
+            // CHECKS TO FIND THE STAGES PARENT OBJECT IF IT LOST REFERENCE
             if (mapContainer == null) // If reference to the map parent object is null, find it again with its name
                 mapContainer = GameObject.Find("MAP / ESTHETICS");
 
+            Debug.Log("Load stage");
 
+            // DESTROYS CURRENT MAPS OBJECTS
             for (int i = 0; i < mapContainer.transform.childCount; i++)
                 Destroy(mapContainer.transform.GetChild(i).gameObject);
 
 
+
+            // CHOOSES INDEX FOR STAGE TO LOAD
             int nextStageIndex = Random.Range(0, mapsData.stagesLists.Count);
 
 
+
+
+            // IF DEMO
             if (gameManager.demo)
             {
                 if (halloween)
@@ -182,8 +248,10 @@ public class MapLoader : MonoBehaviour
     // Immediatly changes the map
     public void SetMap(int mapIndex, bool special)
     {
+        // IF THERE IS ALREADY A STAGE, DESTROY IT
         if (currentMap != null)
             Destroy(currentMap);
+
 
 
         // STAGE LOAD
@@ -194,14 +262,24 @@ public class MapLoader : MonoBehaviour
         currentMapIndex = mapIndex;
 
 
+
         // POST PROCESS
         if (special) // IF SPECIAL MAP LIST (Halloween & stuff)
             cameraPostProcessVolume.profile = specialMapsData.stagesLists[mapIndex].postProcessProfile;
         else
-            cameraPostProcessVolume.profile = mapsData.stagesLists[mapIndex].postProcessProfile;
+        {
+            //cameraPostProcessVolume.profile = mapsData.stagesLists[mapIndex].postProcessProfile;
+
+            // Starts post process volumes blend
+            postProcessVolumeBlendState = 1;
+        }
 
 
-        // PARTICLES
+
+
+        // CHOOSE PLAYER'S STAGE PARTICLES TO ACTIVATE
+        StartCoroutine(SetPlayerParticlesSet(special));
+        /*
         bool state = false;
 
 
@@ -209,14 +287,14 @@ public class MapLoader : MonoBehaviour
         {
             for (int y = 0; y < gameManager.playersList[i].GetComponent<Player>().particlesSets.Count; y++)
             {
-                if (special)
+                if (special) // SPECIAL STAGE PARTICLE SET
                 {
                     if (y == (specialMapsData.stagesLists[mapIndex].particleSet))
                         state = true;
                     else
                         state = false;
                 }
-                else
+                else // NORMAL STAGE PARTICLE SET
                 {
                     if (y == (mapsData.stagesLists[mapIndex].particleSet))
                         state = true;
@@ -229,22 +307,66 @@ public class MapLoader : MonoBehaviour
                     gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems[o].SetActive(state);
             }
         }
+        */
 
 
 
+
+
+        // SAVES
         gameManager.gameParameters.lastLoadedStageIndex = currentMapIndex; // Writes last loaded stage index variable in scriptable object
         JsonSave save = SaveGameManager.GetCurrentSave(); // Gets save file
         save.lastLoadedStageIndex = gameManager.gameParameters.lastLoadedStageIndex; // Writes last loaded stage index variable from scriptable object to save file
         //mapMenuLoader.SaveParameters();
     }
 
-    // Starts the LoadNewMap coroutine, launched by the play in the maps menu
+
+
+    IEnumerator SetPlayerParticlesSet(bool special)
+    {
+        yield return new WaitForSecondsRealtime(0.3f);
+
+
+        bool state = false;
+
+
+        for (int i = 0; i < gameManager.playersList.Count; i++)
+        {
+            for (int y = 0; y < gameManager.playersList[i].GetComponent<Player>().particlesSets.Count; y++)
+            {
+                if (special) // SPECIAL STAGE PARTICLE SET
+                {
+                    if (y == (specialMapsData.stagesLists[currentMapIndex].particleSet))
+                        state = true;
+                    else
+                        state = false;
+                }
+                else // NORMAL STAGE PARTICLE SET
+                {
+                    if (y == (mapsData.stagesLists[currentMapIndex].particleSet))
+                        state = true;
+                    else
+                        state = false;
+                }
+
+
+                for (int o = 0; o < gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems.Count; o++)
+                    gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems[o].SetActive(state);
+            }
+        }
+    }
+
+
+
+    // Starts the LoadNewMap coroutine, launched by the play in the stages menu
     public void LoadNewMapInGame(int newMapIndex)
     {
         StartCoroutine(LoadNewMapInGameCoroutine(newMapIndex, false));
     }
 
-    // Loads a new map with the transition FX
+
+
+    // Loads a new stage with the transition FX
     IEnumerator LoadNewMapInGameCoroutine(int newMapIndex, bool randomIndex)
     {
         if (canLoadNewMap)

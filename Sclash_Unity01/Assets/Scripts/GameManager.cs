@@ -754,8 +754,8 @@ public class GameManager : MonoBehaviourPun
 
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
-            playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
-            playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
+            //playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
+            //playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
 
 
             // FX

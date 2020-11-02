@@ -315,7 +315,7 @@ public class MapMenuLoader : MonoBehaviour
 
     public void LoadDemoParameters()
     {
-        Debug.Log("Demo");
+        Debug.Log("Demo version loaded");
         JsonSave save = SaveGameManager.GetCurrentSave();
 
         parametersData.dayNightCycle = false;

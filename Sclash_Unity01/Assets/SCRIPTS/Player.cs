@@ -946,7 +946,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.canAttackAfterAttack:
                 //ManageMovementsInputs();
-                ManageOrientation();
+                //ManageOrientation();
                 ManageStaminaRegen();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 if (hasAttackRecoveryAnimFinished)
@@ -1540,9 +1540,37 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         // IS DEAD ?
         Debug.Log($"{gameObject.name} hit , {gameObject.name} health = {currentHealth}, {gameObject.name} state = {playerState}");
+
+
         if (currentHealth <= 0 && playerState != STATE.dead)
         {
+            // Place correctly the players so it looks good
+            // PLACE OPPONENT
+            float howCloseTheOpponentIs = (gameManager.playersList[otherPlayerNum].transform.position.x - transform.position.x) * Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x);
+
+            if (howCloseTheOpponentIs > -1f && howCloseTheOpponentIs < 0)
+                gameManager.playersList[otherPlayerNum].transform.position = gameManager.playersList[otherPlayerNum].transform.position + new Vector3(-Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1.2f, 0, 0);
+            else if (howCloseTheOpponentIs < 1f && howCloseTheOpponentIs > 0)
+                gameManager.playersList[otherPlayerNum].transform.position = gameManager.playersList[otherPlayerNum].transform.position + new Vector3(Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1.4f, 0, 0);
+
+            // PLACE SELF
+            howCloseTheOpponentIs = (gameManager.playersList[otherPlayerNum].transform.position.x - transform.position.x) * Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x);
+            if (howCloseTheOpponentIs < 0)
+                transform.localScale = new Vector3(- Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1, transform.localScale.y, transform.localScale.z);
+
+
+
+
+            // FX
+            slashFX.Play();
+            UpdateFXOrientation();
+
+
+
+
+            // SNEATH STUFF
             bool wasSneathed = false;
+
 
 
             // ASKS TO START MATCH IF SNEATHED
@@ -1600,9 +1628,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         audioManager.BattleEventIncreaseIntensity();
 
 
-        // FX
-        slashFX.Play();
-        UpdateFXOrientation();
 
 
         // CAMERA FX
@@ -1655,9 +1680,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         for (int i = 0; i < maxStamina - 1; i++)
-        {
             staminaSliders.Add(Instantiate(staminaSlider.gameObject, staminaSlider.transform.parent).GetComponent<Slider>());
-        }
     }
 
     // Manage stamina regeneration, executed in FixedUpdate
@@ -2834,6 +2857,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             chargeLevel = 1;
 
 
+
+
+            // If is behind opponent when parried / clashed adds additional distance to evade the position and not look weird like they're fused together
+            if (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) <= 0.7f)
+                transform.position = new Vector3(gameManager.playersList[otherPlayerNum].transform.position.x + -Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 0.7f, transform.position.y, transform.position.z);
+
+
+
+
             // Dash knockback
             dashDirection = transform.localScale.x;
             actualUsedDashDistance = kickKnockbackDistance;
@@ -2887,24 +2919,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // If is behind opponent when parried / clashed adds additional distance to evade the position and not look weird like they're fused together
-        float addedDistanceNotToBeBehindOpponent = 0;
-        if (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) <= 0.5f)
-        {
-            //addedDistanceNotToBeBehindOpponent = (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) - 0.3f) * -5;
-            Debug.Log(addedDistanceNotToBeBehindOpponent);
-            transform.position = new Vector3(gameManager.playersList[otherPlayerNum].transform.position.x + - Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1f, transform.position.y, transform.position.z);
-            //transform.position = new Vector3(20f, transform.position.y, transform.position.z);
-        }
+        if (((transform.position.x - gameManager.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) <= 0.9f)
+            transform.position = new Vector3(gameManager.playersList[otherPlayerNum].transform.position.x + - Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) * 1.5f, transform.position.y, transform.position.z);
 
 
+
+        // DASH CALCULATION
         temporaryDashDirectionForCalculation = transform.localScale.x;
         actualUsedDashDistance = clashKnockback;
         initPos = transform.position;
-
-
         
-
-        // DASH CALCULATION
         targetPos = transform.position + new Vector3(actualUsedDashDistance * temporaryDashDirectionForCalculation, 0, 0);
         dashTime = 0;
         isDashing = true;
@@ -3329,23 +3353,30 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // FX
         Vector3 deathBloodFXRotation = deathBloodFX.gameObject.transform.localEulerAngles;
 
-
+        /*
         if (gameManager.playersList[otherPlayerNum].transform.localScale.x >= 0)
         {
             deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, -deathBloodFXRotationForDirectionChange * transform.localScale.x);
 
-
+            
             // Changes the draw text indication's scale so that it's, well, readable for a human being
             drawText.transform.localScale = new Vector3(-drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
+            
         }
         else
         {
             deathBloodFX.gameObject.transform.localEulerAngles = deathBloodFXBaseRotation;
 
 
+            
             // Changes the draw text indication's scale so that it's, well, readable for a human being
             drawText.transform.localScale = new Vector3(drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
+            
         }
+        */
+
+        if (Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) == Mathf.Sign(transform.localScale.x))
+            deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, -deathBloodFXRotationForDirectionChange * transform.localScale.x);
     }
 
     void UpdateNameScale(float newXScale)
