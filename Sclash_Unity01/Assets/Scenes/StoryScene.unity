@@ -6285,6 +6285,7 @@ GameObject:
   - component: {fileID: 2017739442}
   - component: {fileID: 2017739445}
   - component: {fileID: 2017739444}
+  - component: {fileID: 2017739446}
   m_Layer: 0
   m_Name: GlobalManager
   m_TagString: Untagged
@@ -6387,7 +6388,7 @@ MonoBehaviour:
   mapLoader: {fileID: 0}
   deathCameraShake: {fileID: 0}
   clashCameraShake: {fileID: 0}
-  pommelCameraShake: {fileID: 0}
+  pommelCameraShake: {fileID: 2081911761}
   finalCameraShake: {fileID: 0}
   statsManager: {fileID: 0}
   charactersData: {fileID: 0}
@@ -6494,7 +6495,6 @@ MonoBehaviour:
   mainMenuBrowser: {fileID: 0}
   stagesButton: {fileID: 0}
   demoStagesButton: {fileID: 0}
-  enemyList: []
 --- !u!114 &2017739442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6601,6 +6601,19 @@ MonoBehaviour:
   viewIdField: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2017739446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017739438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659203e0ed88cb40839794c61c60ec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyList: []
 --- !u!1 &2029933869
 GameObject:
   m_ObjectHideFlags: 0

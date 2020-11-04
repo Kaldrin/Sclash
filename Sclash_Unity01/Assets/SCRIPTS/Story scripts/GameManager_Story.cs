@@ -17,8 +17,6 @@ public class GameManager_Story : GameManager
         }
     }
 
-    public List<GameObject> enemyList = new List<GameObject>();
-
     public override void Awake()
     {
         Instance = this;
@@ -38,11 +36,4 @@ public class GameManager_Story : GameManager
     {
 
     }
-
-    public void EnemySpawned(GameObject enemy)
-    {
-        Debug.Log("An enemy has spawned");
-        enemyList.Add(enemy);
-    }
-
 }

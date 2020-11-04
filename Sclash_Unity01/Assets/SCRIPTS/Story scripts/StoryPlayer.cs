@@ -7,9 +7,10 @@ public class StoryPlayer : Player
 {
     float soloOrientation = -1;
 
+    IAScript iAScript;
+
     void Awake()
     {
-
         if (inputManager == null)
             inputManager = InputManager_Story.Instance;
     }
@@ -19,11 +20,16 @@ public class StoryPlayer : Player
         SetUpStaminaBars();
         stamina = maxStamina;
         TriggerDraw();
+
+        GameManager_Story.Instance.playersList.Add(gameObject);
     }
 
     public override void FixedUpdate()
     {
         base.FixedUpdate();
+        if (playerIsAI)
+            if (iAScript == null)
+                iAScript = GetComponent<IAScript>();
     }
 
     public override void Update()
@@ -213,5 +219,78 @@ public class StoryPlayer : Player
 
         if (Time.time >= orientationCooldown + orientationCooldownStartTime)
             orientationCooldownFinished = true;
+    }
+
+    protected override void ApplyPommelHitbox()
+    {
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
+        List<GameObject> hits = new List<GameObject>();
+
+        foreach (Collider2D c in hitsCol)
+        {
+            if (c.CompareTag("Player"))
+            {
+                if (!hits.Contains(c.transform.parent.gameObject))
+                {
+                    hits.Add(c.transform.parent.gameObject);
+                }
+            }
+        }
+
+        foreach (GameObject g in hits)
+        {
+            if (g != gameObject)
+            {
+                otherPlayerNum = GetTargetNum(g);
+                if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
+                {
+                    g.GetComponent<Player>().Pommeled();
+                }
+            }
+        }
+    }
+
+    protected override void ApplyAttackHitbox()
+    {
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
+        List<GameObject> hits = new List<GameObject>();
+
+        foreach (Collider2D c in hitsCol)
+        {
+            if (c.CompareTag("Player"))
+            {
+                if (!hits.Contains(c.transform.parent.gameObject))
+                {
+                    hits.Add(c.transform.parent.gameObject);
+                }
+            }
+        }
+
+        foreach (GameObject g in hits)
+        {
+            if (g != gameObject)
+            {
+                otherPlayerNum = GetTargetNum(g);
+
+                attackRangeFX.gameObject.SetActive(false);
+                attackRangeFX.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public override void Pommeled()
+    {
+        //otherPlayerNum = GetTargetNum();
+        base.Pommeled();
+    }
+
+    public int GetTargetNum(GameObject g)
+    {
+        if (g.GetComponent<Player>())
+        {
+            return g.GetComponent<Player>().playerNum;
+        }
+
+        return -1;
     }
 }

@@ -5,12 +5,25 @@ using UnityEngine;
 
 public class IAScript_Solo : IAScript
 {
+    private Player _opponent;
+    public new Player opponent
+    {
+        get { return GetPlayer(); }
+    }
+
+    PlayerAnimations playerAnimations;
+
     private float
         orientationCooldownStartTime = 0,
         orientationCooldown = 0.1f;
     private bool
         orientationCooldownFinished = true,
         canOrientTowardsEnemy = true;
+
+    void Awake()
+    {
+        playerAnimations = GetComponent<PlayerAnimations>();
+    }
 
     void Start()
     {
@@ -19,6 +32,11 @@ public class IAScript_Solo : IAScript
 
     protected override void Update()
     {
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            Die();
+        }
+
         ManageOrientation();
         UpdateWeightSum();
         timeToWait = CalculateDistance() ? closeRate * IAMultiplicator : normalRate * IAMultiplicator;
@@ -86,15 +104,33 @@ public class IAScript_Solo : IAScript
         orientationCooldownFinished = false;
     }
 
-    public void GetPlayer()
+    public Player GetPlayer()
     {
         StoryPlayer[] entities = FindObjectsOfType<StoryPlayer>();
         foreach (StoryPlayer s in entities)
         {
             if (!s.gameObject.GetComponent<IAScript>())
             {
-                opponent = s;
+                return s;
             }
         }
+        return null;
+    }
+
+    public void Die()
+    {
+
+
+        AudioManager.Instance.TriggerSuccessfulAttackAudio();
+        AudioManager.Instance.BattleEventIncreaseIntensity();
+
+        playerAnimations.TriggerDeath();
+        Invoke("FallAnimation", 1f);
+        playerAnimations.DeathActivated(true);
+    }
+
+    private void FallAnimation()
+    {
+        playerAnimations.TriggerRealDeath();
     }
 }

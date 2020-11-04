@@ -117,7 +117,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] public Image characterIdentificationArrow = null;
     [HideInInspector] public int characterIndex = 0;
     public int playerNum = 0;
-    int otherPlayerNum = 0;
+    protected int otherPlayerNum = 0;
     [HideInInspector] public int networkPlayerNum = 0;
     public bool playerIsAI;
     Player opponent;
@@ -341,7 +341,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         forwardAttackBackrangeDisjoint = 2.5f;
     [SerializeField] float axisDeadZoneForAttackDash = 0.2f;
     [HideInInspector] public float actualAttackRange = 0;
-    float actualBackAttackRangeDisjoint = 0f;
+    protected float actualBackAttackRangeDisjoint = 0f;
 
     [Tooltip("Frame parameters for the attack")]
 
@@ -409,8 +409,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public bool canPommel = true;
 
     [SerializeField]
-    float
-        kickRange = 0.88f;
+    protected float kickRange = 0.88f;
     #endregion
 
 
@@ -468,12 +467,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Header("FX")]
     [Tooltip("The references to the game objects holding the different FXs")]
     [SerializeField] GameObject clashFXPrefabRef = null;
-    [SerializeField] GameObject deathBloodFX = null;
+    [SerializeField] protected GameObject deathBloodFX = null;
 
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public ParticleSystem attackRangeFX = null;
     [SerializeField]
-    ParticleSystem
+    protected ParticleSystem
         clashKanasFX = null,
         kickKanasFX = null,
         kickedFX = null,
@@ -1312,7 +1311,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    void FindOpponent()
+    protected virtual void FindOpponent()
     {
         foreach (Player p in FindObjectsOfType<Player>())
         {
@@ -1425,9 +1424,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 else
                     TriggerHit();
 
-
-                // SOUND
-                AudioManager.Instance.BattleEventIncreaseIntensity();
             }
             // CLASH
             else if (clashFrames)
@@ -1523,10 +1519,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
                 else
                     TriggerHit();
-
-
-                // AUDIO
-                AudioManager.Instance.BattleEventIncreaseIntensity();
             }
 
             if (ConnectManager.Instance.connectedToMaster)
@@ -2491,7 +2483,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Hits with a phantom collider to apply the attack's damage during active frames
-    void ApplyAttackHitbox()
+    protected virtual void ApplyAttackHitbox()
     {
         enemyDead = false;
         //Debug.Log(actualAttackRange);
@@ -2506,11 +2498,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 if (!hits.Contains(c.transform.parent.gameObject))
                 {
-                    if ((c.transform.parent.position.x - transform.position.x) * transform.localScale.x > 0)
-                    {
-
-                    }
-
 
                     hits.Add(c.transform.parent.gameObject);
                     //Debug.Log(c.transform.parent.gameObject);
@@ -2746,7 +2733,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Apply pommel hitbox depending on kick frames
-    void ApplyPommelHitbox()
+    protected virtual void ApplyPommelHitbox()
     {
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y), new Vector2(kickRange, 1), 0);
         List<GameObject> hits = new List<GameObject>();
@@ -2793,7 +2780,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region POMMELED
     // The player have been kicked
     [PunRPC]
-    public void Pommeled()
+    public virtual void Pommeled()
     {
         if (!kickFrame)
         {
@@ -2804,7 +2791,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (playerState == STATE.sneathed || playerState == STATE.drawing)
             {
                 wasSneathed = true;
-                Debug.Log("WassNEATHED");
+                Debug.Log("Was SNEATHED");
             }
 
 
@@ -3334,13 +3321,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
-    void UpdateFXOrientation()
+    protected virtual void UpdateFXOrientation()
     {
+        Debug.Log("Update FX orientation");
         // FX
         Vector3 deathBloodFXRotation = deathBloodFX.gameObject.transform.localEulerAngles;
+        float enemyScaleSign = Mathf.Sign(GameManager.Instance.playersList[otherPlayerNum].transform.localScale.x);
 
+        deathBloodFX.gameObject.transform.localEulerAngles = Vector3.Scale(deathBloodFXRotation, new Vector3(1, 1, -enemyScaleSign));
+        drawText.transform.localScale = new Vector3(drawTextBaseScale.x * enemyScaleSign, drawTextBaseScale.y, drawTextBaseScale.z);
 
-        if (GameManager.Instance.playersList[otherPlayerNum].transform.localScale.x >= 0)
+        /*if (GameManager.Instance.playersList[otherPlayerNum].transform.localScale.x >= 0)
         {
             deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, -deathBloodFXRotationForDirectionChange * transform.localScale.x);
 
@@ -3355,7 +3346,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // Changes the draw text indication's scale so that it's, well, readable for a human being
             drawText.transform.localScale = new Vector3(drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
-        }
+        }*/
     }
 
     void UpdateNameScale(float newXScale)
