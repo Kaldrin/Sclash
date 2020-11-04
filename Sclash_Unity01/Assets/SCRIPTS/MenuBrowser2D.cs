@@ -58,6 +58,8 @@ public class MenuBrowser2D : MonoBehaviour
     [Header("SPECIAL")]
     [SerializeField] bool callSpecialElementWHenHorizontalOverflow = false;
     [SerializeField] public GameObject specialElement = null;
+    [SerializeField] bool callSpecialElementWhenEnabled = true;
+    [SerializeField] public Button enabledSpecialElement = null;
     #endregion
 
 
@@ -108,6 +110,10 @@ public class MenuBrowser2D : MonoBehaviour
     [SerializeField] PlayRandomSoundInList hoverSound = null;
     #endregion
     #endregion
+
+
+
+
 
 
 
@@ -228,6 +234,10 @@ public class MenuBrowser2D : MonoBehaviour
     // OnEnable is called each time the object is set from inactive to active
     void OnEnable()
     {
+        if (callSpecialElementWhenEnabled && enabledSpecialElement != null)
+            enabledSpecialElement.onClick.Invoke();
+
+
         if (applyDefaultIndexOnEnable)
         {
             XIndex = defaultXIndex;
@@ -237,14 +247,6 @@ public class MenuBrowser2D : MonoBehaviour
 
         if (elements2D.Length > 0)
         {
-            /*
-            if (elements2D[YIndex].line[XIndex].GetComponent<Button>())
-                Select(true);
-            else
-                Select(false);
-            */
-
-
             VerticalBrowse(0);
             HorizontalBrowse(0);
 
@@ -284,8 +286,6 @@ public class MenuBrowser2D : MonoBehaviour
         if (XIndex > elements2D[YIndex].line.Length - 1)
             XIndex = elements2D[YIndex].line.Length - 1;
 
-        //HorizontalBrowse(0);
-
 
         // VISUAL
         UpdateColors();
@@ -307,9 +307,6 @@ public class MenuBrowser2D : MonoBehaviour
         hoverSound.Play();
 
 
-        //VerticalBrowse(0);
-
-
         // Loop index navigation
         if (XIndex > elements2D[YIndex].line.Length - 1)
         {
@@ -318,7 +315,6 @@ public class MenuBrowser2D : MonoBehaviour
                 specialElement.GetComponent<Button>().onClick.Invoke();
                 GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
                 XIndex = elements2D[YIndex].line.Length - 1;
-                
             }
             else
                 XIndex = 0;
@@ -334,6 +330,7 @@ public class MenuBrowser2D : MonoBehaviour
             else
                 XIndex = elements2D[YIndex].line.Length - 1; 
         }
+
 
         if (enabled)
         {
@@ -354,13 +351,6 @@ public class MenuBrowser2D : MonoBehaviour
         XIndex = newIndex;
     }
 
-    /*
-    public void SetYIndexMinMax(bool minOrMax)
-    {
-        if (minOrMax)
-            YIndex = ;
-    }
-    */
 
     public void SetYIndex(int newIndex)
     {
@@ -383,6 +373,13 @@ public class MenuBrowser2D : MonoBehaviour
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         else
         {
+            // If index out of range
+            if (YIndex >= elements2D.Length)
+                YIndex = elements2D.Length - 1;
+            if (XIndex >= elements2D[YIndex].line.Length)
+                XIndex = elements2D[YIndex].line.Length - 1;
+
+
             if (elements2D[YIndex].line[XIndex])
             {
                 GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements2D[YIndex].line[XIndex]);
@@ -404,6 +401,9 @@ public class MenuBrowser2D : MonoBehaviour
     // Sets the browse index to the mouse hovered element
     public void SelectHoveredElement(GameObject hoveredObject)
     {
+        enabled = true;
+
+
         for (int i = 0; i < elements2D.Length; i++)
         {
             if (isObjectInGameObjectArray(hoveredObject, elements2D[i].line))

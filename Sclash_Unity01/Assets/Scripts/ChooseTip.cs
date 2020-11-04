@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
+// This script randomly chooses a tip to display in the main menu when enabled
 public class ChooseTip : MonoBehaviour
 {
-    // TIPS
     [Header("TIPS")]
     [Tooltip("Reference to the scriptable object containing the list of the tips to display")]
     [SerializeField] TipsDatabase tipsData = null;
@@ -16,25 +14,13 @@ public class ChooseTip : MonoBehaviour
 
 
 
-    // BASE FUNCTIONS
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
 
     // OnEnable is called when the object is enabled
     void OnEnable()
     {
         ChangeTip();
     }
-
-    // Update is called once per graphic frame
-    void Update()
-    {
-    }
-
-
 
 
 

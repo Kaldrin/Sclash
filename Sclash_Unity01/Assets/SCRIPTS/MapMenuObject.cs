@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -16,6 +14,11 @@ public class MapMenuObject : MonoBehaviour
     [SerializeField] public TextMeshProUGUI mapText = null;
     [SerializeField] public int stageIndex = 0;
     [SerializeField] public GameObject customListCheckBox = null;
+
+
+
+
+
 
 
     public void SwitchCustomList()

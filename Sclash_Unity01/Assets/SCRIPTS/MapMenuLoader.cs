@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+// This script manages loading and reading of the elements, settings and saves of the stages menu
 public class MapMenuLoader : MonoBehaviour
 {
-    # region MANAGERS
+    #region VARIABLES
+    #region MANAGERS
     [Header("MANAGERS")]
     [SerializeField] MapLoader mapLoader = null;
     #endregion
@@ -38,6 +40,7 @@ public class MapMenuLoader : MonoBehaviour
     [SerializeField] string stageModeSwitchAxis = "MenuTriggers";
     [SerializeField] float stageModeSwitchAxisDeadzone = 0.3f;
     bool canInputModeChange = true;
+    bool hasFinishedChangingMode = true;
     #endregion
 
 
@@ -79,6 +82,13 @@ public class MapMenuLoader : MonoBehaviour
     [Header("AUDIO")]
     [SerializeField] PlayRandomSoundInList clickSoundSource = null;
     #endregion
+    #endregion
+
+
+
+
+
+
 
 
 
@@ -94,8 +104,6 @@ public class MapMenuLoader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //LoadParameters();
-        //SetUpMenu();
         ChangeStageMode(0);
     }
 
@@ -107,7 +115,8 @@ public class MapMenuLoader : MonoBehaviour
 
     void Update()
     {
-        ManageStageModeChange();
+        if (enabled)
+            ManageStageModeChange();
     }
     # endregion
 
@@ -121,45 +130,44 @@ public class MapMenuLoader : MonoBehaviour
     #region STAGE MODE
     void ManageStageModeChange()
     {
-        if (canInputModeChange && Mathf.Abs(Input.GetAxis(stageModeSwitchAxis)) > stageModeSwitchAxisDeadzone)
+        if (canInputModeChange && hasFinishedChangingMode && Mathf.Abs(Input.GetAxis(stageModeSwitchAxis)) > stageModeSwitchAxisDeadzone)
         {
             canInputModeChange = false;
-
+            
 
             if (Input.GetAxis(stageModeSwitchAxis) < -stageModeSwitchAxisDeadzone)
-            {
                 ChangeStageMode(-1);
-            }
             else if (Input.GetAxis(stageModeSwitchAxis) > -stageModeSwitchAxisDeadzone)
-            {
                 ChangeStageMode(1);
-            }
         }
-        else
-        if (Mathf.Abs(Input.GetAxis(stageModeSwitchAxis)) < stageModeSwitchAxisDeadzone)
-        {
+        else if (Mathf.Abs(Input.GetAxis(stageModeSwitchAxis)) < stageModeSwitchAxisDeadzone)
             canInputModeChange = true;
-        }
     }
 
     public void ChangeStageMode(int indexIncrementation)
     {
-        // AUDIO
-        if (clickSoundSource)
-            clickSoundSource.Play();
+        if (hasFinishedChangingMode)
+        {
+            hasFinishedChangingMode = false;
 
 
-        currentStageMode += indexIncrementation;
+            // AUDIO
+            if (clickSoundSource != null)
+                clickSoundSource.Play();
 
 
-        if (currentStageMode < 0)
-            currentStageMode = stagesModes.Count - 1;
-        else if (currentStageMode > stagesModes.Count - 1)
-            currentStageMode = 0;
+            currentStageMode += indexIncrementation;
 
 
-        UpdateDisplayedMapListTypeIndication();
-        StartCoroutine(LoadStagesList());
+            if (currentStageMode < 0)
+                currentStageMode = stagesModes.Count - 1;
+            else if (currentStageMode > stagesModes.Count - 1)
+                currentStageMode = 0;
+
+
+            UpdateDisplayedMapListTypeIndication();
+            StartCoroutine(LoadStagesList());
+        }
     }
 
     void UpdateDisplayedMapListTypeIndication()
@@ -201,8 +209,6 @@ public class MapMenuLoader : MonoBehaviour
         // CLEAR LIST
         StopCoroutine(LoadStagesList());
         ClearStagesList();
-
-
 
 
         // BROWSING
@@ -290,7 +296,9 @@ public class MapMenuLoader : MonoBehaviour
         }
 
 
+        hasFinishedChangingMode = true;
         stageButtonObject.SetActive(false);
+        stagesListBrowser2D.Select(true);
     }
     #endregion
 
@@ -315,7 +323,6 @@ public class MapMenuLoader : MonoBehaviour
 
     public void LoadDemoParameters()
     {
-        Debug.Log("Demo version loaded");
         JsonSave save = SaveGameManager.GetCurrentSave();
 
         parametersData.dayNightCycle = false;
@@ -364,9 +371,11 @@ public class MapMenuLoader : MonoBehaviour
     // Load menu parameters save in the scriptable object
     public void LoadParameters()
     {
-        Debug.Log("Not demo");
+        // Get save file
         JsonSave save = SaveGameManager.GetCurrentSave();
 
+        // Sets data in scriptable object from the save file
+        // Settings
         parametersData.dayNightCycle = save.dayNightCycle;
         parametersData.randomStage = save.randomStage;
         parametersData.useCustomListForRandom = save.useCustomListForRandom;
@@ -378,12 +387,17 @@ public class MapMenuLoader : MonoBehaviour
         // Favourite stages list
         parametersData.customList = save.customList;
 
+
+
+        // DOES STUFF WITH THE FAVOURITES LIST
+        // Checks if map database is referenced
         if (mapsDatabase01 == null)
         {
             Debug.LogWarning("Map database is null");
             return;
         }
 
+        // Favourites list is a list of bool that is supposed to be the same length as the default stages list
         if (parametersData.customList.Count < mapsDatabase01.stagesLists.Count)
         {
             parametersData.customList.Clear();
@@ -394,7 +408,7 @@ public class MapMenuLoader : MonoBehaviour
         }
 
 
-
+        // Sets the favourite attribute in each stage of the built in list depending on the favourite list in the save
         for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
         {
             Map newMap = mapLoader.mapsData.stagesLists[i];
@@ -411,9 +425,10 @@ public class MapMenuLoader : MonoBehaviour
     }
 
 
-    // Saves the menu parameters in the scriptable object
+    // Saves the map menu parameters in the scriptable object
     void SaveInScriptableObject()
     {
+        // Checks the actual UI objects and sets the scriptable object parameters after its
         parametersData.dayNightCycle = dayNightCycleCheck.activeInHierarchy;
         parametersData.randomStage = randomStageAfterGameCheck.activeInHierarchy;
         parametersData.useCustomListForRandom = customListForRandomStageAfterGameCheck.activeInHierarchy;
@@ -421,7 +436,8 @@ public class MapMenuLoader : MonoBehaviour
         parametersData.useCustomListForRandomStartStage = customListForStartRandomStageCheck.activeInHierarchy;
 
 
-        // Custom stages list
+        // Favourite stages list
+        // Favourites list is a list of bool that is supposed to be the same length as the default stages list
         if (parametersData.customList.Count < mapsDatabase01.stagesLists.Count)
         {
             parametersData.customList.Clear();
@@ -440,7 +456,7 @@ public class MapMenuLoader : MonoBehaviour
         }
     }
 
-    // Save forever from scriptable object data
+    // Save map menu settings forever from scriptable object data
     public void SaveParameters()
     {
         SaveInScriptableObject();

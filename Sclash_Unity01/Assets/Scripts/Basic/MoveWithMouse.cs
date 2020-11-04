@@ -1,22 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+
+// This script is supposed to make the object follow the mouse to achieve a custom cursor with a trail effect
+// OPTIMIZED
 public class MoveWithMouse : MonoBehaviour
 {
+
     [SerializeField] Camera cam = null;
 
-    // Start is called before the first frame update
+
+
+
     void Start()
     {
-        Cursor.visible = true;
+        if (enabled)
+        {
+            Cursor.visible = true;
+            if (cam == null)
+                cam = Camera.main;
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        Vector2 pos = cam.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = Input.mousePosition;
-        Debug.Log(pos);
+        if (enabled)
+        {
+            Vector2 pos = cam.ScreenToWorldPoint(Input.mousePosition);
+            transform.position = Input.mousePosition;
+            Debug.Log(pos);
+        }
     }
 }

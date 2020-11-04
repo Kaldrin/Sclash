@@ -543,20 +543,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region STAGE DEPENDENT FX
     [Header("STAGE DEPENDENT FX")]
-    [SerializeField]
-    ParticleSystem
-        dashFXFront = null;
-    [SerializeField]
-    ParticleSystem
-        dashFXBack = null,
-        attackDashFXFront = null,
-        attackDashFXBack = null,
-        attackNeutralFX = null;
-    [SerializeField]
-    ParticleSystem
-        walkFXFront = null,
-        walkFXBack = null;
+    [SerializeField] ParticleSystem dashFXFront = null;
+    [SerializeField] ParticleSystem dashFXBack = null;
+    [SerializeField] ParticleSystem attackDashFXFront = null;
+    [SerializeField] ParticleSystem attackDashFXBack = null;
+    [SerializeField] ParticleSystem attackNeutralFX = null;
+    [SerializeField] ParticleSystem walkFXFront = null;
+    [SerializeField] ParticleSystem walkFXBack = null;
     #endregion
+
 
 
     [System.Serializable]
@@ -564,6 +559,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         public List<GameObject> particleSystems;
     }
+    [Tooltip("Different lists of particle effects for the player's steps, for the different stages")]
     [SerializeField] public List<ParticleSet> particlesSets = new List<ParticleSet>();
 
 
@@ -582,26 +578,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
-
-    #region CHEATS FOR DEVELOPMENT PURPOSES
-    // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
-    [Tooltip("The cheat key to trigger a clash for the player")]
-    [SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
-    [Tooltip("The other cheat keys for other effects")]
-    [SerializeField]
-    KeyCode
-        deathCheatKey = KeyCode.Alpha2,
-        staminaCheatKey = KeyCode.Alpha4,
-        stopStaminaRegenCheatKey = KeyCode.Alpha6,
-        triggerStaminaRecupAnim = KeyCode.Alpha7;
-
-    [SerializeField] bool useTransparencyForDodgeFrames = true;
-    [SerializeField] bool useExtraDiegeticFX = true;
-    [SerializeField] bool infiniteStamina = false;
-    #endregion
+    [SerializeField] PlayerCheatsParameters cheatSettings = null;
     #endregion
 
 
@@ -837,10 +815,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             ApplyPommelHitbox();
 
 
-        if (useTransparencyForDodgeFrames && untouchableFrame)
+
+        // Transparency on dodge frames
+        if (cheatSettings.useTransparencyForDodgeFrames && untouchableFrame)
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
         else
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
+
+
 
         // Behaviour depending on state
         switch (playerState)
@@ -1314,7 +1296,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
-
     #endregion
 
 
@@ -1325,7 +1306,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region RESET ALL VALUES
-    // RESET ALL VALUES
     public void ResetAllPlayerValuesForNextMatch()
     {
         SwitchState(Player.STATE.frozen);
@@ -1338,12 +1318,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         chargeLevel = 1;
 
 
-        // Restablishes physics
-        //rb.gravityScale = 1;
         rb.simulated = true;
-
-
-        // Restablishes colliders
         playerCollider.isTrigger = false;
 
 
@@ -1754,7 +1729,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Function to decrement to stamina
     public void StaminaCost(float cost, bool playFX)
     {
-        if (!infiniteStamina)
+        if (!cheatSettings.infiniteStamina)
         {
             stamina -= cost;
 
@@ -1769,7 +1744,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // FX
-            if (useExtraDiegeticFX && playFX)
+            if (cheatSettings.useExtraDiegeticFX && playFX)
                 staminaLossFX.Play();
         }
     }
@@ -1786,7 +1761,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     staminaBarChargedAudioEffectSource.Play();
 
-                    if (useExtraDiegeticFX)
+                    if (cheatSettings.useExtraDiegeticFX)
                     {
                         staminaGainFX.Play();
                         staminaGainFX.GetComponent<ParticleSystem>().Play();
@@ -1923,7 +1898,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        if (useExtraDiegeticFX)
+        if (cheatSettings.useExtraDiegeticFX)
             staminaRecupFX.Play();
 
 
@@ -1940,7 +1915,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             yield return new WaitForSecondsRealtime(0.01f);
         }
 
-        if (useExtraDiegeticFX)
+        if (cheatSettings.useExtraDiegeticFX)
             staminaRecupFinishedFX.Play();
         staminaRecupAnimOn = false;
 
@@ -1950,7 +1925,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        if (useExtraDiegeticFX)
+        if (cheatSettings.useExtraDiegeticFX)
         {
             staminaGainFX.Play();
             staminaRecupFX.Stop();
@@ -1979,7 +1954,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        if (useExtraDiegeticFX)
+        if (cheatSettings.useExtraDiegeticFX)
             staminaBreakFX.Play();
 
         Invoke("StopStaminaBreak", 0.6f);
@@ -2413,7 +2388,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // FX
         Vector3 attackSignPos = attackRangeFX.transform.localPosition;
         attackRangeFX.transform.localPosition = new Vector3(-(actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
-        if (useExtraDiegeticFX)
+        if (cheatSettings.useExtraDiegeticFX)
             attackRangeFX.Play();
         chargeFlareFX.gameObject.SetActive(false);
         chargeFlareFX.gameObject.SetActive(true);
@@ -3416,28 +3391,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region CHEATS
-    // CHEATS
     void CheatsInputs()
     {
-        if (Input.GetKeyDown(clashCheatKey))
-        {
+        if (Input.GetKeyDown(cheatSettings.clashCheatKey))
             TriggerClash();
-        }
 
 
-        if (Input.GetKeyDown(deathCheatKey))
-        {
+        if (Input.GetKeyDown(cheatSettings.deathCheatKey))
             TakeDamage(gameObject, 1);
-        }
 
 
-        if (Input.GetKeyDown(staminaCheatKey))
-        {
+        if (Input.GetKeyDown(cheatSettings.staminaCheatKey))
             stamina = maxStamina;
-        }
 
 
-        if (Input.GetKeyDown(stopStaminaRegenCheatKey))
+        if (Input.GetKeyDown(cheatSettings.stopStaminaRegenCheatKey))
         {
             if (canRegenStamina)
                 canRegenStamina = false;
@@ -3446,11 +3414,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
 
 
-        if (Input.GetKeyDown(triggerStaminaRecupAnim))
-        {
+        if (Input.GetKeyDown(cheatSettings.triggerStaminaRecupAnim))
             StartCoroutine(TriggerStaminaRecupAnim());
-            Debug.Log("Triggered stamina recup anim");
-        }
     }
 
     #endregion

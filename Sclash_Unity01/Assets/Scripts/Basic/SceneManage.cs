@@ -5,12 +5,12 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 
 // Created for Unity 2019.1.1f1
+// This script manages scene transitions and scene loading
 public class SceneManage : MonoBehaviour
 {
 
     public static SceneManage Instance;
 
-    // SCENE CHANGE
     #region SCENE CHANGE
     [Header("SCENE CHANGE")]
     [SerializeField] bool autoLoadSceneAfterDuration = false;

@@ -189,7 +189,6 @@ public class MapLoader : MonoBehaviour
             if (mapContainer == null) // If reference to the map parent object is null, find it again with its name
                 mapContainer = GameObject.Find("MAP / ESTHETICS");
 
-            Debug.Log("Load stage");
 
             // DESTROYS CURRENT MAPS OBJECTS
             for (int i = 0; i < mapContainer.transform.childCount; i++)

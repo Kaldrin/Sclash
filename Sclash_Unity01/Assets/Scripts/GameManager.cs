@@ -722,9 +722,7 @@ public class GameManager : MonoBehaviourPun
     {
         for (int i = 0; i < playerSpawns.Length; i++)
         {
-            //PlayerStats playerStats;
             PlayerAnimations playerAnimations;
-            //PlayerAttack playerAttack;
             Player playerScript = null;
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
@@ -740,22 +738,15 @@ public class GameManager : MonoBehaviourPun
             if (ia != null)
                 ia.SetDifficulty(IAScript.Difficulty.Hard);
                 */
-            //playerStats = playersList[i].GetComponent<PlayerStats>();
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
             playerScript = playersList[i].GetComponent<Player>();
-
             playerScript.playerNum = i;
             playerScript.ResetAllPlayerValuesForNextMatch();
 
 
             // ANIMATIONS
-            //playerAnimations.spriteRenderer.color = playersColors[i];
-            //playerAnimations.legsSpriteRenderer.color = playersColors[i];
-
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
-            //playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
-            //playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
 
 
             // FX
@@ -1302,8 +1293,11 @@ public class GameManager : MonoBehaviourPun
             {
                 if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                 {
-                    originalMeshRenderersColors.Add(meshRenderers[i].material.color);
-                    meshRenderers[i].material.color = Color.black;
+                    try {
+                        originalMeshRenderersColors.Add(meshRenderers[i].material.color);
+                        meshRenderers[i].material.color = Color.black;
+                    }
+                    catch { }
                 }
             }
             /*
@@ -1348,22 +1342,13 @@ public class GameManager : MonoBehaviourPun
                         }
                     }
                 }
-                catch
-                {
-                }
+                catch {}
             }
             if (meshRenderers != null && meshRenderers.Length > 0)
             {
                 for (int i = 0; i < meshRenderers.Length; i++)
-                {
-                    if (meshRenderers[i])
-                    {
-                        if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
-                        {
-                            meshRenderers[i].material.color = originalMeshRenderersColors[i];
-                        }
-                    }
-                }
+                    if (meshRenderers[i] && !meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
+                        meshRenderers[i].material.color = originalMeshRenderersColors[i];
             }
             /*
             for (int i = 0; i < particleSystems.Length; i++)

@@ -5,20 +5,18 @@ using UnityEngine;
 public class IAChanger : MonoBehaviour
 {
     [SerializeField] IAScript iaScript = null;
-
     Animator IAindicatorAnimator = null;
 
-    bool
-        iaOn = false,
-        canSwitch = false,
-        canChangeDifficulty = false;
+    bool iaOn = false;
+    bool canSwitch = false;
+    bool canChangeDifficulty = false;
     int currentDifficulty = 0;
     [SerializeField] float iaChangeDeadZone = 0.4f;
 
 
 
     [Header("DISPLAY OBJECTS")]
-    [SerializeField] string IAIndicatorName = "IAIndicator";
+    [SerializeField] string IAIndicatorName = "IAIndicator01";
     [SerializeField]
     string
         easyDifficultyTextName = "easyDifficultyText",
@@ -118,9 +116,6 @@ public class IAChanger : MonoBehaviour
                     diggicultyTextObjects[i].SetActive(false);
             }
         }
-
-
-        Debug.Log("IA is now " + currentDifficulty);
     }
 
     public void SwitchIAMode(bool state)
