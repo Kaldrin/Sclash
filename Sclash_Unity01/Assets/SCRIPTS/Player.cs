@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using Photon.Realtime;
 using Photon.Pun;
 
+
+// Main player script for duel mode
+// MESSY
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region Events
@@ -206,7 +209,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region MOVEMENTS
-    // MOVEMENTS
     [Header("MOVEMENTS")]
     [Tooltip("The default movement speed of the player")]
     [SerializeField] float baseMovementsSpeed = 2.5f;
@@ -219,8 +221,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     Vector3 oldPos = Vector3.zero;
     Vector2 netTargetPos = Vector2.zero;
-    float lerpValue = 0f;
-    bool lerpToTarget = false;
+    //float lerpValue = 0f;
+    //bool lerpToTarget = false;
     #endregion
 
 
@@ -325,7 +327,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         heavyAttackRange = 3.2f,
         baseBackAttackRangeDisjoint = 0f,
         forwardAttackBackrangeDisjoint = 2.5f;
-    [SerializeField] float axisDeadZoneForAttackDash = 0.2f;
+    //[SerializeField] float axisDeadZoneForAttackDash = 0.2f;
     [HideInInspector] public float actualAttackRange = 0;
     float actualBackAttackRangeDisjoint = 0f;
 
@@ -465,36 +467,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         clashFX = null,
         slashFX = null;
 
-
+    [SerializeField] float lightAttackSwordTrailScale = 1;
+    [SerializeField] float heavyAttackSwordTrailScale = 3;
 
 
     [SerializeField] float attackSignDisjoint = 0.4f;
     [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
     [SerializeField] float deathBloodFXRotationForDirectionChange = 240;
-    [Tooltip("The width of the attack trail depending on the range of the attack")]
     [SerializeField] GameObject attackSlashFXParent = null;
-    [SerializeField] float
-        lightAttackSwordTrailWidth = 20f,
-        heavyAttackSwordTrailWidth = 65f,
-        lightAttackSwordTrailScale = 1,
-        heavyAttackSwordTrailScale = 3;
     [Tooltip("The minimum speed required for the walk fx to trigger")]
     [SerializeField] float minSpeedForWalkFX = 0.05f;
 
     Vector3 deathFXbaseAngles = new Vector3(0, 0, 0);
-
-    [Tooltip("The reference to the TrailRenderer component of the saber")]
-    [SerializeField] TrailRenderer swordTrail = null;
-
-    [Tooltip("The colors of the attack trail depending on the range of the attack")]
-    [SerializeField]
-    Color
-        lightAttackColor = Color.yellow,
-        heavyAttackColor = Color.red;
-
-    [SerializeField] Gradient lightAttackGradientColor = null;
-
     Vector3 deathBloodFXBaseRotation = Vector3.zero;
+
 
 
 
@@ -507,6 +493,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         chargeFlareFX = null,
         chargeFX = null,
         chargeFullFX = null;
+
 
 
 
@@ -2287,38 +2274,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // FX
-        // Trail color and width depending on attack range
+        // Slash FX width depending on range
         if (chargeLevel == 1)
-        {
-            swordTrail.startColor = lightAttackColor;
-            swordTrail.startWidth = lightAttackSwordTrailWidth;
             attackSlashFXParent.transform.localScale = new Vector3(lightAttackSwordTrailScale, attackSlashFXParent.transform.localScale.y, attackSlashFXParent.transform.localScale.z);
-        }
         else if (chargeLevel == maxChargeLevel)
-        {
-            swordTrail.startColor = heavyAttackColor;
-            swordTrail.startWidth = heavyAttackSwordTrailWidth;
             attackSlashFXParent.transform.localScale = new Vector3(heavyAttackSwordTrailScale, attackSlashFXParent.transform.localScale.y, attackSlashFXParent.transform.localScale.z);
-        }
         else
         {
-            swordTrail.startColor = new Color(
-                lightAttackColor.r + (heavyAttackColor.r - lightAttackColor.r) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange,
-                lightAttackColor.g + (heavyAttackColor.g - lightAttackColor.g) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange,
-                lightAttackColor.b + (heavyAttackColor.b - lightAttackColor.b) * ((float)actualAttackRange - lightAttackRange) / (float)heavyAttackRange);
-
-
-
             attackSlashFXParent.transform.localScale = new Vector3(
                 lightAttackSwordTrailScale + (heavyAttackSwordTrailScale - lightAttackSwordTrailScale) * (actualAttackRange - lightAttackRange) / (heavyAttackRange - lightAttackRange),
                 attackSlashFXParent.transform.localScale.y,
                 attackSlashFXParent.transform.localScale.z);
-
-            swordTrail.startWidth = lightAttackSwordTrailWidth + (heavyAttackSwordTrailWidth - lightAttackSwordTrailWidth) * (actualAttackRange - lightAttackRange) / (heavyAttackRange - lightAttackRange);
-
-            
         }
-        //Debug.Log(actualAttackRange);
+
 
 
 
@@ -2429,7 +2397,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void ApplyAttackHitbox()
     {
         enemyDead = false;
-        //Debug.Log(actualAttackRange);
 
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
         List<GameObject> hits = new List<GameObject>();
@@ -2437,20 +2404,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         foreach (Collider2D c in hitsCol)
         {
-            if (c.CompareTag("Player"))
-            {
-                if (!hits.Contains(c.transform.parent.gameObject))
-                {
-                    if ((c.transform.parent.position.x - transform.position.x) * transform.localScale.x > 0)
-                    {
-
-                    }
-
-
+            if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
                     hits.Add(c.transform.parent.gameObject);
-                    //Debug.Log(c.transform.parent.gameObject);
-                }
-            }
         }
 
 
@@ -2468,9 +2423,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 if (enemyDead)
-                {
                     SwitchState(STATE.enemyKilled);
-                }
             }
         }
     }

@@ -20,7 +20,7 @@ public class CustomImageEffectMultiPassMultiShader : MonoBehaviour
     [SerializeField] Vector2 randomValueRange = new Vector2(-2, 5);
     [SerializeField] float randomValueOscillationPeriod = 0.5f;
     float randomValue = 0;
-    float lastRandomValue = 0;
+    //float lastRandomValue = 0;
     float randomValueStartTime = 0;
 
 

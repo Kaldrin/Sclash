@@ -10,12 +10,12 @@ public class PlayerStats : MonoBehaviour
     [Header("MANAGERS")]
     // Audio manager
     [Tooltip("The name of the object holding the AudioManager script component in the scene to find its reference")]
-    [SerializeField] string audioManagerName = "GlobalManager";
+    //[SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
     // Game manager
     [Tooltip("The name of the object holding the GameManager script component in the scene to find its reference")]
-    [SerializeField] string gameManagerName = "GlobalManager";
+    //[SerializeField] string gameManagerName = "GlobalManager";
     GameManager gameManager;
     # endregion
 
@@ -35,14 +35,14 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] Rigidbody2D rigid;
     # endregion
 
-
+    
 
 
     # region HEALTH
     // HEALTH
     [Header("HEALTH")]
     [Tooltip("The maximum health of the player")]
-    [SerializeField] float maxHealth = 1;
+    //[SerializeField] float maxHealth = 1;
     float currentHealth;
 
     [Tooltip("Can the player be hit in the current frames ?")]
@@ -65,17 +65,15 @@ public class PlayerStats : MonoBehaviour
     [Tooltip("The maximum amount of stamina one player can have")]
     [SerializeField] public float maxStamina = 4f;
     [Tooltip("Stamina parameters")]
-    [SerializeField] float
-        durationBeforeStaminaRegen = 0.8f,
-        staminaGainOverTimeMultiplier = 0.4f,
-        idleStaminaGainOverTimeMultiplier = 0.8f,
-        backWalkingStaminaGainOverTime = 0.4f,
-        staminaBarBaseOpacity = 0.8f;
+    //[SerializeField] float durationBeforeStaminaRegen = 0.8f;
+    //[SerializeField] float staminaGainOverTimeMultiplier = 0.4f;
+    //[SerializeField] float idleStaminaGainOverTimeMultiplier = 0.8f;
+    //[SerializeField] float backWalkingStaminaGainOverTime = 0.4f;
+    //[SerializeField] float staminaBarBaseOpacity = 0.8f;
     [HideInInspector] public float stamina = 0;
-    float
-        currentTimeBeforeStaminaRegen = 0,
-        staminaBarsOpacity = 1,
-        oldStamina = 0;
+    //float currentTimeBeforeStaminaRegen = 0;
+    //float staminaBarsOpacity = 1;
+    //float oldStamina = 0;
 
     [HideInInspector] public bool canRegenStamina = true;
 
@@ -92,16 +90,15 @@ public class PlayerStats : MonoBehaviour
     # region FX
     // FX
     [Header("FX")]
-    [Tooltip("The reference to the game object holding the stamina loss FX")]
-    [SerializeField] GameObject staminaLossFX = null;
-    [Tooltip("The references to the game objects holding the different FXs")]
-    [SerializeField] GameObject
-        clashFXPrefabRef = null,
-        staminaGainFX = null,
-        deathBloodFX = null;
+    //[Tooltip("The reference to the game object holding the stamina loss FX")]
+    //[SerializeField] GameObject staminaLossFX = null;
+    //[Tooltip("The references to the game objects holding the different FXs")]
+    //[SerializeField] GameObject clashFXPrefabRef = null;
+    //[SerializeField] GameObject staminaGainFX = null;
+    //[SerializeField] GameObject deathBloodFX = null;
 
     [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
-    [SerializeField] float deathBloodFXRotationForDirectionChange = 240;
+    //[SerializeField] float deathBloodFXRotationForDirectionChange = 240;
 
     Vector3 deathFXbaseAngles = new Vector3(0, 0, 0);
     # endregion
@@ -112,7 +109,7 @@ public class PlayerStats : MonoBehaviour
     # region PLAYERS IDENTIFICATION
     // PLAYERS IDENTIFICATION
     [HideInInspector] public int playerNum = 0;
-    int otherPlayerNum = 0;
+    //int otherPlayerNum = 0;
     # endregion
 
 
@@ -120,9 +117,9 @@ public class PlayerStats : MonoBehaviour
 
     # region SOUND
     // SOUND
-    [Header("SOUND")]
-    [Tooltip("The reference to the stamina charged audio FX AudioSource")]
-    [SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
+    //[Header("SOUND")]
+    //[Tooltip("The reference to the stamina charged audio FX AudioSource")]
+    //[SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
     # endregion
 
 

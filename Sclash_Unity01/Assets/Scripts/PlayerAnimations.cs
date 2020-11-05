@@ -14,7 +14,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     [Tooltip("The reference to the player's Animators components for the character and their legs")]
     [SerializeField] public Animator animator = null;
-    [SerializeField] Animator legsAnimator = null;
     [SerializeField] Animator legsAnimator2 = null;
     [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
     [SerializeField] public Animator nameDisplayAnimator = null;
@@ -49,11 +48,10 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     #region ANIMATOR PARAMETERS
     [Header("PLAYER ANIMATOR PARAMETERS")]
-    [SerializeField] string Walk = "Walk";
-    [SerializeField]
-    string
-        playerWalkDirection = "WalkDirection",
-        moving = "Moving",
+    //[SerializeField] string Walk = "Walk";
+    [SerializeField] string
+        playerWalkDirection = "WalkDirection";
+    [SerializeField] string moving = "Moving",
         stamina = "Stamina",
         attackOn = "AttackOn",
         maxCharge = "MaxCharge",
@@ -62,7 +60,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         attackDirection = "AttackDirection",
         parryOn = "ParryOn",
         perfectParry = "PerfectParry",
-        maintainParry = "MaintainParry",
+        //maintainParry = "MaintainParry",
         maintainParryOn = "MaintainParryOn",
         maintainParryOff = "MaintainParryOff",
         clashedOn = "ClashedOn",
@@ -89,10 +87,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     [Header("LEG02 ANIMATOR PARAMETERS")]
     [SerializeField] string legs02WalkDirection = "WalkDirection";
-
-    [Header("DRAW TEXT ANIMATOR PARAMETERS")]
-    [SerializeField] string textDrawOn = "DrawOn";
-    [SerializeField] string resetDrawText = "ResetDraw";
     # endregion
 
 
@@ -129,7 +123,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animatorBaseSpeed = animator.speed;
     }
 
-    // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
         if (photonView != null)
@@ -155,17 +148,21 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     {
 
         // CHARGE WALK ANIM
+        /*
         if (playerScript.playerState != Player.STATE.frozen)
             legsAnimator2.SetFloat("AttackState", nextAttackState);
+            */
 
 
 
         if (playerScript.playerState == Player.STATE.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
+        {
             legsAnimator2.gameObject.SetActive(true);
+            legsAnimator2.SetFloat("AttackState", nextAttackState);
+        }
         else
             legsAnimator2.gameObject.SetActive(false);
-
-        legsAnimator2.SetFloat("AttackState", nextAttackState);
+            
 
 
 
@@ -214,7 +211,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region RESET ANIMATION STATES
-    // RESET ANIMATION STATES
     public void ResetAnimsForNextRound()
     {
         ResetWalkDirecton();
@@ -300,34 +296,33 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
             if ((rigid.velocity.x * -transform.localScale.x) < 0)
             {
                 animator.SetFloat(playerWalkDirection, 0);
-                legsAnimator2.SetFloat(legs02WalkDirection, 0);
-
-
-                if (legsAnimator.isActiveAndEnabled)
-                    legsAnimator.SetFloat(legsWalkDirection, 0);
+                if (legsAnimator2.isActiveAndEnabled)
+                    legsAnimator2.SetFloat(legsWalkDirection, 0);
             }
             else
             {
                 animator.SetFloat(playerWalkDirection, 1);
-                legsAnimator2.SetFloat(legs02WalkDirection, 1);
 
-
-                if (legsAnimator.isActiveAndEnabled)
-                    legsAnimator.SetFloat(legsWalkDirection, 1);
+                if (legsAnimator2.isActiveAndEnabled && playerScript.playerState == Player.STATE.charging)
+                    legsAnimator2.SetFloat(legs02WalkDirection, 1);
             }
         }
         catch {}
     }
 
+
+    // RESET
     void ResetWalkDirecton()
     {
         try
         {
-            if (legsAnimator.enabled && legsAnimator.gameObject.activeInHierarchy)
+            if (legsAnimator2.enabled && legsAnimator2.gameObject.activeInHierarchy)
             {
-                legsAnimator.SetFloat(legsWalkDirection, 0);
-                animator.SetFloat(playerWalkDirection, 0f);
+                legsAnimator2.SetFloat(legsWalkDirection, 0);
             }
+
+
+            animator.SetFloat(playerWalkDirection, 0f);
         }
         catch {}
     }
@@ -496,7 +491,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     public void TriggerCharge(bool state)
     {
         animator.SetFloat(attackState, nextAttackState);
-        //legsAnimator2.SetFloat("AttackState", nextAttackState);
 
 
         if (state)

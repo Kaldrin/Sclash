@@ -12,7 +12,7 @@ public class CameraShake : MonoBehaviour
 
 
     [Header("IDENTIFICATION")]
-    [SerializeField] string cameraShakeName = "Camera shake";
+    //[SerializeField] string cameraShakeName = "Camera shake";
 
 
 

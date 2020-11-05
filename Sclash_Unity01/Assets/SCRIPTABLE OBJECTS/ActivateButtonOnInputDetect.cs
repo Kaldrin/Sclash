@@ -8,7 +8,7 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
     [SerializeField] string axisToCheck = "MenuSecondary";
     [SerializeField] Button buttonToActivate = null;
     [SerializeField] float valueToCheck = 0.5f;
-    [SerializeField] bool superiorOrInferior;
+    [SerializeField] bool superiorOrInferior = false;
     bool hasBeenChecked = false;
 
 
@@ -20,7 +20,7 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enabled && isActiveAndEnabled)
+        if (enabled && isActiveAndEnabled && Mathf.Abs(Input.GetAxis(axisToCheck)) > 0.1f)
         {
             if (superiorOrInferior)
             {

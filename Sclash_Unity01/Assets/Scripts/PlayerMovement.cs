@@ -8,21 +8,21 @@ public class PlayerMovement : MonoBehaviour
 {
     # region MANAGERS
     // MANAGERS
-    [Header("MANAGERS")]
+    //[Header("MANAGERS")]
     // Game manager
-    [Tooltip("The name of the game manager's object the find in the scene")]
-    [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager = null;
+    //[Tooltip("The name of the game manager's object the find in the scene")]
+    //[SerializeField] string gameManagerName = "GlobalManager";
+    //GameManager gameManager = null;
 
     // Audio manager
-    [Tooltip("The name of the audio manager's object the find in the scene")]
-    [SerializeField] string audioManagerName = "GlobalManager";
-    AudioManager audioManager = null;
+    //[Tooltip("The name of the audio manager's object the find in the scene")]
+    //[SerializeField] string audioManagerName = "GlobalManager";
+    //AudioManager audioManager = null;
 
     // Input manager
-    [Tooltip("The name of the input manager's object the find in the scene")]
-    [SerializeField] string inputManagerName = "GlobalManager";
-    InputManager inputManager = null;
+    //[Tooltip("The name of the input manager's object the find in the scene")]
+    //[SerializeField] string inputManagerName = "GlobalManager";
+    //InputManager inputManager = null;
     # endregion
 
 
@@ -32,10 +32,10 @@ public class PlayerMovement : MonoBehaviour
 
     # region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
-    [Header("PLAYER'S COMPONENTS")]
-    PlayerStats playerStats = null;
-    PlayerAttack playerAttack = null;
-    Rigidbody2D rb = null;
+    //[Header("PLAYER'S COMPONENTS")]
+    //PlayerStats playerStats = null;
+    //PlayerAttack playerAttack = null;
+    //Rigidbody2D rb = null;
     # endregion
 
 
@@ -45,14 +45,14 @@ public class PlayerMovement : MonoBehaviour
 
     # region ORIENTATION
     // ORIENTATION
-    [Header("ORIENTATION")]
-    [Tooltip("The duration before the player can orient again towards the enemy if they need to once they applied the orientation")]
-    [SerializeField] float orientationCooldown = 0.1f;
-    float orientationCooldownStartTime = 0;
-    float initialXScale = 0;
+    //[Header("ORIENTATION")]
+    //[Tooltip("The duration before the player can orient again towards the enemy if they need to once they applied the orientation")]
+    //[SerializeField] float orientationCooldown = 0.1f;
+    //float orientationCooldownStartTime = 0;
+    //float initialXScale = 0;
 
-    bool orientationCooldownFinished = true;
-    bool canOrientTowardsEnemy = true;
+    //bool orientationCooldownFinished = true;
+    //bool canOrientTowardsEnemy = true;
     # endregion
 
 
@@ -62,13 +62,12 @@ public class PlayerMovement : MonoBehaviour
 
     # region MOVEMENTS
     // MOVEMENTS
-    [Header("MOVEMENTS")]
-    [Tooltip("The default movement speed of the player")]
-    [SerializeField] float baseMovementsSpeed = 2.5f;
-    [SerializeField] float
-        chargeMovementsSpeed = 1.2f,
-        clampY = -1.3f;
-    float movementsMultiplier = 0;
+    //[Header("MOVEMENTS")]
+    //[Tooltip("The default movement speed of the player")]
+    //[SerializeField] float baseMovementsSpeed = 2.5f;
+    //[SerializeField] float chargeMovementsSpeed = 1.2f;
+    //[SerializeField] float clampY = -1.3f;
+    //float movementsMultiplier = 0;
     #endregion
 
 

@@ -11,18 +11,18 @@ public class PlayerAttack : MonoBehaviour
     [Header("MANAGERS")]
     // Audio manager
     [Tooltip("The name of the object in the scene containing the AudioManager script component, to find its reference")]
-    [SerializeField] string audioManagerName = "GlobalManager";
+    //[SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
 
     // Game manager
-    [Tooltip("The name of the object in the scene containing the GlobalManager script component, to find its reference")]
-    [SerializeField] string gameManagerName = "GlobalManager";
-    GameManager gameManager;
+    //[Tooltip("The name of the object in the scene containing the GlobalManager script component, to find its reference")]
+    //[SerializeField] string gameManagerName = "GlobalManager";
+    //GameManager gameManager;
 
     // Input manager
-    [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
-    [SerializeField] string inputManagerName = "GlobalManager";
-    InputManager inputManager = null;
+    //[Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
+    //[SerializeField] string inputManagerName = "GlobalManager";
+    //InputManager inputManager = null;
     # endregion
 
 
@@ -31,11 +31,11 @@ public class PlayerAttack : MonoBehaviour
 
     # region PLAYER'S COMPONENTS
     // PLAYER'S COMPONENTS
-    [Header("PLAYER'S COMPONENTS")]
-    [SerializeField] Rigidbody2D rb = null;
-    [SerializeField] PlayerStats playerStats = null;
-    [SerializeField] PlayerAnimations playerAnimations = null;
-    [SerializeField] PlayerMovement playerMovement = null;
+    //[Header("PLAYER'S COMPONENTS")]
+    //[SerializeField] Rigidbody2D rb = null;
+    //[SerializeField] PlayerStats playerStats = null;
+    //[SerializeField] PlayerAnimations playerAnimations = null;
+    //[SerializeField] PlayerMovement playerMovement = null;
     #endregion
 
 
@@ -66,14 +66,13 @@ public class PlayerAttack : MonoBehaviour
 
     # region ATTACK RECOVERY
     // ATTACK RECOVERY
-    [Header("ATTACK RECOVERY")]
-    [Tooltip("The attack lagg duration at the lowest charge level")]
-    [SerializeField] float minRecoveryDuration = 0.1f;
-    [Tooltip("The attack lagg duration at the max charge level")]
-    [SerializeField] float maxRecoveryDuration = 0.6f;
-    float
-        attackRecoveryStartTime = 0,
-        attackRecoveryDuration = 0;
+    //[Header("ATTACK RECOVERY")]
+    //[Tooltip("The attack lagg duration at the lowest charge level")]
+    //[SerializeField] float minRecoveryDuration = 0.1f;
+    //[Tooltip("The attack lagg duration at the max charge level")]
+    //[SerializeField] float maxRecoveryDuration = 0.6f;
+    //float attackRecoveryStartTime = 0;
+    //float attackRecoveryDuration = 0;
 
     [Tooltip("Has the attack lagg started for this player ?")]
     [SerializeField] public bool attackRecoveryStart = false;
@@ -91,18 +90,16 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public int maxChargeLevel = 4;
     [HideInInspector] public int chargeLevel = 1;
     //[SerializeField] int numberOfFramesToDetectChargeInput = 3;
-    int currentChargeFramesPressed = 0;
+    //int currentChargeFramesPressed = 0;
 
-    [Tooltip("Charge duration parameters")]
-    [SerializeField] float
-        durationToNextChargeLevel = 0.7f,
-        maxHoldDurationAtMaxCharge = 2;
-    float
-        maxChargeLevelStartTime = 0,
-        chargeStartTime = 0;
+    //[Tooltip("Charge duration parameters")]
+    //[SerializeField] float durationToNextChargeLevel = 0.7f;
+    //[SerializeField] float maxHoldDurationAtMaxCharge = 2;
+    //float maxChargeLevelStartTime = 0;
+    //float chargeStartTime = 0;
 
     [HideInInspector] public bool charging = false;
-    bool maxChargeLevelReached = false;
+    //bool maxChargeLevelReached = false;
     [HideInInspector] public bool canCharge = true;
     # endregion
 
@@ -116,8 +113,8 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("The duration the draw animation takes to switch to drawn state")]
     [SerializeField] public float drawDuration = 2f;
 
-    [Tooltip("Is the player currently drawing during these frames ?")]
-    [SerializeField] bool isDrawing = false;
+    //[Tooltip("Is the player currently drawing during these frames ?")]
+    //[SerializeField] bool isDrawing = false;
     [Tooltip("Has the player drawn their saber ?")]
     [SerializeField] public bool hasDrawn = false;
 
@@ -149,9 +146,8 @@ public class PlayerAttack : MonoBehaviour
         kicking = false,
         canKick = true;
 
-    [SerializeField] float
-        kickRange = 0.88f,
-        kickDuration = 0.5f;
+    //[SerializeField] float kickRange = 0.88f;
+    //[SerializeField] float kickDuration = 0.5f;
     # endregion
 
 
@@ -161,10 +157,10 @@ public class PlayerAttack : MonoBehaviour
     # region KICKED
     // KICKED
     [Header("KICKED")]
-    [Tooltip("The distance the player will be pushed on when pommeled")]
-    [SerializeField] float kickKnockbackDistance = 1f;
+    //[Tooltip("The distance the player will be pushed on when pommeled")]
+    //[SerializeField] float kickKnockbackDistance = 1f;
     [Tooltip("The amount of stamina the player will lose when pommeled during an attack or parry")]
-    [SerializeField] float kickedStaminaLoss = 1;
+    //[SerializeField] float kickedStaminaLoss = 1;
 
     [HideInInspector] public bool kicked = false;
     # endregion
@@ -180,11 +176,11 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public bool parrying = false;
     [HideInInspector] public bool canParry = true;
 
-    [Tooltip("How much time will last the parry state")]
-    [SerializeField] float parryDuration = 0.3f;
+    //[Tooltip("How much time will last the parry state")]
+    //[SerializeField] float parryDuration = 0.3f;
     
     //[SerializeField] int numberOfFramesToDetectParryInput = 3;
-    int currentParryFramesPressed = 0;
+    //int currentParryFramesPressed = 0;
     # endregion
 
 
@@ -194,11 +190,11 @@ public class PlayerAttack : MonoBehaviour
     # region CLASH
     // CLASH
     [Header("CLASH")]
-    [Tooltip("The distance the player will be pushed on when clashed")]
-    [SerializeField] float clashKnockback = 2;
+    //[Tooltip("The distance the player will be pushed on when clashed")]
+    //[SerializeField] float clashKnockback = 2;
     [Tooltip("The speed at which the knockback distance will be covered")]
     [SerializeField] public float clashKnockbackSpeed = 2;
-    bool clashed = false;
+    //bool clashed = false;
     # endregion
 
 
@@ -214,35 +210,33 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public Collider2D[] playerColliders = null;
     [HideInInspector] public bool isDashing;
 
-    int dashStep = -1;
-        //The current step of the dash input
-        // - 1 = Player was pressing the direction for too long / nothing
-        // 0 = Player wasn't pressing the direction
-        // 1 = Player pressed the direction 1 time
-        // 2 = Player released the direction after pressing it
-        // 3 = Player pressed again the same direction after releasing it, executes dash
-    int shortcutDashStep = - 1;
-        //The current step of the shortcut dash input
-        // -1 = Player was already pressing the direction
-        // 0 = Player wasn't pressing the direction
-        // 1 = Player pressed the direction after releasing it, executes dash
+    //int dashStep = -1;
+    //The current step of the dash input
+    // - 1 = Player was pressing the direction for too long / nothing
+    // 0 = Player wasn't pressing the direction
+    // 1 = Player pressed the direction 1 time
+    // 2 = Player released the direction after pressing it
+    // 3 = Player pressed again the same direction after releasing it, executes dash
+    //int shortcutDashStep = - 1;
+    //The current step of the shortcut dash input
+    // -1 = Player was already pressing the direction
+    // 0 = Player wasn't pressing the direction
+    // 1 = Player pressed the direction after releasing it, executes dash
 
-    float
-        dashDirection,
-        tempDashDirection,
-        dashInitStartTime = 0,
-        actualDashDistance,
-        time;
+    float dashDirection;
+    float tempDashDirection;
+    //float dashInitStartTime = 0;
+    float actualDashDistance;
+    float time;
     [SerializeField] public float
         dashSpeed = 3,
         forwardDashDistance = 3,
         backwardsDashDistance = 2.5f;
-    [SerializeField] float
-        dashAllowanceDuration = 0.3f,
-        forwardAttackDashDistance = 2.5f,
-        backwardsAttackDashDistance = 1.5f,
-        dashDeadZone = 0.5f,
-        shortcutDashDeadZone = 0.5f;
+    //[SerializeField] float dashAllowanceDuration = 0.3f;
+    //[SerializeField] float forwardAttackDashDistance = 2.5f;
+    //[SerializeField] float backwardsAttackDashDistance = 1.5f;
+    //[SerializeField] float dashDeadZone = 0.5f;
+    //[SerializeField] float shortcutDashDeadZone = 0.5f;
 
     Vector3 initPos;
     Vector3 targetPos;
@@ -267,17 +261,16 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("The katana charging FX game object reference")]
     [SerializeField] public GameObject chargeFX = null;
 
-    [Tooltip("The slider component reference to move the charging FX on the katana")]
-    [SerializeField] Slider chargeSlider = null;
+    //[Tooltip("The slider component reference to move the charging FX on the katana")]
+    //[SerializeField] Slider chargeSlider = null;
 
-    [SerializeField] ParticleSystem
-        dashLeavesFront = null,
-        dashLeavesBack = null,
-        attackDashLeavesFront = null,
-        attackDashLeavesBack = null,
-        attackNeutralLeaves = null;
+    //[SerializeField] ParticleSystem dashLeavesFront = null;
+    //[SerializeField] ParticleSystem dashLeavesBack = null;
+    //[SerializeField] ParticleSystem attackDashLeavesFront = null;
+    //[SerializeField] ParticleSystem attackDashLeavesBack = null;
+    //[SerializeField] ParticleSystem attackNeutralLeaves = null;
 
-    [SerializeField] float attackSignDisjoint = 0.4f;
+    //[SerializeField] float attackSignDisjoint = 0.4f;
     # endregion
 
 
@@ -286,14 +279,13 @@ public class PlayerAttack : MonoBehaviour
 
     # region CHEATS FOR DEVELOPMENT PURPOSES
     // CHEATS FOR DEVELOPMENT PURPOSES
-    [Header("CHEATS")]
-    [Tooltip("The cheat key to trigger a clash for the player")]
-    [SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
-    [Tooltip("The other cheat keys for other effects")]
-    [SerializeField] KeyCode
-        deathCheatKey = KeyCode.Alpha2,
-        drawCheatKey = KeyCode.Alpha3,
-        staminaCheatKey = KeyCode.Alpha4;
+    //[Header("CHEATS")]
+    //[Tooltip("The cheat key to trigger a clash for the player")]
+    //[SerializeField] KeyCode clashCheatKey = KeyCode.Alpha1;
+    //[Tooltip("The other cheat keys for other effects")]
+    //[SerializeField] KeyCode deathCheatKey = KeyCode.Alpha2;
+    //[SerializeField] KeyCode drawCheatKey = KeyCode.Alpha3;
+    //[SerializeField] KeyCode staminaCheatKey = KeyCode.Alpha4;
     #endregion
 
 

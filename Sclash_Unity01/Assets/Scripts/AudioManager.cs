@@ -81,7 +81,7 @@ public class AudioManager : MonoBehaviour
     List<float> phasesMainVolumeObjectives = new List<float>(3) { 0, 0, 0 };
     List<float> phasesStrikesVolumeObjectives = new List<float>(3) { 0, 0, 0 };
     [SerializeField] Vector2 playersDistanceForStrikesVolumeLimits = new Vector2(6, 15);
-    float winVolumeObjective = 0;
+    //float winVolumeObjective = 0;
     float windVolumeObjective = 0;
     [SerializeField] float volumeFadeSpeed = 0.01f;
     #endregion
@@ -177,10 +177,9 @@ public class AudioManager : MonoBehaviour
 
 
     # region CHEATS FOR DEVELOPMENT PURPOSES
-    // CHEATS FOR DEVELOPMENT PURPOSES
-    [Header("CHEATS")]
-    [SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha8;
-    [SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha7;
+    //[Header("CHEATS")]
+    //[SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha8;
+    //[SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha7;
     # endregion
 
 

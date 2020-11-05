@@ -43,9 +43,8 @@ public class MenuBrowser2D : MonoBehaviour
     int verticalDirection = 1;
     int horizontalDirection = 1;
 
-    [SerializeField] bool
-        invertVerticalAxis = false,
-        invertHorizontalAxis = false;
+    [SerializeField] bool invertVerticalAxis = false;
+    //[SerializeField] bool invertHorizontalAxis = false;
     [SerializeField] bool swapAxis = false;
     #endregion
 

@@ -38,7 +38,7 @@ public class CharacterChanger : MonoBehaviour
 
 
     [Header("OTHER")]
-    [SerializeField] int defaultCharacterIndex = 0;
+    //[SerializeField] int defaultCharacterIndex = 0;
     [SerializeField] float changeDelay = 0.1f;
     [HideInInspector] public int currentCharacter = 0;
     int lastChosenCharacterIndex = 0;

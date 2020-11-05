@@ -32,26 +32,26 @@ public class RoundStat : MonoBehaviour
     [SerializeField] Transform[] actionsTimelinesParents = null;
     
 
-    [SerializeField] GameObject[] actionMarkerObjects;
+    [SerializeField] GameObject[] actionMarkerObjects = null;
     [SerializeField] Vector2 xLimitsForActionPlacement = new Vector2(-73, 73);
     [SerializeField] RectTransform[] xLeftLimitsObjectsForActionPlacement = new RectTransform[2];
     [SerializeField] RectTransform[] xRightLimitsObjectsForActionPlacement = new RectTransform[2];
 
 
     [Header("ACTIONS COLORS")]
-    [SerializeField] Color charge;
-    [SerializeField] Color forwardAttack,
-        backWardsAttack,
-        neutralAttack,
-        death,
-        forwardDash,
-        backwardsDash,
-        pommel,
-        successfulPommel,
-        parry,
-        successfulParry,
-        clash,
-        dodge;
+    [SerializeField] Color charge = Color.white;
+    [SerializeField] Color forwardAttack = Color.red,
+        backWardsAttack = Color.red,
+        neutralAttack = Color.red,
+        death = Color.black,
+        forwardDash = Color.grey,
+        backwardsDash = Color.grey,
+        pommel = Color.yellow,
+        successfulPommel = Color.green,
+        parry = Color.blue,
+        successfulParry = Color.cyan,
+        clash = Color.green,
+        dodge = Color.grey;
 
     [Header("ACTIONS LEGEND")]
     [SerializeField] Image chargeLegend = null;
@@ -110,7 +110,7 @@ public class RoundStat : MonoBehaviour
         parryLegend.color = parry;
         successfulParryLegend.color = successfulParry;
         clashLegend.color = clash;
-        chargeLegend.color = dodge;
+        dodgeLegend.color = dodge;
     }
 
 

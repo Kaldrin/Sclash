@@ -18,7 +18,7 @@ public class MapMenuLoader : MonoBehaviour
     #region DATA
     [Header("DATA")]
     [Tooltip("The reference to the scriptable object data containing all the maps")]
-    [SerializeField] MapsDataBase mapsDatabase01;
+    [SerializeField] MapsDataBase mapsDatabase01 = null;
     [SerializeField] MenuParameters parametersData = null;
     #endregion
 

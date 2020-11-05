@@ -165,7 +165,7 @@ public class GameManager : MonoBehaviourPun
     [Header("PLAYERS")]
     [Tooltip("The player prefab reference")]
     [SerializeField] GameObject player = null;
-    [SerializeField] GameObject playerAI = null;
+    //[SerializeField] GameObject playerAI = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
     [SerializeField] public GameObject[] playerSpawns = { null, null };
     public List<GameObject> playersList = new List<GameObject>(2);
@@ -177,7 +177,6 @@ public class GameManager : MonoBehaviourPun
         attackSignColors = { Color.red, Color.yellow },
         playerLightsColors = { Color.red, Color.yellow };
     [Tooltip("The names to identify the players")]
-    //[SerializeField] string[] playerNames = { "Aka", "Ao" };
     [HideInInspector] public bool playerDead = false;
     bool allPlayersHaveDrawn = false;
     bool player2Detected = false;
@@ -238,8 +237,6 @@ public class GameManager : MonoBehaviourPun
     # region DEATH VFX
     // DEATH VFX
     [Header("DEATH VFX")]
-    [Tooltip("The duration of the death VFX black & orange screen before it comes back to normal")]
-    [SerializeField] float deathVFXFilterDuration = 3.5f;
     [Tooltip("The material that is put on the sprites when the death VFX orange & black screen appears")]
     [SerializeField] Material deathFXSpriteMaterial = null;
     [SerializeField] Color deathVFXElementsColor = Color.black;
@@ -263,14 +260,23 @@ public class GameManager : MonoBehaviourPun
 
 
 
+    #region DEMO
+    [Header("DEMO")]
+    [SerializeField] public bool demo = false;
+    [SerializeField] GameObject demoMark = null;
+    [SerializeField] MenuBrowser mainMenuBrowser = null;
+    [SerializeField] GameObject stagesButton = null;
+    [SerializeField] GameObject demoStagesButton = null;
+    #endregion
+
+
 
 
     #region CHEATS FOR DEVELOPMENT PURPOSES
-    // CHEATS FOR DEVELOPMENT PURPOSES
     [Header("CHEATS")]
     [Tooltip("Use cheat codes ?")]
     [SerializeField] public bool cheatCodes = false;
-    bool slowedDownTime = false;
+    //bool slowedDownTime = false;
 
     int timeSlowDownLevel = 0;
 
@@ -289,16 +295,6 @@ public class GameManager : MonoBehaviourPun
     #region EVENTS
     public delegate void OnResetGameEvent();
     public event OnResetGameEvent ResetGameEvent;
-    #endregion
-
-
-    #region DEMO
-    [Header("DEMO")]
-    [SerializeField] public bool demo = false;
-    [SerializeField] GameObject demoMark = null;
-    [SerializeField] MenuBrowser mainMenuBrowser = null;
-    [SerializeField] GameObject stagesButton = null;
-    [SerializeField] GameObject demoStagesButton = null;
     #endregion
     #endregion
 
@@ -724,7 +720,7 @@ public class GameManager : MonoBehaviourPun
             Player playerScript = null;
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-            IAScript ia = null;
+            //IAScript ia = null;
             /*
 #if UNITY_EDITOR
             if (letThemFight || i == 1)
@@ -1295,9 +1291,7 @@ public class GameManager : MonoBehaviourPun
                     particleSystems[i].GetParticles(particles);
 
                     for (int o = 0; o < particles.Length; o++)
-                    {
-                        particles[o].color = Color.black;
-                    }
+                        particles[o].startColor = Color.black;
                     particleSystems[i].SetParticles(particles, particles.Length);
 
 

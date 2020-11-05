@@ -4,19 +4,26 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+
+// Script that manages the display of the stats of one game, on the dedicated UI element. Used a lot by the StatsMenu script. Uses a lot the RoundStat script
+// OPTIMIZED
 public class GameStat : MonoBehaviour
 {
-    [SerializeField] Stats stats = null;
+    #region VARIABLES
+    [Header("DATA")]
+    //[SerializeField] Stats stats = null;
     [SerializeField] CharactersDatabase characters = null;
-    [HideInInspector] public Game game;
+    [HideInInspector] public Game game = new Game();
     bool hasUpdateRoundsList = false;
 
-    [Header("MAIN GAME INFOS")]
+
+    [Header("MAIN GAME INFOS DISPLAY")]
     [SerializeField] public TextMeshProUGUI gameIndex = null;
     [SerializeField] public Image stageIllustration = null;
     [SerializeField] public TextMeshProUGUI gameType = null;
 
-    [Header("DATE")]
+
+    [Header("DATE DISPLAY")]
     [SerializeField] public TextMeshProUGUI hour = null;
     [SerializeField] public TextMeshProUGUI
         minute = null,
@@ -24,14 +31,16 @@ public class GameStat : MonoBehaviour
         month = null,
         year = null;
 
-    [Header("CHARACTERS")]
+
+    [Header("CHARACTERS INFOS DISPLAY")]
     [SerializeField] public TextMeshProUGUI character1Name = null;
     [SerializeField] public TextMeshProUGUI character2Name = null;
     [SerializeField] public Image
         characterIllustration1 = null,
         characterIllustration2 = null;
 
-    [Header("DETAILED INFOS")]
+
+    [Header("DETAILED INFOS DISPLAY")]
     [SerializeField] public TextMeshProUGUI finalScore = null;
     [SerializeField] public TextMeshProUGUI
         gameFinished = null,
@@ -39,10 +48,12 @@ public class GameStat : MonoBehaviour
         roundsPlayed = null,
         scoreToWin = null;
 
-    [Header("ROUNDS")]
+
+    [Header("ROUNDS STATS DISPLAY")]
     [SerializeField] Transform roundsListParent = null;
     [SerializeField] GameObject roundStatObject = null;
     List<RoundStat> roundsList = new List<RoundStat>();
+    #endregion
 
 
 
@@ -51,16 +62,12 @@ public class GameStat : MonoBehaviour
 
 
 
-
+    #region FUNCTIONS
     public void HideAllRounds()
     {
         for (int i = 0; i < roundsList.Count; i++)
-        {
             roundsList[i].actionsInfosGameObject.SetActive(false);
-        }
     }
-
-
 
 
     public void TriggerUpdateRoundsList()
@@ -72,6 +79,7 @@ public class GameStat : MonoBehaviour
         }
     }
 
+
     IEnumerator TriggerUpdateRoundsList(Game game)
     {
         roundStatObject.SetActive(true);
@@ -79,6 +87,7 @@ public class GameStat : MonoBehaviour
 
         GameObject currentlyInstantiatedRoundStatObject = null;
         RoundStat currentlyInstantiatedRoundStat = null;
+
 
         // Empty the list
         for (int i = 0; i < roundsListParent.childCount; i++)
@@ -165,12 +174,13 @@ public class GameStat : MonoBehaviour
             
 
             yield return new WaitForSecondsRealtime(0.02f);
-            //currentlyInstantiatedRoundStat.UpdateLegendColors();
-            //currentlyInstantiatedRoundStat.UpdateActionsTimelinesDisplay(game.rounds[i]);
+
+
             currentlyInstantiatedRoundStat.round = game.rounds[i];
         }
 
 
         roundStatObject.SetActive(false);
     }
+    #endregion
 }

@@ -10,7 +10,7 @@ public class RumbleManager : MonoBehaviour
     #endregion
 
 
-    bool vibrating = false;
+    //bool vibrating = false;
     [SerializeField] public float menuBrowseVibrationIntensity = 0.08f;
     [SerializeField] public float menuBrowseVibrationDuration = 0.06f;
     Coroutine[] vibrationCoroutines = new Coroutine[4];
@@ -139,7 +139,7 @@ public class RumbleManager : MonoBehaviour
         if (rumbleOn)
         {
             // Resets vibration
-            vibrating = false;
+            //vibrating = false;
             GamePad.SetVibration(index, 0, 0);
         
 
@@ -147,7 +147,7 @@ public class RumbleManager : MonoBehaviour
 
 
             // Starts vibration
-            vibrating = true;
+            //vibrating = true;
             GamePad.SetVibration(index, leftIntensity, rightIntensity);
         
 
@@ -155,7 +155,7 @@ public class RumbleManager : MonoBehaviour
 
 
             // Ends vibration
-            vibrating = false;
+            //vibrating = false;
             Debug.Log("End vibration");
             GamePad.SetVibration(index, 0, 0);
         }

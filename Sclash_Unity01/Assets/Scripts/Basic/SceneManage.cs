@@ -6,35 +6,29 @@ using Photon.Pun;
 
 // Created for Unity 2019.1.1f1
 // This script manages scene transitions and scene loading
+// OPTIMIZED I THINK ?
 public class SceneManage : MonoBehaviour
 {
-
     public static SceneManage Instance;
 
-    #region SCENE CHANGE
+
     [Header("SCENE CHANGE")]
+    [Tooltip("Should this script automatically load a referenced scene after a certain amount of time ?")]
     [SerializeField] bool autoLoadSceneAfterDuration = false;
-    public bool proceedToLoadScene = false;
-    bool quit = false;
-
     [SerializeField] float durationBeforeAutoLoadScene = 0.5f;
-
     [SerializeField] int sceneToAutoLoadIndex = 1;
-
     [SerializeField] Animator sceneSwitchAnimator = null;
 
     Scene sceneToLoad;
+    public bool proceedToLoadScene = false;
+    bool quit = false;
     bool canLoadScene = true;
-    #endregion
 
 
 
-
-    #region RESTART SCENE
     [Header("RESTART SCENE")]
-    public KeyCode[]
-        pressSimultaneousKeysToRestart;
-    #endregion
+    [Tooltip("Choose which keys should be pressed to restart the scene")]
+    [SerializeField] KeyCode[] pressSimultaneousKeysToRestart = null;
 
 
 
@@ -46,15 +40,14 @@ public class SceneManage : MonoBehaviour
 
 
 
-
-
-    // BASE FUNCTIONS
+    #region FUNCTIONS
+    #region BASE FUNCTIONS
     void Awake()
     {
         Instance = this;
     }
 
-    #region BASE FUNCTIONS
+
     // Use this for initialization
     void Start()
     {
@@ -63,23 +56,27 @@ public class SceneManage : MonoBehaviour
             StartCoroutine(AutoLoadSceneAfterDuration());
     }
 
+
     // FixedUpdate is called 50 times per second
-    void FixedUpdate()
+    void Update()
     {
-        // Checks if the inputs to restart the scene were pressed
-        if (CheckIfAllKeysPressed(pressSimultaneousKeysToRestart))
-            Restart();
-
-
-        // Is called when the scene switch screen finished fading on
-        if (proceedToLoadScene)
+        if (isActiveAndEnabled && enabled)
         {
-            if (quit)
-                Application.Quit();
-            else if (canLoadScene)
+            // Checks if the inputs to restart the scene were pressed
+            if (CheckIfAllKeysPressed(pressSimultaneousKeysToRestart))
+                Restart();
+
+
+            // Is called when the scene switch screen finished fading on
+            if (proceedToLoadScene)
             {
-                canLoadScene = false;
-                LoadScene(sceneToLoad);
+                if (quit)
+                    Application.Quit();
+                else if (canLoadScene)
+                {
+                    canLoadScene = false;
+                    LoadScene(sceneToLoad);
+                }
             }
         }
     }
@@ -150,21 +147,15 @@ public class SceneManage : MonoBehaviour
     {
         bool notPressed = false;
 
+
         for (int i = 0; i < keys.Length; i++)
         {
             if (!Input.GetKey(keys[i]))
-            {
                 notPressed = true;
-            }
         }
 
-        if (notPressed)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+
+        return !notPressed;
     }
+    #endregion
 }
