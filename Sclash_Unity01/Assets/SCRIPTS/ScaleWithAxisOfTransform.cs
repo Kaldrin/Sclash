@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// This script will scale the referenced element depending on another transform's parameters dynamically. Usefull for mdisplaying info with dynamic
+// OPTIMIZED
 public class ScaleWithAxisOfTransform : MonoBehaviour
 {
     [SerializeField] bool useMainCamera = false;
     [SerializeField] bool findObjectByName = false;
+    [Tooltip("Name of the object which transform should be observed and used, to find it in the scene on Start")]
     [SerializeField] string objectName = "Main Camera";
     [SerializeField] bool useReferencedObject = false;
     bool dontDoAnything = false;
@@ -22,30 +25,36 @@ public class ScaleWithAxisOfTransform : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
+
     void Start()
     {
+        // Observe main camera if set to do so
         if (useMainCamera)
             transformToObserve = Camera.main.transform;
+        // Find transform by referenced name
         else if (findObjectByName)
             transformToObserve = GameObject.Find(objectName).transform;
         else if (useReferencedObject)
-        {
-
-        }
-        else
+        {}
+        else // If not set, don't do anything
             dontDoAnything = true;
 
 
-        if (!dontDoAnything)
+        // NOTHING
+        if (transformToObserve == null) // If nothing to observe, don't do anything
+            dontDoAnything = true;
+
+
+        if (!dontDoAnything) // Save its base scale
             baseSelfScale = transform.localScale;
     }
 
     private void Update()
     {
-        if (!dontDoAnything)
+        if (enabled && isActiveAndEnabled)
         {
-            transform.localScale = baseSelfScale * (scaleMultiplicationLimits.x + (scaleMultiplicationLimits.y - scaleMultiplicationLimits.x) * (transformToObserve.localPosition.z - axisLimits.x) / (axisLimits.y - axisLimits.x));
+            if (!dontDoAnything) // Scale with observed transform
+                transform.localScale = baseSelfScale * (scaleMultiplicationLimits.x + (scaleMultiplicationLimits.y - scaleMultiplicationLimits.x) * (transformToObserve.localPosition.z - axisLimits.x) / (axisLimits.y - axisLimits.x));
         }
     }
 }

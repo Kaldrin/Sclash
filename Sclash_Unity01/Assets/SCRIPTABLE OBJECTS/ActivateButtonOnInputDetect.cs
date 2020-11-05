@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 
 // This script allows for activating a designated button depending on an axis input, independently of any menu browser
+// OPTIMIZED
 public class ActivateButtonOnInputDetect : MonoBehaviour
 {
     [SerializeField] string axisToCheck = "MenuSecondary";
@@ -19,7 +20,7 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enabled)
+        if (enabled && isActiveAndEnabled)
         {
             if (superiorOrInferior)
             {

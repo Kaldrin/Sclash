@@ -398,7 +398,7 @@ SpriteRenderer:
   m_Size: {x: 7, y: 7}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &6889666015657170601
@@ -1125,32 +1125,37 @@ PrefabInstance:
     - target: {fileID: 5329855318509417076, guid: a897516342817b941bde271a3700d503,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.10827278
+      value: 0.14106536
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329855318509417076, guid: a897516342817b941bde271a3700d503,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329855318509417076, guid: a897516342817b941bde271a3700d503,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5329855318509417076, guid: a897516342817b941bde271a3700d503,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.99412125
+      value: 0.9900003
       objectReference: {fileID: 0}
     - target: {fileID: 5329855318509417076, guid: a897516342817b941bde271a3700d503,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -11.24
+      value: -4.228323
       objectReference: {fileID: 0}
     - target: {fileID: 5329855318509417076, guid: a897516342817b941bde271a3700d503,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.42
+      value: 4.079935
       objectReference: {fileID: 0}
     - target: {fileID: 5329855318509417076, guid: a897516342817b941bde271a3700d503,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.721825
-      objectReference: {fileID: 0}
-    - target: {fileID: 5329855318509417076, guid: a897516342817b941bde271a3700d503,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 12.432
+      value: 0.2669058
       objectReference: {fileID: 0}
     - target: {fileID: 3975951328303893110, guid: a897516342817b941bde271a3700d503,
         type: 3}

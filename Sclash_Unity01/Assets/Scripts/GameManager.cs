@@ -8,6 +8,7 @@ using Photon.Pun;
 using Photon.Realtime;
 
 // Created for Unity 2019.1.1f1
+// MESSY
 public class GameManager : MonoBehaviourPun
 {
     #region VARIABLES
@@ -29,11 +30,10 @@ public class GameManager : MonoBehaviourPun
     InputManager inputManager = null;
 
     [Tooltip("The CameraShake scripts instances references in the scene")]
-    [SerializeField] public CameraShake
-        deathCameraShake = null,
-        clashCameraShake = null,
-        pommelCameraShake = null,
-        finalCameraShake = null;
+    [SerializeField] public CameraShake deathCameraShake = null;
+    [SerializeField] public CameraShake clashCameraShake = null;
+    [SerializeField] public CameraShake pommelCameraShake = null;
+    [SerializeField] public CameraShake finalCameraShake = null;
 
     [SerializeField] StatsManager statsManager = null;
     #endregion
@@ -701,8 +701,6 @@ public class GameManager : MonoBehaviourPun
 
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
-            playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * i + 2;
-            playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * i - 2;
 
 
             // FX
@@ -776,26 +774,22 @@ public class GameManager : MonoBehaviourPun
                 int _tempPNum = p.GetComponent<Player>().playerNum;
 
                 p.GetComponent<PlayerAnimations>().TriggerSneath();
-                p.GetComponent<PlayerAnimations>().ResetDrawText();
 
                 p.transform.position = playerSpawns[_tempPNum].transform.position;
                 p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
                 p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
 
                 p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
-
             }
         }
         else
         {
-
             for (int i = 0; i < playersList.Count; i++)
             {
                 GameObject p = playersList[i];
 
 
                 playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
-                playersList[i].GetComponent<PlayerAnimations>().ResetDrawText();
 
 
                 p.transform.position = playerSpawns[i].transform.position;
@@ -1005,7 +999,6 @@ public class GameManager : MonoBehaviourPun
 
 
     #region RESTART GAME
-    // RESTART GAME
     // Calls ResetGame coroutine, called by main menu button at the end of the match
     public void ResetGame()
     {
@@ -1175,7 +1168,7 @@ public class GameManager : MonoBehaviourPun
         try {
             statsManager.FinalizeGame(true, 1);
         }
-        catch {
+        catch{
             Debug.Log("Error while finalizing the recording of the current game, ignoring");
         }
 
@@ -1210,22 +1203,13 @@ public class GameManager : MonoBehaviourPun
 
 
         // WIN MENU
-        //menuManager.winName.text = charactersData.charactersList[playersList[winningPlayerIndex].GetComponent<Player>().characterIndex].name;
-        //menuManager.winName.color = playersColors[winningPlayerIndex];
         menuManager.SetUpWinMenu(charactersData.charactersList[playersList[winningPlayerIndex].GetComponent<Player>().characterIndex].name, playersColors[winningPlayerIndex], score, playersColors);
 
 
-        // AUDIO
-        //audioManager.adjustBattleMusicVolumeDepdendingOnPlayersDistance = false;
-
-
         // ANIMATION
-        //playersList[winningPlayerIndex].GetComponent<PlayerAnimations>().TriggerSneath();
-        //playersList[winningPlayerIndex].GetComponent<PlayerAnimations>().ResetDrawText();
-
-
-        //yield return new WaitForSecondsRealtime(timeBeforeWinScreenAppears);
         Invoke("TriggerFallDeadAnimation", 2f);
+
+
         Invoke("ShowMenu", 2f + timeBeforeWinScreenAppears);
     }
 
@@ -1252,13 +1236,9 @@ public class GameManager : MonoBehaviourPun
     {
         if (on)
         {
-
             // Deactivates background elements for only orange color
             for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
-            {
                 mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
-            }
-
 
 
             // List of all renderers for the death VFX
@@ -1277,7 +1257,9 @@ public class GameManager : MonoBehaviourPun
             originalParticleSystemsGradients = new List<Gradient>();
 
 
-            // Sets all black
+
+            // SET ALL BLACK
+            // SPRITE
             for (int i = 0; i < spriteRenderers.Length; i++)
             {
                 if (!spriteRenderers[i].CompareTag("NonBlackFX") && spriteRenderers[i].gameObject.activeInHierarchy)
@@ -1289,40 +1271,51 @@ public class GameManager : MonoBehaviourPun
                     spriteRenderers[i].material = deathFXSpriteMaterial;
                 }
             }
+            // MESH
             for (int i = 0; i < meshRenderers.Length; i++)
             {
                 if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                 {
-                    try {
+                    try
+                    {
                         originalMeshRenderersColors.Add(meshRenderers[i].material.color);
                         meshRenderers[i].material.color = Color.black;
                     }
                     catch { }
                 }
             }
-            /*
+            // PARTICLES
+
             for (int i = 0; i < particleSystems.Length; i++)
             {
-                if (!particleSystems[i].CompareTag("NonBlackFX"))
+                if (particleSystems[i] != null && !particleSystems[i].CompareTag("NonBlackFX") && particleSystems[i].gameObject.activeInHierarchy && particleSystems[i].isPlaying)
                 {
-                    ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
+                    // INDIVIDUAL
+                    ParticleSystem.Particle[] particles = new ParticleSystem.Particle[particleSystems[i].particleCount];
+                    particleSystems[i].GetParticles(particles);
 
+                    for (int o = 0; o < particles.Length; o++)
+                    {
+                        particles[o].color = Color.black;
+                    }
+                    particleSystems[i].SetParticles(particles, particles.Length);
+
+
+                    // SYSTEMS
+                    ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
                     originalParticleSystemsColors.Add(particleSystemMain.startColor.color);
                     particleSystemMain.startColor = Color.black;
                     originalParticleSystemsGradients.Add(particleSystemMain.startColor.gradient);
                     particleSystemMain.startColor = deathVFXGradientForParticles; 
                 }
             }
-            */
+            
 
-
+            // LIGHTS
             for (int i = 0; i < lights.Length; i++)
             {
-                if (!lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
-                {
-                    originalLightsIntensities.Add(lights[i].intensity);
-                    lights[i].intensity = 0;
-                }
+                if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
+                    lights[i].gameObject.SetActive(false);
             }
         }
         else
@@ -1336,7 +1329,6 @@ public class GameManager : MonoBehaviourPun
                     {
                         if (!spriteRenderers[i].CompareTag("NonBlackFX") && spriteRenderers[i].gameObject.activeInHierarchy)
                         {
-                            //spriteRenderers[i].color = Color.Lerp(spriteRenderers[i].color, spriteRenderersColors[i], (1 / 100 * j));
                             spriteRenderers[i].color = originalSpriteRenderersColors[i];
                             spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
                         }
@@ -1347,46 +1339,40 @@ public class GameManager : MonoBehaviourPun
             if (meshRenderers != null && meshRenderers.Length > 0)
             {
                 for (int i = 0; i < meshRenderers.Length; i++)
-                    if (meshRenderers[i] && !meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
+                    if (meshRenderers[i] != null && !meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                         meshRenderers[i].material.color = originalMeshRenderersColors[i];
             }
-            /*
-            for (int i = 0; i < particleSystems.Length; i++)
+            // PARTICLES
+            if (particleSystems != null && particleSystems.Length > 0)
             {
-                if (!particleSystems[i].CompareTag("NonBlackFX"))
+                for (int i = 0; i < particleSystems.Length; i++)
                 {
-                    try
+                    if (particleSystems[i] != null && !particleSystems[i].CompareTag("NonBlackFX"))
                     {
-                        ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
-                        particleSystemMain.startColor = originalParticleSystemsGradients[i];
+                        try
+                        {
+                            ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
 
 
-                        particleSystemMain.startColor = originalParticleSystemsColors[i];
-                    }
-                    catch
-                    {
-                    }
-                } 
+
+                            particleSystemMain.startColor = originalParticleSystemsGradients[i];
+                            particleSystemMain.startColor = originalParticleSystemsColors[i];
+                        }
+                        catch { }
+                    } 
+                }
             }
-            */
+            // LIGHTS
             if (lights != null && lights.Length > 0)
             {
                 for (int i = 0; i < lights.Length; i++)
                 {
                     try
                     {
-                        if (lights[i])
-                        {
-                            if (!lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
-                            {
-                                lights[i].intensity = originalLightsIntensities[i];
-                            }
-                        }
+                        if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
+                                lights[i].gameObject.SetActive(true);
                     }
-                    catch
-                    {
-
-                    }
+                    catch { }
                 }
             }
 
@@ -1395,9 +1381,7 @@ public class GameManager : MonoBehaviourPun
             if (mapLoader.currentMap.GetComponent<MapPrefab>() && mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length > 0)
             {
                 for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
-                {
                     mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
-                }
             }
         }
     }

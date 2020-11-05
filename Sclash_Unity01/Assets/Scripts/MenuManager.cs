@@ -316,7 +316,7 @@ public class MenuManager : MonoBehaviour
 
 
 
-
+    // WIN SCREEN
     public void SetUpWinMenu(string winnerName, Color winnerColor, Vector2 score, Color[] playersColors)
     {
         winName.text = winnerName;

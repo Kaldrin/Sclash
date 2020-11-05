@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// Store all the weapons referenced in the game, their names and their sprites
 [System.Serializable]
 public struct Weapon
 {

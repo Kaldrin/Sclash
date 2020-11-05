@@ -14,15 +14,10 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     [Tooltip("The reference to the player's Animators components for the character and their legs")]
     [SerializeField] public Animator animator = null;
-    [SerializeField] Animator
-        legsAnimator = null,
-        legsAnimator2 = null;
+    [SerializeField] Animator legsAnimator = null;
+    [SerializeField] Animator legsAnimator2 = null;
     [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
-    [SerializeField] Animator drawTextAnimator = null;
     [SerializeField] public Animator nameDisplayAnimator = null;
-
-    [Tooltip("The reference to the game object containing the sprite mask of the player's legs")]
-    [SerializeField] public GameObject legsMask = null;
 
     [Tooltip("The reference to the player's SpriteRenderers components for the character and their legs")]
     [SerializeField] public SpriteRenderer
@@ -134,26 +129,13 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animatorBaseSpeed = animator.speed;
     }
 
-    // Update is called once per graphic frame
-    void Update()
-    {
-        //Debug.Log(animatorBaseSpeed);
-    }
-
     // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
-
         if (photonView != null)
             if (!photonView.IsMine)
                 return;
 
-        /*
-        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
-        {
-            UpdateAnims();
-        }
-        */
 
         UpdateAnims();
         UpdateWalkDirection();
@@ -171,8 +153,10 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     // Update the animator's parameters in Update
     void UpdateAnims()
     {
+
         // CHARGE WALK ANIM
-        legsAnimator2.SetFloat("AttackState", nextAttackState);
+        if (playerScript.playerState != Player.STATE.frozen)
+            legsAnimator2.SetFloat("AttackState", nextAttackState);
 
 
 
@@ -194,9 +178,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
             if (ConnectManager.Instance.enableMultiplayer)
-            {
                 animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal)));
-            }
             else
             {
                 animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal)));
@@ -264,10 +246,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
         animator.SetBool(dead, false);
         animator.SetBool(dashing, false);
-
-
-        drawTextAnimator.ResetTrigger(textDrawOn);
-        drawTextAnimator.ResetTrigger(resetDrawText);
     }
 
     public void ResetAnimsForNextMatch()
@@ -304,13 +282,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
         animator.speed = 1;
-
-        if (drawTextAnimator.gameObject.activeSelf)
-        {
-            drawTextAnimator.ResetTrigger(textDrawOn);
-            drawTextAnimator.ResetTrigger(resetDrawText);
-        }
-
         TriggerSneath();
     }
     #endregion
@@ -403,24 +374,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     public void TriggerSneath()
     {
         animator.SetTrigger(sneath);
-    }
-
-    public void TriggerDrawText()
-    {
-        if (drawTextAnimator.gameObject.activeSelf)
-        {
-            drawTextAnimator.SetTrigger(textDrawOn);
-            drawTextAnimator.ResetTrigger(resetDrawText);
-        }
-    }
-
-    public void ResetDrawText()
-    {
-        if (drawTextAnimator.gameObject.activeSelf)
-        {
-            drawTextAnimator.SetTrigger(resetDrawText);
-            drawTextAnimator.ResetTrigger(textDrawOn);
-        }
     }
     # endregion
 

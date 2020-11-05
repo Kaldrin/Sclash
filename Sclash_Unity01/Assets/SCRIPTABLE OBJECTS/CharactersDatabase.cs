@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEditor.Animations;
 
-
+// Store the list of the characters and all their properties
 [System.Serializable]
 public struct Character
 {

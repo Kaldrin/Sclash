@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+// Settings for the cheat options of the player, stored in a scriptable object for organisation purposes
 [CreateAssetMenu(fileName = "PlayerCheatsSettings01", menuName = "ScriptableObjects/Player cheats settings")]
 public class PlayerCheatsParameters : ScriptableObject
 {
