@@ -5,6 +5,7 @@ using UnityEngine.Rendering.PostProcessing;
 using Unity.RemoteConfig;
 
 // This class controls stage loading and most stage related stuff. Strongly tied to the MapMenuLoader and MapMenu stuff classes
+// OPTIMIZED
 public class MapLoader : MonoBehaviour
 {
     #region VARIABLES
@@ -45,14 +46,13 @@ public class MapLoader : MonoBehaviour
 
     # region STAGE LOADING
     [Header("STAGE LOADING")]
-    bool canLoadNewMap = true;
-    [HideInInspector] public bool halloween = false;
-    int season = 0;
     [SerializeField] bool loadMapOnStart = false;
+    [HideInInspector] public bool halloween = false;
+    bool canLoadNewMap = true;
+    int season = 0;
+    int postProcessVolumeBlendState = 0;
     #endregion
 
-
-    int postProcessVolumeBlendState = 0;
 
 
 
@@ -89,7 +89,6 @@ public class MapLoader : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-
     void Awake(){
         Instance = this;
 
@@ -108,24 +107,27 @@ public class MapLoader : MonoBehaviour
     void Update()
     {
         // Blends last and current stages post process volumes profiles for smooth transition
-        if (postProcessVolumeBlendState == 1)
+        if (enabled && cameraPostProcessVolume.enabled)
         {
-            cameraPostProcessVolume.weight = Mathf.Lerp(cameraPostProcessVolume.weight, 0, Time.deltaTime * 3);
-
-
-            if (cameraPostProcessVolume.weight < 0.05f)
+            if (postProcessVolumeBlendState == 1)
             {
-                cameraPostProcessVolume.profile = mapsData.stagesLists[currentMapIndex].postProcessProfile;
-                postProcessVolumeBlendState = 2;
+                cameraPostProcessVolume.weight = Mathf.Lerp(cameraPostProcessVolume.weight, 0, Time.deltaTime * 3);
+
+
+                if (cameraPostProcessVolume.weight < 0.05f)
+                {
+                    cameraPostProcessVolume.profile = mapsData.stagesLists[currentMapIndex].postProcessProfile;
+                    postProcessVolumeBlendState = 2;
+                }
             }
-        }
-        else if (postProcessVolumeBlendState == 2)
-        {
-            cameraPostProcessVolume.weight = Mathf.Lerp(cameraPostProcessVolume.weight, 1, Time.deltaTime * 3);
+            else if (postProcessVolumeBlendState == 2)
+            {
+                cameraPostProcessVolume.weight = Mathf.Lerp(cameraPostProcessVolume.weight, 1, Time.deltaTime * 3);
 
 
-            if (cameraPostProcessVolume.weight > 0.95f)
-                postProcessVolumeBlendState = 0;
+                if (cameraPostProcessVolume.weight > 0.95f)
+                    postProcessVolumeBlendState = 0;
+            }
         }
     }
 
@@ -144,7 +146,7 @@ public class MapLoader : MonoBehaviour
 
     void OnDestroy()
     {
-        // REMOTE CONFIG
+        // REMOTE CONFIG STUFF FOR DEMO
         ConfigManager.FetchCompleted -= SetRemoteVariables;
     }
     # endregion
@@ -209,7 +211,7 @@ public class MapLoader : MonoBehaviour
                     SetMap(0, true); // HALLOWEEN STAGE REMOTE CONFIG
                 else
                     SetMap(season * 2, false); // SEASON DEPENDANT STAGE REMOTE CONFIG
-            }
+            } // ELSE IF NOT DEMO
             else if (gameManager.gameParameters.keepLastLoadedStage)
                 SetMap(gameManager.gameParameters.lastLoadedStageIndex, false);
             else if (gameManager.gameParameters.useCustomListForRandomStartStage)
@@ -235,13 +237,9 @@ public class MapLoader : MonoBehaviour
                 SetMap(Random.Range(0, mapsData.stagesLists.Count), false);
         }
         else
-        {
             for (int i = 0; i < mapContainer.transform.childCount; i++)
-            {
                 if (mapContainer.transform.GetChild(i).gameObject.activeInHierarchy)
                     currentMap = mapContainer.transform.GetChild(i).gameObject;
-            }
-        }
     }
 
     // Immediatly changes the map
@@ -266,50 +264,17 @@ public class MapLoader : MonoBehaviour
         if (special) // IF SPECIAL MAP LIST (Halloween & stuff)
             cameraPostProcessVolume.profile = specialMapsData.stagesLists[mapIndex].postProcessProfile;
         else
-        {
-            //cameraPostProcessVolume.profile = mapsData.stagesLists[mapIndex].postProcessProfile;
-
             // Starts post process volumes blend
             postProcessVolumeBlendState = 1;
-        }
-
-
+        
 
 
         // CHOOSE PLAYER'S STAGE PARTICLES TO ACTIVATE
         StartCoroutine(SetPlayerParticlesSet(special));
-        /*
-        bool state = false;
 
 
-        for (int i = 0; i < gameManager.playersList.Count; i++)
-        {
-            for (int y = 0; y < gameManager.playersList[i].GetComponent<Player>().particlesSets.Count; y++)
-            {
-                if (special) // SPECIAL STAGE PARTICLE SET
-                {
-                    if (y == (specialMapsData.stagesLists[mapIndex].particleSet))
-                        state = true;
-                    else
-                        state = false;
-                }
-                else // NORMAL STAGE PARTICLE SET
-                {
-                    if (y == (mapsData.stagesLists[mapIndex].particleSet))
-                        state = true;
-                    else
-                        state = false;
-                }
-
-
-                for (int o = 0; o < gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems.Count; o++)
-                    gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems[o].SetActive(state);
-            }
-        }
-        */
-
-
-
+        // AUDIO
+        audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[currentMapIndex].musicIndex);
 
 
         // SAVES
@@ -382,8 +347,7 @@ public class MapLoader : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
 
-            Debug.Log("New music : " + mapsData.stagesLists[index].musicIndex);
-            audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[index].musicIndex);
+            // LOAD STAGE
             SetMap(index, false);
 
 

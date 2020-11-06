@@ -5,13 +5,12 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 // This script manages loading and reading of the elements, settings and saves of the stages menu
+// OPTIMIZED ?
 public class MapMenuLoader : MonoBehaviour
 {
     #region VARIABLES
-    #region MANAGERS
     [Header("MANAGERS")]
     [SerializeField] MapLoader mapLoader = null;
-    #endregion
 
 
 
@@ -23,16 +22,12 @@ public class MapMenuLoader : MonoBehaviour
     #endregion
 
 
-
-
     #region STAGE MODE
     [Header("STAGE MODE")]
     [SerializeField] List<string> stagesModes = new List<string>() { "all", "day", "night", "custom" };
     [SerializeField] int currentStageMode = 0;
     [SerializeField] List<GameObject> stageModeDisplayObjects = null;
     #endregion
-
-
 
 
     #region INPUT
@@ -42,7 +37,6 @@ public class MapMenuLoader : MonoBehaviour
     bool canInputModeChange = true;
     bool hasFinishedChangingMode = true;
     #endregion
-
 
 
 
@@ -57,13 +51,8 @@ public class MapMenuLoader : MonoBehaviour
     #endregion
 
 
-
-
-    #region BROWSING
     [SerializeField] MenuBrowser2D stagesListBrowser2D = null;
     [SerializeField] int numberOfElementsPerLine = 4;
-    #endregion
-
 
 
 
@@ -77,12 +66,9 @@ public class MapMenuLoader : MonoBehaviour
 
 
 
-
-    #region AUDIO
     [Header("AUDIO")]
     [SerializeField] PlayRandomSoundInList clickSoundSource = null;
     #endregion
-    #endregion
 
 
 
@@ -99,7 +85,7 @@ public class MapMenuLoader : MonoBehaviour
 
 
 
-
+    #region FUNCTIONS
     #region BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
@@ -107,11 +93,13 @@ public class MapMenuLoader : MonoBehaviour
         ChangeStageMode(0);
     }
 
+
     private void OnEnable()
     {
         LoadParameters();
         SetUpMenu();
     }
+
 
     void Update()
     {
@@ -144,6 +132,7 @@ public class MapMenuLoader : MonoBehaviour
             canInputModeChange = true;
     }
 
+
     public void ChangeStageMode(int indexIncrementation)
     {
         if (hasFinishedChangingMode)
@@ -170,15 +159,14 @@ public class MapMenuLoader : MonoBehaviour
         }
     }
 
+
     void UpdateDisplayedMapListTypeIndication()
     {
         for (int i = 0; i < stagesModes.Count; i++)
-        {
             if (i == currentStageMode)
                 stageModeDisplayObjects[i].SetActive(true);
             else
                 stageModeDisplayObjects[i].SetActive(false);
-        }
     }
     #endregion
 
@@ -198,11 +186,10 @@ public class MapMenuLoader : MonoBehaviour
 
 
         for (int i = 0; i < stagesListParent.childCount; i++)
-        {
             if (stagesListParent.GetChild(i).gameObject.activeInHierarchy)
                 Destroy(stagesListParent.GetChild(i).gameObject);
-        }
     }
+
 
     IEnumerator LoadStagesList()
     {
@@ -217,7 +204,6 @@ public class MapMenuLoader : MonoBehaviour
 
 
         for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
-        {
             if ((mapsDatabase01.stagesLists[i].type.ToString() == stagesModes[currentStageMode]) || stagesModes[currentStageMode] == "all" || (mapsDatabase01.stagesLists[i].inCustomList && (stagesModes[currentStageMode] == stagesModes[3])))
             {
                 numberOfElementsOnThisLine++;
@@ -239,7 +225,6 @@ public class MapMenuLoader : MonoBehaviour
                     numberOfElementsOnThisLine = 0;
                 }
             }
-        }
 
 
         if (numberOfElementsOnThisLine > 0)
@@ -263,7 +248,6 @@ public class MapMenuLoader : MonoBehaviour
 
         // FILL LIST
         for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
-        {
             if ((mapsDatabase01.stagesLists[i].type.ToString() == stagesModes[currentStageMode]) || stagesModes[currentStageMode] == "all" || (mapsDatabase01.stagesLists[i].inCustomList && (stagesModes[currentStageMode] == stagesModes[3])))
             {
                 GameObject newMapMenuObject = null;
@@ -293,7 +277,6 @@ public class MapMenuLoader : MonoBehaviour
 
                 yield return new WaitForSeconds(0.05f);
             }
-        }
 
 
         hasFinishedChangingMode = true;
@@ -301,8 +284,6 @@ public class MapMenuLoader : MonoBehaviour
         stagesListBrowser2D.Select(true);
     }
     #endregion
-
-
 
 
 
@@ -448,12 +429,10 @@ public class MapMenuLoader : MonoBehaviour
         }
 
         for (int i = 0; i < mapsDatabase01.stagesLists.Count; i++)
-        {
             if (mapsDatabase01.stagesLists[i].inCustomList)
                 parametersData.customList[i] = true;
             else
                 parametersData.customList[i] = false;
-        }
     }
 
     // Save map menu settings forever from scriptable object data
@@ -476,5 +455,6 @@ public class MapMenuLoader : MonoBehaviour
 
         SaveGameManager.Save();
     }
+    #endregion
     #endregion
 }

@@ -8,7 +8,7 @@ using Photon.Pun;
 
 
 // Main player script for duel mode
-// MESSY
+// A LITTLE MESSY ?
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region Events
@@ -38,11 +38,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] string inputManagerName = "GlobalManager";
     InputManager inputManager = null;
 
+    // Stats manager
     [SerializeField] string statsManagerName = "GlobalManager";
     StatsManager statsManager = null;
     #endregion
-
-
 
 
 
@@ -66,13 +65,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
     #region PLAYER STATES
-    // PLAYER STATES
     [Header("PLAYER STATES")]
     [SerializeField] public STATE playerState = STATE.normal;
+    [HideInInspector] public STATE oldState = STATE.normal;
 
+
+    // Enum for the player's state definition
     public enum STATE
     {
         frozen,
@@ -100,8 +99,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
-    [HideInInspector] public STATE oldState = STATE.normal;
-
     [SerializeField] bool hasFinishedAnim = false;
     [SerializeField] bool waitingForNextAttack = false;
     [SerializeField] bool hasAttackRecoveryAnimFinished = false;
@@ -110,11 +107,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
     #region PLAYERS IDENTIFICATION
     [Header("PLAYERS IDENTIFICATION")]
-
     [SerializeField] public Text characterNameDisplay = null;
     [SerializeField] public Image characterIdentificationArrow = null;
     [SerializeField] bool usePlayerColorsDifferenciation = false;
@@ -131,29 +125,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
     #region HEALTH
-    // HEALTH
     [Header("HEALTH")]
     [Tooltip("The maximum health of the player")]
     [SerializeField] float maxHealth = 1;
     float currentHealth;
-
-    [Tooltip("Can the player be hit in the current frames ?")]
-    [SerializeField] public bool untouchableFrame = false;
-
-    [Tooltip("The opacity amount of the player's sprite when in untouchable frames")]
-    [SerializeField] float untouchableFrameOpacity = 0.3f;
     #endregion
 
 
 
 
-
-
-    #region STAMINA
-    //STAMINA
+    #region STAMINA STUFF
     [Header("STAMINA")]
     [Tooltip("The reference to the base stamina slider attached to the player to create the other sliders")]
     [SerializeField] public Slider staminaSlider = null;
@@ -164,8 +146,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Tooltip("The maximum amount of stamina one player can have")]
     [SerializeField] public float maxStamina = 4f;
     [Tooltip("Stamina parameters")]
-    [SerializeField]
-    float
+    [SerializeField] float
         durationBeforeStaminaRegen = 0.5f,
         staminaGlobalGainOverTimeMultiplier = 1f,
         idleStaminaGainOverTimeMultiplier = 0.8f,
@@ -180,17 +161,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         staminaRecupTriggerDelay = 0.35f,
         staminaRecupAnimRegenSpeed = 0.025f;
     [HideInInspector] public float stamina = 0;
-    float
-        currentTimeBeforeStaminaRegen = 0,
-        staminaBarsOpacity = 1,
-        oldStaminaValue = 0;
+    float currentTimeBeforeStaminaRegen = 0;
+    float staminaBarsOpacity = 1;
+    float oldStaminaValue = 0;
 
 
     [HideInInspector] public bool canRegenStamina = true;
-    bool
-        hasReachedLowStamina = false,
-        staminaRecupAnimOn = false,
-        staminaBreakAnimOn = false;
+    bool hasReachedLowStamina = false;
+    bool staminaRecupAnimOn = false;
+    bool staminaBreakAnimOn = false;
 
     [Header("STAMINA COLORS")]
     [Tooltip("Stamina colors depending on how much there is left")]
@@ -206,18 +185,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
-    #region MOVEMENTS
+    #region MOVEMENTS SETTING
     [Header("MOVEMENTS")]
     [Tooltip("The default movement speed of the player")]
     [SerializeField] float baseMovementsSpeed = 2.5f;
-    [SerializeField]
-    float
-        chargeMovementsSpeed = 1.2f,
-        sneathedMovementsSpeed = 1.8f,
-        attackingMovementsSpeed = 2.2f;
-    public float actualMovementsSpeed = 1;
+    [SerializeField] float chargeMovementsSpeed = 1.2f;
+    [SerializeField] float sneathedMovementsSpeed = 1.8f;
+    [SerializeField] float attackingMovementsSpeed = 2.2f;
+    [HideInInspector] public float actualMovementsSpeed = 1;
 
     Vector3 oldPos = Vector3.zero;
     Vector2 netTargetPos = Vector2.zero;
@@ -227,23 +202,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
-
     #region ORIENTATION
-    // ORIENTATION
     [Header("ORIENTATION")]
     [Tooltip("The duration before the player can orient again towards the enemy if they need to once they applied the orientation")]
     [SerializeField] float orientationCooldown = 0.1f;
-    float
-        orientationCooldownStartTime = 0;
+    float orientationCooldownStartTime = 0;
 
-    bool
-        orientationCooldownFinished = true,
-        canOrientTowardsEnemy = true;
+    bool orientationCooldownFinished = true;
+    bool canOrientTowardsEnemy = true;
     #endregion
-
-
 
 
 
@@ -260,108 +227,73 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
-
-    #region FRAMES
-    [Header("FRAMES")]
+    #region FRAMES STATE
+    [Header("FRAMES STATE")]
     [Tooltip("Only editable by animator, is currently in parry frames state")]
     [SerializeField] public bool parryFrame = false;
-    [SerializeField]
-    public bool
-        perfectParryFrame = false,
-        activeFrame = false,
-        clashFrames = false;
+    [SerializeField] public bool perfectParryFrame = false;
+    [SerializeField] public bool activeFrame = false;
+    [SerializeField] public bool clashFrames = false;
+    [Tooltip("Can the player be hit in the current frames ?")]
+    [SerializeField] public bool untouchableFrame = false;
+    [Tooltip("The opacity amount of the player's sprite when in untouchable frames")]
+    [SerializeField] float untouchableFrameOpacity = 0.3f;
     #endregion
 
 
 
-
-
-
-    #region JUMP
-    // JUMP
     [Header("JUMP")]
-    [SerializeField]
-    float
-        jumpPower = 10f;
-    #endregion
+    [SerializeField] float jumpPower = 10f;
 
 
 
-
-
-
-    #region CHARGE
-    // CHARGE
+    #region CHARGE STUFF
     [Header("CHARGE")]
     [Tooltip("The number of charge levels for the attack, so the number of range subdivisions")]
     [SerializeField] public int maxChargeLevel = 4;
     [HideInInspector] public int chargeLevel = 1;
 
     [Tooltip("Charge duration parameters")]
-    [SerializeField]
-    float
-        durationToNextChargeLevel = 0.7f,
-        maxHoldDurationAtMaxCharge = 2f;
+    [SerializeField] float durationToNextChargeLevel = 0.7f;
+    [SerializeField] float maxHoldDurationAtMaxCharge = 2f;
     [SerializeField] float attackReleaseAxisInputDeadZoneForDashAttack = 0.1f;
-    float
-        maxChargeLevelStartTime = 0,
-        chargeStartTime = 0;
-
     [HideInInspector] public bool canCharge = true;
+    float maxChargeLevelStartTime = 0;
+    float chargeStartTime = 0;
     #endregion
 
 
 
-
-
-
-    #region ATTACK
+    #region ATTACK STUFF
     [Header("ATTACK")]
     [Tooltip("Attack range parameters")]
     [SerializeField] public float lightAttackRange = 1.8f;
     [Tooltip("Attack range parameters")]
-    [SerializeField]
-    public float
-        heavyAttackRange = 3.2f,
-        baseBackAttackRangeDisjoint = 0f,
-        forwardAttackBackrangeDisjoint = 2.5f;
+    [SerializeField] public float heavyAttackRange = 3.2f;
+    [SerializeField] public float baseBackAttackRangeDisjoint = 0f;
+    [SerializeField] public float forwardAttackBackrangeDisjoint = 2.5f;
     //[SerializeField] float axisDeadZoneForAttackDash = 0.2f;
+
     [HideInInspector] public float actualAttackRange = 0;
     float actualBackAttackRangeDisjoint = 0f;
-
     [Tooltip("Frame parameters for the attack")]
-
     [HideInInspector] public bool isAttacking = false;
-
     List<GameObject> targetsHit = new List<GameObject>();
     #endregion
 
 
 
-
-
-
     #region DASH
-    // DASH
     [Header("DASH")]
-    [SerializeField]
-    public float
-        baseDashSpeed = 3;
-    [SerializeField]
-    public float
-        forwardDashDistance = 3,
+    [SerializeField] public float baseDashSpeed = 3;
+    [SerializeField] public float forwardDashDistance = 3,
         backwardsDashDistance = 2.5f;
-    [SerializeField]
-    float
-        allowanceDurationForDoubleTapDash = 0.3f,
+    [SerializeField] float allowanceDurationForDoubleTapDash = 0.3f,
         forwardAttackDashDistance = 2.5f,
         backwardsAttackDashDistance = 1.5f,
         dashDeadZone = 0.5f,
         shortcutDashDeadZone = 0.5f;
-    float
-       dashDirection = 0,
+    float dashDirection = 0,
        temporaryDashDirectionForCalculation = 0,
        dashInitializationStartTime = 0,
        actualUsedDashDistance = 0,
@@ -378,68 +310,43 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     DASHSTEP currentDashStep = DASHSTEP.invalidated;
     DASHSTEP currentShortcutDashStep = DASHSTEP.invalidated;
 
-    Vector3
-        initPos,
-        targetPos;
+    Vector3 initPos;
+    Vector3 targetPos;
 
     bool isDashing = false;
     #endregion
 
 
 
-
-
-
     #region POMMEL
-    [Header("KICK")]
+    [Header("POMMEL")]
     [Tooltip("Is currently applying the pommel effect to what they touches ?")]
     [SerializeField] public bool kickFrame = false;
+    [SerializeField] float kickRange = 0.88f;
     [HideInInspector] public bool canPommel = true;
-
-    [SerializeField]
-    float
-        kickRange = 0.88f;
     #endregion
 
 
 
-
-
-
-    #region POMMELED
-    [Header("KICKED")]
+    [Header("POMMELED")]
     [Tooltip("The distance the player will be pushed on when pommeled")]
     [SerializeField] float kickKnockbackDistance = 1f;
-    #endregion
 
 
 
-
-
-
-    #region PARRY
     [Header("PARRY")]
     [HideInInspector] public bool canParry = true;
-
     //[SerializeField] int numberOfFramesToDetectParryInput = 3;
     int currentParryFramesPressed = 0;
-    #endregion
 
 
-
-
-
-    #region MAINTAIN PARRY
     [Header("MAINTAIN PARRY")]
     [SerializeField] float maintainParryStaminaCostOverTime = 0.1f;
-    #endregion
-
 
 
 
 
     #region CLASHED
-    // CLASHED
     [Header("CLASHED")]
     [Tooltip("The distance the player will be pushed on when clashed")]
     [SerializeField] float clashKnockback = 2;
@@ -447,8 +354,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Tooltip("The speed at which the knockback distance will be covered")]
     [SerializeField] public float clashKnockbackSpeed = 2;
     #endregion
-
-
 
 
 
@@ -543,20 +448,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] PlayRandomSoundInList notEnoughStaminaSFX = null;
     #endregion
 
+    
 
-
+    // NETWORK
+    bool enemyDead = false;
 
 
 
     [Header("CHEATS")]
     [SerializeField] PlayerCheatsParameters cheatSettings = null;
     #endregion
-
-
-    #region Network
-    bool enemyDead = false;
-    #endregion
-
 
 
 
@@ -762,10 +663,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
 
             if (lagDistance.magnitude < 0.11f)
-            {
                 // Player is nearly at the point
                 rb.velocity = Vector2.zero;
-            }
             else
             {
                 //Player must move to the point
@@ -1011,7 +910,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         switch (newState)
         {
-            case STATE.frozen:
+            case STATE.frozen:                                          // FROZEN
                 SetStaminaBarsOpacity(0);
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
@@ -1020,12 +919,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 characterChanger.enabled = false;
                 break;
 
-            case STATE.sneathing:
+            case STATE.sneathing:                                       // SNEATHING
                 rb.velocity = Vector3.zero;
                 playerAnimations.TriggerSneath();
                 break;
 
-            case STATE.sneathed:
+            case STATE.sneathed:                                        // SNEATHED
                 staminaBarsOpacity = 0;
                 actualMovementsSpeed = sneathedMovementsSpeed;
                 rb.simulated = true;
@@ -1035,7 +934,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     iaChanger.enabled = true;
                 break;
 
-            case STATE.drawing:
+            case STATE.drawing:                                         // DRAWING
                 rb.velocity = Vector3.zero;
                 characterChanger.enabled = false;
 
@@ -1044,16 +943,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                         gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
 
-            case STATE.battleDrawing:
+            case STATE.battleDrawing:                                             // BATTLE DRAWING
                 break;
 
-            case STATE.battleSneathing:
+            case STATE.battleSneathing:                                             // BATTLE SNEATHING
                 break;
 
-            case STATE.battleSneathedNormal:
+            case STATE.battleSneathedNormal:                                        // BATTLE SNEATHED NORMAL
                 break;
 
-            case STATE.normal:
+            case STATE.normal:                                                      // NORMAL
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
@@ -1067,7 +966,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXFront.Stop();
                 break;
 
-            case STATE.charging:
+            case STATE.charging:                                                    // CHARGING
                 isDashing = false;
                 chargeLevel = 1;
                 chargeStartTime = Time.time;
@@ -1080,7 +979,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     playerColliders[i].isTrigger = false;
                 break;
 
-            case STATE.attacking:
+            case STATE.attacking:                                                       // ATTACKING
                 isDashing = true;
                 canCharge = false;
                 chargeLevel = 1;
@@ -1093,10 +992,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
-
                 break;
 
-            case STATE.canAttackAfterAttack:
+            case STATE.canAttackAfterAttack:                                                // CAN ATTACK AFTER ATTACK
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
@@ -1110,7 +1008,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXFront.Stop();
                 break;
 
-            case STATE.pommeling:
+            case STATE.pommeling:                                                       // POMMELING
                 chargeLevel = 1;
                 rb.velocity = Vector3.zero;
                 PauseStaminaRegen();
@@ -1118,7 +1016,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeFlareFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.parrying:
+            case STATE.parrying:                                                                // PARRYING
                 chargeLevel = 1;
                 canParry = false;
                 PauseStaminaRegen();
@@ -1129,7 +1027,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeFlareFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.maintainParrying:
+            case STATE.maintainParrying:                                                                // MAINTAIN PARRYING
                 chargeLevel = 1;
                 rb.velocity = Vector3.zero;
                 PauseStaminaRegen();
@@ -1139,18 +1037,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeFlareFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.preparingToJump:
+            case STATE.preparingToJump:                                                                     // PREPARING TO JUMP
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 walkFXBack.Stop();
                 walkFXFront.Stop();
                 break;
 
-            case STATE.jumping:
+            case STATE.jumping:                                                                             // JUMPING
                 PauseStaminaRegen();
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 break;
 
-            case STATE.dashing:
+            case STATE.dashing:                                                                                // DASHING
                 canCharge = false;
                 currentDashStep = DASHSTEP.invalidated;
                 currentShortcutDashStep = DASHSTEP.invalidated;
@@ -1163,11 +1061,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeFlareFX.gameObject.SetActive(false);
                 break;
 
-            case STATE.recovering:
+            case STATE.recovering:                                                                          // RECOVERING
                 rb.velocity = Vector3.zero;
                 break;
-
-            case STATE.clashed:
+                    
+            case STATE.clashed:                                                                             // CLASHED
                 chargeLevel = 1;
                 playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
@@ -1184,7 +1082,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 attackRangeFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.enemyKilled:
+            case STATE.enemyKilled:                                                                             // ENEMY KILLED
                 SetStaminaBarsOpacity(0);
                 stamina = maxStamina;
                 attackDashFXFront.Stop();
@@ -1193,7 +1091,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXFront.Stop();
                 break;
 
-            case STATE.dead:
+            case STATE.dead:                                                                            // DEAD
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 SetStaminaBarsOpacity(0);
                 playerCollider.isTrigger = true;
@@ -1220,7 +1118,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-    #region PLAYERS
+    #region PLAYERS IDENTIFICATION
     IEnumerator GetOtherPlayerNum()
     {
         yield return new WaitForSeconds(0.2f);
@@ -1234,13 +1132,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void FindOpponent()
     {
         foreach (Player p in FindObjectsOfType<Player>())
-        {
             if (p != this)
             {
                 opponent = p;
                 break;
             }
-        }
     }
     #endregion
 
@@ -1269,9 +1165,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         for (int i = 0; i < playerColliders.Length; i++)
-        {
             playerColliders[i].isTrigger = false;
-        }
 
 
         // ANIMATIONS
@@ -1293,8 +1187,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         chargeLevel = 1;
 
 
-        // Restablishes physics
-        //rb.gravityScale = 1;
         rb.simulated = true;
 
 
@@ -1303,9 +1195,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         for (int i = 0; i < playerColliders.Length; i++)
-        {
             playerColliders[i].isTrigger = false;
-        }
 
 
         // ANIMATIONS
@@ -1548,8 +1438,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         audioManager.BattleEventIncreaseIntensity();
 
 
-
-
         // CAMERA FX
         gameManager.deathCameraShake.shakeDuration = gameManager.deathCameraShakeDuration;
         gameManager.TriggerSlowMoCoroutine(gameManager.roundEndSlowMoDuration, gameManager.roundEndSlowMoTimeScale, gameManager.roundEndTimeScaleFadeSpeed);
@@ -1568,8 +1456,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (inputManager.playerInputs[playerNum].switchChar && opponent.playerIsAI)
         {
             IAScript enemyIA = opponent.GetComponent<IAScript>();
+
+
             if (enemyIA != null)
-            {
                 switch (enemyIA.IADifficulty)
                 {
                     case IAScript.Difficulty.Easy:
@@ -1584,7 +1473,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                         enemyIA.SetDifficulty(IAScript.Difficulty.Easy);
                         break;
                 }
-            }
         }
     }
 
@@ -1696,22 +1584,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void UpdateStaminaSlidersValue()
     {
         // DETECT STAMINA CHARGE UP
-        if (Mathf.FloorToInt(oldStaminaValue) < Mathf.FloorToInt(stamina))
-        {
-            if (!gameManager.playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
+        if (Mathf.FloorToInt(oldStaminaValue) < Mathf.FloorToInt(stamina) && !gameManager.playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
+            if (!staminaRecupAnimOn && !staminaBreakAnimOn)
             {
-                if (!staminaRecupAnimOn && !staminaBreakAnimOn)
-                {
-                    staminaBarChargedAudioEffectSource.Play();
+                staminaBarChargedAudioEffectSource.Play();
 
-                    if (cheatSettings.useExtraDiegeticFX)
-                    {
-                        staminaGainFX.Play();
-                        staminaGainFX.GetComponent<ParticleSystem>().Play();
-                    }
+                if (cheatSettings.useExtraDiegeticFX)
+                {
+                    staminaGainFX.Play();
+                    staminaGainFX.GetComponent<ParticleSystem>().Play();
                 }
             }
-        }
 
 
         oldStaminaValue = stamina;
@@ -1732,9 +1615,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         for (int i = 1; i < staminaSliders.Count; i++)
-        {
             staminaSliders[i].value = Mathf.Clamp(stamina, i, i + 1) - i;
-        }
 
 
         if (stamina >= maxStamina)
@@ -1743,16 +1624,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 staminaBarsOpacity -= 0.05f;
         }
         else if (staminaBarsOpacity != staminaBarBaseOpacity)
-        {
             staminaBarsOpacity = staminaBarBaseOpacity;
-        }
     }
 
     // Manages stamina bars opacity
     void SetStaminaBarsOpacity(float opacity)
     {
         if (!staminaRecupAnimOn)
-        {
             for (int i = 0; i < staminaSliders.Count; i++)
             {
                 Color
@@ -1763,7 +1641,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 staminaSliders[i].fillRect.GetComponent<Image>().color = new Color(fillColor.r, fillColor.g, fillColor.b, opacity);
                 staminaSliders[i].GetComponent<StaminaSlider>().fillArea.color = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, opacity);
             }
-        }
     }
 
     void UpdateStaminaColor()
@@ -1771,26 +1648,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (!staminaRecupAnimOn && !staminaBreakAnimOn)
         {
             if (stamina < staminaCostForMoves)
-            {
                 SetStaminaColor(staminaDeadColor);
-            }
             else if (stamina < staminaCostForMoves * 2)
-            {
                 SetStaminaColor(staminaLowColor);
-            }
             else
-            {
                 SetStaminaColor(staminaBaseColor);
-            }
         }
     }
 
     void SetStaminaColor(Color color)
     {
         for (int i = 0; i < staminaSliders.Count; i++)
-        {
             staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color = Color.Lerp(staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color, color, Time.deltaTime * 10);
-        }
     }
     #endregion
 
@@ -1927,14 +1796,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (ConnectManager.Instance.connectedToMaster)
             {
                 if (photonView.IsMine)
-                {
                     rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
-                }
             }
             else
-            {
                 rb.velocity = new Vector2(inputManager.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
-            }
         }
 
 
@@ -2042,27 +1907,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region JUMP
-    // JUMP
     void ManageJumpInput()
     {
         if (canJump)
         {
-
             if (ConnectManager.Instance.enableMultiplayer)
             {
                 if (!inputManager.playerInputs[0].jump)
-                {
-                    //StartCoroutine(JumpCoroutine());
                     TriggerJumpBeginning();
-                }
             }
-            else
-            {
-                if (inputManager.playerInputs[playerNum].jump)
-                {
+            else if (inputManager.playerInputs[playerNum].jump)
                     TriggerJumpBeginning();
-                }
-            }
         }
     }
 
@@ -2381,9 +2236,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
         // ANIMATION
         playerAnimations.TriggerAttack(dashDirection);
+
 
 
         // STATE SWITCH
@@ -2403,14 +2258,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         foreach (Collider2D c in hitsCol)
-        {
             if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
                     hits.Add(c.transform.parent.gameObject);
-        }
 
 
         foreach (GameObject g in hits)
-        {
             if (g != gameObject && !targetsHit.Contains(g))
             {
                 targetsHit.Add(g);
@@ -2425,7 +2277,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 if (enemyDead)
                     SwitchState(STATE.enemyKilled);
             }
-        }
     }
     #endregion
 
@@ -2457,9 +2308,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             if (stamina <= maintainParryStaminaCostOverTime)
-            {
                 ReleaseMaintainParry();
-            }
 
             if (!inputManager.playerInputs[playerNum].parry)
             {
@@ -2578,9 +2427,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (ConnectManager.Instance.connectedToMaster)
         {
             if (!inputManager.playerInputs[0].kick)
-            {
                 canPommel = true;
-            }
 
 
             if (inputManager.playerInputs[0].kick && canPommel)
@@ -2593,15 +2440,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             if (!inputManager.playerInputs[playerNum].kick)
-            {
                 canPommel = true;
-            }
 
 
             if (inputManager.playerInputs[playerNum].kick && canPommel)
             {
                 canPommel = false;
-
                 TriggerPommel();
             }
         }
@@ -2638,24 +2482,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         foreach (Collider2D c in hitsCol)
-        {
-            if (c.CompareTag("Player"))
-            {
-                if (!hits.Contains(c.transform.parent.gameObject))
-                {
+            if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
                     hits.Add(c.transform.parent.gameObject);
-                }
-            }
-        }
 
 
         foreach (GameObject g in hits)
-        {
             if (g != gameObject && !targetsHit.Contains(g))
             {
                 targetsHit.Add(g);
 
-                //g.GetComponent<PlayerStats>().StaminaCost(kickedStaminaLoss);
+
                 if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
                 {
                     if (ConnectManager.Instance.connectedToMaster)
@@ -2664,7 +2500,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                         g.GetComponent<Player>().Pommeled();
                 }
             }
-        }
     }
     #endregion
 
@@ -2687,10 +2522,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // ASKS TO START MATCH IF SNEATHED
             if (playerState == STATE.sneathed || playerState == STATE.drawing)
-            {
                 wasSneathed = true;
-                Debug.Log("WassNEATHED");
-            }
 
 
             // ANIMATIONs
@@ -2700,16 +2532,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // Stamina
-            Debug.Log($"Pommeled while {playerState}");
             if (playerState == STATE.parrying || playerState == STATE.attacking)
             {
-                //StartCoroutine(TriggerStaminaBreakAnim());
-                Debug.Log("Stamina break");
                 if (ConnectManager.Instance.connectedToMaster)
                     photonView.RPC("InitStaminaBreak", RpcTarget.All);
                 else
                     InitStaminaBreak();
             }
+
 
             //NE PAS SUPPRIMER
             //StopAllCoroutines();
@@ -2719,10 +2549,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // STARTS MATCH IF PLAYER WAS SNEATHED
             if (wasSneathed)
-            {
-                Debug.Log("Draw");
                 gameManager.SaberDrawn(playerNum);
-            }
 
 
             canCharge = false;
@@ -2840,44 +2667,30 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             // Detects dash with basic input rather than double tap, shortcut
             if (Mathf.Abs(inputManager.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated && stamina >= staminaCostForMoves)
-            {
-                //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
                 currentShortcutDashStep = DASHSTEP.rest;
-            }
 
 
             if (Mathf.Abs(inputManager.playerInputs[0].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
             {
                 dashDirection = Mathf.Sign(inputManager.playerInputs[0].dash);
-
                 photonView.RPC("TriggerBasicDash", RpcTarget.All);
-
-                //TriggerBasicDash();
             }
 
 
             // Resets the dash input if too much time has passed
             if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
-            {
                 if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
-                {
                     currentDashStep = DASHSTEP.invalidated;
-                }
-            }
 
 
             // The player needs to let go the direction before pressing it again to dash
             if (Mathf.Abs(inputManager.playerInputs[0].horizontal) < dashDeadZone)
             {
                 if (currentDashStep == DASHSTEP.firstInput)
-                {
                     currentDashStep = DASHSTEP.firstRelease;
-                }
                 // To make the first dash input he must have not been pressing it before, we need a double tap
                 else if (currentDashStep == DASHSTEP.invalidated)
-                {
                     currentDashStep = DASHSTEP.rest;
-                }
             }
 
 
@@ -2899,7 +2712,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     currentDashStep = DASHSTEP.invalidated;
                     photonView.RPC("TriggerBasicDash", RpcTarget.All);
-                    //TriggerBasicDash();
                 }
             }
         }
@@ -2910,53 +2722,36 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
 
             if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
-            {
-                //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
                 currentShortcutDashStep = DASHSTEP.rest;
-            }
 
             // Detects dash with basic input rather than double tap, shortcut
             if (Mathf.Abs(inputManager.playerInputs[playerNum].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
             {
                 dashDirection = Mathf.Sign(inputManager.playerInputs[playerNum].dash);
-
-
                 TriggerBasicDash();
             }
 
 
             // Resets the dash input if too much time has passed
             if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
-            {
                 if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
-                {
                     currentDashStep = DASHSTEP.invalidated;
-                }
-            }
 
 
             // The player needs to let go the direction before pressing it again to dash
             if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) < dashDeadZone)
             {
                 if (currentDashStep == DASHSTEP.firstInput)
-                {
                     currentDashStep = DASHSTEP.firstRelease;
-                }
                 // To make the first dash input he must have not been pressing it before, we need a double tap
                 else if (currentDashStep == DASHSTEP.invalidated)
-                {
                     currentDashStep = DASHSTEP.rest;
-                }
             }
 
 
             if (Mathf.Abs(inputManager.playerInputs[playerNum].horizontal) > dashDeadZone && Mathf.Sign(inputManager.playerInputs[playerNum].horizontal) != temporaryDashDirectionForCalculation)
-            {
                 if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
-                {
                     currentDashStep = DASHSTEP.invalidated;
-                }
-            }
 
 
             // When the player presses the direction
@@ -2985,19 +2780,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
-        {
-            //EndDash();
             targetPos = transform.position;
-        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
-        {
-            //EndDash();
             targetPos = transform.position;
-        }
     }
 
     // Triggers the dash (Not the clash or attack dash) for it to run
@@ -3076,9 +2865,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             if (dashTime >= 1.0f)
-            {
                 EndDash();
-            }
         }
     }
 
@@ -3087,9 +2874,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         // CHANGE STATE
         if (playerState != STATE.attacking && playerState != STATE.recovering)
-        {
             SwitchState(STATE.normal);
-        }
 
 
         isDashing = false;

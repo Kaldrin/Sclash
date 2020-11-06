@@ -5,6 +5,7 @@ using TMPro;
 
 
 // Script that manages the stats screen set up and evolution based on the data of the stats scriptable object
+// OPTIMIZED I THINK ?
 public class StatsMenu : MonoBehaviour
 {
     #region VARIABLES
@@ -17,14 +18,10 @@ public class StatsMenu : MonoBehaviour
 
 
 
-
-    #region INPUTS
     [Header("INPUTS")]
     [SerializeField] string statModeSwitchAxis = "MenuTriggers";
     [SerializeField] float statModeSwitchAxisDeadzone = 0.3f;
     bool canInputModeChange = true;
-    #endregion
-
 
 
 
@@ -34,8 +31,6 @@ public class StatsMenu : MonoBehaviour
     [SerializeField] CharactersDatabase characters = null;
 
     
-
-
 
     #region GLOBAL GAMES STATS INFO
     [Header("GLOBAL GAMES STATS INFO")]
@@ -92,7 +87,8 @@ public class StatsMenu : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        ManageStatModeChange();
+        if (enabled && isActiveAndEnabled)
+            ManageStatModeChange();
     }
 
 
@@ -116,6 +112,7 @@ public class StatsMenu : MonoBehaviour
             canInputModeChange = true;
     }
 
+
     public void ChangeStatMode(int indexIncrementation)
     {
         currentStatMode += indexIncrementation;
@@ -130,10 +127,12 @@ public class StatsMenu : MonoBehaviour
         UpdateAllStatsDisplayedInfos();
     }
 
+
     public void UpdateAllStatsDisplayedInfos()
     {
         StartCoroutine(UpdateAllStatsDisplayedInfosCoroutine());
     }
+
 
     IEnumerator UpdateAllStatsDisplayedInfosCoroutine()
     {
@@ -248,10 +247,8 @@ public class StatsMenu : MonoBehaviour
 
 
         for (int i = 0; i < gameStatsListParent.childCount; i++)
-        {
             if (gameStatsListParent.GetChild(i).gameObject != gameStatObject)
                 Destroy(gameStatsListParent.GetChild(i).gameObject);
-        }
 
 
         
@@ -333,7 +330,6 @@ public class StatsMenu : MonoBehaviour
 
 
             // Rounds
-            //currentlyInstantiatedGameStat.TriggerUpdateRoundsList(stats.globalStats[currentStatMode].gamesList[i]);
             currentlyInstantiatedGameStat.game = stats.globalStats[currentStatMode].gamesList[i];
 
             yield return new WaitForSecondsRealtime(0.1f);

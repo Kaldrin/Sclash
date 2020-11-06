@@ -1,41 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+// Script to give a set camera shake behaviour to the camera
+// COULD BE MORE OPTIMIZED
 public class CameraShake : MonoBehaviour
 {
-    # region COMPONENTS
     [Header("COMPONENTS")]
     // Transform of the camera to shake. Grabs the gameObject's transform
     // if null.
     [SerializeField] Transform camTransform = null;
-    # endregion
 
 
     [Header("IDENTIFICATION")]
-    //[SerializeField] string cameraShakeName = "Camera shake";
+    [SerializeField] string cameraShakeName = "Camera shake";
 
 
 
-
-    #region SHAKE PARAMETERS
     [Header("SHAKE PARAMETERS")]
     // How long the object should shake for.
     [SerializeField] public float shakeDuration = 0f;
     // Amplitude of the shake. A larger value shakes the camera harder.
-    [SerializeField] float
-        shakeAmount = 0.5f,
+    [SerializeField] float shakeAmount = 0.5f,
         decreaseFactor = 1.5f;
-
     [SerializeField] Vector3 axisInfluence = new Vector3(1, 1, 0);
 
-    bool
-        hasResetPosition = false,
+    bool hasResetPosition = false,
         hasBeganShaking = false;
-
-    Vector3
-        originalPos = new Vector3(0, 0, 0),
+    Vector3 originalPos = new Vector3(0, 0, 0),
         beforeShakePos = new Vector3(0, 0, 0);
-    #endregion
 
 
 
@@ -43,15 +36,22 @@ public class CameraShake : MonoBehaviour
 
 
 
-    # region BASE FUNCTIONS
+
+
+
+
+    # region FUNCTIONS
     // BASE FUNCTIONS
     void Awake()
     {
         if (camTransform == null)
-        {
             camTransform = GetComponent(typeof(Transform)) as Transform;
-        }
+
+
+        // WARNING
+        string removeFuckingWarning = cameraShakeName;
     }
+
 
     // OnEnable is called each time the object is set from inactive to active
     void OnEnable()
@@ -61,6 +61,7 @@ public class CameraShake : MonoBehaviour
 
         StartCoroutine(UpdateCameraShakeCoroutine());
     }
+
 
     // Update is called once per graphic frame
     IEnumerator UpdateCameraShakeCoroutine()
@@ -85,17 +86,11 @@ public class CameraShake : MonoBehaviour
 
 
                 if (axisInfluence.x == 0)
-                {
                     baseShakePos.x = camTransform.localPosition.x;
-                }
                 if (axisInfluence.y == 0)
-                {
                     baseShakePos.y = camTransform.localPosition.y;
-                }
                 if (axisInfluence.z == 0)
-                {
                     baseShakePos.z = camTransform.localPosition.z;
-                }
 
 
 
@@ -113,17 +108,11 @@ public class CameraShake : MonoBehaviour
                 if (!hasResetPosition)
                 {
                     if (axisInfluence.x == 0)
-                    {
                         beforeShakePos.x = camTransform.localPosition.x;
-                    }
                     if (axisInfluence.y == 0)
-                    {
                         beforeShakePos.y = camTransform.localPosition.y;
-                    }
                     if (axisInfluence.z == 0)
-                    {
                         beforeShakePos.z = camTransform.localPosition.z;
-                    }
 
 
                     camTransform.localPosition = beforeShakePos;

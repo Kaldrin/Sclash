@@ -60,7 +60,7 @@ public class CharacterChanger : MonoBehaviour
 
 
 
-
+    #region FUNCTIONS
     void Awake()
     {
         // GameManager.Instance.ResetGameEvent +=
@@ -76,7 +76,10 @@ public class CharacterChanger : MonoBehaviour
 
 
         currentCharacter = lastChosenCharacterIndex;
-        characterChangeAnimator.enabled = true;
+        if (characterChangeAnimator != null)
+            characterChangeAnimator.enabled = true;
+        else
+            Debug.Log("Couldn't find the character change display animator, ignoring");
 
 
         FindElements();
@@ -101,6 +104,7 @@ public class CharacterChanger : MonoBehaviour
             ManageCharacterChange();
     }
 
+
     public void FindElements()
     {
         for (int i = 0; i < 2; i++)
@@ -123,6 +127,7 @@ public class CharacterChanger : MonoBehaviour
         else if (!canChange && Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal) < 0.5f)
                 canChange = true;
     }
+
 
     public IEnumerator ApplyCharacterChange()
     {
@@ -197,4 +202,5 @@ public class CharacterChanger : MonoBehaviour
         playerScript.characterIndex = currentCharacter;
         playerScript.gameManager.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacter].name;
     }
+    #endregion
 }

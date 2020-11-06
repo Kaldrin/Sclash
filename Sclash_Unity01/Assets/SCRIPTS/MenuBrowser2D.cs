@@ -7,14 +7,13 @@ using UnityEngine.EventSystems;
 
 
 // Created for Unity 2019.1.1f1
+// Menu browser script that allows browsing through elements in menus in 2D instead of 1D, and also has custom events to be called when overflowing to that it can interact with other menu browsers
+// OPTIMIZED ?
 public class MenuBrowser2D : MonoBehaviour
 {
     #region VARIABLES
-    #region MANAGERS
     [Header("MANAGERS")]
     [SerializeField] RumbleManager rumbleManager = null;
-    #endregion
-
 
 
 
@@ -51,8 +50,6 @@ public class MenuBrowser2D : MonoBehaviour
 
 
 
-
-
     #region SPECIAL
     [Header("SPECIAL")]
     [SerializeField] bool callSpecialElementWHenHorizontalOverflow = false;
@@ -60,7 +57,6 @@ public class MenuBrowser2D : MonoBehaviour
     [SerializeField] bool callSpecialElementWhenEnabled = true;
     [SerializeField] public Button enabledSpecialElement = null;
     #endregion
-
 
 
 
@@ -86,7 +82,6 @@ public class MenuBrowser2D : MonoBehaviour
 
 
 
-
     #region VISUAL
     [Header("VISUAL")]
     [Tooltip("Default color of an unselected menu element's text")]
@@ -102,12 +97,9 @@ public class MenuBrowser2D : MonoBehaviour
 
 
 
-
-    #region SOUND
     [Header("SOUND")]
     [Tooltip("The PlayRandomSoundInList script to play a random sound from the given source on it whenever browsing through menu elements")]
     [SerializeField] PlayRandomSoundInList hoverSound = null;
-    #endregion
     #endregion
 
 
@@ -166,28 +158,30 @@ public class MenuBrowser2D : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        if (elements2D.Length > 0)
+        if (enabled && isActiveAndEnabled)
         {
-            // H AXIS
-            // Detects H axis let go
-            if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
-                hAxisInUse = false;
-
-
-            // Move sliders with horizontal
-            if (!hAxisInUse)
+            if (elements2D.Length > 0)
             {
-                if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone)
+                // H AXIS
+                // Detects H axis let go
+                if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
+                    hAxisInUse = false;
+
+
+                // Move sliders with horizontal
+                if (!hAxisInUse)
                 {
-                    HorizontalBrowse(1);
-                    hAxisInUse = true;
+                    if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone)
+                    {
+                        HorizontalBrowse(1);
+                        hAxisInUse = true;
+                    }
+                    else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone)
+                    {
+                        HorizontalBrowse(-1);
+                        hAxisInUse = true;
+                    }
                 }
-                else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone)
-                {
-                    HorizontalBrowse(-1);
-                    hAxisInUse = true;
-                }
-            }
             
 
 
@@ -196,39 +190,36 @@ public class MenuBrowser2D : MonoBehaviour
 
 
 
-            // V AXIS
-            // Detects V axis let go
-            if (Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
-                vAxisInUse = false;
+                // V AXIS
+                // Detects V axis let go
+                if (Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
+                    vAxisInUse = false;
 
 
-            if (!vAxisInUse)
-            {
-                // Detects positive V axis input
-                if (Input.GetAxis(verticalAxis) > verticalInputDetectionZone)
+                if (!vAxisInUse)
                 {
-                    VerticalBrowse(1);
-                    vAxisInUse = true;
-                }
-
-
-                // Detects negative V axis input
-                if (Input.GetAxis(verticalAxis) < -verticalInputDetectionZone)
-                {
-                    VerticalBrowse(-1);
-                    vAxisInUse = true;
+                    // Detects positive V axis input
+                    if (Input.GetAxis(verticalAxis) > verticalInputDetectionZone)
+                    {
+                        VerticalBrowse(1);
+                        vAxisInUse = true;
+                    }
+                    // Detects negative V axis input
+                    else if (Input.GetAxis(verticalAxis) < -verticalInputDetectionZone)
+                    {
+                        VerticalBrowse(-1);
+                        vAxisInUse = true;
+                    }
                 }
             }
-        }
 
 
-        // BACK
-        if (canBack)
-        {
-            if (Input.GetButtonUp(backButton))
-                backElement.GetComponent<Button>().onClick.Invoke();
+            // BACK
+            if (canBack && Input.GetButtonUp(backButton))
+                    backElement.GetComponent<Button>().onClick.Invoke();
         }
     }
+
 
     // OnEnable is called each time the object is set from inactive to active
     void OnEnable()
@@ -404,13 +395,11 @@ public class MenuBrowser2D : MonoBehaviour
 
 
         for (int i = 0; i < elements2D.Length; i++)
-        {
             if (isObjectInGameObjectArray(hoveredObject, elements2D[i].line))
             {
                 XIndex = FindObjectIndexInGameObjectArray(hoveredObject, elements2D[i].line);
                 YIndex = i;
             }
-        }
         
 
         if (elements2D[YIndex].line[XIndex].GetComponent<Button>() || elements2D[YIndex].line[XIndex].GetComponent<TMP_InputField>())
@@ -423,21 +412,11 @@ public class MenuBrowser2D : MonoBehaviour
 
 
 
-
-    #region ADD & REMOVE ELEMENTS
-    public void AddElement(GameObject newButton)
-    { }
-
-    public void RemoveElement(GameObject buttonToRemove)
-    { }
-
+    // ADD & REMOVE ELEMENTS
     public void ChangeBackButton(GameObject newBackButton)
     {
         backElement = newBackButton;
     }
-    #endregion
-
-
 
 
 
@@ -447,14 +426,13 @@ public class MenuBrowser2D : MonoBehaviour
     public void FixButtonColorUsageList()
     { }
 
+
     // Updates the color of each element of the menu screen depending on wether it's selected or not
     void UpdateColors()
     {
         // Browses through all elements
         for (int i = 0; i < elements2D.Length; i++)
-        {
             for (int y = 0; y < elements2D[i].line.Length; y++)
-            {
                 if (elements2D[i].line[y])
                 {
                     GameObject g = elements2D[i].line[y];
@@ -469,10 +447,8 @@ public class MenuBrowser2D : MonoBehaviour
 
                         // Changes text color of the element's children
                         for (int j = 0; j < g.transform.childCount; j++)
-                        {
                             if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
                                 g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textSelectedColor;
-                        }
                     }
                     // if the checked element is not the currently selected one
                     else
@@ -483,14 +459,10 @@ public class MenuBrowser2D : MonoBehaviour
 
                         // Changes text color of the element's children
                         for (int j = 0; j < g.transform.childCount; j++)
-                        {
                             if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
                                 g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textDefaultColor;
-                        }
                     }
                 }
-            }
-        }
     }
     #endregion
 
@@ -504,10 +476,8 @@ public class MenuBrowser2D : MonoBehaviour
     bool isObjectInGameObjectArray(GameObject objectToFind, GameObject[] array)
     {
         for (int i = 0; i < array.Length; i++)
-        {
             if (array[i] == objectToFind)
                 return true;
-        }
 
 
         return false;
@@ -516,10 +486,8 @@ public class MenuBrowser2D : MonoBehaviour
     int FindObjectIndexInGameObjectArray(GameObject objectToFind, GameObject[] array)
     {
         for (int i = 0; i < array.Length; i++)
-        {
             if (array[i] == objectToFind)
                 return i;
-        }
 
 
         return 0;
