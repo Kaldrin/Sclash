@@ -11,6 +11,7 @@ public struct Character
     public RuntimeAnimatorController animator;
     public RuntimeAnimatorController legsAnimator;
     public int defaultMask;
+    public int defaultWeapon;
     public bool locked;
 }
 

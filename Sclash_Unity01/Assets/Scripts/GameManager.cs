@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviourPun
         attackSignColors = { Color.red, Color.yellow },
         playerLightsColors = { Color.red, Color.yellow };
     [HideInInspector] public bool playerDead = false;
-    bool allPlayersHaveDrawn = false;
+    [HideInInspector] public bool allPlayersHaveDrawn = false;
     bool player2Detected = false;
     # endregion
 
@@ -476,16 +476,13 @@ public class GameManager : MonoBehaviourPun
         StopCoroutine(StartMatchCoroutine());
 
 
-
         // FX
         hajimeFX.Play();
-
 
 
         // AUDIO
         audioManager.FindPlayers();
         audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
-
 
 
         // SCORE DISPLAY
@@ -503,15 +500,15 @@ public class GameManager : MonoBehaviourPun
         }
 
 
-
-
         // IN GAME HELP
         characterSelectionHelpAnimator.SetBool("On", true);
 
 
+        for (int i = 0; i < playersList.Count; i++)
+            playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
+
 
         yield return new WaitForSeconds(0.1f);
-
 
 
         // STATE
@@ -519,18 +516,15 @@ public class GameManager : MonoBehaviourPun
         cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
 
 
-
         yield return new WaitForSeconds(0.5f);
 
-
-
+        /*
         for (int i = 0; i < playersList.Count; i++)
             playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
-
+            */
 
 
         yield return new WaitForSeconds(timeBeforeBattleCameraActivationWhenGameStarts);
-
 
 
         // Change camera speeds
@@ -539,19 +533,19 @@ public class GameManager : MonoBehaviourPun
         cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
 
 
-
         yield return new WaitForSeconds(10f);
-
 
 
         // Appears draw text if both players haven't drawn
         allPlayersHaveDrawn = true;
+
 
         for (int i = 0; i < playersList.Count; i++)
             if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
                 allPlayersHaveDrawn = false;
 
 
+        // DRAW DISPLAY
         if (!allPlayersHaveDrawn)
         {
             drawTextVisible = true;
@@ -584,7 +578,7 @@ public class GameManager : MonoBehaviourPun
 
 
                 // STATS
-                statsManager.InitalizeNewGame(1, playersList[0].GetComponent<CharacterChanger>().currentCharacter, playersList[1].GetComponent<CharacterChanger>().currentCharacter);
+                statsManager.InitalizeNewGame(1, playersList[0].GetComponent<CharacterChanger>().currentCharacterIndex, playersList[1].GetComponent<CharacterChanger>().currentCharacterIndex);
                 statsManager.InitializeNewRound();
 
 
@@ -670,6 +664,7 @@ public class GameManager : MonoBehaviourPun
             playerScript.ResetAllPlayerValuesForNextMatch();
 
 
+
             // ANIMATIONS
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
             playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
@@ -685,7 +680,7 @@ public class GameManager : MonoBehaviourPun
             playerScript.characterNameDisplay.text = charactersData.charactersList[0].name;
             playerScript.characterNameDisplay.color = playersColors[i];
             playerScript.characterIdentificationArrow.color = playersColors[i];
-            playerScript.playerLight.color = playerLightsColors[i];
+            //playerScript.playerLight.color = playerLightsColors[i];
         }
     }
 
@@ -982,10 +977,11 @@ public class GameManager : MonoBehaviourPun
 
         // PLAYERS LIGHTS / COLORS
         for (int i = 0; i < playersList.Count; i++)
-        {
-            playersList[i].GetComponent<Player>().playerLight.color = playerLightsColors[i];
-            playersList[i].GetComponent<Player>().playerLight.intensity = 5;
-        }
+            if (playersList[i].GetComponent<Player>().playerLight != null)
+            {
+                playersList[i].GetComponent<Player>().playerLight.color = playerLightsColors[i];
+                playersList[i].GetComponent<Player>().playerLight.intensity = 5;
+            }
 
 
         // NEXT STAGE

@@ -9,6 +9,7 @@ public struct Weapon
     public string name;
     public Sprite illustration;
     public Sprite sprite;
+    public Sprite sheathSprite;
 }
 
 [CreateAssetMenu(fileName = "WeaponsDatabase01", menuName = "Scriptable objects/Weapons database")]

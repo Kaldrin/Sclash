@@ -49,8 +49,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Header("PLAYER'S COMPONENTS")]
     [SerializeField] public Rigidbody2D rb = null;
     [SerializeField] PlayerAnimations playerAnimations = null;
-    [SerializeField] CharacterChanger characterChanger = null;
-    [SerializeField] IAChanger iaChanger = null;
+    [SerializeField] public CharacterChanger characterChanger = null;
+    [SerializeField] public IAScript iaScript = null;
     [Tooltip("The basic collider of the player")]
     [SerializeField] public Collider2D playerCollider;
     [Tooltip("All of the player's 2D colliders")]
@@ -118,7 +118,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public int networkPlayerNum = 0;
     [HideInInspector] public bool playerIsAI;
     public int playerNum = 0;
-    int otherPlayerNum = 0;
+    [HideInInspector] public int otherPlayerNum = 0;
     Player opponent;
     #endregion
 
@@ -336,7 +336,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("PARRY")]
     [HideInInspector] public bool canParry = true;
-    //[SerializeField] int numberOfFramesToDetectParryInput = 3;
     int currentParryFramesPressed = 0;
 
 
@@ -506,9 +505,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         ResetAllPlayerValuesForNextMatch();
 
         characterChanger.FindElements();
-        StartCoroutine(characterChanger.ApplyCharacterChange());
+        //StartCoroutine(characterChanger.ApplyCharacterChange(0));
 
 
+        // ELEMENTS COLOR
         if (usePlayerColorsDifferenciation && playerNum == 1)
         {
             maskSpriteRenderer.color = secondPlayerMaskColor;
@@ -711,6 +711,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.sneathed:                                                    // SNEATHED
+                ManageStaminaRegen();
+                UpdateStaminaSlidersValue();
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+                UpdateStaminaColor();
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 break;
 
@@ -904,19 +908,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (playerState != STATE.frozen)
             oldState = playerState;
-
-
+ 
         playerState = newState;
 
         switch (newState)
         {
-            case STATE.frozen:                                          // FROZEN
+            case STATE.frozen:                                    // FROZEN
                 SetStaminaBarsOpacity(0);
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
                 dashFXBack.Stop();
                 dashFXFront.Stop();
                 characterChanger.enabled = false;
+                characterChanger.EnableVisuals(false);
                 break;
 
             case STATE.sneathing:                                       // SNEATHING
@@ -928,14 +932,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 staminaBarsOpacity = 0;
                 actualMovementsSpeed = sneathedMovementsSpeed;
                 rb.simulated = true;
-                characterChanger.enabled = true;
 
-                if (playerNum == 1)
-                    iaChanger.enabled = true;
+                characterChanger.enabled = true;
                 break;
 
             case STATE.drawing:                                         // DRAWING
                 rb.velocity = Vector3.zero;
+                characterChanger.EnableVisuals(false);
                 characterChanger.enabled = false;
 
                 if (playerNum == 0)
@@ -1349,9 +1352,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public void CheckDeath(int instigatorNum)
     {
         // IS DEAD ?
-        Debug.Log($"{gameObject.name} hit , {gameObject.name} health = {currentHealth}, {gameObject.name} state = {playerState}");
-
-
         if (currentHealth <= 0 && playerState != STATE.dead)
         {
             // Place correctly the players so it looks good
@@ -1850,7 +1850,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            if (inputManager.playerInputs[playerNum].anyKeyDown && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacter].locked)
+            if (inputManager.playerInputs[playerNum].anyKeyDown && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].locked)
                 TriggerDraw();
         }
     }
@@ -1883,12 +1883,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     void TriggerBattleSneath()
     {
-        // ANIMATION
-        playerAnimations.TriggerBattleSneath();
+        // If players haven't all drawn, go back to chara selec state
+        if (!gameManager.allPlayersHaveDrawn)
+        {
+            // STATE
+            SwitchState(STATE.sneathing);
+        }
+        else
+        {
+            // ANIMATION
+            playerAnimations.TriggerBattleSneath();
 
 
-        // STATE
-        SwitchState(STATE.battleSneathing);
+            // STATE
+            SwitchState(STATE.battleSneathing);
+        }
     }
 
     void TriggerBattleDraw()
@@ -2259,11 +2268,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         foreach (Collider2D c in hitsCol)
             if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
-                    hits.Add(c.transform.parent.gameObject);
+                hits.Add(c.transform.parent.gameObject);
+            else if (c.CompareTag("Destructible") && !hits.Contains(c.transform.parent.gameObject))
+                hits.Add(c.gameObject);
 
 
         foreach (GameObject g in hits)
-            if (g != gameObject && !targetsHit.Contains(g))
+            if (g != gameObject && !targetsHit.Contains(g) && g.CompareTag("Player"))
             {
                 targetsHit.Add(g);
 
@@ -2276,6 +2287,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 if (enemyDead)
                     SwitchState(STATE.enemyKilled);
+            }
+            else if (g != gameObject && !targetsHit.Contains(g) && g.CompareTag("Destructible"))
+            {
+                targetsHit.Add(g);
+                
+                if (g.GetComponent<Destructible>())
+                    g.GetComponent<Destructible>().Destroy();
             }
     }
     #endregion
