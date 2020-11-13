@@ -197,6 +197,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] public ParticleSystem animeLinesFx = null;
     [SerializeField] ParticleSystem hajimeFX = null;
     [SerializeField] bool useSlowMotion = true;
+    [SerializeField] bool useAnimeLines = true;
     # endregion
 
 
@@ -1074,6 +1075,9 @@ public class GameManager : MonoBehaviourPun
     }
     #endregion
 
+
+
+
     //RENAME HERE IF WORKING
     void EndGame()
     {
@@ -1097,11 +1101,13 @@ public class GameManager : MonoBehaviourPun
         Invoke("ShowMenu", 2f + timeBeforeWinScreenAppears);
     }
 
+
     // Animation
     void TriggerFallDeadAnimation()
     {
         playersList[losingPlayerIndex].GetComponent<PlayerAnimations>().TriggerRealDeath();
     }
+
 
     void ShowMenu()
     {
@@ -1114,6 +1120,10 @@ public class GameManager : MonoBehaviourPun
         // AUDIO
         audioManager.winMusicAudioSource.Play();
     }
+
+
+
+
 
     #region EFFECTS
     public void TriggerMatchEndFilterEffect(bool on)
@@ -1251,6 +1261,7 @@ public class GameManager : MonoBehaviourPun
         }
     }
 
+
     // Starts the SlowMo coroutine
     public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
@@ -1260,6 +1271,7 @@ public class GameManager : MonoBehaviourPun
             StartCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
         }
     }
+
 
     // Slow motion and zoom for a given duration
     IEnumerator SlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
@@ -1274,7 +1286,14 @@ public class GameManager : MonoBehaviourPun
 
 
         // FX
-        animeLinesFx.Play();
+        if (useAnimeLines)
+        {
+            if (animeLinesFx != null)
+                animeLinesFx.Play();
+            else
+                Debug.Log("Couldn't find anime lines FX, ignoring");
+        }
+            
 
 
         // AUDIO
@@ -1310,7 +1329,13 @@ public class GameManager : MonoBehaviourPun
         // TIME
         Time.timeScale = timeScaleObjective;
         // FX
-        animeLinesFx.Stop();
+        if (useAnimeLines)
+        {
+            if (animeLinesFx != null)
+                animeLinesFx.Stop();
+            else
+                Debug.Log("Couldn't find anime lines FX, ignoring");
+        }
     }
 
 

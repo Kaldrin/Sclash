@@ -6,8 +6,14 @@ using UnityEngine;
 // OPTIMIZED
 public class Destructible : MonoBehaviour
 {
+    [Header("COMPONENTS")]
     [SerializeField] SpriteRenderer destroyableElementSpriteRenderer = null;
+    [SerializeField] MeshRenderer meshRenderer = null;
+
+
+    [Header("DESTROYED EVENT")]
     [SerializeField] Sprite destroyedSprite = null;
+    [SerializeField] Material destroyedMaterial = null;
     [SerializeField] GameObject fallingPart = null;
     [Tooltip("Usually a light")]
     [SerializeField] GameObject objectToDisable = null;
@@ -26,18 +32,23 @@ public class Destructible : MonoBehaviour
 
 
 
+
+    #region FUNCTIONS
     private void Start()
     {
         if (fallingPart.activeInHierarchy)
             fallingPart.SetActive(false);
     }
 
+
     private void FixedUpdate()
     {
+        // Limit falling part velocity
         if (enabled && isActiveAndEnabled && destroyed && !destroyedFallingPart && fallingPart != null)
             if (fallingPart.GetComponent<Rigidbody>() && fallingPart.GetComponent<Rigidbody>().velocity.y < destructibleProfile.fallingPartMaxSpeed)
                 fallingPart.GetComponent<Rigidbody>().velocity = new Vector3(fallingPart.GetComponent<Rigidbody>().velocity.x, destructibleProfile.fallingPartMaxSpeed, fallingPart.GetComponent<Rigidbody>().velocity.z);
     }
+
 
     public void Destroy()
     {
@@ -57,9 +68,12 @@ public class Destructible : MonoBehaviour
                 objectToDisable.SetActive(false);
 
 
-            // CHANGE SPRITE
+            // CHANGE VISUAL TO DESTROYED
             if (destroyableElementSpriteRenderer != null && destroyedSprite != null)
                 destroyableElementSpriteRenderer.sprite = destroyedSprite;
+            if (destroyedMaterial != null)
+                meshRenderer.material = destroyedMaterial;
+
 
             // FALLING PART
             if (fallingPart != null)
@@ -91,6 +105,5 @@ public class Destructible : MonoBehaviour
             destroyedFallingPart = true;
         }
     }
-
-    
+    #endregion
 }

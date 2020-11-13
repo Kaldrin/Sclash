@@ -759,7 +759,12 @@ PrefabInstance:
     - target: {fileID: 4537346145163987936, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 771
+      value: 66307
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537346145163987936, guid: 7cf282351f818584fbc832096288a724,
+        type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4537346145169772495, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
@@ -814,7 +819,17 @@ PrefabInstance:
     - target: {fileID: 4537346145267761332, guid: 7cf282351f818584fbc832096288a724,
         type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 1795
+      value: 67331
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537346145267761332, guid: 7cf282351f818584fbc832096288a724,
+        type: 3}
+      propertyPath: m_Shadows.m_NormalBias
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537346145267761332, guid: 7cf282351f818584fbc832096288a724,
+        type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6168422301491512150, guid: 7cf282351f818584fbc832096288a724,
         type: 3}

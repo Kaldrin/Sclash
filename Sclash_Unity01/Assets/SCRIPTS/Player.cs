@@ -364,8 +364,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public ParticleSystem attackRangeFX = null;
-    [SerializeField] ParticleSystem
-        clashKanasFX = null,
+    [SerializeField] ParticleSystem clashKanasFX = null,
         kickKanasFX = null,
         kickedFX = null,
         clashFX = null,
@@ -387,29 +386,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
     [Header("CHARGE FX")]
     [Tooltip("The slider component reference to move the charging FX on the katana")]
     [SerializeField] Slider chargeSlider = null;
-    [SerializeField]
-    ParticleSystem
-        chargeFlareFX = null,
+    [SerializeField] ParticleSystem chargeFlareFX = null,
         chargeFX = null,
         chargeFullFX = null;
 
 
 
-
-
-
     [Header("STAMINA FX")]
-    [SerializeField]
-    ParticleSystem
-        staminaLossFX = null;
-    [SerializeField]
-    ParticleSystem
-        staminaGainFX = null,
+    [SerializeField] ParticleSystem staminaLossFX = null;
+    [SerializeField] ParticleSystem staminaGainFX = null,
         staminaRecupFX = null,
         staminaRecupFinishedFX = null,
         staminaBreakFX = null;
@@ -1237,12 +1225,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else if (clashFrames)
             {
                 foreach (GameObject p in GameManager.Instance.playersList)
-                {
                     if (ConnectManager.Instance.connectedToMaster)
                         p.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
                     else
                         p.GetComponent<Player>().TriggerClash();
-                }
 
                 // FX
                 Vector3 fxPos = new Vector3((gameManager.playersList[0].transform.position.x + gameManager.playersList[1].transform.position.x) / 2, clashFX.transform.position.y, clashFX.transform.position.z);
@@ -1501,19 +1487,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 // If back walking
                 if (rb.velocity.x * -transform.localScale.x < 0)
-                {
                     stamina += Time.deltaTime * backWalkingQuickStaminaGainOverTime * staminaGlobalGainOverTimeMultiplier;
-                }
                 // If idle walking
                 else if (Mathf.Abs(rb.velocity.x) <= 0.5f)
-                {
                     stamina += Time.deltaTime * idleQuickStaminaGainOverTimeMultiplier * staminaGlobalGainOverTimeMultiplier;
-                }
                 // If front walking
                 else
-                {
                     stamina += Time.deltaTime * frontWalkingQuickStaminaGainOverTime * staminaGlobalGainOverTimeMultiplier;
-                }
             }
             else if (stamina < maxStamina)
             {
@@ -1522,19 +1502,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 // If back walking
                 if (rb.velocity.x * -transform.localScale.x < 0)
-                {
                     stamina += Time.deltaTime * backWalkingStaminaGainOverTime * staminaGlobalGainOverTimeMultiplier;
-                }
                 // If idle walking
                 else if (Mathf.Abs(rb.velocity.x) <= 0.5f)
-                {
                     stamina += Time.deltaTime * idleStaminaGainOverTimeMultiplier * staminaGlobalGainOverTimeMultiplier;
-                }
                 // If front walking
                 else
-                {
                     stamina += Time.deltaTime * frontWalkingStaminaGainOverTime * staminaGlobalGainOverTimeMultiplier;
-                }
             }
         }
 
@@ -1543,13 +1517,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (currentTimeBeforeStaminaRegen <= 0 && !canRegenStamina)
         {
             currentTimeBeforeStaminaRegen = 0;
-
             canRegenStamina = true;
         }
         else if (!canRegenStamina)
-        {
             currentTimeBeforeStaminaRegen -= Time.deltaTime;
-        }
     }
 
     // Trigger the stamina regen pause duration
@@ -1603,7 +1574,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         // FX pos
         staminaLossFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina + 0.5f), 0, maxStamina - 1)].transform.position;
-        staminaGainFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina - 0.5f), 0, maxStamina - 1)].transform.position + new Vector3(0.2f, 0, 0) * Mathf.Sign(transform.localScale.x);
+        staminaGainFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina - 0.5f), 0, maxStamina - 1)].transform.position + new Vector3(0.1f, 0, 0) * Mathf.Sign(transform.localScale.x);
 
         // Stamina recup anim FX pox
         staminaRecupFX.gameObject.transform.position = staminaSliders[(int)Mathf.Clamp((int)(stamina - 0f), 0, maxStamina - 1)].transform.position + new Vector3(0.1f, 0.1f * Mathf.Sign(transform.localScale.x), 0) * Mathf.Sign(transform.localScale.x);
@@ -2166,7 +2137,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // FX
         Vector3 attackSignPos = attackRangeFX.transform.localPosition;
         attackRangeFX.transform.localPosition = new Vector3(-(actualAttackRange + attackSignDisjoint), attackSignPos.y, attackSignPos.z);
-        if (cheatSettings.useExtraDiegeticFX)
+        if (cheatSettings.useExtraDiegeticFX && cheatSettings.useRangeFlareFX)
             attackRangeFX.Play();
         chargeFlareFX.gameObject.SetActive(false);
         chargeFlareFX.gameObject.SetActive(true);
@@ -2291,9 +2262,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else if (g != gameObject && !targetsHit.Contains(g) && g.CompareTag("Destructible"))
             {
                 targetsHit.Add(g);
-                
+
                 if (g.GetComponent<Destructible>())
                     g.GetComponent<Destructible>().Destroy();
+                else if (g.transform.parent.gameObject.GetComponent<Destructible>())
+                    g.transform.parent.gameObject.GetComponent<Destructible>().Destroy();
             }
     }
     #endregion
