@@ -5,8 +5,12 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
+
+// MANAGES ALL ANIMATIONS OF THE PLAYER
+// COULD BE MORE OPTIMIZED PROBABLY ?
 public class PlayerAnimations : MonoBehaviourPunCallbacks
 {
+    #region VARIABLES
     #region PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
     [Tooltip("The reference to the player's Rigidbody component")]
@@ -19,11 +23,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         legsAnimator = null,
         legsAnimator2 = null;
     [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
-    [SerializeField] Animator drawTextAnimator = null;
     [SerializeField] public Animator nameDisplayAnimator = null;
-
-    [Tooltip("The reference to the game object containing the sprite mask of the player's legs")]
-    [SerializeField] public GameObject legsMask = null;
 
     [Tooltip("The reference to the player's SpriteRenderers components for the character and their legs")]
     [SerializeField]
@@ -33,9 +33,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     [SerializeField] Player playerScript = null;
     # endregion
-
-
-
 
 
 
@@ -53,15 +50,12 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
-
     #region ANIMATOR PARAMETERS
     [Header("PLAYER ANIMATOR PARAMETERS")]
-    [SerializeField] string Walk = "Walk";
-    [SerializeField]
-    string
-        playerWalkDirection = "WalkDirection",
-        moving = "Moving",
+    //[SerializeField] string Walk = "Walk";
+    [SerializeField] string
+        playerWalkDirection = "WalkDirection";
+    [SerializeField] string moving = "Moving",
         stamina = "Stamina",
         attackOn = "AttackOn",
         maxCharge = "MaxCharge",
@@ -70,7 +64,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         attackDirection = "AttackDirection",
         parryOn = "ParryOn",
         perfectParry = "PerfectParry",
-        maintainParry = "MaintainParry",
+        //maintainParry = "MaintainParry",
         maintainParryOn = "MaintainParryOn",
         maintainParryOff = "MaintainParryOff",
         clashedOn = "ClashedOn",
@@ -94,14 +88,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     [Header("LEG ANIMATOR PARAMETERS")]
     [SerializeField] string legsWalkDirection = "WalkDirection";
-
-    [Header("LEG02 ANIMATOR PARAMETERS")]
-    [SerializeField] string legs02WalkDirection = "WalkDirection";
-
-    [Header("DRAW TEXT ANIMATOR PARAMETERS")]
-    [SerializeField] string textDrawOn = "DrawOn";
-    [SerializeField] string resetDrawText = "ResetDraw";
-    # endregion
+    #endregion
+    #endregion
 
 
 
@@ -123,40 +111,19 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
-
-
-
-
-
-
-
+    #region FUNCTIONS
     #region BASE FUNCTIONS
     private void Start()
     {
         animatorBaseSpeed = animator.speed;
     }
 
-    // Update is called once per graphic frame
-    void Update()
-    {
-        //Debug.Log(animatorBaseSpeed);
-    }
-
-    // FixedUpdate is called 30 times per second
     void FixedUpdate()
     {
-
         if (photonView != null)
             if (!photonView.IsMine)
                 return;
 
-        /*
-        if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
-        {
-            UpdateAnims();
-        }
-        */
 
         if (InputManager.Instance.playerInputs.Length > playerScript.playerNum)
             UpdateAnims(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
@@ -176,18 +143,14 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     // Update the animator's parameters in Update
     void UpdateAnims(float horizontal)
     {
-        // CHARGE WALK ANIM
-        legsAnimator2.SetFloat("AttackState", nextAttackState);
-
-
-
         if (playerScript.playerState == Player.STATE.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
+        {
             legsAnimator2.gameObject.SetActive(true);
+            legsAnimator2.SetFloat("AttackState", nextAttackState);
+        }
         else
             legsAnimator2.gameObject.SetActive(false);
-
-        legsAnimator2.SetFloat("AttackState", nextAttackState);
-
+            
 
 
         // DASHING STATE
@@ -199,9 +162,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
             if (ConnectManager.Instance.enableMultiplayer)
-            {
                 animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal)));
-            }
             else
             {
                 animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(horizontal)));
@@ -234,10 +195,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
-
     #region RESET ANIMATION STATES
-    // RESET ANIMATION STATES
     public void ResetAnimsForNextRound()
     {
         ResetWalkDirecton();
@@ -269,10 +227,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
         animator.SetBool(dead, false);
         animator.SetBool(dashing, false);
-
-
-        drawTextAnimator.ResetTrigger(textDrawOn);
-        drawTextAnimator.ResetTrigger(resetDrawText);
     }
 
     public void ResetAnimsForNextMatch()
@@ -309,20 +263,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
         animator.speed = 1;
-
-        if (drawTextAnimator.gameObject.activeSelf)
-        {
-            drawTextAnimator.ResetTrigger(textDrawOn);
-            drawTextAnimator.ResetTrigger(resetDrawText);
-        }
-
         TriggerSneath();
     }
     #endregion
-
-
-
-
 
 
 
@@ -334,34 +277,32 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
             if ((rigid.velocity.x * -transform.localScale.x) < 0)
             {
                 animator.SetFloat(playerWalkDirection, 0);
-                legsAnimator2.SetFloat(legs02WalkDirection, 0);
 
-
-                if (legsAnimator.isActiveAndEnabled)
-                    legsAnimator.SetFloat(legsWalkDirection, 0);
+                if (legsAnimator2.isActiveAndEnabled)
+                    legsAnimator2.SetFloat(legsWalkDirection, 0);
             }
             else
             {
                 animator.SetFloat(playerWalkDirection, 1);
-                legsAnimator2.SetFloat(legs02WalkDirection, 1);
 
-
-                if (legsAnimator.isActiveAndEnabled)
-                    legsAnimator.SetFloat(legsWalkDirection, 1);
+                if (legsAnimator2.isActiveAndEnabled && playerScript.playerState == Player.STATE.charging)
+                    legsAnimator2.SetFloat(legsWalkDirection, 1);
             }
         }
         catch { }
     }
 
+
+    // RESET
     void ResetWalkDirecton()
     {
         try
         {
-            if (legsAnimator.enabled && legsAnimator.gameObject.activeInHierarchy)
-            {
-                legsAnimator.SetFloat(legsWalkDirection, 0);
-                animator.SetFloat(playerWalkDirection, 0f);
-            }
+            if (legsAnimator2.enabled && legsAnimator2.gameObject.activeInHierarchy)
+                legsAnimator2.SetFloat(legsWalkDirection, 0);
+
+
+            animator.SetFloat(playerWalkDirection, 0f);
         }
         catch { }
     }
@@ -373,8 +314,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
+
+
     #region IDLE STAMINA STATE / EXHAUSTED
-    // IDLE STAMINA STATE / EXHAUSTED
     // Updates the idle animation state of the player depending on its current stamina
     public void UpdateIdleStateDependingOnStamina(float playerStamina)
     {
@@ -394,9 +336,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
-
-
     #region DRAW ANIMATION
     // Triggers the draw animation
     public void TriggerDraw()
@@ -409,25 +348,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     {
         animator.SetTrigger(sneath);
     }
-
-    public void TriggerDrawText()
-    {
-        if (drawTextAnimator.gameObject.activeSelf)
-        {
-            drawTextAnimator.SetTrigger(textDrawOn);
-            drawTextAnimator.ResetTrigger(resetDrawText);
-        }
-    }
-
-    public void ResetDrawText()
-    {
-        if (drawTextAnimator.gameObject.activeSelf)
-        {
-            drawTextAnimator.SetTrigger(resetDrawText);
-            drawTextAnimator.ResetTrigger(textDrawOn);
-        }
-    }
     # endregion
+
 
 
 
@@ -450,9 +372,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animator.ResetTrigger(battleDraw);
     }
     # endregion
-
-
-
 
 
 
@@ -485,9 +404,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
     # region MAINTAIN PARRY ANIMATION
-    // PARRY ANIMATION
     // Triggers on / off parry animation
     public void TriggerMaintainParry()
     {
@@ -507,8 +424,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animator.ResetTrigger(maintainParryOff);
     }
     #endregion
-
-
 
 
 
@@ -541,14 +456,11 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
-
     # region CHARGE ANIMATIONS
     // Trigger charge animation
     public void TriggerCharge(bool state)
     {
         animator.SetFloat(attackState, nextAttackState);
-        //legsAnimator2.SetFloat("AttackState", nextAttackState);
 
 
         if (state)
@@ -577,9 +489,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
-
-    # region  CLASHED
+    # region  CLASHED ANIMATIONS
     // Trigger on clashed animation
     public void TriggerClashed(bool state)
     {
@@ -595,8 +505,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animator.ResetTrigger(clashedOff);
     }
     # endregion
-
-
 
 
 
@@ -619,8 +527,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animator.SetTrigger(reallyDead);
     }
     # endregion
-
-
 
 
 
@@ -656,10 +562,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
-
     # region DASH ANIMATIONS
-    // DASH ANIMATIONS
     // Trigger dash animation depending on dash intended direction
     public void TriggerDash(float playerDashDirection)
     {
@@ -707,5 +610,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         ResetJump();
         ResetLand();
     }
+    #endregion
     #endregion
 }

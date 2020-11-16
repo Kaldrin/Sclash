@@ -33,6 +33,8 @@ public class MenuBrowser : MonoBehaviour
         swapAxis = false,
         allowHorizontalJump = false;
     [SerializeField] int horizontalJumpAmount = 4;
+
+    [SerializeField] bool autoEnableWhenHovered = false;
     #endregion
 
 
@@ -40,9 +42,11 @@ public class MenuBrowser : MonoBehaviour
 
     #region SPECIAL
     [Header("SPECIAL")]
-    [SerializeField] bool callSpecialElementWHenHorizontal = false;
+    [SerializeField] bool callSpecialElementWhenHorizontal = false;
     [SerializeField] public GameObject positiveHorizontalSpecialElement = null;
     [SerializeField] public GameObject negativeHorizontalSpecialElement = null;
+    [SerializeField] bool callSpecialElementWhenEnabled = true;
+    [SerializeField] public Button enabledSpecialElement = null;
     #endregion
 
 
@@ -158,10 +162,10 @@ public class MenuBrowser : MonoBehaviour
 
 
             // Move sliders with horizontal
-
             if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
             {
-                if (callSpecialElementWHenHorizontal)
+                // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
+                if (callSpecialElementWhenHorizontal)
                     positiveHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
                 else if (allowHorizontalJump)
                     VerticalBrowse(horizontalJumpAmount);
@@ -173,7 +177,8 @@ public class MenuBrowser : MonoBehaviour
             }
             else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
             {
-                if (callSpecialElementWHenHorizontal)
+                // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
+                if (callSpecialElementWhenHorizontal)
                     negativeHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
                 else if (allowHorizontalJump)
                     VerticalBrowse(-horizontalJumpAmount);
@@ -217,12 +222,16 @@ public class MenuBrowser : MonoBehaviour
     // OnEnable is called each time the object is set from inactive to active
     void OnEnable()
     {
+        if (callSpecialElementWhenEnabled && enabledSpecialElement != null)
+            enabledSpecialElement.onClick.Invoke();
+
+
         if (applyDefaultIndexOnEnable)
             browseIndex = defaultIndex;
 
 
-        VerticalBrowse(0);
-        Select(true);
+        StartCoroutine(TriggerVerticalBrowse(0));
+        //Select(true);
         UpdateColors();
     }
 
@@ -242,6 +251,12 @@ public class MenuBrowser : MonoBehaviour
 
 
     #region BROWSING
+    IEnumerator TriggerVerticalBrowse(int direction)
+    {
+        yield return new WaitForEndOfFrame();
+        VerticalBrowse(direction);
+    }
+
     void VerticalBrowse(int direction)
     {
         vAxisInUse = true;
@@ -275,13 +290,9 @@ public class MenuBrowser : MonoBehaviour
 
         // RUMBLE
         if (RumbleManager.Instance != null)
-        {
             RumbleManager.Instance.TriggerSimpleControllerVibrationForEveryone(RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationDuration);
-        }
         else
-        {
             Debug.Log("RumbleManager.Instance was not found");
-        }
 
 
         Select(true);
@@ -325,7 +336,9 @@ public class MenuBrowser : MonoBehaviour
 
 
                 if (elements[browseIndex].GetComponent<Button>())
+                {
                     elements[browseIndex].GetComponent<Button>().Select();
+                }
                 else if (elements[browseIndex].GetComponent<TMP_InputField>())
                     elements[browseIndex].GetComponent<TMP_InputField>().Select();
                 else if (elements[browseIndex].GetComponent<EventTrigger>()) { }
@@ -339,6 +352,10 @@ public class MenuBrowser : MonoBehaviour
     // Sets the browse index to the mouse hovered element
     public void SelectHoveredElement(GameObject hoveredObject)
     {
+        if (autoEnableWhenHovered)
+            enabled = true;
+
+
         if (enabled)
         {
             if (isObjectInGameObjectArray(hoveredObject, elements))

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// Store the game st ats at runtime
 [System.Serializable]
 public struct Date
 {

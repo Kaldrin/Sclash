@@ -3,45 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+
+// Script that manages the stats screen set up and evolution based on the data of the stats scriptable object
+// OPTIMIZED I THINK ?
 public class StatsMenu : MonoBehaviour
 {
     #region VARIABLES
-    #region STATMODE
-    // STAT MODE
-    [Header("STAT MODE")]
+    #region STAT DISPLAY MODE
+    [Header("STAT DISPLAY MODE")]
     [SerializeField] List<string> statModes = new List<string>() {"GLOBAL", "LOCAL", "ONLINE"};
     [SerializeField] int currentStatMode = 0;
+    [SerializeField] List<GameObject> statModeDisplayObjects = null;
     #endregion
 
 
 
-
-    #region INPUT
-    // INPUT
-    [Header("INPUT")]
+    [Header("INPUTS")]
     [SerializeField] string statModeSwitchAxis = "MenuTriggers";
     [SerializeField] float statModeSwitchAxisDeadzone = 0.3f;
     bool canInputModeChange = true;
-    #endregion
 
 
 
-
-    [Header("DATA")]
+    [Header("STATS DATA")]
     [SerializeField] Stats stats = null;
     [SerializeField] MapsDataBase mapsDataBase = null;
     [SerializeField] CharactersDatabase characters = null;
 
+    
 
-
-
-    [Header("DISPLAYED INFO TYPE")]
-    [SerializeField] List<GameObject> statModeDisplayObjects = null;
-
-
-
-    #region GAMES INFO
-    [Header("GAMES INFO")]
+    #region GLOBAL GAMES STATS INFO
+    [Header("GLOBAL GAMES STATS INFO")]
     [Tooltip("The refs to the text mesh pro UGUI components containing the global stats")]
     [SerializeField] TextMeshProUGUI totalPlayTime = null;
     [Tooltip("The refs to the text mesh pro UGUI components containing the global stats")]
@@ -63,8 +55,8 @@ public class StatsMenu : MonoBehaviour
         successfulPommel = null,
         parry = null,
         successfulParry = null,
-        clash,
-        dodge;
+        clash = null,
+        dodge = null;
 
     [SerializeField] Transform gameStatsListParent = null;
     [SerializeField] GameObject gameStatObject = null;
@@ -95,7 +87,8 @@ public class StatsMenu : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        ManageStatModeChange();
+        if (enabled && isActiveAndEnabled)
+            ManageStatModeChange();
     }
 
 
@@ -111,20 +104,14 @@ public class StatsMenu : MonoBehaviour
 
 
             if (Input.GetAxis(statModeSwitchAxis) < -statModeSwitchAxisDeadzone)
-            {
                 ChangeStatMode(-1);
-            }
             else if (Input.GetAxis(statModeSwitchAxis) > -statModeSwitchAxisDeadzone)
-            {
                 ChangeStatMode(1);
-            } 
         }
-        else
-        if (Mathf.Abs(Input.GetAxis(statModeSwitchAxis)) < statModeSwitchAxisDeadzone)
-        {
+        else if (Mathf.Abs(Input.GetAxis(statModeSwitchAxis)) < statModeSwitchAxisDeadzone)
             canInputModeChange = true;
-        }
     }
+
 
     public void ChangeStatMode(int indexIncrementation)
     {
@@ -140,10 +127,12 @@ public class StatsMenu : MonoBehaviour
         UpdateAllStatsDisplayedInfos();
     }
 
+
     public void UpdateAllStatsDisplayedInfos()
     {
         StartCoroutine(UpdateAllStatsDisplayedInfosCoroutine());
     }
+
 
     IEnumerator UpdateAllStatsDisplayedInfosCoroutine()
     {
@@ -258,12 +247,8 @@ public class StatsMenu : MonoBehaviour
 
 
         for (int i = 0; i < gameStatsListParent.childCount; i++)
-        {
             if (gameStatsListParent.GetChild(i).gameObject != gameStatObject)
-            {
                 Destroy(gameStatsListParent.GetChild(i).gameObject);
-            }
-        }
 
 
         
@@ -345,7 +330,6 @@ public class StatsMenu : MonoBehaviour
 
 
             // Rounds
-            //currentlyInstantiatedGameStat.TriggerUpdateRoundsList(stats.globalStats[currentStatMode].gamesList[i]);
             currentlyInstantiatedGameStat.game = stats.globalStats[currentStatMode].gamesList[i];
 
             yield return new WaitForSecondsRealtime(0.1f);

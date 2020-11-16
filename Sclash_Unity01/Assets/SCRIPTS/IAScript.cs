@@ -45,7 +45,7 @@ public class IAScript : MonoBehaviour
     protected bool isClose = true;
     protected bool canAddWeight = true;
 
-    float rand;
+    float rand = 0;
 
 
     public float DistanceTolerance = 3;

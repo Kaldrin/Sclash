@@ -1,21 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+// This script allows for activating a designated button depending on an axis input, independently of any menu browser
+// OPTIMIZED
 public class ActivateButtonOnInputDetect : MonoBehaviour
 {
     [SerializeField] string axisToCheck = "MenuSecondary";
     [SerializeField] Button buttonToActivate = null;
     [SerializeField] float valueToCheck = 0.5f;
-    [SerializeField] bool superiorOrInferior;
+    [SerializeField] bool superiorOrInferior = false;
     bool hasBeenChecked = false;
+
+
+
+
+
 
 
     // Update is called once per frame
     void Update()
     {
-        if (enabled)
+        if (enabled && isActiveAndEnabled && Mathf.Abs(Input.GetAxis(axisToCheck)) > 0.1f)
         {
             if (superiorOrInferior)
             {

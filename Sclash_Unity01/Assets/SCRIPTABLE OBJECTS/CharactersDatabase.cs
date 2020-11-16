@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEditor.Animations;
 
-
+// Store the list of the characters and all their properties
 [System.Serializable]
 public struct Character
 {
@@ -12,6 +11,7 @@ public struct Character
     public RuntimeAnimatorController animator;
     public RuntimeAnimatorController legsAnimator;
     public int defaultMask;
+    public int defaultWeapon;
     public bool locked;
 }
 

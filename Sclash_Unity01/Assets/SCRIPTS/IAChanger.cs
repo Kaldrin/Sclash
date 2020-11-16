@@ -2,28 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// This script is used to let the player define IA settings
+// Not used anymore
 public class IAChanger : MonoBehaviour
 {
+    [SerializeField] bool enable = false;
     [SerializeField] IAScript iaScript = null;
-
     Animator IAindicatorAnimator = null;
 
-    bool
-        iaOn = false,
-        canSwitch = false,
-        canChangeDifficulty = false;
+    bool iaOn = false;
+    bool canSwitch = false;
+    bool canChangeDifficulty = false;
     int currentDifficulty = 0;
     [SerializeField] float iaChangeDeadZone = 0.4f;
 
 
 
     [Header("DISPLAY OBJECTS")]
-    [SerializeField] string IAIndicatorName = "IAIndicator";
-    [SerializeField]
-    string
-        easyDifficultyTextName = "easyDifficultyText",
-        mediumDifficultyTextName = "mediumDifficultyText",
-        hardDifficultyTextName = "hardDifficultyText";
     [SerializeField] List<GameObject> diggicultyTextObjects = new List<GameObject>();
 
 
@@ -37,43 +33,49 @@ public class IAChanger : MonoBehaviour
 
     void Awake()
     {
+        /*
         IAindicatorAnimator = GameObject.Find(IAIndicatorName).GetComponent<Animator>();
 
         diggicultyTextObjects.Add(GameObject.Find(easyDifficultyTextName));
         diggicultyTextObjects.Add(GameObject.Find(mediumDifficultyTextName));
         diggicultyTextObjects.Add(GameObject.Find(hardDifficultyTextName));
+        */
     }
 
     void OnEnable()
     {
-        currentDifficulty = 0;
-
+        if (enable)
+            currentDifficulty = 0;
+       
     }
 
     void Update()
     {
-        if (InputManager.Instance.playerInputs[1].reallyanykey && iaOn)
-            SwitchIAMode(false);
-
-
-        // Change IA / Player
-        if (canSwitch && InputManager.Instance.playerInputs[0].vertical >= iaChangeDeadZone)
+        if (enable)
         {
-            canSwitch = false;
-            SwitchIAMode(!iaOn);
-        }
-        if (!canSwitch && InputManager.Instance.playerInputs[0].vertical < InputManager.Instance.axisDeadZone)
-            canSwitch = true;
+            if (InputManager.Instance.playerInputs[1].reallyanykey && iaOn)
+                SwitchIAMode(false);
 
 
-        // Change difficulty
-        if (iaOn && canChangeDifficulty && InputManager.Instance.playerInputs[0].vertical <= -iaChangeDeadZone)
-        {
-            canChangeDifficulty = false;
-            ChangeIADifficulty(1);
+            // Change IA / Player
+            if (canSwitch && InputManager.Instance.playerInputs[0].vertical >= iaChangeDeadZone)
+            {
+                canSwitch = false;
+                SwitchIAMode(!iaOn);
+            }
+            if (!canSwitch && InputManager.Instance.playerInputs[0].vertical < InputManager.Instance.axisDeadZone)
+                canSwitch = true;
+
+
+            // Change difficulty
+            if (iaOn && canChangeDifficulty && InputManager.Instance.playerInputs[0].vertical <= -iaChangeDeadZone)
+            {
+                canChangeDifficulty = false;
+                ChangeIADifficulty(1);
+            }
+            if (!canChangeDifficulty && InputManager.Instance.playerInputs[0].vertical > -InputManager.Instance.axisDeadZone)
+                canChangeDifficulty = true;
         }
-        if (!canChangeDifficulty && InputManager.Instance.playerInputs[0].vertical > -InputManager.Instance.axisDeadZone)
-            canChangeDifficulty = true;
     }
 
 
@@ -118,9 +120,6 @@ public class IAChanger : MonoBehaviour
                     diggicultyTextObjects[i].SetActive(false);
             }
         }
-
-
-        Debug.Log("IA is now " + currentDifficulty);
     }
 
     public void SwitchIAMode(bool state)

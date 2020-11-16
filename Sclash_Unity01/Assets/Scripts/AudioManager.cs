@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
+// Script that manages most audio stuff of the game, especially music
+// OPTIMIZED I THINK ?
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
@@ -18,25 +20,15 @@ public class AudioManager : MonoBehaviour
 
 
 
-
-    #region SOUND FUNCTIONS
+    // This one might be useless
     [Header("SOUND FUNCTIONS")]
     // A script that provides premade sound functions to play a little more easily with audio sources
     [SerializeField] SoundFunctions soundFunctions = null;
-    # endregion
 
 
 
-
-
-
-    # region MUSIC DATA
     [Header("MUSIC DATA")]
     [SerializeField] MusicsDatabase musicDataBase = null;
-    # endregion
-
-
-
 
 
 
@@ -59,12 +51,8 @@ public class AudioManager : MonoBehaviour
 
 
 
-
-
-
     #region MUSIC SOURCES
     [Header("MUSIC SOURCES")]
-    // MUSIC SOURCES
     [SerializeField] AudioSource menuAudioSource = null;
     [SerializeField] public List<AudioSource> phasesMainAudioSources = new List<AudioSource>(3) { null, null, null };
     [SerializeField] public List<AudioSource> phasesStrikesAudioSources = new List<AudioSource>(3) { null, null, null };
@@ -83,7 +71,7 @@ public class AudioManager : MonoBehaviour
     List<float> phasesMainVolumeObjectives = new List<float>(3) { 0, 0, 0 };
     List<float> phasesStrikesVolumeObjectives = new List<float>(3) { 0, 0, 0 };
     [SerializeField] Vector2 playersDistanceForStrikesVolumeLimits = new Vector2(6, 15);
-    float winVolumeObjective = 0;
+    //float winVolumeObjective = 0;
     float windVolumeObjective = 0;
     [SerializeField] float volumeFadeSpeed = 0.01f;
     #endregion
@@ -91,7 +79,6 @@ public class AudioManager : MonoBehaviour
 
 
     #region SOURCES MAX VOLUMES
-    // SOURCES MAX VOLUME (Default max volume objectives)
     float maxMenuVolume = 0;
     List<float> maxPhasesMainVolumes = new List<float>(3) { 0, 0, 0 };
     List<float> maxPhasesStrikesVolumes = new List<float>(3) { 0, 0, 0 };
@@ -102,30 +89,24 @@ public class AudioManager : MonoBehaviour
 
 
     #region SELECTED MUSIC, STEM, PHASE
-    // Selected music, stem, phase...
     [Header("STEMS & PHASES")]
     [SerializeField] bool useRandomStemSelection = true;
-    [SerializeField]
-    int
-        maxPhase = 2,
+    [SerializeField] int maxPhase = 2,
         scoreFromMaxScoreToAutoMaxPhase = 1;
     bool decrementCurrentPhaseAtNextLoop = false;
     [HideInInspector] public int currentlySelectedMusicIndex = 0;
-    [SerializeField]
-    int
-        currentMusicPhase = 0,
+    [SerializeField] int currentMusicPhase = 0,
         currentMusicStem = 0,
         previousMusicStem = 0;
     #endregion
 
 
+
     #region BATTLE INTENSITY
-    // BATTLE INTENSITY
     [Header("MUSIC BATTLE INTENSITY")]
     [SerializeField] float decreaseBattleIntensityEveryDuration = 3f;
     float decreaseBattleIntensityLoopStartTime = 0f;
-    int
-        currentBattleIntensity = 0,
+    int currentBattleIntensity = 0,
         lastBattleIntensityLevel = 0;
     [SerializeField] int maxBattleIntensityLevel = 12;
     [SerializeField] List<int> battleIntensityLevelsForPhaseUp = new List<int>(2) { 3, 8, 1000 };
@@ -134,23 +115,15 @@ public class AudioManager : MonoBehaviour
 
 
 
-
-
-
-
     #region SOUND FX
     [Header("SOUND FX")]
     [SerializeField] AudioSource parrySoundFXAudioSource = null;
-    [SerializeField]
-    AudioSource
-        successfulAttackSoundFXAudioSource = null,
+    [SerializeField] AudioSource successfulAttackSoundFXAudioSource = null,
         deathSoundFXAudioSource = null,
         slowMoInAudioSource = null,
         slowMoOutAudioSource = null;
     // Sound FXs audio sources but with a script to play a random sound in a previously filled list
-    [SerializeField]
-    public PlayRandomSoundInList
-        matchBeginsRandomSoundSource = null,
+    [SerializeField] public PlayRandomSoundInList matchBeginsRandomSoundSource = null,
         roundBeginsRandomSoundSource = null;
     #endregion
 
@@ -168,24 +141,16 @@ public class AudioManager : MonoBehaviour
 
 
 
-
-    # region PLAYERS
     GameObject[] playersList;
     //float distanceBetweenPlayers = 0;
-    # endregion
 
 
 
 
-
-    # region CHEATS FOR DEVELOPMENT PURPOSES
-    // CHEATS FOR DEVELOPMENT PURPOSES
-    [Header("CHEATS")]
-    [SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha8;
-    [SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha7;
-    # endregion
-
-
+    //[Header("CHEATS")]
+    //[SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha8;
+    //[SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha7;
+    #endregion
 
 
 
@@ -201,12 +166,14 @@ public class AudioManager : MonoBehaviour
 
 
 
-    # region BASE FUNCTIONS
+    #region FUNCTIONS
+    #region BASE FUNCTIONS
     private void Awake()
     {
         Instance = this;
         GetSourcesDefaultVolume();
     }
+
 
     // Start is called before the first frame update
     void Start()
@@ -215,74 +182,47 @@ public class AudioManager : MonoBehaviour
         FindPlayers();
     }
 
-    // Update is called once per graphic frame
-    void Update()
-    {
-        switch (audioState)
-        {
-            case AUDIOSTATE.none:
-                break;
-
-
-            case AUDIOSTATE.menu:
-                break;
-
-
-            case AUDIOSTATE.beforeBattle:
-                break;
-
-
-            case AUDIOSTATE.battle:
-                break;
-
-            case AUDIOSTATE.pause:
-                break;
-
-
-            case AUDIOSTATE.won:
-                break;
-        }
-    }
 
     // FixedUpdate is called 50 times per frame
     private void FixedUpdate()
     {
-        switch (audioState)
-        {
-            case AUDIOSTATE.none:
-                RunSmoothVolumesUpdates();
-                break;
+        if (enabled && isActiveAndEnabled)
+            switch (audioState)
+            {
+                case AUDIOSTATE.none:                                       // NONE
+                    RunSmoothVolumesUpdates();
+                    break;
 
 
-            case AUDIOSTATE.menu:
-                RunSmoothVolumesUpdates();
-                break;
+                case AUDIOSTATE.menu:                                           // MENU
+                    RunSmoothVolumesUpdates();
+                    break;
 
 
-            case AUDIOSTATE.beforeBattle:
-                RunSmoothVolumesUpdates();
-                break;
+                case AUDIOSTATE.beforeBattle:                                             // BEFORE BATTLE
+                    RunSmoothVolumesUpdates();
+                    break;
+
+                   
+                case AUDIOSTATE.battle:                                                 // BATTLE
+                    RunSmoothVolumesUpdates();
+                    FadeStrikesVolumeObjectiveDependingOnPlayersDistance();
+                    DetectStemEndAndStartNextOne();
+                    DecreaseIntensityWithTime();
+                    break;
 
 
-            case AUDIOSTATE.battle:
-                RunSmoothVolumesUpdates();
-                FadeStrikesVolumeObjectiveDependingOnPlayersDistance();
-                DetectStemEndAndStartNextOne();
-                DecreaseIntensityWithTime();
-                break;
+                case AUDIOSTATE.pause:                                                      // PAUSE
+                    RunSmoothVolumesUpdates();
+                    FadeStrikesVolumeObjectiveDependingOnPlayersDistance();
+                    DetectStemEndAndStartNextOne();
+                    break;
 
 
-            case AUDIOSTATE.pause:
-                RunSmoothVolumesUpdates();
-                FadeStrikesVolumeObjectiveDependingOnPlayersDistance();
-                DetectStemEndAndStartNextOne();
-                break;
-
-
-            case AUDIOSTATE.won:
-                RunSmoothVolumesUpdates();
-                break;
-        }
+                case AUDIOSTATE.won:                                                        // WON
+                    RunSmoothVolumesUpdates();
+                    break;
+            }
     }
     #endregion
 
@@ -298,7 +238,7 @@ public class AudioManager : MonoBehaviour
 
         switch (newAudioState)
         {
-            case AUDIOSTATE.none:
+            case AUDIOSTATE.none:                                                       // NONE
                 for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
                     phasesMainVolumeObjectives[i] = 0;
                 for (int i = 0; i < phasesStrikesVolumeObjectives.Count; i++)
@@ -306,14 +246,14 @@ public class AudioManager : MonoBehaviour
                 break;
 
 
-            case AUDIOSTATE.menu:
+            case AUDIOSTATE.menu:                                                   // MENU
                 windVolumeObjective = 0;
                 menuVolumeObjective = maxMenuVolume;
                 menuAudioSource.Play();
                 break;
 
 
-            case AUDIOSTATE.beforeBattle:
+            case AUDIOSTATE.beforeBattle:                                           // BEFORE BATTLE
                 menuVolumeObjective = 0;
                 windAudioSource.Play();
                 windVolumeObjective = maxWindVolume;
@@ -327,7 +267,7 @@ public class AudioManager : MonoBehaviour
                 break;
 
 
-            case AUDIOSTATE.battle:
+            case AUDIOSTATE.battle:                                                 // BATTLE
                 windVolumeObjective = 0;
                 phasesMainAudioSources[currentMusicPhase].Play();
                 phasesStrikesAudioSources[currentMusicPhase].Play();
@@ -344,7 +284,7 @@ public class AudioManager : MonoBehaviour
                 break;
 
 
-            case AUDIOSTATE.won:
+            case AUDIOSTATE.won:                                                    // WON
                 windVolumeObjective = maxWindVolume;
                 for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
                     phasesMainVolumeObjectives[i] = 0;
@@ -373,6 +313,7 @@ public class AudioManager : MonoBehaviour
         if (newIndex < musicDataBase.musicsList.Count)
             currentlySelectedMusicIndex = newIndex;
     }
+
 
     void SetUpAudioElementsDependingOnSelectedMusic(int selectedMusic)
     {
@@ -417,14 +358,12 @@ public class AudioManager : MonoBehaviour
         decreaseBattleIntensityLoopStartTime = Time.time;
     }
 
+
     void DecreaseIntensityWithTime()
     {
         int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
 
         if (currentBattleIntensity > 0 && (currentMaxScore < gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase))
-        {
-
-            Debug.Log("DecreaseIntensityWithTimeRuns");
             if (Time.time - decreaseBattleIntensityLoopStartTime >= decreaseBattleIntensityEveryDuration)
             {
                 lastBattleIntensityLevel = currentBattleIntensity;
@@ -433,8 +372,8 @@ public class AudioManager : MonoBehaviour
                 UpdateMusicDependingOnBattleIntensity();
                 decreaseBattleIntensityLoopStartTime = Time.time;
             }
-        }
     }
+
 
     void UpdateMusicDependingOnBattleIntensity()
     {
@@ -469,7 +408,6 @@ public class AudioManager : MonoBehaviour
     #region CONTINUE MUSIC LOOP
     void DetectStemEndAndStartNextOne()
     {
-        //!phasesMainAudioSources[currentMusicPhase].isPlaying
         if (phasesMainAudioSources[currentMusicPhase].time >= 11.98f)
         {
             bool isMaxPhase = false;
@@ -555,6 +493,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+
     void SwitchStem(bool random)
     {
         previousMusicStem = currentMusicStem;
@@ -589,14 +528,11 @@ public class AudioManager : MonoBehaviour
 
 
         for (int i = 0; i < maxPhasesMainVolumes.Count; i++)
-        {
             maxPhasesMainVolumes[i] = phasesMainAudioSources[i].volume;
-        }
         for (int i = 0; i < maxPhasesStrikesVolumes.Count; i++)
-        {
             maxPhasesStrikesVolumes[i] = phasesStrikesAudioSources[i].volume;
-        }
     }
+
 
     void RunSmoothVolumesUpdates()
     {
@@ -631,7 +567,6 @@ public class AudioManager : MonoBehaviour
 
         // MAIN
         for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
-        {
             if (phasesMainAudioSources[i].volume != phasesMainVolumeObjectives[i])
             {
                 volumeFadeDirection = Mathf.Sign(phasesMainVolumeObjectives[i] - phasesMainAudioSources[i].volume);
@@ -643,11 +578,9 @@ public class AudioManager : MonoBehaviour
                 else if (volumeFadeDirection < 0 && phasesMainAudioSources[i].volume <= phasesMainVolumeObjectives[i])
                     phasesMainAudioSources[i].volume = phasesMainVolumeObjectives[i];
             }
-        }
 
         // STRIKES
         for (int i = 0; i < phasesStrikesVolumeObjectives.Count; i++)
-        {
             if (phasesStrikesAudioSources[i].volume != phasesStrikesVolumeObjectives[i])
             {
                 volumeFadeDirection = Mathf.Sign(phasesStrikesVolumeObjectives[i] - phasesStrikesAudioSources[i].volume);
@@ -659,15 +592,10 @@ public class AudioManager : MonoBehaviour
                 else if (volumeFadeDirection < 0 && phasesStrikesAudioSources[i].volume <= phasesStrikesVolumeObjectives[i])
                     phasesStrikesAudioSources[i].volume = phasesStrikesVolumeObjectives[i];
             }
-        }
     }
 
     void FadeStrikesVolumeObjectiveDependingOnPlayersDistance()
     {
-        for (int i = 0; i < phasesStrikesVolumeObjectives.Count; i++)
-        {
-        }
-
         float tempVolume = ((cameraManager.actualDistanceBetweenPlayers - playersDistanceForStrikesVolumeLimits.y) / (playersDistanceForStrikesVolumeLimits.x - playersDistanceForStrikesVolumeLimits.y)) * maxPhasesStrikesVolumes[currentMusicPhase];
 
 
@@ -679,10 +607,6 @@ public class AudioManager : MonoBehaviour
         phasesStrikesVolumeObjectives[currentMusicPhase] = tempVolume;
     }
     #endregion
-
-
-
-
 
 
 
@@ -728,9 +652,6 @@ public class AudioManager : MonoBehaviour
 
 
 
-
-    #region FIND PLAYERS
-    // FIND PLAYERS
     // Finds the players on the scene to use their data for music modification
     public void FindPlayers()
     {

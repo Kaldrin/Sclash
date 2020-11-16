@@ -169,8 +169,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         playerAnimations.spriteRenderer.sortingOrder = 10 * stats.playerNum;
         playerAnimations.legsSpriteRenderer.sortingOrder = 10 * stats.playerNum;
-        playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * stats.playerNum + 2;
-        playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * stats.playerNum - 2;
+        //playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * stats.playerNum + 2;
+        //playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * stats.playerNum - 2;
 
         ///FX Setup
         ParticleSystem attackSignParticles = stats.attackRangeFX.GetComponent<ParticleSystem>();
@@ -315,8 +315,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
                 p2Anim.spriteRenderer.sortingOrder = 10 * p2.playerNum;
                 p2Anim.legsSpriteRenderer.sortingOrder = 10 * p2.playerNum;
-                p2Anim.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * p2.playerNum + 2;
-                p2Anim.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * p2.playerNum - 2;
+                //p2Anim.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * p2.playerNum + 2;
+                //p2Anim.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * p2.playerNum - 2;
 
                 ///FX Setup
                 ParticleSystem attackSignParticles = p2.attackRangeFX.GetComponent<ParticleSystem>();

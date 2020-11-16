@@ -4,9 +4,11 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+
+// Script that manages the display of stats of a round in the stats menu. Used by the GameStats
 public class RoundStat : MonoBehaviour
 {
-
+    #region VARIABLES
     bool hasUpdatedInfos = false;
 
 
@@ -19,7 +21,6 @@ public class RoundStat : MonoBehaviour
     [HideInInspector] public Round round;
 
 
-
     [Header("ACTIONS TIMELINES")]
     [SerializeField] public TextMeshProUGUI middleMinute = null;
     [SerializeField] public TextMeshProUGUI
@@ -28,30 +29,28 @@ public class RoundStat : MonoBehaviour
         endSecond = null;
 
     [SerializeField] public List<TextMeshProUGUI> playerNames = null;
-
     [SerializeField] Transform[] actionsTimelinesParents = null;
     
-
-    [SerializeField] GameObject[] actionMarkerObjects;
+    [SerializeField] GameObject[] actionMarkerObjects = null;
     [SerializeField] Vector2 xLimitsForActionPlacement = new Vector2(-73, 73);
     [SerializeField] RectTransform[] xLeftLimitsObjectsForActionPlacement = new RectTransform[2];
     [SerializeField] RectTransform[] xRightLimitsObjectsForActionPlacement = new RectTransform[2];
 
 
     [Header("ACTIONS COLORS")]
-    [SerializeField] Color charge;
-    [SerializeField] Color forwardAttack,
-        backWardsAttack,
-        neutralAttack,
-        death,
-        forwardDash,
-        backwardsDash,
-        pommel,
-        successfulPommel,
-        parry,
-        successfulParry,
-        clash,
-        dodge;
+    [SerializeField] Color charge = Color.white;
+    [SerializeField] Color forwardAttack = Color.red,
+        backWardsAttack = Color.red,
+        neutralAttack = Color.red,
+        death = Color.black,
+        forwardDash = Color.grey,
+        backwardsDash = Color.grey,
+        pommel = Color.yellow,
+        successfulPommel = Color.green,
+        parry = Color.blue,
+        successfulParry = Color.cyan,
+        clash = Color.green,
+        dodge = Color.grey;
 
     [Header("ACTIONS LEGEND")]
     [SerializeField] Image chargeLegend = null;
@@ -69,13 +68,18 @@ public class RoundStat : MonoBehaviour
         dodgeLegend = null;
 
 
-
     [Header("OBJECTS")]
     [SerializeField] public GameObject actionsInfosGameObject = null;
+    #endregion
 
 
 
 
+
+
+
+
+    #region FUNCTIONS
     public void TriggerUpdateAllInfos()
     {
         if (!hasUpdatedInfos)
@@ -94,8 +98,6 @@ public class RoundStat : MonoBehaviour
     }
 
 
-
-
     void UpdateLegendColors()
     {
         chargeLegend.color = charge;
@@ -110,9 +112,8 @@ public class RoundStat : MonoBehaviour
         parryLegend.color = parry;
         successfulParryLegend.color = successfulParry;
         clashLegend.color = clash;
-        chargeLegend.color = dodge;
+        dodgeLegend.color = dodge;
     }
-
 
 
     IEnumerator UpdateActionsTimelinesDisplayCoroutine(Round round)
@@ -129,10 +130,8 @@ public class RoundStat : MonoBehaviour
 
             // Empty actions timelines
             for (int i = 0; i < actionsTimelinesParents[y].childCount; i++)
-            {
                 if (actionsTimelinesParents[y].GetChild(i).gameObject != actionMarkerObjects[y] && actionsTimelinesParents[y].GetChild(i).gameObject.activeInHierarchy)
                     Destroy(actionsTimelinesParents[y].GetChild(i));
-            }
 
 
             // Fill actions timelines
@@ -218,4 +217,5 @@ public class RoundStat : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.02f);
         }
     }
+    #endregion
 }

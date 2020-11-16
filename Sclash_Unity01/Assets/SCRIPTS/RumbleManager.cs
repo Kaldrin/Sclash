@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using XInputDotNetPure; // Required in C#
 
+// Manages all rumbles of the game, but might be changed, it's not great this way
 public class RumbleManager : MonoBehaviour
 {
     #region Singleton
@@ -10,7 +11,7 @@ public class RumbleManager : MonoBehaviour
     #endregion
 
 
-    bool vibrating = false;
+    //bool vibrating = false;
     [SerializeField] public float menuBrowseVibrationIntensity = 0.08f;
     [SerializeField] public float menuBrowseVibrationDuration = 0.06f;
     Coroutine[] vibrationCoroutines = new Coroutine[4];
@@ -18,41 +19,48 @@ public class RumbleManager : MonoBehaviour
 
     [SerializeField] bool rumbleOn = true;
 
+
+
+
+
     private void Awake(){
         Instance = this;
     }
 
     private void Update()
     {
-        /*
-        if (!vibrating)
-            for (int i = 0; i < 4; i++)
-            {
-                PlayerIndex index = new PlayerIndex();
-                switch (i)
+        if (rumbleOn && enabled && isActiveAndEnabled)
+        {
+            /*
+            if (!vibrating)
+                for (int i = 0; i < 4; i++)
                 {
-                    case 0:
-                        index = PlayerIndex.One;
-                        break;
+                    PlayerIndex index = new PlayerIndex();
+                    switch (i)
+                    {
+                        case 0:
+                            index = PlayerIndex.One;
+                            break;
 
-                    case 1:
-                        index = PlayerIndex.Two;
-                        break;
+                        case 1:
+                            index = PlayerIndex.Two;
+                            break;
 
-                    case 2:
-                        index = PlayerIndex.Three;
-                        break;
+                        case 2:
+                            index = PlayerIndex.Three;
+                            break;
 
-                    case 3:
-                        index = PlayerIndex.Four;
-                        break;
+                        case 3:
+                            index = PlayerIndex.Four;
+                            break;
+                    }
+
+
+                    // Starts vibration
+                    GamePad.SetVibration(index, 0, 0);
                 }
-
-
-                // Starts vibration
-                GamePad.SetVibration(index, 0, 0);
-            }
-            */
+                */
+        }
     }
 
 
@@ -139,7 +147,7 @@ public class RumbleManager : MonoBehaviour
         if (rumbleOn)
         {
             // Resets vibration
-            vibrating = false;
+            //vibrating = false;
             GamePad.SetVibration(index, 0, 0);
         
 
@@ -147,7 +155,7 @@ public class RumbleManager : MonoBehaviour
 
 
             // Starts vibration
-            vibrating = true;
+            //vibrating = true;
             GamePad.SetVibration(index, leftIntensity, rightIntensity);
         
 
@@ -155,7 +163,7 @@ public class RumbleManager : MonoBehaviour
 
 
             // Ends vibration
-            vibrating = false;
+            //vibrating = false;
             Debug.Log("End vibration");
             GamePad.SetVibration(index, 0, 0);
         }

@@ -166,7 +166,7 @@ public class MenuManager : MonoBehaviour
 
 
 
-    # region SCORE DISPLAY IN GAME
+    # region INFO DISPLAY IN GAME
     // Update info display
     void ManageInfosDisplayInput()
     {
@@ -175,12 +175,8 @@ public class MenuManager : MonoBehaviour
         for (int i = 0; i < gameManager.playersList.Count; i++)
         {
             if (gameManager.playersList[i] != null)
-            {
                 if (gameManager.playersList[i].GetComponent<Player>().playerState == Player.STATE.dead)
-                {
                     playerDead = true;
-                }
-            }
         }
 
         // Display score & in game help
@@ -191,6 +187,7 @@ public class MenuManager : MonoBehaviour
 
             for (int i = 0; i < gameManager.playersList.Count; i++)
             {
+                // ONLINE
                 if (ConnectManager.Instance.connectedToMaster && i > 0)
                     break;
 
@@ -200,12 +197,10 @@ public class MenuManager : MonoBehaviour
             }
         }
         // Display in game help key indication
-        if (!playerDead && audioManager.audioState == AudioManager.AUDIOSTATE.battle)
+        if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
         {
             for (int i = 0; i < gameManager.playersList.Count; i++)
-            {
                 gameManager.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
-            }
         }
     }
     # endregion
@@ -321,7 +316,7 @@ public class MenuManager : MonoBehaviour
 
 
 
-
+    // WIN SCREEN
     public void SetUpWinMenu(string winnerName, Color winnerColor, Vector2 score, Color[] playersColors)
     {
         winName.text = winnerName;

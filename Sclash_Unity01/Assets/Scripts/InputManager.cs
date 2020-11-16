@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+// This script, unique in the scene on the manager, manages the inputs of the player, it is a useful bridge between the input system and the player script. Heavily used by a lot of scripts
+// OPTIMIZED ?
 public class InputManager : MonoBehaviour
 {
     #region Singleton
-    public static InputManager Instance;
+    [HideInInspector] public static InputManager Instance;
     #endregion  
 
+
     #region Event
-    public delegate void OnPlayerInput();
-    public event OnPlayerInput P2Input;
-    public event OnPlayerInput SwitchChar;
+    [HideInInspector] public delegate void OnPlayerInput();
+    [HideInInspector] public event OnPlayerInput P2Input;
+    //[HideInInspector] public event OnPlayerInput SwitchChar;
     #endregion
 
 
+    #region VARIABLES
+    // Struct for each player's inputs
     [System.Serializable]
     public struct PlayerInputs
     {
@@ -38,21 +43,18 @@ public class InputManager : MonoBehaviour
         public float vertical;
     }
 
-    [SerializeField]
-    public float
+
+    [Header("INPUT SETTINGS")]
+    [SerializeField] public float
         axisDeadZone = 0.1f,
         dashDeadZone = 0.5f;
-
     [SerializeField] public PlayerInputs[] playerInputs = new PlayerInputs[2];
-
     [HideInInspector] public bool scoreInput = false;
     [HideInInspector] public bool submitInput = false;
     [HideInInspector] public bool submitInputUp = false;
 
 
-
-
-    [Header("INPUTS")]
+    [Header("INPUT AXIS NAMES")]
     [SerializeField] string pauseAxis = "Pause";
     [SerializeField] string
         battleSneathDrawAxis = "SneathDraw",
@@ -65,6 +67,7 @@ public class InputManager : MonoBehaviour
         jumpAxis = "Jump",
         scoreAxis = "Score",
         selectcharAxis = "SelectChar";
+    #endregion
 
 
 
@@ -78,8 +81,7 @@ public class InputManager : MonoBehaviour
 
 
 
-
-
+    #region FUNCTIONS
     #region BASE FUNCTIONS
     private void Awake()
     {
@@ -89,41 +91,46 @@ public class InputManager : MonoBehaviour
     // Update is called once per graphic frame
     public virtual void Update()
     {
-        scoreInput = Input.GetButton("Score");
-        submitInputUp = (submitInput && !Input.GetButton("Submit"));
-        submitInput = Input.GetButton("Submit");
-
-        for (int i = 0; i < playerInputs.Length; i++)
+        if (enabled && isActiveAndEnabled)
         {
-            ManageCharacSelectInput(i);
+            // In game info display input
+            scoreInput = Input.GetButton("Score");
 
-            if (GameManager.Instance.playersList.Count > 0)
+            // Menu input
+            submitInputUp = (submitInput && !Input.GetButton("Submit"));
+            submitInput = Input.GetButton("Submit");
+
+
+            // Players inputs
+            for (int i = 0; i < playerInputs.Length; i++)
             {
-                if (GameManager.Instance.playersList[i] != null)
-                {
-                    if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
-                        return;
-                }
+                ManageCharacSelectInput(i);
+
+                if (GameManager.Instance.playersList.Count > 0)
+                    if (GameManager.Instance.playersList[i] != null)
+                    {
+                        if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
+                            return;
+                    }
+
+
+                ManageHorizontalInput(i);
+                ManageVerticalInput(i);
+                ManageDashInput(i);
+                ManageKickInput(i);
+                ManageJumpInput(i);
+                ManageParryInput(i);
+                ManageBattleSneathDrawInput(i);
+                ManageAttackInput(i);
+
+                ManageAnyKeyInput(i);
+                ManageReallyAnyKeyInput(i); 
+
+                ManageScoreInput(i);
+                ManagePauseInput(i);
             }
-
-
-            ManageHorizontalInput(i);
-            ManageVerticalInput(i);
-            ManageDashInput(i);
-            ManageKickInput(i);
-            ManageJumpInput(i);
-            ManageParryInput(i);
-            ManageBattleSneathDrawInput(i);
-            ManageAttackInput(i);
-
-            ManageAnyKeyInput(i);
-            ManageReallyAnyKeyInput(i);
-
-            ManageScoreInput(i);
-            ManagePauseInput(i);
         }
     }
-
     # endregion
 
 
@@ -133,8 +140,6 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].reallyanykey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
     }
-    # endregion
-
 
 
     #region ANY KEY
@@ -145,8 +150,6 @@ public class InputManager : MonoBehaviour
         //playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
         playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].kick);
     }
-    # endregion
-
 
 
 
@@ -156,7 +159,6 @@ public class InputManager : MonoBehaviour
         playerInputs[i].scoreUp = playerInputs[i].score && !Input.GetButton(scoreAxis + i);
         playerInputs[i].score = Input.GetButton(scoreAxis + i);
     }
-    # endregion
 
 
     protected void ManageCharacSelectInput(int i)
@@ -175,8 +177,6 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].pauseUp = Input.GetButtonUp(pauseAxis + i);
     }
-    # endregion
-
 
 
 
@@ -187,7 +187,6 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].vertical = Input.GetAxis(verticalAxis + i);
     }
-    # endregion
 
 
 
@@ -198,30 +197,19 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].horizontal = Input.GetAxis(horizontalAxis + i);
     }
-    # endregion
 
 
-
-
-
-
-
-    # region DASH
     // DASH
     protected void ManageDashInput(int i)
     {
         playerInputs[i].dash = Input.GetAxis(dashAxis + i);
     }
-    # endregion
 
 
-
-    #region BATTLE SNEATH DRAW
     void ManageBattleSneathDrawInput(int i)
     {
         playerInputs[i].battleSneathDraw = Input.GetButton(battleSneathDrawAxis + i);
     }
-    #endregion
 
 
 
@@ -231,14 +219,7 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].attackDown = (!playerInputs[i].attack && (Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone));
         playerInputs[i].attack = Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone;
-
-
     }
-    # endregion
-
-
-
-
 
 
 
@@ -249,12 +230,6 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].kick = Input.GetButton(pommelAxis + i);
     }
-    # endregion
-
-
-
-
-
 
 
     # region PARRY
@@ -264,10 +239,6 @@ public class InputManager : MonoBehaviour
         playerInputs[i].parryDown = (!playerInputs[i].parry && (Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone));
         playerInputs[i].parry = Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone;
     }
-    # endregion
-
-
-
 
 
 
@@ -278,5 +249,5 @@ public class InputManager : MonoBehaviour
         playerInputs[i].jump = Input.GetButtonDown(jumpAxis + i);
         playerInputs[i].jump = (Input.GetAxis(jumpAxis + i) >= axisDeadZone);
     }
-    # endregion
+    #endregion
 }
