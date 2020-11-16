@@ -35,7 +35,11 @@ public class IAScript : MonoBehaviour
     [SerializeField]
     protected Player attachedPlayer;
     [SerializeField]
-    protected Player opponent;
+    protected Player _opponent;
+    public new Player opponent
+    {
+        get { return GetPlayer(); }
+    }
 
     bool isWaiting;
     protected bool isClose = true;
@@ -89,6 +93,20 @@ public class IAScript : MonoBehaviour
     #endregion
 
     #region Built-in methods
+
+    public Player GetPlayer()
+    {
+        StoryPlayer[] entities = FindObjectsOfType<StoryPlayer>();
+        foreach (StoryPlayer s in entities)
+        {
+            if (!s.gameObject.GetComponent<IAScript>())
+            {
+                return s;
+            }
+        }
+        return null;
+    }
+
     void Awake()
     {
         GameManager.Instance.ResetGameEvent += OnDisable;
@@ -270,23 +288,12 @@ public class IAScript : MonoBehaviour
 
     void FindOpponent()
     {
-        foreach (Player p in FindObjectsOfType<Player>())
-        {
-            if (p != attachedPlayer)
-            {
-                opponent = p;
-                break;
-            }
-        }
-
         if (opponent == null)
         {
             Debug.LogWarning("Couldn't find opponent !", gameObject);
-            StartCoroutine(WaitABit("FindOpponent", 0.12f));
             return;
         }
 
-        //Debug.Log("Opponent found !");
         if (opponent.GetType() != typeof(StoryPlayer))
             opponent.DrawnEvent += EnemyReady;
         else

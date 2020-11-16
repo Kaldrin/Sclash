@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class InputManager_Story : InputManager
 {
+    public static InputManager_Story Instance_Solo;
+
     public InputManager_Story()
     {
         playerInputs = new PlayerInputs[1];
@@ -11,7 +13,7 @@ public class InputManager_Story : InputManager
 
     void Awake()
     {
-        Instance = this;
+        Instance = Instance_Solo = this;
     }
 
     public override void Update()
@@ -31,5 +33,17 @@ public class InputManager_Story : InputManager
         base.ManageReallyAnyKeyInput(0);
         base.ManageScoreInput(0);
         base.ManagePauseInput(0);
+    }
+
+    public void AddInputs(int newAmount)
+    {
+        Debug.Log(newAmount);
+        if (newAmount < playerInputs.Length)
+            return;
+
+        playerInputs = new PlayerInputs[newAmount];
+        for (int i = 0; i < newAmount; i++) { playerInputs[i] = new PlayerInputs(); }
+
+        Debug.Log("Input added, new amount : " + playerInputs.Length);
     }
 }

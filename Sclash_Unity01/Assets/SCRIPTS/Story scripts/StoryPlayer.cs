@@ -8,6 +8,8 @@ public class StoryPlayer : Player
     float soloOrientation = -1;
 
     IAScript iAScript;
+    public delegate void OnDeathEvent();
+    public event OnDeathEvent DeathEvent;
 
     void Awake()
     {
@@ -41,7 +43,7 @@ public class StoryPlayer : Player
     {
         if (playerIsAI)
         {
-            base.ManageChargeInput();
+            //base.ManageChargeInput();
             return;
         }
 
@@ -205,7 +207,11 @@ public class StoryPlayer : Player
     {
         if (playerIsAI)
         {
-            base.ManageOrientation();
+            //Orient toward the Player
+            float sign = Mathf.Sign(transform.position.x - iAScript.opponent.transform.position.x);
+            ApplyOrientation(sign);
+
+            //base.ManageOrientation();
             return;
         }
 
@@ -272,6 +278,8 @@ public class StoryPlayer : Player
             {
                 otherPlayerNum = GetTargetNum(g);
 
+                g.GetComponent<StoryPlayer>().TakeDamage(gameObject, chargeLevel);
+
                 attackRangeFX.gameObject.SetActive(false);
                 attackRangeFX.gameObject.SetActive(true);
             }
@@ -284,6 +292,60 @@ public class StoryPlayer : Player
         base.Pommeled();
     }
 
+    public override bool TakeDamage(GameObject instigator, int hitStrength = 1)
+    {
+        bool hit = false;
+        Debug.Log("Die");
+
+        if (clashFrames)
+        {
+            instigator.GetComponent<StoryPlayer>().TriggerClash();
+            TriggerClash();
+
+            //INSTANTIATE CLASH PREFAB AT FX POS
+            Vector3 fxPos = new Vector3((instigator.transform.position.x + transform.position.x) / 2, clashFX.transform.position.y, clashFX.transform.position.z);
+            Instantiate(clashFXPrefabRef, fxPos, clashFX.transform.rotation, null).GetComponent<ParticleSystem>().Play();
+
+            AudioManager.Instance.TriggerClashAudioCoroutine();
+        }
+        else if (parryFrame)
+        {
+            StartCoroutine(TriggerStaminaRecupAnim());
+            instigator.GetComponent<StoryPlayer>().TriggerClash();
+
+            playerAnimations.TriggerPerfectParry();
+
+            clashFX.Play();
+
+            AudioManager.Instance.TriggerParriedAudio();
+        }
+        else if (untouchableFrame)
+        {
+            GameManager.Instance.TriggerSlowMoCoroutine(GameManager.Instance.dodgeSlowMoDuration, GameManager.Instance.dodgeSlowMoTimeScale, GameManager.Instance.dodgeTimeScaleFadeSpeed);
+            AudioManager.Instance.BattleEventIncreaseIntensity();
+        }
+        else
+        {
+            hit = true;
+            TriggerHit();
+            CheckDeath(instigator.GetComponent<StoryPlayer>().playerNum);
+        }
+
+        attackRangeFX.gameObject.SetActive(false);
+        attackRangeFX.gameObject.SetActive(true);
+
+        return hit;
+    }
+
+    public override void CheckDeath(int instigatorNum)
+    {
+
+
+        if (DeathEvent != null)
+            DeathEvent();
+        //base.CheckDeath(instigatorNum);
+    }
+
     public int GetTargetNum(GameObject g)
     {
         if (g.GetComponent<Player>())
@@ -293,4 +355,5 @@ public class StoryPlayer : Player
 
         return -1;
     }
+
 }

@@ -5,11 +5,8 @@ using UnityEngine;
 
 public class IAScript_Solo : IAScript
 {
-    private Player _opponent;
-    public new Player opponent
-    {
-        get { return GetPlayer(); }
-    }
+
+    StoryPlayer playerScript;
 
     PlayerAnimations playerAnimations;
 
@@ -20,22 +17,35 @@ public class IAScript_Solo : IAScript
         orientationCooldownFinished = true,
         canOrientTowardsEnemy = true;
 
+    bool isDead;
+
     void Awake()
     {
+        isDead = false;
+        playerScript = GetComponent<StoryPlayer>();
         playerAnimations = GetComponent<PlayerAnimations>();
+    }
+
+    private void OnEnable()
+    {
+        playerScript.DeathEvent += Die;
+    }
+
+    private void OnDisable()
+    {
+        playerScript.DeathEvent -= Die;
     }
 
     void Start()
     {
+        InputManager_Story.Instance_Solo.AddInputs(playerScript.playerNum + 1);
         attachedPlayer.Invoke("TriggerDraw", 0f);
     }
 
     protected override void Update()
     {
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            Die();
-        }
+        if (isDead)
+            playerScript.rb.velocity = Vector2.zero;
 
         ManageOrientation();
         UpdateWeightSum();
@@ -45,7 +55,7 @@ public class IAScript_Solo : IAScript
             DisableWeight();
             if (attachedPlayer.stamina >= 2)
             {
-                ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //Move Towards
+                //ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //Move Towards
             }
             else
             {
@@ -54,7 +64,7 @@ public class IAScript_Solo : IAScript
         }
         else if (distBetweenPlayers <= 2.5f)
         {
-            ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //Move Backwards
+            //ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //Move Backwards
         }
         else
         {
@@ -104,24 +114,16 @@ public class IAScript_Solo : IAScript
         orientationCooldownFinished = false;
     }
 
-    public Player GetPlayer()
-    {
-        StoryPlayer[] entities = FindObjectsOfType<StoryPlayer>();
-        foreach (StoryPlayer s in entities)
-        {
-            if (!s.gameObject.GetComponent<IAScript>())
-            {
-                return s;
-            }
-        }
-        return null;
-    }
-
     public void Die()
     {
+        isDead = true;
 
+        playerScript.playerCollider.gameObject.SetActive(false);
+        playerScript.rb.bodyType = RigidbodyType2D.Static;
+        playerScript.enabled = false;
 
-        AudioManager.Instance.TriggerSuccessfulAttackAudio();
+        GameManager_Story.StoryInstance.RemovePlayer(gameObject);
+
         AudioManager.Instance.BattleEventIncreaseIntensity();
 
         playerAnimations.TriggerDeath();
@@ -132,5 +134,6 @@ public class IAScript_Solo : IAScript
     private void FallAnimation()
     {
         playerAnimations.TriggerRealDeath();
+        this.enabled = false;
     }
 }

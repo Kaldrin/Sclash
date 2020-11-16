@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameManager_Story : GameManager
 {
-    public static GameManager_Story storyInstance = null;
+    private static GameManager_Story storyInstance = null;
     public static GameManager_Story StoryInstance
     {
         get
@@ -35,5 +35,11 @@ public class GameManager_Story : GameManager
     public override void Update()
     {
 
+    }
+
+    public void RemovePlayer(GameObject removedPlayer)
+    {
+        if (playersList.Contains(removedPlayer))
+            playersList.Remove(removedPlayer);
     }
 }

@@ -14,7 +14,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     [Tooltip("The reference to the player's Animators components for the character and their legs")]
     [SerializeField] public Animator animator = null;
-    [SerializeField] Animator
+    [SerializeField]
+    Animator
         legsAnimator = null,
         legsAnimator2 = null;
     [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
@@ -25,7 +26,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     [SerializeField] public GameObject legsMask = null;
 
     [Tooltip("The reference to the player's SpriteRenderers components for the character and their legs")]
-    [SerializeField] public SpriteRenderer
+    [SerializeField]
+    public SpriteRenderer
         spriteRenderer,
         legsSpriteRenderer = null;
 
@@ -41,7 +43,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     [Header("ANIMATION VALUES")]
     [Tooltip("The minimum speed required for the walk anim to trigger")]
     [SerializeField] float minSpeedForWalkAnim = 0.05f;
-    [HideInInspector] public float
+    [HideInInspector]
+    public float
         animatorBaseSpeed,
         legsAnimatorBaseSpeed = 0;
 
@@ -155,7 +158,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         }
         */
 
-        UpdateAnims();
+        if (InputManager.Instance.playerInputs.Length > playerScript.playerNum)
+            UpdateAnims(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
+
         UpdateWalkDirection();
         UpdateIdleStateDependingOnStamina(playerScript.stamina);
         animator.SetFloat(verticalSpeed, rigid.velocity.y);
@@ -169,7 +174,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     #region UPDATE VISUALS
     // Update the animator's parameters in Update
-    void UpdateAnims()
+    void UpdateAnims(float horizontal)
     {
         // CHARGE WALK ANIM
         legsAnimator2.SetFloat("AttackState", nextAttackState);
@@ -199,17 +204,17 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
             }
             else
             {
-                animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal)));
+                animator.SetFloat(moving, Mathf.Abs(Mathf.Sign(horizontal)));
 
 
                 // Walk anim speed depending on speed
                 if (playerScript.playerState == Player.STATE.normal && !playerScript.playerIsAI)
-                    animator.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
+                    animator.speed = Mathf.Abs(horizontal);
                 else
                     animator.speed = animatorBaseSpeed;
 
                 if (playerScript.playerState == Player.STATE.charging && !playerScript.playerIsAI)
-                    legsAnimator2.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
+                    legsAnimator2.speed = Mathf.Abs(horizontal);
                 else
                     legsAnimator2.speed = 1;
             }
@@ -345,7 +350,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
                     legsAnimator.SetFloat(legsWalkDirection, 1);
             }
         }
-        catch {}
+        catch { }
     }
 
     void ResetWalkDirecton()
@@ -358,7 +363,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
                 animator.SetFloat(playerWalkDirection, 0f);
             }
         }
-        catch {}
+        catch { }
     }
     #endregion
 

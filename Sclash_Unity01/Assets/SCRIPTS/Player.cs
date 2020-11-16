@@ -466,7 +466,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region FX
     [Header("FX")]
     [Tooltip("The references to the game objects holding the different FXs")]
-    [SerializeField] GameObject clashFXPrefabRef = null;
+    [SerializeField] protected GameObject clashFXPrefabRef = null;
     [SerializeField] protected GameObject deathBloodFX = null;
 
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
@@ -1410,7 +1410,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region RECEIVE AN ATTACK
-    public bool TakeDamage(GameObject instigator, int hitStrength = 1)
+    public virtual bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
         bool hit = false;
 
@@ -1537,7 +1537,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [PunRPC]
-    public void CheckDeath(int instigatorNum)
+    public virtual void CheckDeath(int instigatorNum)
     {
         // IS DEAD ?
         Debug.Log($"{gameObject.name} hit , {gameObject.name} health = {currentHealth}, {gameObject.name} state = {playerState}");
@@ -1591,7 +1591,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     // Hit
     [PunRPC]
-    void TriggerHit()
+    protected void TriggerHit()
     {
         currentHealth -= 1;
 
@@ -1882,7 +1882,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Stamina recup anim
-    IEnumerator TriggerStaminaRecupAnim()
+    protected IEnumerator TriggerStaminaRecupAnim()
     {
         // COLOR
         for (int i = 0; i < staminaSliders.Count; i++)
@@ -2871,7 +2871,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region CLASHED
     // The player have been clashed / parried
     [PunRPC]
-    void TriggerClash()
+    protected void TriggerClash()
     {
         // STATE
         SwitchState(STATE.clashed);
@@ -3009,7 +3009,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // If not multiplayer, check for the player's input
         else
         {
-
             if (Mathf.Abs(InputManager.Instance.playerInputs[playerNum].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
             {
                 //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
@@ -3233,7 +3232,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 if (GameManager.Instance.playersList[i] == null)
                     return;
-
 
                 stats[i] = GameManager.Instance.playersList[i].GetComponent<Player>();
             }
