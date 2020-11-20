@@ -29,7 +29,7 @@ public class CharacterChanger : MonoBehaviour
 
     // VERTICAL SELECTION
     bool canChangeVertical = true;
-    int verticalIndex = 0;
+    [HideInInspector] public int verticalIndex = 0;
     int currentMaxVerticalIndex = 0;
     List<Animator> verticalElements = new List<Animator>();
 
@@ -223,7 +223,11 @@ public class CharacterChanger : MonoBehaviour
         verticalMenu = GameObject.Find(charaSelecMenuName + playerScript.playerNum);
 
         for (int i = 0; i < verticalMenu.transform.childCount; i++)
+        {
             verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
+            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().characterChanger = gameObject.GetComponent<CharacterChanger>();
+            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
+        }
 
         currentMaxVerticalIndex = verticalMenu.transform.childCount - 1;
     }
@@ -273,7 +277,12 @@ public class CharacterChanger : MonoBehaviour
     {
         if (canChangeHorizontal && (Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal) > 0.5f))
         {
-            HorizontalSwitch();
+            if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal > 0.5f)
+                HorizontalSwitch(1);
+            else if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal < -0.5f)
+                HorizontalSwitch(-1);
+
+
             canChangeHorizontal = false;
         }
         else if (!canChangeHorizontal && Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal) < 0.5f)
@@ -282,7 +291,7 @@ public class CharacterChanger : MonoBehaviour
 
 
     // Change current property after horizontal input
-    void HorizontalSwitch()
+    public void HorizontalSwitch(int direction)
     {
         int changeDirection = 0;
 
@@ -295,13 +304,13 @@ public class CharacterChanger : MonoBehaviour
 
 
         // Change direction
-        if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal > 0.5f)
+        if (direction >= 1)
         {
             changeDirection = 1;
             // ANIMATION
             verticalElements[verticalIndex].SetTrigger("Right");
         }
-        else if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal < -0.5f)
+        else if (direction <= -1)
         {
             changeDirection = -1;
             // ANIMATION

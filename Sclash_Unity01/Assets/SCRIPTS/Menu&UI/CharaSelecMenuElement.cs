@@ -9,8 +9,27 @@ public class CharaSelecMenuElement : MonoBehaviour
     [SerializeField] public TextMeshProUGUI text1 = null;
     [SerializeField] public Image image1 = null;
     [SerializeField] public Image image2 = null;
+    [HideInInspector] public CharacterChanger characterChanger = null;
+    [HideInInspector] public int index = 0;
 
 
+
+    public void SelecSelf()
+    {
+        characterChanger.verticalIndex = index;
+        characterChanger.VerticalSelectionChange();
+    }
+
+
+    public void HorizontalChange(int direction)
+    {
+        SelecSelf();
+        characterChanger.HorizontalSwitch(direction);
+    }
+
+
+
+    // EDITOR ONLY
     // Dummy function, useless, but don't remove
     void RemoveFuckingWarning()
     {

@@ -406,11 +406,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Header("CHARGE FX")]
     [Tooltip("The slider component reference to move the charging FX on the katana")]
     [SerializeField] Slider chargeSlider = null;
-    [SerializeField]
-    protected ParticleSystem
-        chargeFlareFX = null,
-        chargeFX = null,
-        chargeFullFX = null;
+    [SerializeField] protected ParticleSystem chargeFlareFX = null;
+    [SerializeField] protected ParticleSystem chargeFX = null;
+    [SerializeField] protected ParticleSystem chargeFullFX = null;
+    [SerializeField] GameObject rangeIndicatorShadow = null;
 
 
 
@@ -458,7 +457,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Tooltip("The reference to the stamina charged audio FX AudioSource")]
     [SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
     [SerializeField] AudioSource staminaBreakAudioFX = null;
+    [SerializeField] AudioSource finalDeathAudioFX = null;
     [SerializeField] PlayRandomSoundInList notEnoughStaminaSFX = null;
+    [SerializeField] PlayRandomSoundInList staminaEndSFX = null;
+    [SerializeField] PlayRandomSoundInList staminaUseSFX = null;
     #endregion
 
 
@@ -585,6 +587,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 UpdateStaminaSlidersValue();
                 UpdateStaminaColor();
+
+                UpdateChargeShadowSize();
                 break;
 
             case STATE.charging:
@@ -593,9 +597,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 ManageParryInput();
                 ManageMaintainParryInput();
                 ManageCharging();
+
+                UpdateChargeShadowSize();
                 break;
 
             case STATE.attacking:
+                UpdateChargeShadowSize();
                 break;
 
             case STATE.canAttackAfterAttack:
@@ -608,9 +615,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 UpdateStaminaSlidersValue();
                 UpdateStaminaColor();
+
+                UpdateChargeShadowSize();
                 break;
 
             case STATE.recovering:
+                UpdateChargeShadowSize();
                 break;
 
             case STATE.pommeling:
@@ -1131,8 +1141,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 walkFXFront.Stop();
                 dashFXBack.Stop();
                 dashFXFront.Stop();
-                if (characterChanger != null)
-                    characterChanger.enabled = false;
+                characterChanger.enabled = false;
+                characterChanger.EnableVisuals(false);
                 break;
         }
     }
@@ -1307,7 +1317,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 // FX
                 clashFX.Play();
 
-
                 // SOUND
                 AudioManager.Instance.TriggerParriedAudio();
 
@@ -1447,9 +1456,35 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         currentHealth -= 1;
 
 
-        // AUDIO
-        AudioManager.Instance.TriggerSuccessfulAttackAudio();
-        AudioManager.Instance.BattleEventIncreaseIntensity();
+
+        // SOUND
+        if (GameManager.Instance.score[otherPlayerNum] >= GameManager.Instance.scoreToWin - 1)
+        {
+            if (finalDeathAudioFX != null)
+                finalDeathAudioFX.Play();
+            else
+            {
+                Debug.Log("Couldn't find final death audio source, ignoring");
+
+                if (audioManager != null)
+                    audioManager.TriggerSuccessfulAttackAudio();
+                else
+                    Debug.Log("Couldn't find audio manager, ignoring");
+            }
+        }
+        else
+        {
+            if (audioManager != null)
+                audioManager.TriggerSuccessfulAttackAudio();
+            else
+                Debug.Log("Couldn't find audio manager, ignoring");
+        }
+
+        if (audioManager != null)
+            audioManager.BattleEventIncreaseIntensity();
+        else
+            Debug.Log("Couldn't find audio manager, ignoring");
+
 
 
         // CAMERA FX
@@ -1494,7 +1529,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-    #region STAMINA
+    #region STAMINA STUFF
     // Set up stamina bar system
     public void SetUpStaminaBars()
     {
@@ -1571,6 +1606,24 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             if (stamina <= 0)
                 stamina = 0;
+
+
+
+            // SOUND
+            // Used all stamina sfx
+            if (stamina < staminaCostForMoves)
+            {
+                if (staminaEndSFX != null)
+                    staminaEndSFX.Play();
+                else
+                    Debug.Log("Couldn't fine stamina end audio source, ignoring");
+            }
+            // Used stamina sfx
+            if (staminaUseSFX != null)
+                staminaUseSFX.Play();
+            else
+                Debug.Log("Couldn't fine stamina use audio source, ignoring");
+
 
 
             // FX
@@ -2059,9 +2112,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     void ManageCharging()
     {
-        //currentChargeFramesPressed++;
-
-
+        // Online
         if (ConnectManager.Instance.connectedToMaster && photonView.IsMine)
         {
             //Player releases attack button
@@ -2124,6 +2175,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 // ANIMATION
                 playerAnimations.TriggerMaxCharge();
             }
+        }
+    }
+
+    void UpdateChargeShadowSize()
+    {
+        if (cheatSettings.useRangeShadow)
+        {
+            float X_ScaleObjective = 0;
+
+            if (playerState == STATE.charging)
+                X_ScaleObjective = lightAttackRange + (heavyAttackRange - 0.2f - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
+            else
+                X_ScaleObjective = 1f;
+
+
+            float newX_Scale = Mathf.Lerp(rangeIndicatorShadow.transform.localScale.x, X_ScaleObjective, 0.075f);
+            rangeIndicatorShadow.transform.localScale = new Vector3(newX_Scale, rangeIndicatorShadow.transform.localScale.y, rangeIndicatorShadow.transform.localScale.z);
         }
     }
     #endregion

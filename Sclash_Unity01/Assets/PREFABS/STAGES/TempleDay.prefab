@@ -12920,13 +12920,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb3357c222b6454c89c7b541f664164, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableInEditor: 1
+  previewDramaticScreenInEditor: 0
   backgroundElements:
   - {fileID: 4537346144447157801}
   - {fileID: 8047416544683528932}
   - {fileID: 1779146657124610087}
   - {fileID: 7636556379438822091}
   - {fileID: 3923375584839852621}
+  - {fileID: 4706696237461046977}
+  - {fileID: 4277581178335769597}
+  - {fileID: 7348018995820207354}
+  - {fileID: 4074287050889554499}
+  - {fileID: 3923375584839852621}
+  objectsToActivateOnDramaticScreen: []
+  animatorToEnableOnStart: {fileID: 0}
+  disableAnimatorAfterDuration: 1
+  durationBeforeDisablingAnimator: 5
 --- !u!1 &3082689294992720234
 GameObject:
   m_ObjectHideFlags: 0
@@ -13024,8 +13033,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyableElementSpriteRenderer: {fileID: 8181595662837332258}
+  meshRenderer: {fileID: 0}
   destroyedSprite: {fileID: 21300000, guid: 865149647042d184eb0758ef9b70f671, type: 3}
+  destroyedMaterial: {fileID: 0}
   fallingPart: {fileID: 5079368589665315070}
+  objectToDisable: {fileID: 0}
   destructibleProfile: {fileID: 11400000, guid: 400a4df8ce7aea7498aded5c61a554d4,
     type: 2}
   destroyedFX1: {fileID: 1131805566471825269}
@@ -23368,8 +23380,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyableElementSpriteRenderer: {fileID: 1198180772361780183}
+  meshRenderer: {fileID: 0}
   destroyedSprite: {fileID: 21300000, guid: 865149647042d184eb0758ef9b70f671, type: 3}
+  destroyedMaterial: {fileID: 0}
   fallingPart: {fileID: 7828040799756943770}
+  objectToDisable: {fileID: 0}
   destructibleProfile: {fileID: 11400000, guid: 400a4df8ce7aea7498aded5c61a554d4,
     type: 2}
   destroyedFX1: {fileID: 5676710818556495289}

@@ -13,5 +13,6 @@ public class PlayerCheatsParameters : ScriptableObject
     public bool useTransparencyForDodgeFrames = true;
     public bool useExtraDiegeticFX = true;
     public bool useRangeFlareFX = true;
+    public bool useRangeShadow = true;
     public bool infiniteStamina = false;
 }

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// This script is to improve audio sources and allow to play a random sound in a list of sounds 
+[RequireComponent(typeof(AudioSource))]
 public class PlayRandomSoundInList : MonoBehaviour
 {
     [SerializeField] bool play = false;
@@ -13,25 +16,32 @@ public class PlayRandomSoundInList : MonoBehaviour
 
 
     // BASE FUNCTIONS
-    // FixedUpdate is called 30 times per second
+    private void Start()
+    {
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+    }
+
+
     void FixedUpdate()
     {
-        if (play)
-        {
-            if (justPlayAudioSourceSound)
+        if (enabled && isActiveAndEnabled)
+            if (play)
             {
-                play = false;
-                audioSource.Play();
-            }
-            else
-            {
-                play = false;
-                int randomSoundIndex = Random.Range(0, soundList.Length - 1);
+                if (justPlayAudioSourceSound)
+                {
+                    play = false;
+                    audioSource.Play();
+                }
+                else
+                {
+                    play = false;
+                    int randomSoundIndex = Random.Range(0, soundList.Length - 1);
 
-                audioSource.clip = soundList[randomSoundIndex];
-                audioSource.Play();
+                    audioSource.clip = soundList[randomSoundIndex];
+                    audioSource.Play();
+                }
             }
-        }
     }
 
 
@@ -43,5 +53,17 @@ public class PlayRandomSoundInList : MonoBehaviour
     public void Play()
     {
         play = true;
+    }
+
+
+
+
+
+    // EDITOR ONLY
+    private void OnDrawGizmos()
+    {
+        // Get audio source automatically
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 }
