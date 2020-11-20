@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using System;
 
 public class IAScript_Solo : IAScript
 {
@@ -9,6 +10,8 @@ public class IAScript_Solo : IAScript
     StoryPlayer playerScript;
 
     PlayerAnimations playerAnimations;
+
+    public event Action<IAScript_Solo> OnIADeath;
 
     private float
         orientationCooldownStartTime = 0,
@@ -28,12 +31,12 @@ public class IAScript_Solo : IAScript
 
     private void OnEnable()
     {
-        playerScript.DeathEvent += Die;
+        playerScript.OnDeath += Die;
     }
 
     private void OnDisable()
     {
-        playerScript.DeathEvent -= Die;
+        playerScript.OnDeath -= Die;
     }
 
     void Start()
@@ -45,7 +48,10 @@ public class IAScript_Solo : IAScript
     protected override void Update()
     {
         if (isDead)
+        {
             playerScript.rb.velocity = Vector2.zero;
+            return;
+        }
 
         ManageOrientation();
         UpdateWeightSum();
@@ -55,7 +61,7 @@ public class IAScript_Solo : IAScript
             DisableWeight();
             if (attachedPlayer.stamina >= 2)
             {
-                //ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //Move Towards
+                ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //Move Towards
             }
             else
             {
@@ -64,12 +70,12 @@ public class IAScript_Solo : IAScript
         }
         else if (distBetweenPlayers <= 2.5f)
         {
-            //ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //Move Backwards
+            ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //Move Backwards
         }
         else
         {
             if (Mathf.Abs(0 - attachedPlayer.rb.velocity.x) > 0.1)
-                Invoke("ResetMovementInput", Random.Range(.75f, 1f));
+                Invoke("ResetMovementInput", UnityEngine.Random.Range(.75f, 1f));
         }
 
         if (canAddWeight)
@@ -116,6 +122,7 @@ public class IAScript_Solo : IAScript
 
     public void Die()
     {
+        OnIADeath(this);
         isDead = true;
 
         playerScript.playerCollider.gameObject.SetActive(false);

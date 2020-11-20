@@ -36,7 +36,7 @@ public class IAScript : MonoBehaviour
     protected Player attachedPlayer;
     [SerializeField]
     protected Player _opponent;
-    public new Player opponent
+    public Player opponent
     {
         get { return GetPlayer(); }
     }
@@ -81,14 +81,6 @@ public class IAScript : MonoBehaviour
     [SerializeField]
     int actionWeightSum;
 
-    [Header("Actions weights")]
-    public int wait;
-    public int attack,
-        parry,
-        pommel,
-        dashToward,
-        dashAway,
-        interruptAttack;
 
     #endregion
 
@@ -170,15 +162,6 @@ public class IAScript : MonoBehaviour
                 foreach (Actions a in actionsList)
                     if (a.name == "InterruptAttack")
                         a.weight = 0;
-            }
-
-            try
-            {
-                ShowWeight();
-            }
-            catch
-            {
-
             }
 
             //AI DRAW
@@ -273,17 +256,6 @@ public class IAScript : MonoBehaviour
                 IAMultiplicator = HARD_DIFFICULTY;
                 break;
         }
-    }
-
-    protected virtual void ShowWeight()
-    {
-        wait = actionsList[0].weight;
-        attack = actionsList[1].weight;
-        parry = actionsList[2].weight;
-        pommel = actionsList[3].weight;
-        dashToward = actionsList[4].weight;
-        dashAway = actionsList[5].weight;
-        interruptAttack = actionsList[6].weight;
     }
 
     void FindOpponent()
@@ -563,10 +535,12 @@ public class IAScript : MonoBehaviour
 
     protected void UpdateWeightSum()
     {
+        Debug.Log("Actions availables :");
         //Calculate weight sum
         actionWeightSum = 0;
         foreach (Actions a in actionsList)
         {
+            Debug.Log(a.name);
             actionWeightSum += a.weight;
         }
     }

@@ -1,15 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class StoryPlayer : Player
 {
     float soloOrientation = -1;
 
-    IAScript iAScript;
-    public delegate void OnDeathEvent();
-    public event OnDeathEvent DeathEvent;
+    IAScript solo_iAScript;
+    public event Action OnDeath;
 
     void Awake()
     {
@@ -30,13 +31,8 @@ public class StoryPlayer : Player
     {
         base.FixedUpdate();
         if (playerIsAI)
-            if (iAScript == null)
-                iAScript = GetComponent<IAScript>();
-    }
-
-    public override void Update()
-    {
-        base.Update();
+            if (solo_iAScript == null)
+                solo_iAScript = GetComponent<IAScript>();
     }
 
     public override void ManageChargeInput()
@@ -208,7 +204,7 @@ public class StoryPlayer : Player
         if (playerIsAI)
         {
             //Orient toward the Player
-            float sign = Mathf.Sign(transform.position.x - iAScript.opponent.transform.position.x);
+            float sign = Mathf.Sign(transform.position.x - solo_iAScript.opponent.transform.position.x);
             ApplyOrientation(sign);
 
             //base.ManageOrientation();
@@ -339,10 +335,9 @@ public class StoryPlayer : Player
 
     public override void CheckDeath(int instigatorNum)
     {
+        if (OnDeath != null)
+            OnDeath();
 
-
-        if (DeathEvent != null)
-            DeathEvent();
         //base.CheckDeath(instigatorNum);
     }
 

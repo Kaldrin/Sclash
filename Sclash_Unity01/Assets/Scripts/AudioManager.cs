@@ -9,7 +9,7 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
-    # region MANAGERS
+    #region MANAGERS
     [Header("MANAGERS")]
     // Name of the GameManager to find it in the scene
     [SerializeField] GameManager gameManager = null;
@@ -91,11 +91,13 @@ public class AudioManager : MonoBehaviour
     #region SELECTED MUSIC, STEM, PHASE
     [Header("STEMS & PHASES")]
     [SerializeField] bool useRandomStemSelection = true;
-    [SerializeField] int maxPhase = 2,
+    [SerializeField]
+    int maxPhase = 2,
         scoreFromMaxScoreToAutoMaxPhase = 1;
     bool decrementCurrentPhaseAtNextLoop = false;
     [HideInInspector] public int currentlySelectedMusicIndex = 0;
-    [SerializeField] int currentMusicPhase = 0,
+    [SerializeField]
+    int currentMusicPhase = 0,
         currentMusicStem = 0,
         previousMusicStem = 0;
     #endregion
@@ -118,12 +120,14 @@ public class AudioManager : MonoBehaviour
     #region SOUND FX
     [Header("SOUND FX")]
     [SerializeField] AudioSource parrySoundFXAudioSource = null;
-    [SerializeField] AudioSource successfulAttackSoundFXAudioSource = null,
+    [SerializeField]
+    AudioSource successfulAttackSoundFXAudioSource = null,
         deathSoundFXAudioSource = null,
         slowMoInAudioSource = null,
         slowMoOutAudioSource = null;
     // Sound FXs audio sources but with a script to play a random sound in a previously filled list
-    [SerializeField] public PlayRandomSoundInList matchBeginsRandomSoundSource = null,
+    [SerializeField]
+    public PlayRandomSoundInList matchBeginsRandomSoundSource = null,
         roundBeginsRandomSoundSource = null;
     #endregion
 
@@ -150,7 +154,6 @@ public class AudioManager : MonoBehaviour
     //[Header("CHEATS")]
     //[SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha8;
     //[SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha7;
-    #endregion
 
 
 
@@ -203,7 +206,7 @@ public class AudioManager : MonoBehaviour
                     RunSmoothVolumesUpdates();
                     break;
 
-                   
+
                 case AUDIOSTATE.battle:                                                 // BATTLE
                     RunSmoothVolumesUpdates();
                     FadeStrikesVolumeObjectiveDependingOnPlayersDistance();

@@ -138,8 +138,8 @@ public class StatsManager : MonoBehaviour
         currentRound.actions = new List<ActionsList>();
         currentRound.actions.Add(new ActionsList());
         currentRound.actions.Add(new ActionsList());
-        currentRound.actions[0].actionsList = new List<Action>();
-        currentRound.actions[1].actionsList = new List<Action>();
+        currentRound.actions[0].actionsList = new List<Actions>();
+        currentRound.actions[1].actionsList = new List<Actions>();
 
 
         currentRoundStartTime = Time.time;
@@ -172,7 +172,7 @@ public class StatsManager : MonoBehaviour
     // ACTIONS
     public void AddAction(ACTION action, int player, int level)
     {
-        Action newAction = new Action();
+        Actions newAction = new Actions();
         newAction.name = action;
 
 

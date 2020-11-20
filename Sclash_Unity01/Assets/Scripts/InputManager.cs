@@ -45,7 +45,8 @@ public class InputManager : MonoBehaviour
 
 
     [Header("INPUT SETTINGS")]
-    [SerializeField] public float
+    [SerializeField]
+    public float
         axisDeadZone = 0.1f,
         dashDeadZone = 0.5f;
     [SerializeField] public PlayerInputs[] playerInputs = new PlayerInputs[2];
@@ -56,7 +57,8 @@ public class InputManager : MonoBehaviour
 
     [Header("INPUT AXIS NAMES")]
     [SerializeField] string pauseAxis = "Pause";
-    [SerializeField] string
+    [SerializeField]
+    string
         battleSneathDrawAxis = "SneathDraw",
         horizontalAxis = "Horizontal",
         verticalAxis = "Vertical",
@@ -124,7 +126,7 @@ public class InputManager : MonoBehaviour
                 ManageAttackInput(i);
 
                 ManageAnyKeyInput(i);
-                ManageReallyAnyKeyInput(i); 
+                ManageReallyAnyKeyInput(i);
 
                 ManageScoreInput(i);
                 ManagePauseInput(i);
@@ -140,6 +142,7 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].reallyanykey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
     }
+    #endregion
 
 
     #region ANY KEY
@@ -150,6 +153,7 @@ public class InputManager : MonoBehaviour
         //playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
         playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].kick);
     }
+    #endregion
 
 
 
@@ -169,6 +173,7 @@ public class InputManager : MonoBehaviour
             if (P2Input != null)
                 P2Input();
     }
+    #endregion
 
 
     # region PAUSE
@@ -177,6 +182,7 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].pauseUp = Input.GetButtonUp(pauseAxis + i);
     }
+    #endregion
 
 
 
@@ -187,6 +193,7 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].vertical = Input.GetAxis(verticalAxis + i);
     }
+    #endregion
 
 
 
@@ -210,6 +217,7 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].battleSneathDraw = Input.GetButton(battleSneathDrawAxis + i);
     }
+    #endregion
 
 
 
@@ -220,6 +228,7 @@ public class InputManager : MonoBehaviour
         playerInputs[i].attackDown = (!playerInputs[i].attack && (Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone));
         playerInputs[i].attack = Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone;
     }
+    #endregion
 
 
 
@@ -230,6 +239,7 @@ public class InputManager : MonoBehaviour
     {
         playerInputs[i].kick = Input.GetButton(pommelAxis + i);
     }
+    #endregion
 
 
     # region PARRY
@@ -239,8 +249,7 @@ public class InputManager : MonoBehaviour
         playerInputs[i].parryDown = (!playerInputs[i].parry && (Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone));
         playerInputs[i].parry = Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone;
     }
-
-
+    #endregion
 
 
     #region JUMP
@@ -249,5 +258,7 @@ public class InputManager : MonoBehaviour
         playerInputs[i].jump = Input.GetButtonDown(jumpAxis + i);
         playerInputs[i].jump = (Input.GetAxis(jumpAxis + i) >= axisDeadZone);
     }
+    #endregion
+
     #endregion
 }

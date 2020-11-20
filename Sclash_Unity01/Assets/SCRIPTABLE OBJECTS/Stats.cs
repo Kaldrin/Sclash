@@ -32,7 +32,7 @@ public enum ACTION
 }
 
 [System.Serializable]
-public struct Action
+public struct Actions
 {
     public ACTION name;
     public int index;
@@ -43,7 +43,7 @@ public struct Action
 [System.Serializable]
 public class ActionsList
 {
-    public List<Action> actionsList;
+    public List<Actions> actionsList;
 }
 
 [System.Serializable]

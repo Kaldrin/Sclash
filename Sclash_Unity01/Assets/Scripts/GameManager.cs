@@ -152,7 +152,8 @@ public class GameManager : MonoBehaviourPun
     public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
-    [SerializeField] public Color[] playersColors = { Color.red, Color.yellow },
+    [SerializeField]
+    public Color[] playersColors = { Color.red, Color.yellow },
         attackSignColors = { Color.red, Color.yellow },
         playerLightsColors = { Color.red, Color.yellow };
     [HideInInspector] public bool playerDead = false;
@@ -166,7 +167,8 @@ public class GameManager : MonoBehaviourPun
     [Header("FX")]
     [Tooltip("The level of time slow down that is activated when a player dies")]
     [SerializeField] public float roundEndSlowMoTimeScale = 0.2f;
-    [SerializeField] public float minTimeScale = 0.05f,
+    [SerializeField]
+    public float minTimeScale = 0.05f,
         roundEndSlowMoDuration = 1.3f,
         roundEndTimeScaleFadeSpeed = 0.05f,
         gameEndSlowMoTimeScale = 0.1f,
@@ -321,7 +323,9 @@ public class GameManager : MonoBehaviourPun
     public virtual void Update()
     {
         if (enabled && cheatCodes)
+        {
             if (Input.GetKeyUp(slowTimeKey))
+            {
                 if (timeSlowDownSteps != null)
                 {
                     timeSlowDownLevel++;
@@ -340,6 +344,8 @@ public class GameManager : MonoBehaviourPun
                     else
                         Time.timeScale = 1;
                 }
+            }
+        }
     }
 
     // FixedUpdate is called 50 times per second
@@ -387,6 +393,7 @@ public class GameManager : MonoBehaviourPun
 
             case GAMESTATE.game:                                                    // GAME
                 if (oldState == GAMESTATE.paused)
+                {
                     for (int i = 0; i < playersList.Count; i++)
                     {
                         playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
@@ -424,7 +431,7 @@ public class GameManager : MonoBehaviourPun
                 break;
         }
     }
-    # endregion
+    #endregion
 
 
 
@@ -661,13 +668,13 @@ public class GameManager : MonoBehaviourPun
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
             //IAScript ia = null;
             /*
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
             if (letThemFight || i == 1)
                 ia = playersList[i].AddComponent<IAScript>();
-#else
+    #else
             if (i == 1)
                 ia = playersList[i].AddComponent<IAScript>();
-#endif
+    #endif
             if (ia != null)
                 ia.SetDifficulty(IAScript.Difficulty.Hard);
                 */
@@ -865,10 +872,12 @@ public class GameManager : MonoBehaviourPun
 
 
         // STATS
-        try {
+        try
+        {
             statsManager.InitializeNewRound();
         }
-        catch {
+        catch
+        {
             Debug.Log("Error while initializing a new round, ignoring");
         }
 
@@ -932,10 +941,12 @@ public class GameManager : MonoBehaviourPun
         // STATS
         if (gameState != GAMESTATE.finished && allPlayersHaveDrawn)
         {
-            try {
+            try
+            {
                 statsManager.FinalizeGame(false, 1);
             }
-            catch {
+            catch
+            {
                 Debug.Log("Error while finalizing the recording of the current game, ignoring");
             }
         }
@@ -1210,9 +1221,9 @@ public class GameManager : MonoBehaviourPun
                     originalParticleSystemsColors.Add(particleSystemMain.startColor.color);
                     particleSystemMain.startColor = Color.black;
                     originalParticleSystemsGradients.Add(particleSystemMain.startColor.gradient);
-                    particleSystemMain.startColor = deathVFXGradientForParticles; 
+                    particleSystemMain.startColor = deathVFXGradientForParticles;
                 }
-            
+
 
             // LIGHTS
             for (int i = 0; i < lights.Length; i++)
@@ -1234,7 +1245,7 @@ public class GameManager : MonoBehaviourPun
                             spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
                         }
                 }
-                catch {}
+                catch { }
             }
             // MESHES
             if (meshRenderers != null && meshRenderers.Length > 0)
@@ -1258,14 +1269,14 @@ public class GameManager : MonoBehaviourPun
                             particleSystemMain.startColor = originalParticleSystemsColors[i];
                         }
                         catch { }
-                    } 
+                    }
             // LIGHTS
             if (lights != null && lights.Length > 0)
                 for (int i = 0; i < lights.Length; i++)
                     try
                     {
                         if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
-                                lights[i].gameObject.SetActive(true);
+                            lights[i].gameObject.SetActive(true);
                     }
                     catch { }
 
@@ -1309,7 +1320,7 @@ public class GameManager : MonoBehaviourPun
             else
                 Debug.Log("Couldn't find anime lines FX, ignoring");
         }
-            
+
 
 
         // AUDIO
@@ -1383,7 +1394,7 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    # region SECONDARY FUNCTIONS
+    #region SECONDARY FUNCTIONS
     int CalculateNextStageIndex()
     {
         int nextStageIndex = mapLoader.currentMapIndex;

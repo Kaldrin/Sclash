@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    public int spawnBeforeExhaust;
+
     public GameObject enemyPrefab;
 
     private void Update()
@@ -16,6 +18,14 @@ public class EnemySpawner : MonoBehaviour
 
     public void SpawnEnemy()
     {
+        if (spawnBeforeExhaust == 0)
+        {
+            DestroySpawner();
+            return;
+        }
+
+        spawnBeforeExhaust--;
+
         GameObject enemySpawned = Instantiate(enemyPrefab, transform.position, transform.rotation);
         enemySpawned.GetComponent<StoryPlayer>().playerNum = IAManager.Instance.enemyList.Count + 1;
         enemySpawned.GetComponent<IAScript_Solo>().GetPlayer();
@@ -25,5 +35,10 @@ public class EnemySpawner : MonoBehaviour
             new IAScript.Actions("Parry", 1)
         };
         IAManager.Instance.EnemySpawned(enemySpawned);
+    }
+
+    private void DestroySpawner()
+    {
+        Destroy(gameObject);
     }
 }
