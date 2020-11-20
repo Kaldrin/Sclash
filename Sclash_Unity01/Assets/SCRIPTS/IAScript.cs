@@ -35,7 +35,6 @@ public class IAScript : MonoBehaviour
     [SerializeField]
     protected Player attachedPlayer;
     [SerializeField]
-    protected Player _opponent;
     public Player opponent
     {
         get { return GetPlayer(); }
@@ -88,10 +87,10 @@ public class IAScript : MonoBehaviour
 
     public Player GetPlayer()
     {
-        StoryPlayer[] entities = FindObjectsOfType<StoryPlayer>();
-        foreach (StoryPlayer s in entities)
+        Player[] entities = FindObjectsOfType<Player>();
+        foreach (Player s in entities)
         {
-            if (!s.gameObject.GetComponent<IAScript>())
+            if (!s.gameObject.GetComponent<IAScript>().enabled)
             {
                 return s;
             }
@@ -260,11 +259,7 @@ public class IAScript : MonoBehaviour
 
     void FindOpponent()
     {
-        if (opponent == null)
-        {
-            Debug.LogWarning("Couldn't find opponent !", gameObject);
-            return;
-        }
+        Debug.Log("Looking for opponent");
 
         if (opponent.GetType() != typeof(StoryPlayer))
             opponent.DrawnEvent += EnemyReady;

@@ -92,7 +92,7 @@ public class StatsManager : MonoBehaviour
         }
         currentGame.duration = Time.time - currentGameStartTime;
         currentGame.gameFinished = finished;
-        currentGame.finalScore = gameManager.score;
+        currentGame.finalScore = GameManager.Instance.score;
 
 
         GlobalStat newGlobalStats = statsAsset.globalStats[gameType];

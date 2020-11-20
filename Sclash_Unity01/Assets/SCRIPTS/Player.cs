@@ -1466,22 +1466,22 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.Log("Couldn't find final death audio source, ignoring");
 
-                if (audioManager != null)
-                    audioManager.TriggerSuccessfulAttackAudio();
+                if (AudioManager.Instance != null)
+                    AudioManager.Instance.TriggerSuccessfulAttackAudio();
                 else
                     Debug.Log("Couldn't find audio manager, ignoring");
             }
         }
         else
         {
-            if (audioManager != null)
-                audioManager.TriggerSuccessfulAttackAudio();
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.TriggerSuccessfulAttackAudio();
             else
                 Debug.Log("Couldn't find audio manager, ignoring");
         }
 
-        if (audioManager != null)
-            audioManager.BattleEventIncreaseIntensity();
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.BattleEventIncreaseIntensity();
         else
             Debug.Log("Couldn't find audio manager, ignoring");
 
@@ -1926,6 +1926,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void TriggerDraw()
     {
+        if (DrawnEvent != null)
+        {
+
+            DrawnEvent();
+            Debug.Log("Drawn");
+        }
         SwitchState(STATE.drawing);
 
         // ANIMATION
@@ -1938,7 +1944,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void ManageBattleSneath()
     {
         if (canBattleSneath)
-            if (inputManager.playerInputs[playerNum].battleSneathDraw)
+            if (InputManager.Instance.playerInputs[playerNum].battleSneathDraw)
                 TriggerBattleSneath();
     }
 

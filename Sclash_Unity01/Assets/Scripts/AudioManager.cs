@@ -362,9 +362,9 @@ public class AudioManager : MonoBehaviour
 
     void DecreaseIntensityWithTime()
     {
-        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(GameManager.Instance.score[0], GameManager.Instance.score[1]));
 
-        if (currentBattleIntensity > 0 && (currentMaxScore < gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase))
+        if (currentBattleIntensity > 0 && (currentMaxScore < GameManager.Instance.scoreToWin - scoreFromMaxScoreToAutoMaxPhase))
             if (Time.time - decreaseBattleIntensityLoopStartTime >= decreaseBattleIntensityEveryDuration)
             {
                 lastBattleIntensityLevel = currentBattleIntensity;
@@ -378,10 +378,10 @@ public class AudioManager : MonoBehaviour
 
     void UpdateMusicDependingOnBattleIntensity()
     {
-        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(GameManager.Instance.score[0], GameManager.Instance.score[1]));
 
 
-        if (!(currentMaxScore >= gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase && gameManager.scoreToWin > scoreFromMaxScoreToAutoMaxPhase))
+        if (!(currentMaxScore >= GameManager.Instance.scoreToWin - scoreFromMaxScoreToAutoMaxPhase && GameManager.Instance.scoreToWin > scoreFromMaxScoreToAutoMaxPhase))
         {
             if (currentMusicPhase < phasesMainAudioSources.Count - 1)
             {
@@ -413,10 +413,10 @@ public class AudioManager : MonoBehaviour
         {
             bool isMaxPhase = false;
             SwitchStem(useRandomStemSelection);
-            int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+            int currentMaxScore = Mathf.FloorToInt(Mathf.Max(GameManager.Instance.score[0], GameManager.Instance.score[1]));
 
 
-            if (currentMaxScore >= gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase & gameManager.scoreToWin > scoreFromMaxScoreToAutoMaxPhase)
+            if (currentMaxScore >= GameManager.Instance.scoreToWin - scoreFromMaxScoreToAutoMaxPhase & GameManager.Instance.scoreToWin > scoreFromMaxScoreToAutoMaxPhase)
             {
                 if (currentMusicPhase < maxPhase)
                     phaseTransitionStemAudioSource.Play();
