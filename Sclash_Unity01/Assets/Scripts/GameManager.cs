@@ -505,11 +505,11 @@ public class GameManager : MonoBehaviourPun
         characterSelectionHelpAnimator.SetBool("On", true);
 
 
+        yield return new WaitForSeconds(0.1f);
+
+
         for (int i = 0; i < playersList.Count; i++)
             playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
-
-
-        yield return new WaitForSeconds(0.1f);
 
 
         // STATE
@@ -581,6 +581,13 @@ public class GameManager : MonoBehaviourPun
                 // STATS
                 statsManager.InitalizeNewGame(1, playersList[0].GetComponent<CharacterChanger>().currentCharacterIndex, playersList[1].GetComponent<CharacterChanger>().currentCharacterIndex);
                 statsManager.InitializeNewRound();
+
+
+                // STAGE
+                if (mapLoader.currentMap != null && mapLoader.currentMap.GetComponent<MapPrefab>())
+                    mapLoader.currentMap.GetComponent<MapPrefab>().TriggerStartStage();
+                else
+                    Debug.Log("Couldn't find current stage script, ignoring");
 
 
                 // Makes draw text disappear if it has appeared
@@ -1030,7 +1037,6 @@ public class GameManager : MonoBehaviourPun
 
 
     #region MATCH END
-    // MATCH END
     public void APlayerLeft()
     {
         foreach (GameObject p in playersList)
@@ -1053,9 +1059,7 @@ public class GameManager : MonoBehaviourPun
         try {
             statsManager.FinalizeGame(true, 1);
         }
-        catch {
-            Debug.Log("Error while finalizing the recording of the current game, ignoring");
-        }
+        catch { Debug.Log("Error while finalizing the recording of the current game, ignoring"); }
 
 
         // AUDIO
@@ -1131,8 +1135,15 @@ public class GameManager : MonoBehaviourPun
         if (on)
         {
             // Deactivates background elements for only orange color
+            /*
             for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
                 mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
+                */
+
+            // STAGE ELEMENTS
+            if (mapLoader.currentMap != null && mapLoader.currentMap.GetComponent<MapPrefab>())
+                mapLoader.currentMap.GetComponent<MapPrefab>().TriggerDramaticScreen();
+
 
 
             // List of all renderers for the death VFX
@@ -1297,7 +1308,8 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.TriggerSlowMoAudio(true);
+        if (score[winningPlayerIndex] < scoreToWin)
+            audioManager.TriggerSlowMoAudio(true);
 
 
         yield return new WaitForSecondsRealtime(slowMoEffectDuration);
@@ -1320,7 +1332,8 @@ public class GameManager : MonoBehaviourPun
             audioManager.battleMusicStrikesSources[i].pitch = 1;
         }
         */
-        audioManager.TriggerSlowMoAudio(false);
+        if (score[winningPlayerIndex] < scoreToWin)
+            audioManager.TriggerSlowMoAudio(false);
 
 
         yield return new WaitForSecondsRealtime(0.5f);
@@ -1373,6 +1386,7 @@ public class GameManager : MonoBehaviourPun
         int nextStageIndex = mapLoader.currentMapIndex;
         int loopCount = 0;
 
+
         // DAY NIGHT
         if (gameParameters.dayNightCycle)
         {
@@ -1395,8 +1409,9 @@ public class GameManager : MonoBehaviourPun
                         while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex || !(mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.day))
                         {
                             nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-
                             loopCount++;
+
+
                             if (loopCount >= 100)
                             {
                                 nextStageIndex = 0;
@@ -1408,6 +1423,8 @@ public class GameManager : MonoBehaviourPun
                         {
                             nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
                             loopCount++;
+
+
                             if (loopCount >= 100)
                             {
                                 Debug.Log("Couldn't find random day map that is not this one, taking index 0 instead");

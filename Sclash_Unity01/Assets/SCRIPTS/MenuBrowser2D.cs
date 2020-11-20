@@ -14,8 +14,7 @@ public class MenuBrowser2D : MonoBehaviour
     #region VARIABLES
     [Header("MANAGERS")]
     [SerializeField] RumbleManager rumbleManager = null;
-
-
+    
 
 
     #region BROWSING
@@ -25,20 +24,18 @@ public class MenuBrowser2D : MonoBehaviour
         [SerializeField] public GameObject[] line;
     }
 
+
+
     [Header("BROWSING")]
     [SerializeField] public ElementsLine[] elements2D = new ElementsLine[4];
-
     [SerializeField] bool canBack = false;
     [Tooltip("The back element of this menu page that allows for ")]
     [SerializeField] public GameObject backElement = null;
-
-    [SerializeField] public int
-        YIndex = 0,
-        XIndex = 0;
+    [SerializeField] public int YIndex = 0;
+    [SerializeField] public int XIndex = 0;
     [SerializeField] bool applyDefaultIndexOnEnable = false;
-    [SerializeField] int
-        defaultYIndex = 0,
-        defaultXIndex = 0;
+    [SerializeField] int defaultYIndex = 0;
+    [SerializeField] int defaultXIndex = 0;
     int verticalDirection = 1;
     int horizontalDirection = 1;
 
@@ -46,7 +43,6 @@ public class MenuBrowser2D : MonoBehaviour
     //[SerializeField] bool invertHorizontalAxis = false;
     [SerializeField] bool swapAxis = false;
     #endregion
-
 
 
 
@@ -64,20 +60,16 @@ public class MenuBrowser2D : MonoBehaviour
     [Header("INPUTS")]
     [Tooltip("Names of the inputs axis created in the input settings")]
     [SerializeField] string horizontalAxis = "Horizontal";
-    [SerializeField] string
-        verticalAxis = "Vertical",
-        backButton = "Back";
+    [SerializeField] string verticalAxis = "Vertical";
+    [SerializeField] string backButton = "Back";
+    [SerializeField] bool vAxisInUse = false;
+    [SerializeField] bool hAxisInUse = true;
 
-    [SerializeField] bool
-        vAxisInUse = false,
-        hAxisInUse = true;
-    
     [Tooltip("Dead zones for joystick browsing so that it's more comfortable")]
-    [SerializeField] float
-        verticalInputDetectionZone = 0.5f,
-        verticalInputRestZone = 0.1f,
-        horizontalInputDetectionZone = 0.5f,
-        horizontalRestZone = 0.1f;
+    [SerializeField] float verticalInputDetectionZone = 0.5f;
+    [SerializeField] float verticalInputRestZone = 0.1f;
+    [SerializeField] float horizontalInputDetectionZone = 0.5f;
+    [SerializeField] float horizontalRestZone = 0.1f;
     #endregion
 
 
@@ -94,6 +86,10 @@ public class MenuBrowser2D : MonoBehaviour
     [SerializeField] Color buttonDefaultColor = Color.black;
     #endregion
 
+
+
+    [Header("RUMBLE SETTINGS")]
+    [SerializeField] RumbleSettings browseRumbleSettings = null;
 
 
 
@@ -282,7 +278,8 @@ public class MenuBrowser2D : MonoBehaviour
 
 
         // RUMBLE
-        rumbleManager.TriggerSimpleControllerVibrationForEveryone(rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationDuration);
+        //rumbleManager.TriggerSimpleControllerVibrationForEveryone(rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationDuration);
+        rumbleManager.Rumble(browseRumbleSettings);
 
 
         Select(true);
@@ -329,7 +326,8 @@ public class MenuBrowser2D : MonoBehaviour
 
 
             // RUMBLE
-            rumbleManager.TriggerSimpleControllerVibrationForEveryone(rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationDuration);
+            //rumbleManager.TriggerSimpleControllerVibrationForEveryone(rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationIntensity, rumbleManager.menuBrowseVibrationDuration);
+            rumbleManager.Rumble(browseRumbleSettings);
 
 
             Select(true);

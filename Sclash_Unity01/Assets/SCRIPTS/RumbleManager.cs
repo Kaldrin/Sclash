@@ -1,171 +1,74 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using XInputDotNetPure; // Required in C#
+using XInputDotNetPure;
 
-// Manages all rumbles of the game, but might be changed, it's not great this way
+// This is the rumble manager.
+// It manages all controller rumbles in the game
+// Any rumble that should occur will be called here
 public class RumbleManager : MonoBehaviour
 {
-    #region Singleton
-    public static RumbleManager Instance;
-    #endregion
+    [HideInInspector] public static RumbleManager Instance;
 
-
-    //bool vibrating = false;
-    [SerializeField] public float menuBrowseVibrationIntensity = 0.08f;
-    [SerializeField] public float menuBrowseVibrationDuration = 0.06f;
-    Coroutine[] vibrationCoroutines = new Coroutine[4];
-
-
-    [SerializeField] bool rumbleOn = true;
+    [SerializeField] bool enableControllerRumble = true;
+    PlayerIndex playerIndex = PlayerIndex.One;
+    GamePadState state = new GamePadState();
+    GamePadState prevState = new GamePadState();
 
 
 
 
 
-    private void Awake(){
+
+
+    void Start()
+    {
         Instance = this;
+
+        // If controller rumbles are enabled, sets the current rumble value to 0 for all controllers
+        if (enableControllerRumble)
+            GamePad.SetVibration(playerIndex, 0, 0);
     }
 
-    private void Update()
+
+    // Function to call by other scripts to make a controller rumble
+    public void Rumble(RumbleSettings rumbleSettings)
     {
-        if (rumbleOn && enabled && isActiveAndEnabled)
+        // If controller rumbles are enabled, rumble
+        if (enableControllerRumble)
+            StartCoroutine(RumblePlayer01Coroutine(rumbleSettings.rumbleDuration, rumbleSettings.rumbleStrengthLeft, rumbleSettings.rumbleStrengthRight, rumbleSettings.rumbleNumber, rumbleSettings.betweenRumblesDuration));
+    }
+
+
+    IEnumerator RumblePlayer01Coroutine(float duration, float leftStrength, float rightStrength, int numberOfTimes, float betweenRumblesDuration)
+    {
+        //GamePad.SetVibration(playerIndex, 0, 0);
+
+
+        for (int i = 0; i < numberOfTimes; i++)
         {
-            /*
-            if (!vibrating)
-                for (int i = 0; i < 4; i++)
-                {
-                    PlayerIndex index = new PlayerIndex();
-                    switch (i)
-                    {
-                        case 0:
-                            index = PlayerIndex.One;
-                            break;
-
-                        case 1:
-                            index = PlayerIndex.Two;
-                            break;
-
-                        case 2:
-                            index = PlayerIndex.Three;
-                            break;
-
-                        case 3:
-                            index = PlayerIndex.Four;
-                            break;
-                    }
+            // Starts the rumble
+            GamePad.SetVibration(playerIndex, leftStrength, rightStrength);
 
 
-                    // Starts vibration
-                    GamePad.SetVibration(index, 0, 0);
-                }
-                */
+            yield return new WaitForSecondsRealtime(duration);
+
+
+            // Ends the rumble
+            GamePad.SetVibration(playerIndex, 0, 0);
+
+
+            yield return new WaitForSecondsRealtime(betweenRumblesDuration);
         }
     }
 
 
-    public void TriggerSimpleControllerVibration(int playerIndex, float leftIntensity, float rightIntensity, float duration)
+
+    #region EDITOR ONLY
+    void RemoveFuckingWarnings()
     {
-        if (vibrationCoroutines[playerIndex] != null)
-            StopCoroutine(vibrationCoroutines[playerIndex]);
-
-
-        vibrationCoroutines[playerIndex] = StartCoroutine(SimpleVibrationCoroutine(playerIndex, leftIntensity, rightIntensity, duration));
+        state = prevState;
+        prevState = state;
     }
-
-    public void TriggerSimpleControllerVibrationForEveryone(float leftIntensity, float rightIntensity, float duration)
-    {
-        //StopCoroutine("SimpleVibrationCoroutine");
-        for (int i = 0; i < 4; i++)
-        {
-            if (vibrationCoroutines[i] != null)
-                StopCoroutine(vibrationCoroutines[i]);
-
-
-            vibrationCoroutines[i] = StartCoroutine(SimpleVibrationCoroutine(i, leftIntensity, rightIntensity, duration));
-        }
-    }
-
-    public void CancelVibration(int playerIndex)
-    {
-        PlayerIndex index = new PlayerIndex();
-
-
-        switch (playerIndex)
-        {
-            case 0:
-                index = PlayerIndex.One;
-                break;
-
-            case 1:
-                index = PlayerIndex.Two;
-                break;
-
-            case 2:
-                index = PlayerIndex.Three;
-                break;
-
-            case 3:
-                index = PlayerIndex.Four;
-                break;
-        }
-
-
-        // Starts vibration
-        GamePad.SetVibration(index, 0, 0);
-    }
-
-
-    IEnumerator SimpleVibrationCoroutine(int playerIndex, float leftIntensity, float rightIntensity, float duration)
-    {
-        //StopCoroutine(SimpleVibrationCoroutine(0, 0, 0, 0));
-        //vibrating = false;
-        //CancelVibration(playerIndex);
-
-
-        // Set player index
-        PlayerIndex index = new PlayerIndex();
-        switch (playerIndex)
-        {
-            case 0:
-                index = PlayerIndex.One;
-                break;
-
-            case 1:
-                index = PlayerIndex.Two;
-                break;
-
-            case 2:
-                index = PlayerIndex.Three;
-                break;
-
-            case 3:
-                index = PlayerIndex.Four;
-                break;
-        }
-
-        if (rumbleOn)
-        {
-            // Resets vibration
-            //vibrating = false;
-            GamePad.SetVibration(index, 0, 0);
-        
-
-            yield return new WaitForSeconds(0.01f);
-
-
-            // Starts vibration
-            //vibrating = true;
-            GamePad.SetVibration(index, leftIntensity, rightIntensity);
-        
-
-            yield return new WaitForSeconds(duration);
-
-
-            // Ends vibration
-            //vibrating = false;
-            Debug.Log("End vibration");
-            GamePad.SetVibration(index, 0, 0);
-        }
-    }
+    #endregion
 }

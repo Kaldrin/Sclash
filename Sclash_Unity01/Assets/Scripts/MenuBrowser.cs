@@ -39,7 +39,6 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-
     #region SPECIAL
     [Header("SPECIAL")]
     [SerializeField] bool callSpecialElementWhenHorizontal = false;
@@ -51,26 +50,20 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-
-
     #region INPUTS
     [Header("INPUTS")]
     [Tooltip("Names of the inputs axis created in the input settings")]
     [SerializeField] string horizontalAxis = "Horizontal";
-    [SerializeField] string
-        verticalAxis = "Vertical",
-        backButton = "Back";
-
-    bool
-        vAxisInUse = false,
-        hAxisInUse = false;
+    [SerializeField] string verticalAxis = "Vertical";
+    [SerializeField] string backButton = "Back";
+    bool vAxisInUse = false;
+    bool hAxisInUse = false;
 
     [Tooltip("Dead zones for joystick browsing so that it's more comfortable")]
-    [SerializeField] float
-        verticalInputDetectionZone = 0.5f,
-        verticalInputRestZone = 0.1f,
-        horizontalInputDetectionZone = 0.5f,
-        horizontalRestZone = 0.1f;
+    [SerializeField] float verticalInputDetectionZone = 0.5f;
+    [SerializeField] float verticalInputRestZone = 0.1f;
+    [SerializeField] float horizontalInputDetectionZone = 0.5f;
+    [SerializeField] float horizontalRestZone = 0.1f;
     #endregion
 
 
@@ -91,6 +84,12 @@ public class MenuBrowser : MonoBehaviour
     [SerializeField] public List<bool> shouldUseButtonColorSwitch = new List<bool>();
     #endregion
 
+
+
+
+    [Header("RUMBLE SETTINGS")]
+    [SerializeField] RumbleSettings browseRumbleSettings = null;
+    [SerializeField] RumbleSettings backRumbleSettings = null;
 
 
 
@@ -149,8 +148,6 @@ public class MenuBrowser : MonoBehaviour
     }
 
 
-
-    // Update is called once per graphic frame
     void Update()
     {
         if (elements.Length > 0)
@@ -197,7 +194,7 @@ public class MenuBrowser : MonoBehaviour
 
             // V AXIS
             // Detects V axis let go
-            if (Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
+            if (vAxisInUse && Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
                 vAxisInUse = false;
 
 
@@ -289,10 +286,16 @@ public class MenuBrowser : MonoBehaviour
 
 
         // RUMBLE
-        if (RumbleManager.Instance != null)
-            RumbleManager.Instance.TriggerSimpleControllerVibrationForEveryone(RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationDuration);
-        else
-            Debug.Log("RumbleManager.Instance was not found");
+        if (direction != 0)
+        {
+            if (RumbleManager.Instance != null)
+            {
+                //RumbleManager.Instance.TriggerSimpleControllerVibrationForEveryone(RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationDuration);
+                RumbleManager.Instance.Rumble(browseRumbleSettings);
+            }
+            else
+                Debug.Log("RumbleManager.Instance was not found");
+        }
 
 
         Select(true);
@@ -301,17 +304,25 @@ public class MenuBrowser : MonoBehaviour
     void ManageBack()
     {
         if (canBack && backElement != null)
-        {
             if (Input.GetButtonUp(backButton))
+            {
                 backElement.GetComponent<Button>().onClick.Invoke();
-        }
+
+
+                // RUMBLE
+                if (RumbleManager.Instance != null)
+                    RumbleManager.Instance.Rumble(backRumbleSettings);
+                else
+                    Debug.Log("RumbleManager.Instance was not found");
+            }
     }
 
     public void Back()
     {
-        
         if (canBack && backElement != null)
+        {
             backElement.GetComponent<Button>().onClick.Invoke();
+        }
     }
     #endregion
 
@@ -498,7 +509,7 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-    #region SECONDARY FUNCTIONS
+    // SECONDARY FUNCTIONS
     // Returns true if element is contained in referenced array
     bool isObjectInGameObjectArray(GameObject objectToFind, GameObject[] array)
     {
@@ -519,6 +530,5 @@ public class MenuBrowser : MonoBehaviour
 
         return 0;
     }
-    #endregion
     #endregion
 }

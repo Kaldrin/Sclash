@@ -20,12 +20,10 @@ public class PitchModulator : MonoBehaviour
     private void Awake()
     {
         if (!sourceToModulate)
-        {
-            sourceToModulate = new AudioSource();
-            Debug.Log("The audio source to modulate the pitch was not referenced on this object : " + gameObject.name + ", ignoring");
-        }
-        else
-            basePitch = sourceToModulate.pitch;
+            sourceToModulate = GetComponent<AudioSource>();
+
+
+        basePitch = sourceToModulate.pitch;
     }
 
     private void OnEnable()

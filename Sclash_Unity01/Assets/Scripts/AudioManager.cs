@@ -105,8 +105,8 @@ public class AudioManager : MonoBehaviour
     [Header("MUSIC BATTLE INTENSITY")]
     [SerializeField] float decreaseBattleIntensityEveryDuration = 3f;
     float decreaseBattleIntensityLoopStartTime = 0f;
-    int currentBattleIntensity = 0,
-        lastBattleIntensityLevel = 0;
+    int currentBattleIntensity = 0;
+    int lastBattleIntensityLevel = 0;
     [SerializeField] int maxBattleIntensityLevel = 12;
     [SerializeField] List<int> battleIntensityLevelsForPhaseUp = new List<int>(2) { 3, 8, 1000 };
     #endregion
@@ -117,13 +117,13 @@ public class AudioManager : MonoBehaviour
     #region SOUND FX
     [Header("SOUND FX")]
     [SerializeField] AudioSource parrySoundFXAudioSource = null;
-    [SerializeField] AudioSource successfulAttackSoundFXAudioSource = null,
-        deathSoundFXAudioSource = null,
-        slowMoInAudioSource = null,
-        slowMoOutAudioSource = null;
+    [SerializeField] AudioSource successfulAttackSoundFXAudioSource = null;
+    [SerializeField] AudioSource deathSoundFXAudioSource = null;
+    [SerializeField] AudioSource slowMoInAudioSource = null;
+    [SerializeField] AudioSource slowMoOutAudioSource = null;
     // Sound FXs audio sources but with a script to play a random sound in a previously filled list
-    [SerializeField] public PlayRandomSoundInList matchBeginsRandomSoundSource = null,
-        roundBeginsRandomSoundSource = null;
+    [SerializeField] public PlayRandomSoundInList matchBeginsRandomSoundSource = null;
+    [SerializeField] public PlayRandomSoundInList roundBeginsRandomSoundSource = null;
     #endregion
 
 
@@ -617,6 +617,7 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(ClashAudioCoroutine());
     }
 
+
     IEnumerator ClashAudioCoroutine()
     {
         soundFunctions.PlaySoundFromSource(clashImpactSoundFXAudioSOurce);
@@ -624,19 +625,21 @@ public class AudioManager : MonoBehaviour
         soundFunctions.PlaySoundFromSource(clashReverbSoundFXAudioSource);
     }
 
+
     // Plays successful parry sound FX
     public void TriggerParriedAudio()
     {
         soundFunctions.PlaySoundFromSource(parrySoundFXAudioSource);
     }
 
+
     // Triggers successful attack sound FX play
     public void TriggerSuccessfulAttackAudio()
     {
         soundFunctions.PlaySoundFromSource(successfulAttackSoundFXAudioSource);
-
         soundFunctions.PlaySoundFromSource(deathSoundFXAudioSource);
     }
+
 
     public void TriggerSlowMoAudio(bool inOut)
     {
@@ -650,6 +653,8 @@ public class AudioManager : MonoBehaviour
 
 
 
+
+    // FIND PLAYERS
     // Finds the players on the scene to use their data for music modification
     public void FindPlayers()
     {
