@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 819a3478139c0534aac626d8bcd15a08, type: 3}
+  m_Name: CharactersDatabase01
+  m_EditorClassIdentifier: 
+  charactersList:
+  - name: Susanoo
+    illustration: {fileID: 21300000, guid: a0f535e13566b7148a3dcfec96a52f0f, type: 3}
+    animator: {fileID: 9100000, guid: 619eef2087005ce4cac3b1cb680977f8, type: 2}
+    legsAnimator: {fileID: 9100000, guid: 3a5fae7f8c2dff4449f9c6f6a97af88c, type: 2}
+    defaultMask: 1
+    defaultWeapon: 0
+    locked: 0
+    scarf: 0
+  - name: Izanagi
+    illustration: {fileID: 21300000, guid: eb1e9e0b260233845a44237a2b5501b3, type: 3}
+    animator: {fileID: 9100000, guid: b90fd860c85f8de4485617a21d00b3e1, type: 2}
+    legsAnimator: {fileID: 9100000, guid: 3a5fae7f8c2dff4449f9c6f6a97af88c, type: 2}
+    defaultMask: 4
+    defaultWeapon: 0
+    locked: 0
+    scarf: 0
+  - name: Jinmu
+    illustration: {fileID: 21300000, guid: 75cd3dc8e21f5024a9272ab35c6f4730, type: 3}
+    animator: {fileID: 9100000, guid: 17ff5e11f3195a54d830af64e69d5370, type: 2}
+    legsAnimator: {fileID: 9100000, guid: 3a5fae7f8c2dff4449f9c6f6a97af88c, type: 2}
+    defaultMask: 3
+    defaultWeapon: 0
+    locked: 0
+    scarf: 1
+  - name: Amaterasu
+    illustration: {fileID: 21300000, guid: afa9b696a3c93454b97afe1de0cb02d8, type: 3}
+    animator: {fileID: 9100000, guid: f587c56bb2b32e749aa4a29cc4a83b9e, type: 2}
+    legsAnimator: {fileID: 9100000, guid: 3a5fae7f8c2dff4449f9c6f6a97af88c, type: 2}
+    defaultMask: 5
+    defaultWeapon: 0
+    locked: 0
+    scarf: 0
+  - name: Masked ronin
+    illustration: {fileID: 21300000, guid: 4b7b8431829e2a44986c55067f8e29b6, type: 3}
+    animator: {fileID: 9100000, guid: 51adf76349679b34982e3a0ab3ba1537, type: 2}
+    legsAnimator: {fileID: 9100000, guid: 2388bcd7d143c074b9f71674e2bdb5ff, type: 2}
+    defaultMask: 0
+    defaultWeapon: 0
+    locked: 0
+    scarf: 0
