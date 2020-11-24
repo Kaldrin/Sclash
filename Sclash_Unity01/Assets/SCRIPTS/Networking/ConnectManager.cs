@@ -18,7 +18,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     bool isConnecting = false;
 
-    string gameVersion = "2.7";
+    string gameVersion = "";
     public bool connectedToMaster = false;
     public bool enableMultiplayer;
 
@@ -40,6 +40,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     void Awake()
     {
         Instance = this;
+        gameVersion = Application.version;
+
         audioManager = FindObjectOfType<AudioManager>();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.NetworkingClient.EnableLobbyStatistics = true;
@@ -47,7 +49,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     void Start()
     {
-
         if (enableMultiplayer)
             Connect();
 
@@ -69,7 +70,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     void Update()
     {
-        if (enableMultiplayer && !PhotonNetwork.IsConnected && isConnecting)
+        if (enableMultiplayer && !PhotonNetwork.IsConnected && !isConnecting)
         {
             Connect();
         }
