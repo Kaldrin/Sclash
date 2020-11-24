@@ -54,8 +54,9 @@ public class IAScript_Solo : IAScript
         }
 
         ManageOrientation();
-        UpdateWeightSum();
         timeToWait = CalculateDistance() ? closeRate * IAMultiplicator : normalRate * IAMultiplicator;
+        //ManageMovement();
+        UpdateWeightSum();
         if (distBetweenPlayers > 5)
         {
             DisableWeight();
@@ -82,6 +83,24 @@ public class IAScript_Solo : IAScript
             AddWeights();
 
         SelectAction();
+    }
+
+    void ManageMovement()
+    {
+        // Temporary system !! Replace for build !!
+        if (distBetweenPlayers > 5)
+        {
+            ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //Move Towards
+        }
+        else if (distBetweenPlayers <= 2.5f)
+        {
+            ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //Move Backwards
+        }
+        else
+        {
+            if (Mathf.Abs(0 - attachedPlayer.rb.velocity.x) > 0.1)
+                Invoke("ResetMovementInput", UnityEngine.Random.Range(.75f, 1f));
+        }
     }
 
     void ResetMovementInput()

@@ -90,7 +90,14 @@ public class IAScript : MonoBehaviour
         Player[] entities = FindObjectsOfType<Player>();
         foreach (Player s in entities)
         {
-            if (!s.gameObject.GetComponent<IAScript>().enabled)
+            if (s.GetType() == typeof(StoryPlayer))
+            {
+                if (!s.gameObject.GetComponent<IAScript>())
+                {
+                    return s;
+                }
+            }
+            else if (!s.gameObject.GetComponent<IAScript>().enabled)
             {
                 return s;
             }
@@ -219,6 +226,7 @@ public class IAScript : MonoBehaviour
 
     protected void SelectAction()
     {
+        Debug.Log("Select Action");
         if (!isChoosing && attachedPlayer.playerState == Player.STATE.normal)
         {
             isChoosing = true;
@@ -230,8 +238,8 @@ public class IAScript : MonoBehaviour
                 calledAct = "Wait";
             }
 
-
-            StartCoroutine(WaitABit(calledAct, timeToWait, true));
+            Debug.Log("Calling " + calledAct);
+            Invoke(calledAct, timeToWait);
         }
     }
 
@@ -447,9 +455,8 @@ public class IAScript : MonoBehaviour
         InputManager.Instance.playerInputs[attachedPlayer.playerNum].attack = true;
 
         float chargeTime = Random.Range(0f, 3f);
-        StartCoroutine(WaitABit("ReleaseAttack", chargeTime));
+        Invoke("ReleaseAttack", chargeTime);
         isChoosing = false;
-        //StartCoroutine(WaitAction(chargeTime + .01f));
     }
 
     void ReleaseAttack()
@@ -530,12 +537,10 @@ public class IAScript : MonoBehaviour
 
     protected void UpdateWeightSum()
     {
-        Debug.Log("Actions availables :");
         //Calculate weight sum
         actionWeightSum = 0;
         foreach (Actions a in actionsList)
         {
-            Debug.Log(a.name);
             actionWeightSum += a.weight;
         }
     }

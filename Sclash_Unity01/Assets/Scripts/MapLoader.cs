@@ -93,15 +93,6 @@ public class MapLoader : MonoBehaviour
     {
         Instance = this;
 
-
-        // REMOTE CONFIG
-        if (GameManager.Instance.demo)
-        {
-            ConfigManager.FetchCompleted += SetRemoteVariables;
-            ConfigManager.FetchConfigs<userAttributes, appAttributes>(new userAttributes(), new appAttributes());
-        }
-        else
-            LoadMapOnStart();
     }
 
     // Update is called once per graphic frame
@@ -135,6 +126,16 @@ public class MapLoader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        // REMOTE CONFIG
+        if (GameManager.Instance.demo)
+        {
+            ConfigManager.FetchCompleted += SetRemoteVariables;
+            ConfigManager.FetchConfigs<userAttributes, appAttributes>(new userAttributes(), new appAttributes());
+        }
+        else
+            LoadMapOnStart();
+
         // STAGES MENU
         if (GameManager.Instance.demo)
             mapMenuLoader.LoadDemoParameters();

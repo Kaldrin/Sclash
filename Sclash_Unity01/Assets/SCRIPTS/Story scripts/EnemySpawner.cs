@@ -32,7 +32,8 @@ public class EnemySpawner : MonoBehaviour
         enemySpawned.GetComponent<IAScript>().actionsList = new List<IAScript.Actions>()
         {
             new IAScript.Actions("Wait",1),
-            new IAScript.Actions("Parry", 1)
+            new IAScript.Actions("Parry", 1),
+            new IAScript.Actions("Attack",1)
         };
         IAManager.Instance.EnemySpawned(enemySpawned);
     }

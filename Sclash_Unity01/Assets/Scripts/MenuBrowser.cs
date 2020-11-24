@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
-
+using UnityEditor;
 
 // Created for Unity 2019.1.1f1
 public class MenuBrowser : MonoBehaviour
@@ -118,6 +118,8 @@ public class MenuBrowser : MonoBehaviour
     #region BASE FUNCTIONS
     void Awake()
     {
+        browseRumbleSettings = (RumbleSettings)AssetDatabase.LoadAssetAtPath("Assets/RumbleSettings/BrowseRumbleSettings.asset", typeof(RumbleSettings));
+        backRumbleSettings = (RumbleSettings)AssetDatabase.LoadAssetAtPath("Assets/RumbleSettings/BackRumbleSettings01.asset", typeof(RumbleSettings));
 
         FixButtonColorUsageList();
 

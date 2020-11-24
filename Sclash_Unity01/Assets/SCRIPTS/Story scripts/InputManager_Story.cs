@@ -37,13 +37,10 @@ public class InputManager_Story : InputManager
 
     public void AddInputs(int newAmount)
     {
-        Debug.Log(newAmount);
         if (newAmount < playerInputs.Length)
             return;
 
         playerInputs = new PlayerInputs[newAmount];
         for (int i = 0; i < newAmount; i++) { playerInputs[i] = new PlayerInputs(); }
-
-        Debug.Log("Input added, new amount : " + playerInputs.Length);
     }
 }
