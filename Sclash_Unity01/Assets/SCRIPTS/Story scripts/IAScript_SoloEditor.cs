@@ -1,7 +1,7 @@
+#if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 [CustomEditor(typeof(IAScript_Solo))]
 public class IAScript_SoloEditor : Editor
 {
@@ -20,3 +20,4 @@ public class IAScript_SoloEditor : Editor
 
     }
 }
+#endif

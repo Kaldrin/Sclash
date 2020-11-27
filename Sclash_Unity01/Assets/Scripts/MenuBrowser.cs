@@ -118,8 +118,10 @@ public class MenuBrowser : MonoBehaviour
     #region BASE FUNCTIONS
     void Awake()
     {
+#if UNITY_EDITOR
         browseRumbleSettings = (RumbleSettings)AssetDatabase.LoadAssetAtPath("Assets/RumbleSettings/BrowseRumbleSettings.asset", typeof(RumbleSettings));
         backRumbleSettings = (RumbleSettings)AssetDatabase.LoadAssetAtPath("Assets/RumbleSettings/BackRumbleSettings01.asset", typeof(RumbleSettings));
+#endif
 
         FixButtonColorUsageList();
 

@@ -285,7 +285,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [Tooltip("Frame parameters for the attack")]
     [HideInInspector] public bool isAttacking = false;
-    List<GameObject> targetsHit = new List<GameObject>();
+    protected List<GameObject> targetsHit = new List<GameObject>();
     #endregion
 
 
@@ -2363,14 +2363,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         foreach (Collider2D c in hitsCol)
         {
-            if (c.CompareTag("Player"))
+            if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
             {
-                if (!hits.Contains(c.transform.parent.gameObject))
-                {
 
-                    hits.Add(c.transform.parent.gameObject);
-                    //Debug.Log(c.transform.parent.gameObject);
-                }
+                hits.Add(c.transform.parent.gameObject);
+            }
+            else if (c.CompareTag("Destructible") && !hits.Contains(c.transform.parent.gameObject))
+            {
+                hits.Add(c.gameObject);
             }
         }
 
@@ -3139,17 +3139,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, -deathBloodFXRotationForDirectionChange * transform.localScale.x);
 
-            
+
             // Changes the draw text indication's scale so that it's, well, readable for a human being
             drawText.transform.localScale = new Vector3(-drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
-            
+
         }
         else
         {
             deathBloodFX.gameObject.transform.localEulerAngles = deathBloodFXBaseRotation;
 
 
-            
+
             // Changes the draw text indication's scale so that it's, well, readable for a human being
             drawText.transform.localScale = new Vector3(drawTextBaseScale.x, drawTextBaseScale.y, drawTextBaseScale.z);
         }*/

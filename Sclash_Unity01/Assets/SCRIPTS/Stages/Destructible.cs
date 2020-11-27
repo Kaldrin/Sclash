@@ -30,9 +30,6 @@ public class Destructible : MonoBehaviour
     [SerializeField] AudioSource destroyedSFX1 = null;
 
 
-
-
-
     #region FUNCTIONS
     private void Start()
     {

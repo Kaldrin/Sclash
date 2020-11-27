@@ -635,7 +635,7 @@ public class GameManager : MonoBehaviourPun
             //PlayerAttack playerAttack;
             Player playerScript = null;
 
-            GameObject AI = (GameObject)Resources.Load("PlayerAI");
+            GameObject AI = (GameObject)Resources.Load("Prefabs/PlayerAI");
 
             playersList.Add(Instantiate(AI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
             playerAnimations = playersList[i].GetComponent<PlayerAnimations>();

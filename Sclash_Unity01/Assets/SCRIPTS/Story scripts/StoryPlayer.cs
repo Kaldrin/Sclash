@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Events;
+using EzySlice;
 
 public class StoryPlayer : Player
 {
+    Material m_crossMaterial;
+
     float soloOrientation = -1;
 
     IAScript solo_iAScript;
@@ -14,6 +17,8 @@ public class StoryPlayer : Player
 
     void Awake()
     {
+        m_crossMaterial = (Material)Resources.Load("Materials/M_CrossMat");
+
         if (inputManager == null)
             inputManager = InputManager_Story.Instance;
     }
@@ -259,27 +264,80 @@ public class StoryPlayer : Player
 
         foreach (Collider2D c in hitsCol)
         {
-            if (c.CompareTag("Player"))
+            if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
             {
-                if (!hits.Contains(c.transform.parent.gameObject))
-                {
-                    hits.Add(c.transform.parent.gameObject);
-                }
+                hits.Add(c.transform.parent.gameObject);
+            }
+            else if (c.CompareTag("Destructible") && !hits.Contains(c.gameObject))
+            {
+                hits.Add(c.gameObject);
             }
         }
 
         foreach (GameObject g in hits)
         {
-            if (g != gameObject)
+            if (g != gameObject && !targetsHit.Contains(g))
             {
-                otherPlayerNum = GetTargetNum(g);
+                if (g.CompareTag("Player"))
+                {
+                    otherPlayerNum = GetTargetNum(g);
 
-                g.GetComponent<StoryPlayer>().TakeDamage(gameObject, chargeLevel);
+                    g.GetComponent<StoryPlayer>().TakeDamage(gameObject, chargeLevel);
 
-                attackRangeFX.gameObject.SetActive(false);
-                attackRangeFX.gameObject.SetActive(true);
+                    attackRangeFX.gameObject.SetActive(false);
+                    attackRangeFX.gameObject.SetActive(true);
+                }
+                else if (g.CompareTag("Destructible"))
+                {
+                    targetsHit.Add(g);
+                    if (g.GetComponent<Destructible>())
+                        g.GetComponent<Destructible>().Destroy();
+                    else if (g.transform.parent.gameObject.GetComponent<Destructible>())
+                        g.transform.parent.gameObject.GetComponent<Destructible>().Destroy();
+                    else if (g.GetComponent<MeshFilter>())
+                    {
+                        GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                        plane.transform.position = g.transform.position;
+                        plane.transform.eulerAngles = new Vector3(0, 0, UnityEngine.Random.Range(-3f, 30f));
+
+                        GameObject[] hulls = Slice(g, plane.transform.position, plane.transform.up);
+                        Destroy(g);
+                        Destroy(plane);
+
+                        for (int i = 0; i < hulls.Length; i++)
+                        {
+                            GameObject h = hulls[i];
+                            //h.layer = 17;
+                            Rigidbody2D rb = h.AddComponent<Rigidbody2D>();
+                            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+                            rb.drag = 2f;
+                            h.AddComponent<PolygonCollider2D>();
+                            rb.AddForce(new Vector2(-transform.localScale.x * 10f, UnityEngine.Random.Range(5f, 10f) * isOdd(i)), ForceMode2D.Impulse);
+                            rb.AddTorque(isOdd(i) * .5f, ForceMode2D.Impulse);
+                            h.AddComponent<Debris>();
+                        }
+                    }
+
+                }
             }
         }
+    }
+
+    private float isOdd(int n)
+    {
+        if (n % 2 == 0)
+        {
+            return -1f;
+        }
+        else
+        {
+            return 1f;
+        }
+    }
+
+    private GameObject[] Slice(GameObject obj, Vector3 planeWorldPos, Vector3 planeWorldDirection)
+    {
+        return obj.SliceInstantiate(planeWorldPos, planeWorldDirection, m_crossMaterial);
     }
 
     public override void Pommeled()
