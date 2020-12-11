@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1565991863990785004}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1867634, y: 0.1867634, z: 0.1867634}
+  m_LocalScale: {x: 0.1699547, y: 0.1699547, z: 0.1699547}
   m_Children:
   - {fileID: 1565991864785623368}
   m_Father: {fileID: 0}
@@ -42,11 +42,11 @@ GameObject:
   - component: {fileID: 1565991864785623368}
   - component: {fileID: 1565991864785623369}
   - component: {fileID: 1565991864785623370}
+  - component: {fileID: 2659792228915792548}
   - component: {fileID: 1565991864785623367}
   - component: {fileID: 1565991864785623371}
   - component: {fileID: 1565991864785623366}
   - component: {fileID: 6349933388582546961}
-  - component: {fileID: 3550768422958201254}
   m_Layer: 0
   m_Name: Cloth01
   m_TagString: Untagged
@@ -122,9 +122,22 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0, y: -0.00000012330622, z: -0.0000019073486}
-    m_Extent: {x: 5, y: 0.0000010848049, z: 5.000003}
+    m_Center: {x: 0, y: 0.00000016427518, z: -0.0000009536743}
+    m_Extent: {x: 5.0000005, y: 0.0000010848048, z: 5.0000014}
   m_DirtyAABB: 0
+--- !u!114 &2659792228915792548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565991864785623372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a080c44bcb91004488b1d4a399f22be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clothToAssignCollidersTo: {fileID: 1565991864785623371}
 --- !u!114 &1565991864785623367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,8 +170,8 @@ Cloth:
   m_RandomAcceleration: {x: 0, y: 0, z: 0}
   m_WorldVelocityScale: 0.1
   m_WorldAccelerationScale: 0.8
-  m_Friction: 1
-  m_CollisionMassScale: 1
+  m_Friction: 0
+  m_CollisionMassScale: 0
   m_UseContinuousCollision: 1
   m_UseVirtualParticles: 1
   m_SolverFrequency: 120
@@ -2135,18 +2148,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortingLayerName: Players
   SortingOrder: -5
---- !u!114 &3550768422958201254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565991864785623372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76880281e5abc1544bbc3e4396e8d74d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cloth: {fileID: 0}
-  windFrequency: 1
-  windBounds: {x: -10, y: 30}

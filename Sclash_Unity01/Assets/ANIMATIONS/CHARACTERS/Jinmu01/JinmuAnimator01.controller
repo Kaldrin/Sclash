@@ -281,7 +281,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dead02
+  m_Name: Death02
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -295,7 +295,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: f0e51c96e6cf6b748afadfafaf7507a8, type: 2}
+  m_Motion: {fileID: 7400000, guid: 63608aad89157794798b6ea468ea3903, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -595,7 +595,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: cc076e329573b1a408df9ad6cdd09597, type: 2}
+  m_Motion: {fileID: 7400000, guid: 80189b90f3fd9794888fc919a6b4e465, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -756,7 +756,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 5f2344adab4cfd7469a88214b0aff652, type: 2}
+  m_Motion: {fileID: 7400000, guid: dda93bb1ba7592d41b26ee6ccce5e9c4, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -805,7 +805,7 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0
   m_TransitionOffset: 0
-  m_ExitTime: 0.75
+  m_ExitTime: 0
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
@@ -885,32 +885,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1102 &-2388813375125906529
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: BattleDrawSusanou
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 11f087dd8172eb04caf974132b491470, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1101 &-2293428151108967542
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1171,10 +1145,10 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DashOutroBlend01
+  m_Name: DashOutroBlendTree01
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: a0f251fdb09ca304488360b3cb9fd29a, type: 2}
+    m_Motion: {fileID: 7400000, guid: 4f7da74db409fae438dc5c0f0375d503, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -1182,7 +1156,7 @@ BlendTree:
     m_DirectBlendParameter: Move
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 7dcabbf587592d24fbf44aec521e6b33, type: 2}
+    m_Motion: {fileID: 7400000, guid: eb9195bf2fdf9264eb8f90aee24c2500, type: 2}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -1228,7 +1202,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DashOutroBlend01
+  m_Name: DashOutroBlendTree01
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1399,7 +1373,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dash blendspace
+  m_Name: DashBlendTree01
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -2093,7 +2067,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dash startup blendspace
+  m_Name: DashStartBlendTree01
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -2372,10 +2346,10 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DashIntroBlend
+  m_Name: DashIntroBlendTree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 56f976df5db37c64c82f80da22a7663a, type: 2}
+    m_Motion: {fileID: 7400000, guid: 079e4a3cb2bdeae4ea2efa8323238c2a, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -2383,7 +2357,7 @@ BlendTree:
     m_DirectBlendParameter: Move
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: ce057cbcb2ef53140aa1696a003a13f9, type: 2}
+    m_Motion: {fileID: 7400000, guid: ead935d9d7fb38a4da8a9e1083ed7c05, type: 2}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -2640,7 +2614,7 @@ BlendTree:
   m_Name: Walk
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 914d6a57816b33f48bc6002e8f24cd11, type: 2}
+    m_Motion: {fileID: 7400000, guid: c05f0a95c43d3f44e845e3f61fedb7e8, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -2648,7 +2622,7 @@ BlendTree:
     m_DirectBlendParameter: Move
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 10cb3a5381857034a84ce3f8f4f9e37f, type: 2}
+    m_Motion: {fileID: 7400000, guid: 93a7ee0912042044b9c66a5f43809910, type: 2}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -2752,32 +2726,6 @@ AnimatorState:
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: -7731562367040189231}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1102 &5368437884083048023
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: BattleSneathSusanou
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: a72f5c170ca395b4a99cde6855fdef80, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -3149,7 +3097,7 @@ AnimatorStateMachine:
     m_Position: {x: -870, y: 420, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3458740460355323769}
-    m_Position: {x: -340, y: 460, z: 0}
+    m_Position: {x: -340, y: 560, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2823401155845650842}
     m_Position: {x: -870, y: 790, z: 0}
@@ -3167,7 +3115,7 @@ AnimatorStateMachine:
     m_Position: {x: -50, y: 540, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -904406951071167294}
-    m_Position: {x: -50, y: 310, z: 0}
+    m_Position: {x: -50, y: 330, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5349308785129500773}
     m_Position: {x: 910, y: 420, z: 0}
@@ -3228,15 +3176,6 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -5912296468155194419}
     m_Position: {x: -340, y: 310, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 8576912994180884431}
-    m_Position: {x: -305, y: 375, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 5368437884083048023}
-    m_Position: {x: -270, y: 440, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -2388813375125906529}
-    m_Position: {x: -235, y: 505, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4271727888949674616}
     m_Position: {x: 1370, y: 330, z: 0}
@@ -3333,10 +3272,10 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DashBlend
+  m_Name: DashBlendTree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: e6dc61fa5a79d374293cce474104ac51, type: 2}
+    m_Motion: {fileID: 7400000, guid: 7812f70622177664a95c64a83047959e, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -3344,7 +3283,7 @@ BlendTree:
     m_DirectBlendParameter: Move
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: aeff0b3188be2df448ef367a7e0eb3cc, type: 2}
+    m_Motion: {fileID: 7400000, guid: 85d764989a04b7541aa61bd8ec234022, type: 2}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -3398,32 +3337,6 @@ BlendTree:
   m_UseAutomaticThresholds: 1
   m_NormalizedBlendValues: 0
   m_BlendType: 0
---- !u!1102 &8576912994180884431
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: BattleSneathIdleSusanou
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 12d505a58e636e04cb07ea42cc09460a, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1101 &8611502266881762818
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
