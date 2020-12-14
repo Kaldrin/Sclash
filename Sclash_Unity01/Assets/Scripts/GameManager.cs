@@ -212,6 +212,7 @@ public class GameManager : MonoBehaviourPun
     // List of all renderers for the death VFX
     SpriteRenderer[] spriteRenderers = null;
     MeshRenderer[] meshRenderers = null;
+    SkinnedMeshRenderer[] skinnedMeshRenderers = null;
     ParticleSystem[] particleSystems = null;
     Light[] lights = null;
 
@@ -219,6 +220,7 @@ public class GameManager : MonoBehaviourPun
     List<Color> originalSpriteRenderersColors = new List<Color>();
     List<Material> originalSpriteRenderersMaterials = new List<Material>();
     List<Color> originalMeshRenderersColors = new List<Color>();
+    List<Color> skinnedMeshRenderesColors = new List<Color>();
     List<Color> originalParticleSystemsColors = new List<Color>();
     List<Gradient> originalParticleSystemsGradients = new List<Gradient>();
     List<float> originalLightsIntensities = new List<float>();
@@ -1149,6 +1151,7 @@ public class GameManager : MonoBehaviourPun
             // List of all renderers for the death VFX
             spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
             meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
+            skinnedMeshRenderers = GameObject.FindObjectsOfType<SkinnedMeshRenderer>();
             particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
             lights = GameObject.FindObjectsOfType<Light>();
 
@@ -1157,6 +1160,7 @@ public class GameManager : MonoBehaviourPun
             originalSpriteRenderersColors = new List<Color>();
             originalSpriteRenderersMaterials = new List<Material>();
             originalMeshRenderersColors = new List<Color>();
+            skinnedMeshRenderesColors = new List<Color>();
             originalParticleSystemsColors = new List<Color>();
             originalLightsIntensities = new List<float>();
             originalParticleSystemsGradients = new List<Gradient>();
@@ -1184,6 +1188,19 @@ public class GameManager : MonoBehaviourPun
                         originalMeshRenderersColors.Add(meshRenderers[i].material.color);
                         // Set black
                         meshRenderers[i].material.color = Color.black;
+                    }
+                    catch { }
+                }
+            // SKINNED MESHES
+            for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                if (!skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
+                {
+                    try
+                    {
+                        // Store original color
+                        skinnedMeshRenderesColors.Add(skinnedMeshRenderers[i].material.color);
+                        // Set black
+                        skinnedMeshRenderers[i].material.color = Color.black;
                     }
                     catch { }
                 }
@@ -1237,6 +1254,13 @@ public class GameManager : MonoBehaviourPun
                 for (int i = 0; i < meshRenderers.Length; i++)
                     if (meshRenderers[i] != null && !meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                         meshRenderers[i].material.color = originalMeshRenderersColors[i];
+            }
+            // SKINNED MESHES
+            if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
+            {
+                for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                    if (skinnedMeshRenderers[i] != null && !skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
+                        skinnedMeshRenderers[i].material.color = skinnedMeshRenderesColors[i];
             }
             // PARTICLES
             if (particleSystems != null && particleSystems.Length > 0)

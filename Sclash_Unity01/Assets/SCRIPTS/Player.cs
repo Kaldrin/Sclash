@@ -58,6 +58,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] SpriteRenderer spriteRenderer = null;
     [SerializeField] SpriteRenderer maskSpriteRenderer = null;
     [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
+    [SerializeField] SpriteRenderer sheathSpriteRenderer = null;
+    [SerializeField] Renderer scarfRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
     [SerializeField] public Light playerLight = null;
     #endregion
@@ -685,9 +687,31 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         // Transparency on dodge frames
         if (cheatSettings.useTransparencyForDodgeFrames && untouchableFrame)
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
+        {
+            if (spriteRenderer != null)
+                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
+            if (maskSpriteRenderer != null)
+                maskSpriteRenderer.color = new Color(maskSpriteRenderer.color.r, maskSpriteRenderer.color.g, maskSpriteRenderer.color.b, untouchableFrameOpacity);
+            if (weaponSpriteRenderer != null)
+                weaponSpriteRenderer.color = new Color(weaponSpriteRenderer.color.r, weaponSpriteRenderer.color.g, weaponSpriteRenderer.color.b, untouchableFrameOpacity);
+            if (sheathSpriteRenderer != null)
+                sheathSpriteRenderer.color = new Color(sheathSpriteRenderer.color.r, sheathSpriteRenderer.color.g, sheathSpriteRenderer.color.b, untouchableFrameOpacity);
+            if (scarfRenderer != null)
+                scarfRenderer.material.color = new Color(scarfRenderer.material.color.r, scarfRenderer.material.color.g, scarfRenderer.material.color.b, untouchableFrameOpacity);
+        }
         else
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
+        {
+            if (spriteRenderer != null)
+                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
+            if (maskSpriteRenderer != null)
+                maskSpriteRenderer.color = new Color(maskSpriteRenderer.color.r, maskSpriteRenderer.color.g, maskSpriteRenderer.color.b, 1);
+            if (weaponSpriteRenderer != null)
+                weaponSpriteRenderer.color = new Color(weaponSpriteRenderer.color.r, weaponSpriteRenderer.color.g, weaponSpriteRenderer.color.b, 1);
+            if (sheathSpriteRenderer != null)
+                sheathSpriteRenderer.color = new Color(sheathSpriteRenderer.color.r, sheathSpriteRenderer.color.g, sheathSpriteRenderer.color.b, 1);
+            if (scarfRenderer != null)
+                scarfRenderer.material.color = new Color(scarfRenderer.material.color.r, scarfRenderer.material.color.g, scarfRenderer.material.color.b, 1);
+        }
 
 
 
