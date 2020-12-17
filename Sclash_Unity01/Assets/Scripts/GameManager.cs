@@ -1170,7 +1170,7 @@ public class GameManager : MonoBehaviourPun
             // SET ALL BLACK
             // SPRITES
             for (int i = 0; i < spriteRenderers.Length; i++)
-                if (!spriteRenderers[i].CompareTag("NonBlackFX") && spriteRenderers[i].gameObject.activeInHierarchy)
+                if (!spriteRenderers[i].CompareTag("NonBlackFX"))
                 {
                     originalSpriteRenderersColors.Add(spriteRenderers[i].color);
                     spriteRenderers[i].color = Color.black;
@@ -1240,7 +1240,7 @@ public class GameManager : MonoBehaviourPun
                 try
                 {
                     for (int i = 0; i < spriteRenderers.Length; i++)
-                        if (!spriteRenderers[i].CompareTag("NonBlackFX") && spriteRenderers[i].gameObject.activeInHierarchy)
+                        if (!spriteRenderers[i].CompareTag("NonBlackFX"))
                         {
                             spriteRenderers[i].color = originalSpriteRenderersColors[i];
                             spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
