@@ -51,8 +51,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] PlayerAnimations playerAnimations = null;
     [SerializeField] public CharacterChanger characterChanger = null;
     [SerializeField] public IAScript iaScript = null;
-    [Tooltip("The basic collider of the player")]
-    [SerializeField] public Collider2D playerCollider;
     [Tooltip("All of the player's 2D colliders")]
     [SerializeField] public Collider2D[] playerColliders = null;
     [SerializeField] SpriteRenderer spriteRenderer = null;
@@ -983,8 +981,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
-
-                playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = false;
                 attackDashFXFront.Stop();
@@ -1001,7 +997,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXBack.Stop();
                 dashFXFront.Stop();
                 chargeFlareFX.gameObject.SetActive(true);
-                playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = false;
                 break;
@@ -1012,7 +1007,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeLevel = 1;
                 chargeSlider.value = 1;
                 actualMovementsSpeed = attackingMovementsSpeed;
-                playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
                 PauseStaminaRegen();
@@ -1026,7 +1020,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashTime = 0;
                 isDashing = false;
 
-                playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = false;
                 attackDashFXFront.Stop();
@@ -1080,7 +1073,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 currentDashStep = DASHSTEP.invalidated;
                 currentShortcutDashStep = DASHSTEP.invalidated;
                 chargeLevel = 1;
-                playerCollider.isTrigger = true;
                 isDashing = true;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
@@ -1094,7 +1086,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     
             case STATE.clashed:                                                                             // CLASHED
                 chargeLevel = 1;
-                playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
 
@@ -1121,7 +1112,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.dead:                                                                            // DEAD
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 SetStaminaBarsOpacity(0);
-                playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
 
@@ -1190,7 +1180,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         rb.simulated = true;
-        playerCollider.isTrigger = false;
 
 
         for (int i = 0; i < playerColliders.Length; i++)
@@ -1220,7 +1209,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // Restablishes colliders
-        playerCollider.isTrigger = false;
 
 
         for (int i = 0; i < playerColliders.Length; i++)
@@ -2333,7 +2321,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         enemyDead = false;
 
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 0.2f), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -2568,7 +2556,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Apply pommel hitbox depending on kick frames
     void ApplyPommelHitbox()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y), new Vector2(kickRange, 1), 0);
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y), new Vector2(kickRange, 0.2f), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -3142,18 +3130,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Draw the attack range when the player is selected
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-lightAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange + baseBackAttackRangeDisjoint, 1, 1));
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-lightAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange + baseBackAttackRangeDisjoint, 0.2f, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 0.2f, 1));
     }
 
     // Draw the attack range is the attack is in active frames in the scene viewer
     private void OnDrawGizmos()
     {
         if (activeFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + baseBackAttackRangeDisjoint, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + baseBackAttackRangeDisjoint, 0.2f, 1));
 
         if (kickFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 0.2f, 1));
     }
     #endregion
 
