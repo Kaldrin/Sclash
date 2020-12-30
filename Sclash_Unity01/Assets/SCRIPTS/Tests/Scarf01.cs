@@ -8,9 +8,7 @@ using UnityEngine;
 public class Scarf01 : MonoBehaviour
 {
     [SerializeField] Cloth cloth = null;
-    [SerializeField] float windFrequency = 1f;
     [SerializeField] Vector2 windBounds = new Vector2(-10, 30);
-    bool windOn = false;
     float windObjective = 0;
     
 

@@ -1929,10 +1929,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         // If players haven't all drawn, go back to chara selec state
         if (!gameManager.allPlayersHaveDrawn)
-        {
             // STATE
             SwitchState(STATE.sneathing);
-        }
+        /*
+           
         else
         {
             // ANIMATION
@@ -1942,6 +1942,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // STATE
             SwitchState(STATE.battleSneathing);
         }
+        */
     }
 
     void TriggerBattleDraw()
@@ -2556,7 +2557,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Apply pommel hitbox depending on kick frames
     void ApplyPommelHitbox()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y), new Vector2(kickRange, 0.2f), 0);
+        float pommelRange = characterChanger.charactersDatabase.charactersList[characterIndex].character.pommelRange;
+
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -pommelRange / 2), transform.position.y), new Vector2(pommelRange, 0.2f), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
