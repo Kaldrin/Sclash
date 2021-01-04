@@ -7,9 +7,9 @@ public class Debris : MonoBehaviour
     private GameObject child;
     private Rigidbody rb;
 
-    void Start()
+    void Awake()
     {
-        child = new GameObject("Collider"/*, typeof(BoxCollider), typeof(Rigidbody)*/);
+        child = new GameObject("Debris");
         child.transform.position = transform.position;
         transform.parent = child.transform;
     }
@@ -24,9 +24,17 @@ public class Debris : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             Physics2D.IgnoreCollision(other.collider, other.otherCollider, true);
-            rb = child.AddComponent<Rigidbody>();
+            if (rb == null)
+            {
+                rb = transform.parent.gameObject.AddComponent<Rigidbody>();
+            }
             rb.useGravity = false;
             rb.AddForce(new Vector3(0, 0, Mathf.Sign(Random.Range(-10f, 10f)) * 3f), ForceMode.Impulse);
+        }
+        else
+        {
+            Rigidbody2D rb2d = GetComponent<Rigidbody2D>();
+            rb2d.angularVelocity = 0;
         }
     }
 

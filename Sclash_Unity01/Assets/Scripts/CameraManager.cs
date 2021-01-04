@@ -36,7 +36,8 @@ public class CameraManager : MonoBehaviour
     }
     # endregion
 
-
+    [Header("CAMERA SETTING")]
+    public CameraSetting camSetting;
 
 
 
@@ -73,8 +74,8 @@ public class CameraManager : MonoBehaviour
     # region CAMERA MOVEMENTS
     // CAMERA MOVEMENTS
     [Header("CAMERA MOVEMENTS")]
-    [SerializeField] public float battleXSmoothMovementsMultiplier = 0.5f;
-    [SerializeField] public float cinematicXSmoothMovementsMultiplier = 0.05f;
+    public float battleXSmoothMovementsMultiplier = 0.5f;
+    public float cinematicXSmoothMovementsMultiplier = 0.05f;
     [HideInInspector] public float actualXSmoothMovementsMultiplier = 0.5f;
     float playersBaseYPos = 0;
 
@@ -118,9 +119,25 @@ public class CameraManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        if (camSetting != null)
+            UseCameraSetting();
     }
 
+    void UseCameraSetting()
+    {
+        cameraZoomZLimits = camSetting.CameraZoomZLimits;
+        playersDistanceLimitsForCameraZoomedUnzoomedLimits = camSetting.PlayersDistanceLimitsForCameraZoomedUnzoomed;
+        customEventZoom = camSetting.CustomEventZoom;
+        battleZoomSmoothDuration = camSetting.BattleZoomSmoothDuration;
+        cinematicZoomSmoothDuration = camSetting.CinematicZoomSmoothDuration;
+        battleZoomSpeed = camSetting.BattleZoomSpeed;
+        eventZoomSpeed = camSetting.EventZoomSpeed;
+        battleXSmoothMovementsMultiplier = camSetting.BattleXSmoothMovementsMultiplier;
+        cinematicXSmoothMovementsMultiplier = camSetting.CinematicXSmoothMovementsMultiplier;
+        cameraArmXLimitsZoomedAndUnzoomed = camSetting.cameraArmXLimitsZoomedAndUnzoomed;
+    }
 
+    
     // Start is called before the first frame update
     protected virtual void Start()
     {

@@ -14,9 +14,14 @@ public class StoryPlayer : Player
 
     IAScript solo_iAScript;
     public event Action OnDeath;
+    [SerializeField]
+    private GameObject debrisContainer;
 
     void Awake()
     {
+        if (debrisContainer == null)
+            debrisContainer = GameObject.Find("DebrisContainer");
+
         m_crossMaterial = (Material)Resources.Load("Materials/M_CrossMat");
 
         if (inputManager == null)
@@ -260,6 +265,7 @@ public class StoryPlayer : Player
     protected override void ApplyAttackHitbox()
     {
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
+        Collider[] hitCols3D = Physics.OverlapBox(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + actualBackAttackRangeDisjoint, 1, 2.5f));
         List<GameObject> hits = new List<GameObject>();
 
         foreach (Collider2D c in hitsCol)
@@ -273,6 +279,19 @@ public class StoryPlayer : Player
                 hits.Add(c.gameObject);
             }
         }
+
+        foreach (Collider c in hitCols3D)
+        {
+            if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
+            {
+                hits.Add(c.transform.parent.gameObject);
+            }
+            else if (c.CompareTag("Destructible") && !hits.Contains(c.gameObject))
+            {
+                hits.Add(c.gameObject);
+            }
+        }
+
 
         foreach (GameObject g in hits)
         {
@@ -289,6 +308,7 @@ public class StoryPlayer : Player
                 }
                 else if (g.CompareTag("Destructible"))
                 {
+                    Debug.Log("Hit ! " + g.name);
                     targetsHit.Add(g);
                     if (g.GetComponent<Destructible>())
                         g.GetComponent<Destructible>().Destroy();
@@ -297,30 +317,83 @@ public class StoryPlayer : Player
                     else if (g.GetComponent<MeshFilter>())
                     {
                         GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-                        plane.transform.position = g.transform.position;
-                        plane.transform.eulerAngles = new Vector3(0, 0, UnityEngine.Random.Range(-3f, 30f));
+                        plane.transform.position = new Vector3(
+                            g.transform.position.x,
+                            g.transform.position.y + UnityEngine.Random.Range(-0.25f, 0.25f),
+                            g.transform.position.z
+                        );
+
+                        plane.transform.eulerAngles = new Vector3(
+                            0,
+                            0,
+                            UnityEngine.Random.Range(-30f, 0f) * transform.localScale.x
+                        );
 
                         GameObject[] hulls = Slice(g, plane.transform.position, plane.transform.up);
+                        bool l_isBaseFixed = false;
+                        Transform l_objTransform = debrisContainer.transform;
+                        int l_hitCount = 0;
+
+                        if (g.GetComponent<MeshCombine>())
+                        {
+                            l_isBaseFixed = g.GetComponent<MeshCombine>().isBaseFixed;
+                            l_hitCount = g.GetComponent<MeshCombine>().hitCount;
+                        }
+
                         Destroy(g);
                         Destroy(plane);
 
-                        for (int i = 0; i < hulls.Length; i++)
-                        {
-                            GameObject h = hulls[i];
-                            //h.layer = 17;
-                            Rigidbody2D rb = h.AddComponent<Rigidbody2D>();
-                            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
-                            rb.drag = 2f;
-                            h.AddComponent<PolygonCollider2D>();
-                            rb.AddForce(new Vector2(-transform.localScale.x * 10f, UnityEngine.Random.Range(5f, 10f) * isOdd(i)), ForceMode2D.Impulse);
-                            rb.AddTorque(isOdd(i) * .5f, ForceMode2D.Impulse);
-                            h.AddComponent<Debris>();
-                        }
+                        if (hulls != null)
+                            StartCoroutine(InstantiateHulls(hulls, l_isBaseFixed, l_objTransform, l_hitCount));
                     }
 
                 }
             }
         }
+    }
+
+    IEnumerator InstantiateHulls(GameObject[] hulls, bool l_isBaseFixed, Transform l_objTransform, int l_hitCount)
+    {
+        for (int i = 0; i < hulls.Length; i++)
+        {
+            GameObject h = hulls[i];
+            Mesh m = h.GetComponent<MeshFilter>().mesh;
+
+            if (i == 1 && l_isBaseFixed && l_hitCount < 2)
+            {
+                yield return new WaitForSecondsRealtime(0.1f);
+                h.transform.SetParent(l_objTransform);
+                h.AddComponent<MeshCollider>();
+                MeshCombine c = h.AddComponent<MeshCombine>();
+                c.isBaseFixed = true;
+                c.hitCount = l_hitCount + 1;
+                h.tag = "Destructible";
+
+                continue;
+            }
+
+            //3D System
+            Rigidbody rb = h.AddComponent<Rigidbody>();
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+            rb.drag = 2f;
+            rb.constraints = RigidbodyConstraints.FreezePositionZ;
+            h.AddComponent<MeshCollider>();
+            h.GetComponent<MeshCollider>().convex = true;
+            rb.AddExplosionForce(1000f, transform.position, 25f);
+
+            h.AddComponent<Debris>();
+
+            /*2D System
+            Rigidbody2D rb = h.AddComponent<Rigidbody2D>();
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+            rb.drag = 2f;
+            h.AddComponent<CapsuleCollider2D>();
+            rb.AddForceAtPosition(new Vector2(-transform.localScale.x * 10f, UnityEngine.Random.Range(5f, 10f) * isOdd(i)), new Vector2(transform.position.x + (0.1f * transform.localScale.x), transform.position.y), ForceMode2D.Impulse);
+            h.AddComponent<Debris>();
+            */
+        }
+
+        yield return null;
     }
 
     private float isOdd(int n)
