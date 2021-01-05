@@ -2,29 +2,51 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Simple script used to play a particle system from an animation
+// OPTIMIZED
+[RequireComponent(typeof(ParticleSystem))]
 public class PlayParticleSystem : MonoBehaviour
 {
     [SerializeField] bool playParticleSystem = false;
     [SerializeField] bool stopParticleSytem = false;
     [SerializeField] ParticleSystem particleSystemToPlay = null;
 
-    // Start is called before the first frame update
+
+
+
+
+
+
     void Start()
     {
-        
+        if (particleSystemToPlay == null)
+            particleSystemToPlay = GetComponent<ParticleSystem>();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        if (stopParticleSytem)
+        if (enabled && isActiveAndEnabled)
         {
-            particleSystemToPlay.Stop();
-        }
+            // Stop
+            if (stopParticleSytem && particleSystemToPlay.isPlaying)
+                particleSystemToPlay.Stop();
 
-        if (playParticleSystem)
-        {
-            particleSystemToPlay.Play();
+            // Play
+            if (playParticleSystem && !particleSystemToPlay.isPlaying) 
+                particleSystemToPlay.Play();
         }
+    }
+
+
+
+
+
+
+    // EDITOR ONLY
+    private void OnDrawGizmos()
+    {
+        if (particleSystemToPlay == null)
+            particleSystemToPlay = GetComponent<ParticleSystem>();
     }
 }

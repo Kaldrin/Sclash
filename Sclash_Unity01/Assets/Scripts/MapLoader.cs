@@ -48,6 +48,7 @@ public class MapLoader : MonoBehaviour
     [Header("STAGE LOADING")]
     [SerializeField] bool loadMapOnStart = false;
     [HideInInspector] public bool halloween = false;
+    [HideInInspector] public bool christmas = false;
     bool canLoadNewMap = true;
     int season = 0;
     int postProcessVolumeBlendState = 0;
@@ -164,6 +165,7 @@ public class MapLoader : MonoBehaviour
     {
         season = ConfigManager.appConfig.GetInt("season");
         halloween = ConfigManager.appConfig.GetBool("halloween");
+        christmas = ConfigManager.appConfig.GetBool("christmas");
 
 
         if (halloween) // HALLOWEEN SPRITES
@@ -172,6 +174,20 @@ public class MapLoader : MonoBehaviour
                 GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().mask.sprite = GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().masksDatabase.masksList[6].sprite;
                 GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().weapon.sprite = GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase.weaponsList[1].sprite;
             }
+        else if (christmas)
+        {
+            gameManager.charactersData = gameManager.christmasCharactersData;
+            Debug.Log("Christmas");
+
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                gameManager.playersList[i].GetComponent<CharacterChanger>().charactersDatabase = gameManager.christmasCharactersData;
+                gameManager.playersList[i].GetComponent<CharacterChanger>().masksDatabase = gameManager.christmasMasksDatabase;
+                gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase = gameManager.christmasWeaponsDatabase;
+                //gameManager.playersList[i].GetComponent<CharacterChanger>().weapon.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase.weaponsList[1].sprite;
+
+            }
+        }
 
 
         LoadMapOnStart();
@@ -211,6 +227,8 @@ public class MapLoader : MonoBehaviour
             {
                 if (halloween)
                     SetMap(0, true); // HALLOWEEN STAGE REMOTE CONFIG
+                else if (christmas)
+                    SetMap(1, true); // CHRISTMAS STAGE REMOTE CONFIG
                 else
                     SetMap(season * 2, false); // SEASON DEPENDANT STAGE REMOTE CONFIG
             } // ELSE IF NOT DEMO
@@ -250,7 +268,9 @@ public class MapLoader : MonoBehaviour
         // IF THERE IS ALREADY A STAGE, DESTROY IT
         if (currentMap != null)
             Destroy(currentMap);
-
+        if (mapContainer.transform.childCount > 0)
+            for (int i = 0; i < mapContainer.transform.childCount; i++)
+                Destroy(mapContainer.transform.GetChild(i).gameObject);
 
 
         // STAGE LOAD

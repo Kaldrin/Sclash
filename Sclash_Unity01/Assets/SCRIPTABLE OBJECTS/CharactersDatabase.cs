@@ -13,6 +13,8 @@ public struct Character
     public int defaultMask;
     public int defaultWeapon;
     public bool locked;
+    public bool scarf;
+    public CharacterSettings character;
 }
 
 [CreateAssetMenu(fileName = "CharactersDatabase01", menuName = "Scriptable objects/Characters database")]

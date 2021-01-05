@@ -8,26 +8,40 @@
 public sealed class MeshSortingLayerExposer : MonoBehaviour
 {
 
-    [SerializeField]
-    private string SortingLayerName = "Default";
+    [SerializeField] private string SortingLayerName = "Default";
+    [SerializeField] private int SortingOrder = 0;
 
-    [SerializeField]
-    private int SortingOrder = 0;
+
+
+
+
+
 
     public void OnValidate()
     {
         apply();
     }
 
+
     public void OnEnable()
     {
         apply();
     }
 
+
     private void apply()
     {
-        var meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        meshRenderer.sortingLayerName = SortingLayerName;
-        meshRenderer.sortingOrder = SortingOrder;
+        if (GetComponent<MeshRenderer>())
+        {
+            var meshRenderer = gameObject.GetComponent<MeshRenderer>();
+            meshRenderer.sortingLayerName = SortingLayerName;
+            meshRenderer.sortingOrder = SortingOrder;
+        }
+        else if (GetComponent<SkinnedMeshRenderer>())
+        {
+            var skinnedMeshRenderer = gameObject.GetComponent<SkinnedMeshRenderer>();
+            skinnedMeshRenderer.sortingLayerName = SortingLayerName;
+            skinnedMeshRenderer.sortingOrder = SortingOrder;
+        }
     }
 }

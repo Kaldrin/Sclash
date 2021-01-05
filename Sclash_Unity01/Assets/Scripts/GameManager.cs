@@ -216,6 +216,7 @@ public class GameManager : MonoBehaviourPun
     // List of all renderers for the death VFX
     SpriteRenderer[] spriteRenderers = null;
     MeshRenderer[] meshRenderers = null;
+    SkinnedMeshRenderer[] skinnedMeshRenderers = null;
     ParticleSystem[] particleSystems = null;
     Light[] lights = null;
 
@@ -223,6 +224,7 @@ public class GameManager : MonoBehaviourPun
     List<Color> originalSpriteRenderersColors = new List<Color>();
     List<Material> originalSpriteRenderersMaterials = new List<Material>();
     List<Color> originalMeshRenderersColors = new List<Color>();
+    List<Color> skinnedMeshRenderesColors = new List<Color>();
     List<Color> originalParticleSystemsColors = new List<Color>();
     List<Gradient> originalParticleSystemsGradients = new List<Gradient>();
     List<float> originalLightsIntensities = new List<float>();
@@ -237,6 +239,12 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] MenuBrowser mainMenuBrowser = null;
     [SerializeField] GameObject stagesButton = null;
     [SerializeField] GameObject demoStagesButton = null;
+    [SerializeField] public CharactersDatabase demoCharactersData = null;
+    [SerializeField] public CharactersDatabase christmasCharactersData = null;
+    [SerializeField] public MasksDatabase demoMasksDatabase = null;
+    [SerializeField] public MasksDatabase christmasMasksDatabase = null;
+    [SerializeField] public WeaponsDatabase demoWeaponsDatabase = null;
+    [SerializeField] public WeaponsDatabase christmasWeaponsDatabase = null;
     #endregion
 
 
@@ -296,6 +304,7 @@ public class GameManager : MonoBehaviourPun
             demoStagesButton.SetActive(true);
             mainMenuBrowser.elements[2] = demoStagesButton;
             stagesButton.SetActive(false);
+            charactersData = demoCharactersData;
         }
     }
 
@@ -707,6 +716,13 @@ public class GameManager : MonoBehaviourPun
             playerScript.characterNameDisplay.text = charactersData.charactersList[0].name;
             playerScript.characterNameDisplay.color = playersColors[i];
             playerScript.characterIdentificationArrow.color = playersColors[i];
+
+            if (demo)
+            {
+                playerScript.characterChanger.charactersDatabase = demoCharactersData;
+                playerScript.characterChanger.masksDatabase = demoMasksDatabase;
+                playerScript.characterChanger.weaponsDatabase = demoWeaponsDatabase;
+            }
             //playerScript.playerLight.color = playerLightsColors[i];
         }
     }
@@ -980,7 +996,6 @@ public class GameManager : MonoBehaviourPun
         if (!rematchRightAfter)
             blurPanel.SetActive(true);
 
-
         // IN GAME INDICATIONS
         drawTextAnimator.ResetTrigger("FadeOut");
         drawTextAnimator.SetTrigger("FadeOut");
@@ -1020,6 +1035,9 @@ public class GameManager : MonoBehaviourPun
         // NEXT STAGE
         if (demo && mapLoader.halloween) // Halloween stage for demo
             mapLoader.SetMap(0, true);
+        else if (demo && mapLoader.christmas) // Christmas stage for demo
+            mapLoader.SetMap(1, true);
+
         else
             mapLoader.SetMap(newStageIndex, false);
 
@@ -1057,7 +1075,10 @@ public class GameManager : MonoBehaviourPun
 
 
 
-
+    private void OnMouseDown()
+    {
+        
+    }
 
 
 
@@ -1178,6 +1199,7 @@ public class GameManager : MonoBehaviourPun
             // List of all renderers for the death VFX
             spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
             meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
+            skinnedMeshRenderers = GameObject.FindObjectsOfType<SkinnedMeshRenderer>();
             particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
             lights = GameObject.FindObjectsOfType<Light>();
 
@@ -1186,6 +1208,7 @@ public class GameManager : MonoBehaviourPun
             originalSpriteRenderersColors = new List<Color>();
             originalSpriteRenderersMaterials = new List<Material>();
             originalMeshRenderersColors = new List<Color>();
+            skinnedMeshRenderesColors = new List<Color>();
             originalParticleSystemsColors = new List<Color>();
             originalLightsIntensities = new List<float>();
             originalParticleSystemsGradients = new List<Gradient>();
@@ -1195,7 +1218,7 @@ public class GameManager : MonoBehaviourPun
             // SET ALL BLACK
             // SPRITES
             for (int i = 0; i < spriteRenderers.Length; i++)
-                if (!spriteRenderers[i].CompareTag("NonBlackFX") && spriteRenderers[i].gameObject.activeInHierarchy)
+                if (!spriteRenderers[i].CompareTag("NonBlackFX"))
                 {
                     originalSpriteRenderersColors.Add(spriteRenderers[i].color);
                     spriteRenderers[i].color = Color.black;
@@ -1213,6 +1236,19 @@ public class GameManager : MonoBehaviourPun
                         originalMeshRenderersColors.Add(meshRenderers[i].material.color);
                         // Set black
                         meshRenderers[i].material.color = Color.black;
+                    }
+                    catch { }
+                }
+            // SKINNED MESHES
+            for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                if (!skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
+                {
+                    try
+                    {
+                        // Store original color
+                        skinnedMeshRenderesColors.Add(skinnedMeshRenderers[i].material.color);
+                        // Set black
+                        skinnedMeshRenderers[i].material.color = Color.black;
                     }
                     catch { }
                 }
@@ -1252,7 +1288,7 @@ public class GameManager : MonoBehaviourPun
                 try
                 {
                     for (int i = 0; i < spriteRenderers.Length; i++)
-                        if (!spriteRenderers[i].CompareTag("NonBlackFX") && spriteRenderers[i].gameObject.activeInHierarchy)
+                        if (!spriteRenderers[i].CompareTag("NonBlackFX"))
                         {
                             spriteRenderers[i].color = originalSpriteRenderersColors[i];
                             spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
@@ -1266,6 +1302,13 @@ public class GameManager : MonoBehaviourPun
                 for (int i = 0; i < meshRenderers.Length; i++)
                     if (meshRenderers[i] != null && !meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                         meshRenderers[i].material.color = originalMeshRenderersColors[i];
+            }
+            // SKINNED MESHES
+            if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
+            {
+                for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                    if (skinnedMeshRenderers[i] != null && !skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
+                        skinnedMeshRenderers[i].material.color = skinnedMeshRenderesColors[i];
             }
             // PARTICLES
             if (particleSystems != null && particleSystems.Length > 0)
@@ -1414,86 +1457,90 @@ public class GameManager : MonoBehaviourPun
     {
         int nextStageIndex = mapLoader.currentMapIndex;
         int loopCount = 0;
+        
 
-
-        // DAY NIGHT
-        if (gameParameters.dayNightCycle)
+        if (!demo)
         {
-            if (!gameParameters.randomStage)
+            // DAY NIGHT
+            if (gameParameters.dayNightCycle)
             {
-                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
-                    nextStageIndex = mapLoader.currentMapIndex + 1;
-                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.night)
-                    nextStageIndex = mapLoader.currentMapIndex - 1;
-            }
-            else
-            {
-                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
-                    nextStageIndex = mapLoader.currentMapIndex + 1;
+                if (!gameParameters.randomStage)
+                {
+                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
+                        nextStageIndex = mapLoader.currentMapIndex + 1;
+                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.night)
+                        nextStageIndex = mapLoader.currentMapIndex - 1;
+                }
                 else
                 {
-                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-
-                    if (gameParameters.useCustomListForRandom)
-                        while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex || !(mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.day))
-                        {
-                            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-                            loopCount++;
-
-
-                            if (loopCount >= 100)
-                            {
-                                nextStageIndex = 0;
-                                break;
-                            }
-                        }
+                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
+                        nextStageIndex = mapLoader.currentMapIndex + 1;
                     else
-                        while (nextStageIndex == mapLoader.currentMapIndex || mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.night)
-                        {
-                            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-                            loopCount++;
+                    {
+                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
 
-
-                            if (loopCount >= 100)
+                        if (gameParameters.useCustomListForRandom)
+                            while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex || !(mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.day))
                             {
-                                Debug.Log("Couldn't find random day map that is not this one, taking index 0 instead");
-                                nextStageIndex = 0;
-                                break;
+                                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                                loopCount++;
+
+
+                                if (loopCount >= 100)
+                                {
+                                    nextStageIndex = 0;
+                                    break;
+                                }
                             }
-                        }
+                        else
+                            while (nextStageIndex == mapLoader.currentMapIndex || mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.night)
+                            {
+                                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                                loopCount++;
+
+
+                                if (loopCount >= 100)
+                                {
+                                    Debug.Log("Couldn't find random day map that is not this one, taking index 0 instead");
+                                    nextStageIndex = 0;
+                                    break;
+                                }
+                            }
+                    }
                 }
             }
-        }
-        // RANDOM
-        else if (gameParameters.randomStage)
-        {
-            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+            // RANDOM
+            else if (gameParameters.randomStage)
+            {
+                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
 
-            if (gameParameters.useCustomListForRandom)
-                while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex)
-                {
-                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-
-                    loopCount++;
-                    if (loopCount >= 100)
+                if (gameParameters.useCustomListForRandom)
+                    while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex)
                     {
-                        nextStageIndex = 0;
-                        break;
-                    }
-                }
-            else
-                while (nextStageIndex == mapLoader.currentMapIndex)
-                {
-                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
 
-                    loopCount++;
-                    if (loopCount >= 100)
-                    {
-                        nextStageIndex = 0;
-                        break;
+                        loopCount++;
+                        if (loopCount >= 100)
+                        {
+                            nextStageIndex = 0;
+                            break;
+                        }
                     }
-                }
+                else
+                    while (nextStageIndex == mapLoader.currentMapIndex)
+                    {
+                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+
+                        loopCount++;
+                        if (loopCount >= 100)
+                        {
+                            nextStageIndex = 0;
+                            break;
+                        }
+                    }
+            }
         }
+        
 
         return nextStageIndex;
     }

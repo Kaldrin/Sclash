@@ -18,6 +18,7 @@ public class CharacterChanger : MonoBehaviour
     [SerializeField] public SpriteRenderer mask = null;
     [SerializeField] public SpriteRenderer weapon = null;
     [SerializeField] public SpriteRenderer sheath = null;
+    [SerializeField] GameObject scarf = null;
 
 
     [Header("DATA")]
@@ -439,6 +440,12 @@ public class CharacterChanger : MonoBehaviour
         verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
         verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
 
+
+        // SCARF
+        if (scarf != null)
+            scarf.SetActive(charactersDatabase.charactersList[currentCharacterIndex].scarf);
+        else
+            Debug.Log("Couldn't find character scarf, ignoring");
 
 
 

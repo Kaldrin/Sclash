@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+// References classes : Scarf02
+
 
 
 // This script is contained at the root of a stage prefab. It allows to reference which objects should do what in the stages
@@ -23,6 +25,17 @@ public class MapPrefab : MonoBehaviour
 
 
     #region FUNCTIONS
+    // BASIC FUNCTIONS
+    private void Start()
+    {
+        EnableClothCollision();
+    }
+
+
+
+
+
+
     // DRAMATIC SCREEN
     public void TriggerDramaticScreen()
     {
@@ -37,6 +50,8 @@ public class MapPrefab : MonoBehaviour
             for (int i = 0; i < objectsToActivateOnDramaticScreen.Length; i++)
                 objectsToActivateOnDramaticScreen[i].SetActive(true);
     }
+
+
 
 
 
@@ -60,6 +75,32 @@ public class MapPrefab : MonoBehaviour
     {
         animatorToEnableOnStart.enabled = false;
     }
+
+
+
+
+
+    // CLOTH
+    // Find the cloths elements and tell themm to find the colliders
+    void EnableClothCollision()
+    {
+        // SCARFS
+        Scarf02[] scarfs = FindObjectsOfType<Scarf02>();
+
+
+        if (scarfs != null && scarfs.Length > 0)
+            for (int i = 0; i < scarfs.Length; i++)
+            {
+                if (scarfs[i] != null)
+                    scarfs[i].FindColliders();
+                else
+                    Debug.Log("Couldn't find this scarf component, ignoring");
+            }
+    }
+
+
+
+
 
 
 

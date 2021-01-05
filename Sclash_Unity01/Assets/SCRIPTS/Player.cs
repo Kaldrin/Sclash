@@ -52,13 +52,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public PlayerAnimations playerAnimations = null;
     public CharacterChanger characterChanger = null;
     public IAScript iaScript = null;
-    [Tooltip("The basic collider of the player")]
-    public Collider2D playerCollider;
     [Tooltip("All of the player's 2D colliders")]
     public Collider2D[] playerColliders = null;
     public SpriteRenderer spriteRenderer = null;
     [SerializeField] SpriteRenderer maskSpriteRenderer = null;
     [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
+    [SerializeField] SpriteRenderer sheathSpriteRenderer = null;
+    [SerializeField] Renderer scarfRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
     public Light playerLight = null;
     #endregion
@@ -709,9 +709,31 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         // Transparency on dodge frames
         if (cheatSettings.useTransparencyForDodgeFrames && untouchableFrame)
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
+        {
+            if (spriteRenderer != null)
+                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
+            if (maskSpriteRenderer != null)
+                maskSpriteRenderer.color = new Color(maskSpriteRenderer.color.r, maskSpriteRenderer.color.g, maskSpriteRenderer.color.b, untouchableFrameOpacity);
+            if (weaponSpriteRenderer != null)
+                weaponSpriteRenderer.color = new Color(weaponSpriteRenderer.color.r, weaponSpriteRenderer.color.g, weaponSpriteRenderer.color.b, untouchableFrameOpacity);
+            if (sheathSpriteRenderer != null)
+                sheathSpriteRenderer.color = new Color(sheathSpriteRenderer.color.r, sheathSpriteRenderer.color.g, sheathSpriteRenderer.color.b, untouchableFrameOpacity);
+            if (scarfRenderer != null)
+                scarfRenderer.material.color = new Color(scarfRenderer.material.color.r, scarfRenderer.material.color.g, scarfRenderer.material.color.b, untouchableFrameOpacity);
+        }
         else
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
+        {
+            if (spriteRenderer != null)
+                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
+            if (maskSpriteRenderer != null)
+                maskSpriteRenderer.color = new Color(maskSpriteRenderer.color.r, maskSpriteRenderer.color.g, maskSpriteRenderer.color.b, 1);
+            if (weaponSpriteRenderer != null)
+                weaponSpriteRenderer.color = new Color(weaponSpriteRenderer.color.r, weaponSpriteRenderer.color.g, weaponSpriteRenderer.color.b, 1);
+            if (sheathSpriteRenderer != null)
+                sheathSpriteRenderer.color = new Color(sheathSpriteRenderer.color.r, sheathSpriteRenderer.color.g, sheathSpriteRenderer.color.b, 1);
+            if (scarfRenderer != null)
+                scarfRenderer.material.color = new Color(scarfRenderer.material.color.r, scarfRenderer.material.color.g, scarfRenderer.material.color.b, 1);
+        }
 
 
 
@@ -991,8 +1013,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
-
-                playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = false;
                 attackDashFXFront.Stop();
@@ -1009,7 +1029,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXBack.Stop();
                 dashFXFront.Stop();
                 chargeFlareFX.gameObject.SetActive(true);
-                playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = false;
                 break;
@@ -1020,7 +1039,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeLevel = 1;
                 chargeSlider.value = 1;
                 actualMovementsSpeed = attackingMovementsSpeed;
-                playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
                 PauseStaminaRegen();
@@ -1034,7 +1052,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashTime = 0;
                 isDashing = false;
 
-                playerCollider.isTrigger = false;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = false;
                 attackDashFXFront.Stop();
@@ -1088,7 +1105,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 currentDashStep = DASHSTEP.invalidated;
                 currentShortcutDashStep = DASHSTEP.invalidated;
                 chargeLevel = 1;
-                playerCollider.isTrigger = true;
                 isDashing = true;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
@@ -1102,7 +1118,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.clashed:                                                                             // CLASHED
                 chargeLevel = 1;
-                playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
 
@@ -1129,7 +1144,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.dead:                                                                            // DEAD
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 SetStaminaBarsOpacity(0);
-                playerCollider.isTrigger = true;
                 for (int i = 0; i < playerColliders.Length; i++)
                     playerColliders[i].isTrigger = true;
 
@@ -1197,7 +1211,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         rb.simulated = true;
-        playerCollider.isTrigger = false;
 
 
         for (int i = 0; i < playerColliders.Length; i++)
@@ -1227,7 +1240,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // Restablishes colliders
-        playerCollider.isTrigger = false;
 
 
         for (int i = 0; i < playerColliders.Length; i++)
@@ -1958,10 +1970,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         // If players haven't all drawn, go back to chara selec state
         if (!GameManager.Instance.allPlayersHaveDrawn)
-        {
             // STATE
             SwitchState(STATE.sneathing);
-        }
+        /*
+           
         else
         {
             // ANIMATION
@@ -1971,6 +1983,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             // STATE
             SwitchState(STATE.battleSneathing);
         }
+        */
     }
 
     void TriggerBattleDraw()
@@ -2357,7 +2370,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         enemyDead = false;
 
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 0.2f), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -2600,7 +2613,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Apply pommel hitbox depending on kick frames
     protected virtual void ApplyPommelHitbox()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y), new Vector2(kickRange, 1), 0);
+        float pommelRange = characterChanger.charactersDatabase.charactersList[characterIndex].character.pommelRange;
+
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -pommelRange / 2), transform.position.y), new Vector2(pommelRange, 0.2f), 0);
         List<GameObject> hits = new List<GameObject>();
 
 
@@ -3173,18 +3188,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Draw the attack range when the player is selected
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-lightAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange + baseBackAttackRangeDisjoint, 1, 1));
-        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-lightAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(lightAttackRange + baseBackAttackRangeDisjoint, 0.2f, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 0.2f, 1));
     }
 
     // Draw the attack range is the attack is in active frames in the scene viewer
     private void OnDrawGizmos()
     {
         if (activeFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + baseBackAttackRangeDisjoint, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + baseBackAttackRangeDisjoint, 0.2f, 1));
 
         if (kickFrame)
-            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 1, 1));
+            Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 0.2f, 1));
     }
     #endregion
 
