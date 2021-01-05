@@ -144,7 +144,11 @@ public class IAScript_Solo : IAScript
         OnIADeath(this);
         isDead = true;
 
-        playerScript.playerCollider.gameObject.SetActive(false);
+        //playerScript.playerCollider.gameObject.SetActive(false);
+        foreach(Collider2D col in playerScript.playerColliders){
+            col.gameObject.SetActive(false);
+        }
+
         playerScript.rb.bodyType = RigidbodyType2D.Static;
         playerScript.enabled = false;
 

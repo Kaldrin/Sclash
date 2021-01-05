@@ -1013,8 +1013,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
-                for (int i = 0; i < playerColliders.Length; i++)
-                    playerColliders[i].isTrigger = false;
+                foreach (Collider2D col in playerColliders)
+                    col.isTrigger = false;
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
                 dashFXBack.Stop();
@@ -1029,8 +1029,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashFXBack.Stop();
                 dashFXFront.Stop();
                 chargeFlareFX.gameObject.SetActive(true);
-                for (int i = 0; i < playerColliders.Length; i++)
-                    playerColliders[i].isTrigger = false;
+                foreach (Collider2D col in playerColliders)
+                    col.isTrigger = false;
                 break;
 
             case STATE.attacking:                                                       // ATTACKING
@@ -1039,8 +1039,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 chargeLevel = 1;
                 chargeSlider.value = 1;
                 actualMovementsSpeed = attackingMovementsSpeed;
-                for (int i = 0; i < playerColliders.Length; i++)
-                    playerColliders[i].isTrigger = true;
+                foreach (Collider2D col in playerColliders)
+                    col.isTrigger = true;
                 PauseStaminaRegen();
 
                 chargeFlareFX.gameObject.SetActive(false);
@@ -1052,8 +1052,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dashTime = 0;
                 isDashing = false;
 
-                for (int i = 0; i < playerColliders.Length; i++)
-                    playerColliders[i].isTrigger = false;
+                foreach (Collider2D col in playerColliders)
+                    col.isTrigger = false;
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
                 dashFXBack.Stop();
@@ -1106,8 +1106,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 currentShortcutDashStep = DASHSTEP.invalidated;
                 chargeLevel = 1;
                 isDashing = true;
-                for (int i = 0; i < playerColliders.Length; i++)
-                    playerColliders[i].isTrigger = true;
+                foreach (Collider2D col in playerColliders)
+                    col.isTrigger = true;
                 PauseStaminaRegen();
                 chargeFlareFX.gameObject.SetActive(false);
                 break;
@@ -1118,8 +1118,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.clashed:                                                                             // CLASHED
                 chargeLevel = 1;
-                for (int i = 0; i < playerColliders.Length; i++)
-                    playerColliders[i].isTrigger = true;
+                foreach (Collider2D col in playerColliders)
+                    col.isTrigger = true;
 
                 PauseStaminaRegen();
                 attackDashFXFront.Stop();
@@ -1144,8 +1144,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             case STATE.dead:                                                                            // DEAD
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 SetStaminaBarsOpacity(0);
-                for (int i = 0; i < playerColliders.Length; i++)
-                    playerColliders[i].isTrigger = true;
+                foreach (Collider2D col in playerColliders)
+                    col.isTrigger = true;
 
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
@@ -3285,4 +3285,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
     #endregion
+
+    public void GetColliders()
+    {
+        Collider2D[] test = GetComponentsInChildren<Collider2D>();
+        for (int i = 0; i < playerColliders.Length; i++)
+        {
+            if (test[i].CompareTag("Player"))
+                playerColliders[i] = test[i];
+        }
+    }
 }
