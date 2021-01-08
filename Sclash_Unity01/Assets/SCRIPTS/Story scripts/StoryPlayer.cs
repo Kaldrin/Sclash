@@ -340,6 +340,9 @@ public class StoryPlayer : Player
                             l_hitCount = g.GetComponent<MeshCombine>().hitCount;
                         }
 
+                        if (g.GetComponent<DestructibleElement>())
+                            g.GetComponent<DestructibleElement>().Cut();
+
                         Destroy(g);
                         Destroy(plane);
 

@@ -1768,6 +1768,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isBaseFixed: 0
   hitCount: 0
+--- !u!114 &709527779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709527777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 540c015a9324dfa4da6de57d31bd3d88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: 1
+  m_DestroySound: {fileID: 0}
 --- !u!4 &709527781 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 31c47ba4c21960a479bb3c91a8499882,
@@ -2373,6 +2387,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 841317982}
+  - component: {fileID: 841317983}
   m_Layer: 0
   m_Name: DebrisContainer
   m_TagString: Untagged
@@ -2398,6 +2413,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &841317983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 841317981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19c42f8c557d20642ad9ad71e6221274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &882575074
 GameObject:
   m_ObjectHideFlags: 0
@@ -3611,6 +3638,7 @@ GameObject:
   - component: {fileID: 1388356797}
   - component: {fileID: 1388356796}
   - component: {fileID: 1388356795}
+  - component: {fileID: 1388356799}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Destructible
@@ -3690,6 +3718,20 @@ Transform:
   m_Father: {fileID: 841317982}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1388356799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388356794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 540c015a9324dfa4da6de57d31bd3d88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: 1
+  m_DestroySound: {fileID: 0}
 --- !u!1 &1436604533
 GameObject:
   m_ObjectHideFlags: 0
@@ -3972,6 +4014,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isBaseFixed: 1
   hitCount: 0
+--- !u!114 &1527365026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1527365023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 540c015a9324dfa4da6de57d31bd3d88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: 1
+  m_DestroySound: {fileID: 0}
 --- !u!64 &1527365027
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4906,6 +4962,7 @@ GameObject:
   - component: {fileID: 2002820708}
   - component: {fileID: 2002820707}
   - component: {fileID: 2002820706}
+  - component: {fileID: 2002820710}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Destructible
@@ -4985,6 +5042,20 @@ Transform:
   m_Father: {fileID: 841317982}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -6.4340005, z: 0}
+--- !u!114 &2002820710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002820705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 540c015a9324dfa4da6de57d31bd3d88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: 1
+  m_DestroySound: {fileID: 0}
 --- !u!1 &2006632188
 GameObject:
   m_ObjectHideFlags: 0
@@ -5668,6 +5739,26 @@ PrefabInstance:
     - target: {fileID: 5913511260507727552, guid: c845d0b4a1ebc0f448a78a0f1be457a5,
         type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2134146086265436153, guid: c845d0b4a1ebc0f448a78a0f1be457a5,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2134146086265436153, guid: c845d0b4a1ebc0f448a78a0f1be457a5,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2134146086265436153, guid: c845d0b4a1ebc0f448a78a0f1be457a5,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2134146086265436153, guid: c845d0b4a1ebc0f448a78a0f1be457a5,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
