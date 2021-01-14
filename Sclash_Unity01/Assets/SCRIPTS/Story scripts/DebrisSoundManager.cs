@@ -32,7 +32,9 @@ public class DebrisSoundManager : MonoBehaviour
         }
 
         AudioSource source = gameObject.AddComponent<AudioSource>();
+        source.pitch = Random.Range(0.75f, 1.75f);
         source.clip = clip;
+
         source.Play();
 
         StartCoroutine(DestroyAudioSource(source, clip.length + 0.1f));

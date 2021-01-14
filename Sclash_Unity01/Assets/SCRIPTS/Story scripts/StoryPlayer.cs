@@ -308,7 +308,6 @@ public class StoryPlayer : Player
                 }
                 else if (g.CompareTag("Destructible"))
                 {
-                    Debug.Log("Hit ! " + g.name);
                     targetsHit.Add(g);
                     if (g.GetComponent<Destructible>())
                         g.GetComponent<Destructible>().Destroy();
@@ -342,7 +341,8 @@ public class StoryPlayer : Player
 
                         if (g.GetComponent<DestructibleElement>())
                             g.GetComponent<DestructibleElement>().Cut();
-
+                        else if (g.transform.parent.GetComponent<DestructibleElement>())
+                            g.transform.parent.GetComponent<DestructibleElement>().Cut();
                         Destroy(g);
                         Destroy(plane);
 
@@ -375,14 +375,15 @@ public class StoryPlayer : Player
                 continue;
             }
 
+            yield return new WaitForSecondsRealtime(0.01f);
             //3D System
             Rigidbody rb = h.AddComponent<Rigidbody>();
             rb.interpolation = RigidbodyInterpolation.Interpolate;
-            rb.drag = 2f;
+            rb.drag = 3.5f;
             rb.constraints = RigidbodyConstraints.FreezePositionZ;
             h.AddComponent<MeshCollider>();
             h.GetComponent<MeshCollider>().convex = true;
-            rb.AddExplosionForce(1000f, transform.position, 25f);
+            rb.AddExplosionForce(2000f, transform.position, 25f);
 
             h.AddComponent<Debris>();
 
