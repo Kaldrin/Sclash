@@ -309,10 +309,9 @@ public class StoryPlayer : Player
                 else if (g.CompareTag("Destructible"))
                 {
                     targetsHit.Add(g);
+                    Debug.Log(g);
                     if (g.GetComponent<Destructible>())
                         g.GetComponent<Destructible>().Destroy();
-                    else if (g.transform.parent.gameObject.GetComponent<Destructible>())
-                        g.transform.parent.gameObject.GetComponent<Destructible>().Destroy();
                     else if (g.GetComponent<MeshFilter>())
                     {
                         GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -349,7 +348,8 @@ public class StoryPlayer : Player
                         if (hulls != null)
                             StartCoroutine(InstantiateHulls(hulls, l_isBaseFixed, l_objTransform, l_hitCount));
                     }
-
+                    else if (g.transform.parent.gameObject.GetComponent<Destructible>())
+                        g.transform.parent.gameObject.GetComponent<Destructible>().Destroy();
                 }
             }
         }

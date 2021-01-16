@@ -77,6 +77,8 @@ public class DestructibleElementEditor : Editor
         serializedObject.Update();
         DestructibleElement script = (DestructibleElement)target;
 
+        script.m_Material = (DestructibleElement.e_Materials)EditorGUILayout.EnumPopup("Material",script.m_Material);
+
         SerializedProperty test = serializedObject.FindProperty("m_DestroySound");
         EditorGUILayout.PropertyField(test);
 
