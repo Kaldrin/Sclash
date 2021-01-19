@@ -60,7 +60,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] SpriteRenderer sheathSpriteRenderer = null;
     [SerializeField] Renderer scarfRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
-    public Light playerLight = null;
+    [SerializeField] public Light playerLight = null;
+    [Tooltip("The animator controller that will be put on the sprite object of the player to enable nice looking character change animations")]
+    [SerializeField] public RuntimeAnimatorController characterChangerAnimatorController = null;
     #endregion
 
 
@@ -410,6 +412,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] protected ParticleSystem chargeFX = null;
     [SerializeField] protected ParticleSystem chargeFullFX = null;
     [SerializeField] GameObject rangeIndicatorShadow = null;
+    [SerializeField] SpriteRenderer rangeIndicatorShadowSprite = null;
 
 
 
@@ -498,6 +501,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
+    private void Awake()
+    {
+        // GET PLAYER CHARACTER CHANGE ANIMATOR (Because I always forget to add it back while editing the animations (Because I have to remove it, it conflicts with the main animator))
+        if (spriteRenderer.gameObject.GetComponent<Animator>() == null)
+            characterChanger.characterChangeAnimator = spriteRenderer.gameObject.AddComponent<Animator>();
+        if (characterChanger.characterChangeAnimator != null && characterChangerAnimatorController != null && characterChanger.characterChangeAnimator.runtimeAnimatorController != characterChangerAnimatorController)
+            characterChanger.characterChangeAnimator.runtimeAnimatorController = characterChangerAnimatorController;
+    }
+
     public virtual void Start()
     {
         // GET MANAGERS
@@ -511,17 +523,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         // The forward attack touches a little behind the character for cool effects
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
+
+
+        // STAMINA SET UP
         oldStaminaValue = maxStamina;
 
 
-        // Begin by reseting all the player's values and variable to start fresh
+        // Reset all the player's values and variable to start fresh
         StartCoroutine(GetOtherPlayerNum());
         SetUpStaminaBars();
         deathFXbaseAngles = deathBloodFX.transform.localEulerAngles;
         ResetAllPlayerValuesForNextMatch();
 
+
+        // Find the UI elements for the character changer
         characterChanger.FindElements();
-        //StartCoroutine(characterChanger.ApplyCharacterChange(0));
 
 
         // ELEMENTS COLOR
@@ -702,6 +718,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
+
+        // KICK FRAMES
         if (kickFrame)
             ApplyPommelHitbox();
 
@@ -1630,13 +1648,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 else
                     Debug.Log("Couldn't fine stamina end audio source, ignoring");
             }
+            
             // Used stamina sfx
             if (staminaUseSFX != null)
                 staminaUseSFX.Play();
             else
                 Debug.Log("Couldn't fine stamina use audio source, ignoring");
-
-
+                
 
             // FX
             if (cheatSettings.useExtraDiegeticFX && playFX)
@@ -1946,6 +1964,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         SwitchState(STATE.drawing);
 
+
+        // RANGE
+        // Get range of the character
+        lightAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[0];
+        heavyAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[1];
+
+
+
         // ANIMATION
         playerAnimations.TriggerDraw();
     }
@@ -2202,15 +2228,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (cheatSettings.useRangeShadow)
         {
             float X_ScaleObjective = 0;
+            float opacityObjective = 0.3f;
+            Color shadowColor = rangeIndicatorShadowSprite.color;
+
 
             if (playerState == STATE.charging)
-                X_ScaleObjective = lightAttackRange + (heavyAttackRange - 0.2f - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
+            {
+                opacityObjective = 1;
+                X_ScaleObjective = lightAttackRange + (heavyAttackRange - 0.4f - lightAttackRange) * ((float)chargeLevel - 1) / (float)maxChargeLevel;
+            }
             else
                 X_ScaleObjective = 1f;
 
 
-            float newX_Scale = Mathf.Lerp(rangeIndicatorShadow.transform.localScale.x, X_ScaleObjective, 0.075f);
+
+            float newX_Scale = Mathf.Lerp(rangeIndicatorShadow.transform.localScale.x, X_ScaleObjective, 0.05f);
             rangeIndicatorShadow.transform.localScale = new Vector3(newX_Scale, rangeIndicatorShadow.transform.localScale.y, rangeIndicatorShadow.transform.localScale.z);
+
+            opacityObjective = Mathf.Lerp(shadowColor.a, opacityObjective, 0.05f);
+            Color newShadowColor = new Color(shadowColor.r, shadowColor.g, shadowColor.b, opacityObjective);
+            rangeIndicatorShadowSprite.color = newShadowColor;
         }
     }
     #endregion
@@ -2232,6 +2269,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         int saveChargeLevelForStats = chargeLevel;
 
 
+
+
+        // Get range of the character
+        lightAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[0];
+        heavyAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[1];
+
+
         // Calculates attack range
         if (chargeLevel == 1)
             actualAttackRange = lightAttackRange;
@@ -2242,6 +2286,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
 
+
+
+        // Get graphic range
+        lightAttackSwordTrailScale = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.lightAttackSwordTrailScale;
+        heavyAttackSwordTrailScale = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.heavyAttackSwordTrailScale;
 
 
         // FX

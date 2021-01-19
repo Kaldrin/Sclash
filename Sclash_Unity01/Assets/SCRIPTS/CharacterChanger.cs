@@ -14,7 +14,7 @@ public class CharacterChanger : MonoBehaviour
     [SerializeField] Player playerScript = null;
     [SerializeField] Animator playerAnimator = null;
     [SerializeField] Animator legsAnimator = null;
-    [SerializeField] Animator characterChangeAnimator = null;
+    [SerializeField] public Animator characterChangeAnimator = null;
     [SerializeField] public SpriteRenderer mask = null;
     [SerializeField] public SpriteRenderer weapon = null;
     [SerializeField] public SpriteRenderer sheath = null;
