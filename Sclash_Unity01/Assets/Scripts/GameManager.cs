@@ -684,7 +684,7 @@ public class GameManager : MonoBehaviourPun
 
             // ANIMATIONS
             playerAnimations.spriteRenderer.sortingOrder = 10 * i;
-            playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
+            playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i - 1;
 
 
             // FX

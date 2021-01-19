@@ -40,7 +40,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         animatorBaseSpeed,
         legsAnimatorBaseSpeed = 0;
 
-    float nextAttackState = 0;
+    [HideInInspector] public float nextAttackState = 0;
     #endregion
 
 

@@ -7,4 +7,7 @@ using UnityEngine;
 public class CharacterSettings : ScriptableObject
 {
     public float pommelRange = 0.68f;
+    public Vector2 attack01RangeRange = new Vector2(1.8f, 3.2f);
+    public float lightAttackSwordTrailScale = 0.95f;
+    public float heavyAttackSwordTrailScale = 1.44f;
 }
