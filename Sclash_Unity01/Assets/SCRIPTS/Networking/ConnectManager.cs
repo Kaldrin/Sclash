@@ -20,7 +20,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     string gameVersion = "";
     public bool connectedToMaster = false;
-    public bool enableMultiplayer;
+    public bool enableMultiplayer = false;
 
     public GameObject localPlayer;
     public int localPlayerNum;
