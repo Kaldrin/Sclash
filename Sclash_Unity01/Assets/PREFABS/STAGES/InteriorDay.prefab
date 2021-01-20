@@ -3804,7 +3804,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 35075
+    m_Bits: 2305
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -4222,7 +4222,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 35587
+    m_Bits: 2305
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -6244,7 +6244,6 @@ GameObject:
   - component: {fileID: 8674846311986958902}
   - component: {fileID: 3127605296197665771}
   - component: {fileID: 6091891077015376045}
-  - component: {fileID: 8534808876725053}
   m_Layer: 11
   m_Name: YellowRoundLantern01
   m_TagString: Untagged
@@ -6313,18 +6312,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &8534808876725053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2300208515839114632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6cf6d647a0cdb4eb6e9c0de8f69ac2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2318059128721650598
 GameObject:
   m_ObjectHideFlags: 0
@@ -6404,7 +6391,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2307
+    m_Bits: 2049
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -6628,7 +6615,6 @@ GameObject:
   - component: {fileID: 5455732784522087445}
   - component: {fileID: 2458272605214227087}
   - component: {fileID: 888900224802780016}
-  - component: {fileID: 1559174122879983175}
   m_Layer: 11
   m_Name: YellowRoundLantern06
   m_TagString: Untagged
@@ -6697,18 +6683,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &1559174122879983175
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2556477197698704512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6cf6d647a0cdb4eb6e9c0de8f69ac2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2565846280654397601
 GameObject:
   m_ObjectHideFlags: 0
@@ -6797,7 +6771,6 @@ GameObject:
   - component: {fileID: 7153929904491348447}
   - component: {fileID: 669891766017970365}
   - component: {fileID: 5910236835276688432}
-  - component: {fileID: 6939834663388155589}
   m_Layer: 11
   m_Name: YellowRoundLantern05
   m_TagString: Untagged
@@ -6866,18 +6839,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &6939834663388155589
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2571396523942780417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6cf6d647a0cdb4eb6e9c0de8f69ac2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2708839142155193270
 GameObject:
   m_ObjectHideFlags: 0
@@ -7579,7 +7540,7 @@ Light:
     m_Type: 2
     m_Resolution: 3
     m_CustomResolution: -1
-    m_Strength: 0.665
+    m_Strength: 0.661
     m_Bias: 0
     m_NormalBias: 0
     m_NearPlane: 0.1
@@ -7607,7 +7568,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 3
+    m_Bits: 2307
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -7698,7 +7659,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2049
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -8688,7 +8649,6 @@ GameObject:
   - component: {fileID: 8720157608010987610}
   - component: {fileID: 7322312582921978444}
   - component: {fileID: 8063062497482907089}
-  - component: {fileID: 2500115162085536119}
   m_Layer: 11
   m_Name: GreenRoundLantern03
   m_TagString: Untagged
@@ -8771,18 +8731,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortingLayerName: Background
   SortingOrder: 10
---- !u!114 &2500115162085536119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4044085893910106981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6cf6d647a0cdb4eb6e9c0de8f69ac2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4132309836526097133
 GameObject:
   m_ObjectHideFlags: 0
@@ -9535,7 +9483,6 @@ GameObject:
   - component: {fileID: 1879999476094374622}
   - component: {fileID: 7098855152049410571}
   - component: {fileID: 7179327392321664753}
-  - component: {fileID: 2013453783436088182}
   m_Layer: 11
   m_Name: YellowRoundLantern04
   m_TagString: Untagged
@@ -9604,18 +9551,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &2013453783436088182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4438647067152707948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6cf6d647a0cdb4eb6e9c0de8f69ac2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4513411166677959541
 GameObject:
   m_ObjectHideFlags: 0
@@ -10366,7 +10301,6 @@ GameObject:
   - component: {fileID: 5675152610018883191}
   - component: {fileID: 3114963172618540826}
   - component: {fileID: 3444897214840085891}
-  - component: {fileID: 5474043261575959834}
   m_Layer: 11
   m_Name: GreenRoundLantern04
   m_TagString: Untagged
@@ -10449,18 +10383,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortingLayerName: Background
   SortingOrder: 10
---- !u!114 &5474043261575959834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4760148861422430862}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6cf6d647a0cdb4eb6e9c0de8f69ac2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4790842671160048778
 GameObject:
   m_ObjectHideFlags: 0
@@ -12787,7 +12709,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 35587
+    m_Bits: 2305
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -13281,7 +13203,6 @@ GameObject:
   - component: {fileID: 3271832350129877431}
   - component: {fileID: 8353656459532787037}
   - component: {fileID: 4971204108172525613}
-  - component: {fileID: 3986588272971519254}
   m_Layer: 11
   m_Name: GreenRoundLantern01
   m_TagString: Untagged
@@ -13364,18 +13285,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortingLayerName: Background
   SortingOrder: 10
---- !u!114 &3986588272971519254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7215119032156717434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6cf6d647a0cdb4eb6e9c0de8f69ac2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7232475169900655098
 GameObject:
   m_ObjectHideFlags: 0
@@ -14510,7 +14419,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2051
+    m_Bits: 2049
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
