@@ -31,6 +31,7 @@ MonoBehaviour:
   sheathSpriteRenderer: {fileID: 0}
   scarfRenderer: {fileID: 0}
   playerLight: {fileID: 775014298758161834}
+  characterChangerAnimatorController: {fileID: 0}
   playerState: 0
   oldState: 7
   hasFinishedAnim: 0
@@ -138,6 +139,7 @@ MonoBehaviour:
   chargeFX: {fileID: 3473722525670961778}
   chargeFullFX: {fileID: 4277358972663282297}
   rangeIndicatorShadow: {fileID: 3315701794085401629}
+  rangeIndicatorShadowSprite: {fileID: 5853976287718731379}
   staminaLossFX: {fileID: 1137136543770791175}
   staminaGainFX: {fileID: 869444623105074400}
   staminaRecupFX: {fileID: 949450821603212079}
@@ -308,6 +310,16 @@ PrefabInstance:
       propertyPath: maxCharge
       value: ChargeMax
       objectReference: {fileID: 0}
+    - target: {fileID: -4225643809597695496, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: characterChanger
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: -4225643809597695496, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: iaScript
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 61893027603198373, guid: 3f5effdde23e47744a2f4942c91916c7,
         type: 3}
       propertyPath: m_AABB.m_Center.y
@@ -318,7 +330,40 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.y
       value: 0.0000027797078
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 61893027603198373, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 5.0000033
+      objectReference: {fileID: 0}
+    - target: {fileID: 1606183158023885115, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1606183158023885115, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3041174089603025497, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3041174089603025497, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3041174089603025497, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8273819761138437705, guid: 3f5effdde23e47744a2f4942c91916c7, type: 3}
+    - {fileID: 2242013449593683699, guid: 3f5effdde23e47744a2f4942c91916c7, type: 3}
+    - {fileID: -4225643809597695496, guid: 3f5effdde23e47744a2f4942c91916c7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 3f5effdde23e47744a2f4942c91916c7, type: 3}
 --- !u!50 &3745652980613596167 stripped
 Rigidbody2D:
@@ -359,6 +404,12 @@ SpriteRenderer:
 --- !u!1 &3315701794085401629 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8991820929388290933, guid: 3f5effdde23e47744a2f4942c91916c7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5965827258354063208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &5853976287718731379 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 285802806890314011, guid: 3f5effdde23e47744a2f4942c91916c7,
     type: 3}
   m_PrefabInstance: {fileID: 5965827258354063208}
   m_PrefabAsset: {fileID: 0}

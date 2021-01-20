@@ -1648,13 +1648,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 else
                     Debug.Log("Couldn't fine stamina end audio source, ignoring");
             }
-            
+
             // Used stamina sfx
             if (staminaUseSFX != null)
                 staminaUseSFX.Play();
             else
                 Debug.Log("Couldn't fine stamina use audio source, ignoring");
-                
+
 
             // FX
             if (cheatSettings.useExtraDiegeticFX && playFX)
@@ -2274,6 +2274,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // Get range of the character
         lightAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[0];
         heavyAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[1];
+
 
 
         // Calculates attack range
