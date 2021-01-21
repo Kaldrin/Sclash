@@ -11,7 +11,7 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     public static ServerListManager Instance;
 
     [SerializeField]
-    GameObject serverItemPrefab;
+    GameObject serverItemPrefab = null;
 
     [SerializeField]
     TMP_InputField serverParameters;
@@ -30,6 +30,9 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
+
+        if (serverItemPrefab == null)
+            Debug.LogError("ServerItemPrefab must be not null");
     }
 
     private void FixedUpdate()

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-// Created for Unity 2019.1.1f1
 public class CameraManager : MonoBehaviour
 {
     #region VARIABLES
@@ -34,10 +32,12 @@ public class CameraManager : MonoBehaviour
         inactive,
         battle,
         eventcam,
+        solo
     }
     # endregion
 
-
+    [Header("CAMERA SETTING")]
+    public CameraSetting camSetting;
 
 
 
@@ -74,8 +74,8 @@ public class CameraManager : MonoBehaviour
     # region CAMERA MOVEMENTS
     // CAMERA MOVEMENTS
     [Header("CAMERA MOVEMENTS")]
-    [SerializeField] public float battleXSmoothMovementsMultiplier = 0.5f;
-    [SerializeField] public float cinematicXSmoothMovementsMultiplier = 0.05f;
+    public float battleXSmoothMovementsMultiplier = 0.5f;
+    public float cinematicXSmoothMovementsMultiplier = 0.05f;
     [HideInInspector] public float actualXSmoothMovementsMultiplier = 0.5f;
     float playersBaseYPos = 0;
 
@@ -119,13 +119,30 @@ public class CameraManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        if (camSetting != null)
+            UseCameraSetting();
     }
 
-
-    // Start is called before the first frame update
-    void Start()
+    void UseCameraSetting()
     {
+        cameraZoomZLimits = camSetting.CameraZoomZLimits;
+        playersDistanceLimitsForCameraZoomedUnzoomedLimits = camSetting.PlayersDistanceLimitsForCameraZoomedUnzoomed;
+        customEventZoom = camSetting.CustomEventZoom;
+        battleZoomSmoothDuration = camSetting.BattleZoomSmoothDuration;
+        cinematicZoomSmoothDuration = camSetting.CinematicZoomSmoothDuration;
+        battleZoomSpeed = camSetting.BattleZoomSpeed;
+        eventZoomSpeed = camSetting.EventZoomSpeed;
+        battleXSmoothMovementsMultiplier = camSetting.BattleXSmoothMovementsMultiplier;
+        cinematicXSmoothMovementsMultiplier = camSetting.CinematicXSmoothMovementsMultiplier;
+        cameraArmXLimitsZoomedAndUnzoomed = camSetting.cameraArmXLimitsZoomedAndUnzoomed;
+    }
 
+    
+    // Start is called before the first frame update
+    protected virtual void Start()
+    {
+        playersList = FindPlayers();
+        /*
         if (playersList == null)
         {
             playersList = FindPlayers();
@@ -133,7 +150,7 @@ public class CameraManager : MonoBehaviour
         else if (playersList.Length <= 0)
         {
             playersList = FindPlayers();
-        }
+        }*/
 
 
         actualXSmoothMovementsMultiplier = cinematicXSmoothMovementsMultiplier;
@@ -159,13 +176,10 @@ public class CameraManager : MonoBehaviour
 
             case CAMERASTATE.inactive:
                 break;
+
+            case CAMERASTATE.solo:
+                break;
         }
-    }
-
-    // FixedUpdate is called 50 times per second
-    void FixedUpdate()
-    {
-
     }
 
 
@@ -188,12 +202,18 @@ public class CameraManager : MonoBehaviour
 
                 case CAMERASTATE.inactive:
                     break;
+
+                case CAMERASTATE.solo:
+                    MoveCameraWithPlayers();
+                    ZoomCameraWithPlayers();
+                    break;
             }
 
 
             yield return new WaitForSeconds(Time.fixedDeltaTime / 10);
         }
     }
+
     #endregion
 
 
@@ -220,6 +240,10 @@ public class CameraManager : MonoBehaviour
                 break;
 
             case CAMERASTATE.inactive:
+                break;
+
+            case CAMERASTATE.solo:
+                actualZoomSpeed = battleZoomSpeed;
                 break;
         }
     }
@@ -274,7 +298,7 @@ public class CameraManager : MonoBehaviour
     # region X MOVEMENTS
     // X MOVEMENTS
     // Camera follows players positions
-    void MoveCameraWithPlayers()
+    protected virtual void MoveCameraWithPlayers()
     {
         // Only calculates camera movements with players if there is at least 1 player in the scene
         if (playersList.Length > 0 && playersList != null)

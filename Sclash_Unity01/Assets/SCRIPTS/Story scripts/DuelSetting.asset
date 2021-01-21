@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c36ddb08837ea47a5815cb213b651e, type: 3}
+  m_Name: DuelSetting
+  m_EditorClassIdentifier: 
+  CameraZoomZLimits: {x: -6.5, y: -25}
+  PlayersDistanceLimitsForCameraZoomedUnzoomed: {x: 5, y: -25}
+  CustomEventZoom: -3.5
+  BattleZoomSmoothDuration: 0.25
+  CinematicZoomSmoothDuration: 1
+  BattleZoomSpeed: 50
+  EventZoomSpeed: 10
+  BattleXSmoothMovementsMultiplier: 0.5
+  CinematicXSmoothMovementsMultiplier: 0.05
+  cameraArmXLimitsZoomedAndUnzoomed: {x: 10, y: 5}

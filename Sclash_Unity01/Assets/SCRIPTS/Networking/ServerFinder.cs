@@ -6,10 +6,14 @@ using Photon.Realtime;
 
 public class ServerFinder : MonoBehaviourPunCallbacks
 {
-
     private void Awake()
     {
         //roomInfoList = new List<RoomInfo>();
+    }
+
+    new void OnEnable()
+    {
+        ConnectManager.Instance.SetMultiplayer(true);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

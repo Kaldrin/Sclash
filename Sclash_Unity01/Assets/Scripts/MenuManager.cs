@@ -78,10 +78,12 @@ public class MenuManager : MonoBehaviour
     # region PAUSE
     [Header("PAUSE MENU")]
     [Tooltip("The reference to the menu's blur panel game object")]
-    [SerializeField] GameObject
+    [SerializeField]
+    GameObject
         blurPanel = null;
     [Tooltip("Menu elements references")]
-    [SerializeField] public GameObject
+    [SerializeField]
+    public GameObject
         pauseMenu = null,
         mainMenu = null,
         winScreen = null;
@@ -140,7 +142,7 @@ public class MenuManager : MonoBehaviour
     // Update is called once per grahic frame
     void Update()
     {
-        switch (gameManager.gameState)
+        switch (GameManager.Instance.gameState)
         {
             case GameManager.GAMESTATE.game:
                 if (canPauseOn)
@@ -172,35 +174,35 @@ public class MenuManager : MonoBehaviour
     {
         bool playerDead = false;
 
-        for (int i = 0; i < gameManager.playersList.Count; i++)
+        for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
         {
-            if (gameManager.playersList[i] != null)
-                if (gameManager.playersList[i].GetComponent<Player>().playerState == Player.STATE.dead)
+            if (GameManager.Instance.playersList[i] != null)
+                if (GameManager.Instance.playersList[i].GetComponent<Player>().playerState == Player.STATE.dead)
                     playerDead = true;
         }
 
         // Display score & in game help
-        if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
+        if (!playerDead && GameManager.Instance.gameState == GameManager.GAMESTATE.game)
         {
-            gameManager.scoreObject.GetComponent<Animator>().SetBool("On", inputManager.scoreInput);
+            GameManager.Instance.scoreObject.GetComponent<Animator>().SetBool("On", inputManager.scoreInput);
 
 
-            for (int i = 0; i < gameManager.playersList.Count; i++)
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
             {
                 // ONLINE
                 if (ConnectManager.Instance.connectedToMaster && i > 0)
                     break;
 
-                gameManager.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
-                if (gameManager.playersList[i] != null)
-                    gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
+                GameManager.Instance.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
+                if (GameManager.Instance.playersList[i] != null)
+                    GameManager.Instance.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
             }
         }
         // Display in game help key indication
-        if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
+        if (!playerDead && GameManager.Instance.gameState == GameManager.GAMESTATE.game)
         {
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-                gameManager.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                GameManager.Instance.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
         }
     }
     # endregion
@@ -245,7 +247,7 @@ public class MenuManager : MonoBehaviour
 
     public void SwitchPause()
     {
-        if (gameManager.gameState == GameManager.GAMESTATE.paused)
+        if (GameManager.Instance.gameState == GameManager.GAMESTATE.paused)
             TriggerPause(false);
         else
             TriggerPause(true);
@@ -263,27 +265,27 @@ public class MenuManager : MonoBehaviour
             backIndicator.SetActive(true);
 
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
-            gameManager.SwitchState(GameManager.GAMESTATE.paused);
+            GameManager.Instance.SwitchState(GameManager.GAMESTATE.paused);
 
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-                gameManager.playersList[i].GetComponent<Animator>().enabled = false;
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                GameManager.Instance.playersList[i].GetComponent<Animator>().enabled = false;
         }
         else
         {
             backIndicator.SetActive(false);
 
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-                gameManager.playersList[i].GetComponent<Player>().canParry = false;
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                GameManager.Instance.playersList[i].GetComponent<Player>().canParry = false;
 
             canPauseOn = false;
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
 
-            if (gameManager.gameState == GameManager.GAMESTATE.paused)
-                gameManager.SwitchState(GameManager.GAMESTATE.game);
+            if (GameManager.Instance.gameState == GameManager.GAMESTATE.paused)
+                GameManager.Instance.SwitchState(GameManager.GAMESTATE.game);
 
 
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-                gameManager.playersList[i].GetComponent<Animator>().enabled = true;
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                GameManager.Instance.playersList[i].GetComponent<Animator>().enabled = true;
 
             Invoke("RestoreCanPauseOn", 0.2f);
         }
@@ -292,14 +294,14 @@ public class MenuManager : MonoBehaviour
         blurPanel.SetActive(state);
         pauseMenu.SetActive(state);
 
-        gameManager.scoreObject.GetComponent<Animator>().SetBool("On", state);
+        GameManager.Instance.scoreObject.GetComponent<Animator>().SetBool("On", state);
 
 
-        for (int i = 0; i < gameManager.playersList.Count; i++)
+        for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
         {
-            gameManager.inGameHelp[i].SetBool("On", state);
-            gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
-            gameManager.playerKeysIndicators[i].SetBool("On", !state);
+            GameManager.Instance.inGameHelp[i].SetBool("On", state);
+            GameManager.Instance.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+            GameManager.Instance.playerKeysIndicators[i].SetBool("On", !state);
         }
 
 
@@ -323,9 +325,9 @@ public class MenuManager : MonoBehaviour
         winName.color = winnerColor;
 
 
-        for (int i = 0; i < gameManager.playersList.Count; i++)
+        for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
         {
-            scoresNames[i].text = charactersData.charactersList[gameManager.playersList[i].GetComponent<Player>().characterIndex].name;
+            scoresNames[i].text = charactersData.charactersList[GameManager.Instance.playersList[i].GetComponent<Player>().characterIndex].name;
             scoresNames[i].color = playersColors[i];
             scoresDisplays[i].text = score[i].ToString();
             scoresDisplays[i].color = playersColors[i];
@@ -347,7 +349,7 @@ public class MenuManager : MonoBehaviour
     public void LoadAudioSaveInScriptableObject()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();
-        
+
 
         // Master volume
         if (save.masterVolume > menuParametersSaveScriptableObject.maxMasterVolume)
@@ -397,10 +399,10 @@ public class MenuManager : MonoBehaviour
         displayHelpCheckBox.SetActive(menuParametersSaveScriptableObject.displayHelp);
 
 
-        for (int i = 0; i < gameManager.inGameHelp.Length; i++)
+        for (int i = 0; i < GameManager.Instance.inGameHelp.Length; i++)
         {
-            gameManager.inGameHelp[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
-            gameManager.playerKeysIndicators[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
+            GameManager.Instance.inGameHelp[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
+            GameManager.Instance.playerKeysIndicators[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
         }
     }
 
@@ -439,7 +441,7 @@ public class MenuManager : MonoBehaviour
         menuParametersSaveScriptableObject.menuFXVolume = menuFXVolume.slider.value;
         menuParametersSaveScriptableObject.fxVolume = fxVolume.slider.value;
         menuParametersSaveScriptableObject.voiceVolume = voiceVolume.slider.value;
-        menuParametersSaveScriptableObject.roundToWin = gameManager.scoreToWin;
+        menuParametersSaveScriptableObject.roundToWin = GameManager.Instance.scoreToWin;
     }
 
     public void SaveGameSettingsFromScriptableObject()

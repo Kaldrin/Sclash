@@ -17,7 +17,7 @@ public class IAScript : MonoBehaviour
         Medium,
         Hard
     }
-    float IAMultiplicator;
+    protected float IAMultiplicator;
 
     #region Variables
     public class Actions
@@ -33,28 +33,31 @@ public class IAScript : MonoBehaviour
     }
 
     [SerializeField]
-    Player attachedPlayer;
+    protected Player attachedPlayer;
     [SerializeField]
-    Player opponent;
+    public Player opponent
+    {
+        get { return GetPlayer(); }
+    }
 
     bool isWaiting;
-    bool isClose = true;
-    bool canAddWeight = true;
+    protected bool isClose = true;
+    protected bool canAddWeight = true;
 
     float rand = 0;
 
 
     public float DistanceTolerance = 3;
-    [SerializeField] float distBetweenPlayers;
+    [SerializeField] protected float distBetweenPlayers;
     float hitDistance = 2f;
 
     bool isChoosing = false;
     // Update rate when far 
     [SerializeField]
-    float normalRate = 0.25f;
+    protected float normalRate = 0.25f;
     // Update rate when on close combat
     [SerializeField]
-    float closeRate = 0.05f;
+    protected float closeRate = 0.05f;
 
     bool nextState;
     float stateTimer;
@@ -64,7 +67,7 @@ public class IAScript : MonoBehaviour
     public float timeToWait;
 
     [SerializeField]
-    List<Actions> actionsList = new List<Actions>()
+    public List<Actions> actionsList = new List<Actions>()
     {
         new Actions("Wait",1),
         new Actions("Attack",1),
@@ -77,18 +80,31 @@ public class IAScript : MonoBehaviour
     [SerializeField]
     int actionWeightSum;
 
-    [Header("Actions weights")]
-    public int wait;
-    public int attack,
-        parry,
-        pommel,
-        dashToward,
-        dashAway,
-        interruptAttack;
 
     #endregion
 
     #region Built-in methods
+
+    public Player GetPlayer()
+    {
+        Player[] entities = FindObjectsOfType<Player>();
+        foreach (Player s in entities)
+        {
+            if (s.GetType() == typeof(StoryPlayer))
+            {
+                if (!s.gameObject.GetComponent<IAScript>())
+                {
+                    return s;
+                }
+            }
+            else if (!s.gameObject.GetComponent<IAScript>().enabled)
+            {
+                return s;
+            }
+        }
+        return null;
+    }
+
     void Awake()
     {
         GameManager.Instance.ResetGameEvent += OnDisable;
@@ -119,10 +135,11 @@ public class IAScript : MonoBehaviour
 
     public void EnemyReady()
     {
+        Debug.Log("Enemy is ready");
         ready = true;
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.game && ready)
         {
@@ -147,10 +164,11 @@ public class IAScript : MonoBehaviour
             //RESET INTERRUPTION
             if (attachedPlayer.playerState != Player.STATE.charging)
             {
-                actionsList[actionsList.Count - 1].weight = 0;
+                //actionsList[actionsList.Count - 1].weight = 0;
+                foreach (Actions a in actionsList)
+                    if (a.name == "InterruptAttack")
+                        a.weight = 0;
             }
-
-            ShowWeight();
 
             //AI DRAW
             if (attachedPlayer.playerState == Player.STATE.sneathed && !isWaiting)
@@ -167,6 +185,7 @@ public class IAScript : MonoBehaviour
             if (opponent.playerState == Player.STATE.frozen)
                 return;
 
+            //WHILE THE PLAYER IS FAR, GET CLOSER
             if (distBetweenPlayers > 5)
             {
                 DisableWeight();
@@ -188,7 +207,7 @@ public class IAScript : MonoBehaviour
             }
 
 
-            //WHILE THE PLAYER IS FAR, GET CLOSER
+
             if (attachedPlayer.stamina <= 2)
                 ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //MOVE AWAY
             else
@@ -199,24 +218,30 @@ public class IAScript : MonoBehaviour
             if (canAddWeight)
                 AddWeights();
 
-            if (!isChoosing && attachedPlayer.playerState == Player.STATE.normal)
-            {
-                isChoosing = true;
-
-                string calledAct = ChooseState();
-
-                if (IADifficulty == Difficulty.Hard && calledAct == "Pommel" && hitDistance > 1)
-                {
-                    calledAct = "Wait";
-                }
-
-
-                StartCoroutine(WaitABit(calledAct, timeToWait, true));
-            }
+            SelectAction();
         }
     }
 
     #endregion
+
+    protected void SelectAction()
+    {
+        Debug.Log("Select Action");
+        if (!isChoosing && attachedPlayer.playerState == Player.STATE.normal)
+        {
+            isChoosing = true;
+
+            string calledAct = ChooseState();
+
+            if (IADifficulty == Difficulty.Hard && calledAct == "Pommel" && hitDistance > 1)
+            {
+                calledAct = "Wait";
+            }
+
+            Debug.Log("Calling " + calledAct);
+            Invoke(calledAct, timeToWait);
+        }
+    }
 
     public void SetDifficulty(Difficulty targetDifficulty)
     {
@@ -240,40 +265,17 @@ public class IAScript : MonoBehaviour
         }
     }
 
-    void ShowWeight()
-    {
-        wait = actionsList[0].weight;
-        attack = actionsList[1].weight;
-        parry = actionsList[2].weight;
-        pommel = actionsList[3].weight;
-        dashToward = actionsList[4].weight;
-        dashAway = actionsList[5].weight;
-        interruptAttack = actionsList[6].weight;
-    }
-
     void FindOpponent()
     {
-        foreach (Player p in FindObjectsOfType<Player>())
-        {
-            if (p != attachedPlayer)
-            {
-                opponent = p;
-                break;
-            }
-        }
+        Debug.Log("Looking for opponent");
 
-        if (opponent == null)
-        {
-            Debug.LogWarning("Couldn't find opponent !", gameObject);
-            StartCoroutine(WaitABit("FindOpponent", 0.12f));
-            return;
-        }
-
-        //Debug.Log("Opponent found !");
-        opponent.DrawnEvent += EnemyReady;
+        if (opponent.GetType() != typeof(StoryPlayer))
+            opponent.DrawnEvent += EnemyReady;
+        else
+            EnemyReady();
     }
 
-    void AddWeights()
+    protected void AddWeights()
     {
         if (distBetweenPlayers > 5 && attachedPlayer.stamina > 2)
             return;
@@ -412,12 +414,12 @@ public class IAScript : MonoBehaviour
         StartCoroutine(WaitABit("EnableWeight", 0.15f));
     }
 
-    void EnableWeight()
+    protected void EnableWeight()
     {
         canAddWeight = true;
     }
 
-    void DisableWeight()
+    protected void DisableWeight()
     {
         canAddWeight = false;
     }
@@ -453,9 +455,8 @@ public class IAScript : MonoBehaviour
         InputManager.Instance.playerInputs[attachedPlayer.playerNum].attack = true;
 
         float chargeTime = Random.Range(0f, 3f);
-        StartCoroutine(WaitABit("ReleaseAttack", chargeTime));
+        Invoke("ReleaseAttack", chargeTime);
         isChoosing = false;
-        //StartCoroutine(WaitAction(chargeTime + .01f));
     }
 
     void ReleaseAttack()
@@ -534,7 +535,7 @@ public class IAScript : MonoBehaviour
     }
     #endregion
 
-    void UpdateWeightSum()
+    protected void UpdateWeightSum()
     {
         //Calculate weight sum
         actionWeightSum = 0;
@@ -580,7 +581,7 @@ public class IAScript : MonoBehaviour
                 return;
             }
         }
-        Debug.LogError("Action " + actionName + " not found !");
+        Debug.LogWarning("Action " + actionName + " not found !");
     }
 
     void ResetWeight(string actionName)
@@ -614,7 +615,7 @@ public class IAScript : MonoBehaviour
     /// Wait for an amount of time and then Invoke a function. 
     /// Need to tell the name of the function, the amount of time you wan't to wait and if the function is on this script
     /// </summary>
-    IEnumerator WaitABit(string calledFunc = null, float t = 0, bool self = true)
+    protected IEnumerator WaitABit(string calledFunc = null, float t = 0, bool self = true)
     {
         //Debug.Log("Wait " + t + "sec and invoke " + calledFunc);
         yield return new WaitForSecondsRealtime(t);
@@ -655,7 +656,7 @@ public class IAScript : MonoBehaviour
         InputManager.Instance.playerInputs[attachedPlayer.playerNum].jump = false;
     }
 
-    void ManageMovementsInputs(int direction = 0)
+    protected void ManageMovementsInputs(int direction = 0)
     {
         attachedPlayer.rb.velocity = new Vector2(direction * attachedPlayer.actualMovementsSpeed, attachedPlayer.rb.velocity.y);
     }

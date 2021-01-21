@@ -7,7 +7,8 @@ using UnityEngine.Audio;
 // OPTIMIZED I THINK ?
 public class AudioManager : MonoBehaviour
 {
-    #region VARIABLES
+    public static AudioManager Instance;
+
     #region MANAGERS
     [Header("MANAGERS")]
     // Name of the GameManager to find it in the scene
@@ -90,11 +91,13 @@ public class AudioManager : MonoBehaviour
     #region SELECTED MUSIC, STEM, PHASE
     [Header("STEMS & PHASES")]
     [SerializeField] bool useRandomStemSelection = true;
-    [SerializeField] int maxPhase = 2,
+    [SerializeField]
+    int maxPhase = 2,
         scoreFromMaxScoreToAutoMaxPhase = 1;
     bool decrementCurrentPhaseAtNextLoop = false;
     [HideInInspector] public int currentlySelectedMusicIndex = 0;
-    [SerializeField] int currentMusicPhase = 0,
+    [SerializeField]
+    int currentMusicPhase = 0,
         currentMusicStem = 0,
         previousMusicStem = 0;
     #endregion
@@ -149,7 +152,6 @@ public class AudioManager : MonoBehaviour
     //[Header("CHEATS")]
     //[SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha8;
     //[SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha7;
-    #endregion
 
 
 
@@ -169,6 +171,7 @@ public class AudioManager : MonoBehaviour
     #region BASE FUNCTIONS
     private void Awake()
     {
+        Instance = this;
         GetSourcesDefaultVolume();
     }
 
@@ -201,7 +204,7 @@ public class AudioManager : MonoBehaviour
                     RunSmoothVolumesUpdates();
                     break;
 
-                   
+
                 case AUDIOSTATE.battle:                                                 // BATTLE
                     RunSmoothVolumesUpdates();
                     FadeStrikesVolumeObjectiveDependingOnPlayersDistance();
@@ -359,9 +362,9 @@ public class AudioManager : MonoBehaviour
 
     void DecreaseIntensityWithTime()
     {
-        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(GameManager.Instance.score[0], GameManager.Instance.score[1]));
 
-        if (currentBattleIntensity > 0 && (currentMaxScore < gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase))
+        if (currentBattleIntensity > 0 && (currentMaxScore < GameManager.Instance.scoreToWin - scoreFromMaxScoreToAutoMaxPhase))
             if (Time.time - decreaseBattleIntensityLoopStartTime >= decreaseBattleIntensityEveryDuration)
             {
                 lastBattleIntensityLevel = currentBattleIntensity;
@@ -375,10 +378,10 @@ public class AudioManager : MonoBehaviour
 
     void UpdateMusicDependingOnBattleIntensity()
     {
-        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(GameManager.Instance.score[0], GameManager.Instance.score[1]));
 
 
-        if (!(currentMaxScore >= gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase && gameManager.scoreToWin > scoreFromMaxScoreToAutoMaxPhase))
+        if (!(currentMaxScore >= GameManager.Instance.scoreToWin - scoreFromMaxScoreToAutoMaxPhase && GameManager.Instance.scoreToWin > scoreFromMaxScoreToAutoMaxPhase))
         {
             if (currentMusicPhase < phasesMainAudioSources.Count - 1)
             {
@@ -410,10 +413,10 @@ public class AudioManager : MonoBehaviour
         {
             bool isMaxPhase = false;
             SwitchStem(useRandomStemSelection);
-            int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+            int currentMaxScore = Mathf.FloorToInt(Mathf.Max(GameManager.Instance.score[0], GameManager.Instance.score[1]));
 
 
-            if (currentMaxScore >= gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase & gameManager.scoreToWin > scoreFromMaxScoreToAutoMaxPhase)
+            if (currentMaxScore >= GameManager.Instance.scoreToWin - scoreFromMaxScoreToAutoMaxPhase & GameManager.Instance.scoreToWin > scoreFromMaxScoreToAutoMaxPhase)
             {
                 if (currentMusicPhase < maxPhase)
                     phaseTransitionStemAudioSource.Play();
