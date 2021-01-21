@@ -335,7 +335,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1254970903
   m_SortingLayer: -6
-  m_SortingOrder: -4
+  m_SortingOrder: -5
   m_Sprite: {fileID: 21300000, guid: d8570eee008e9514495879777ed6ac6a, type: 3}
   m_Color: {r: 0.4811321, g: 0.43797925, b: 0.097588114, a: 1}
   m_FlipX: 0
@@ -1062,7 +1062,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.94, y: 8.18}
+    oldSize: {x: 3.9462109, y: 8.179999}
     newSize: {x: 1.82, y: 3.1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -7275,7 +7275,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 7
+      scalar: 5
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -9753,7 +9753,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 1
+    enabled: 0
     x:
       serializedVersion: 2
       minMaxState: 3
@@ -14627,7 +14627,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 1
+    enabled: 0
     x:
       serializedVersion: 2
       minMaxState: 3
@@ -19470,7 +19470,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 1
+    enabled: 0
     x:
       serializedVersion: 2
       minMaxState: 3
@@ -29434,7 +29434,7 @@ ParticleSystemRenderer:
   m_RenderAlignment: 1
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 1
+  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
@@ -35395,7 +35395,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 1
+    enabled: 0
     x:
       serializedVersion: 2
       minMaxState: 3
@@ -38679,7 +38679,7 @@ SpriteRenderer:
   m_SortingLayer: -6
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 5351de20892d53143bcbe2c1d384c7b3, type: 3}
-  m_Color: {r: 0.6792453, g: 0.5553293, b: 0.26593092, a: 0.89411765}
+  m_Color: {r: 0.6792453, g: 0.5553293, b: 0.26593092, a: 0.92156863}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -42593,7 +42593,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.94, y: 8.18}
+    oldSize: {x: 3.9462109, y: 8.179999}
     newSize: {x: 1.82, y: 3.1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -42922,7 +42922,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.94, y: 8.18}
+    oldSize: {x: 3.9462109, y: 8.179999}
     newSize: {x: 1.82, y: 3.1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -48405,7 +48405,7 @@ SpriteRenderer:
   m_SortingLayer: -6
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: fdd9465602bec90429141cd01d6819b7, type: 3}
-  m_Color: {r: 0.3773585, g: 0.37079138, b: 0.22961909, a: 0.69411767}
+  m_Color: {r: 0.3773585, g: 0.37079138, b: 0.22961909, a: 0.78431374}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
