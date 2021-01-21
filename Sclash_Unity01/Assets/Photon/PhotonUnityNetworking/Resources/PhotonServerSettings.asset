@@ -13,41 +13,39 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: 097965d8-18f9-4382-a284-59175b6adedb
-    AppIdChat: 65b499f0-1a16-4c37-8ad0-3cb5fc01e1e0
+    AppIdRealtime: 
+    AppIdChat: 
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
-    FixedRegion: eu
+    FixedRegion: 
     Server: 
     Port: 0
     Protocol: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  PunLogging: 2
+  PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - CheckDeath
   - ClickRpc
   - DestroyRpc
   - GetAllPlayers
+  - InitStaminaBreak
+  - N_TriggerStaminaRecupAnim
+  - Pommeled
   - ReleaseAttack
+  - ResetAllPlayerValuesForNextRound
+  - ResetPos
+  - SyncMap
+  - SyncRoundCount
+  - TriggerBasicDash
   - TriggerClash
   - TriggerDraw
-  - TriggerPommel
-  - TriggerParry
   - TriggerHit
-  - SyncMap
-  - SyncPlayerNums
-  - ApplyAttackHitbox
-  - Pommeled
-  - CheckDeath
-  - SyncRoundCount
-  - ResetPos
-  - N_TriggerStaminaRecupAnim
-  - ResetAllPlayerValuesForNextRound
-  - InitStaminaBreak
-  - TriggerBasicDash
+  - TriggerParry
+  - TriggerPommel
   DisableAutoOpenWizard: 1
-  ShowSettings: 1
+  ShowSettings: 0
