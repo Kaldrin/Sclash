@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using EzySlice;
 
@@ -17,8 +18,10 @@ public class StoryPlayer : Player
     [SerializeField]
     private GameObject debrisContainer;
 
-    void Awake()
+    new void Awake()
     {
+        base.Awake();
+
         if (debrisContainer == null)
             debrisContainer = GameObject.Find("DebrisContainer");
 
@@ -39,6 +42,10 @@ public class StoryPlayer : Player
 
     public override void FixedUpdate()
     {
+        Debug.Log(
+            controls.Duel.Horizontal.ReadValue<float>()
+        );
+
         base.FixedUpdate();
         if (playerIsAI)
             if (solo_iAScript == null)
@@ -47,13 +54,13 @@ public class StoryPlayer : Player
 
     public override void ManageChargeInput()
     {
-        if (playerIsAI)
+        /*if (playerIsAI)
         {
             //base.ManageChargeInput();
             return;
         }
 
-        if (InputManager.Instance.playerInputs[0].attack && canCharge)
+        if (canCharge)
         {
             if (stamina >= staminaCostForMoves)
             {
@@ -73,7 +80,9 @@ public class StoryPlayer : Player
             TriggerNotEnoughStaminaAnim(true);
 
         if (!InputManager.Instance.playerInputs[0].attack)
-            canCharge = true;
+            canCharge = true;*/
+
+        base.ManageChargeInput();
     }
 
     public override void ManageDashInput()
@@ -170,17 +179,17 @@ public class StoryPlayer : Player
         }
     }
 
-    public override void ManageMovementsInputs()
+    public override void ManageMovementsInputs(float velocity)
     {
         if (playerIsAI)
         {
-            base.ManageMovementsInputs();
+            base.ManageMovementsInputs(velocity);
             return;
         }
 
         rb.simulated = true;
 
-        rb.velocity = new Vector2(InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(velocity * actualMovementsSpeed, rb.velocity.y);
 
         if (Mathf.Abs(rb.velocity.x) > minSpeedForWalkFX && GameManager.Instance.gameState == GameManager.GAMESTATE.game && playerState == Player.STATE.normal)
         {

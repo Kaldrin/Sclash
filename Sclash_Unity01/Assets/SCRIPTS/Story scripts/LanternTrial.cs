@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class LanternTrial : MonoBehaviour
 {
@@ -20,10 +21,14 @@ public class LanternTrial : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+            DropLantern();
+
+        //OLD_INPUT
+        /*if (Input.GetKeyDown(KeyCode.T))
         {
             DropLantern();
-        }
+        }*/
     }
 
     private void DropLantern()

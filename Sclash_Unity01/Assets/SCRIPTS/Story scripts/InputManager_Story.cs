@@ -18,6 +18,7 @@ public class InputManager_Story : InputManager
 
     public override void Update()
     {
+        /*
         scoreInput = Input.GetButton("Score");
         submitInputUp = (submitInput && !Input.GetButton("Submit"));
         submitInput = Input.GetButton("Submit");
@@ -32,7 +33,7 @@ public class InputManager_Story : InputManager
         base.ManageAnyKeyInput(0);
         base.ManageReallyAnyKeyInput(0);
         base.ManageScoreInput(0);
-        base.ManagePauseInput(0);
+        base.ManagePauseInput(0);*/
     }
 
     public void AddInputs(int newAmount)

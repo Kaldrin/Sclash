@@ -110,10 +110,28 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-
+    PlayerControls controls;
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
+    private void Awake()
+    {
+        controls = new PlayerControls();
+
+        controls.Duel.Horizontal.performed += ctx => UpdateAnims(ctx.ReadValue<float>());
+        controls.Duel.Horizontal.canceled += ctx => UpdateAnims(0);
+    }
+
+    private void OnEnable()
+    {
+        controls.Duel.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Duel.Disable();
+    }
+
     private void Start()
     {
         animatorBaseSpeed = animator.speed;
@@ -126,8 +144,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
                 return;
 
 
-        if (InputManager.Instance.playerInputs.Length > playerScript.playerNum)
-            UpdateAnims(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
+        /*if (InputManager.Instance.playerInputs.Length > playerScript.playerNum)
+            UpdateAnims(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);*/
 
         UpdateWalkDirection();
         UpdateIdleStateDependingOnStamina(playerScript.stamina);

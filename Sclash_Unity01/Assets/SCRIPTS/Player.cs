@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 using Photon.Realtime;
 using Photon.Pun;
@@ -496,18 +497,43 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-
+    [SerializeField]
+    protected PlayerControls controls;
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    private void Awake()
+    protected void Awake()
     {
+        controls = new PlayerControls();
+
         // GET PLAYER CHARACTER CHANGE ANIMATOR (Because I always forget to add it back while editing the animations (Because I have to remove it, it conflicts with the main animator))
         if (spriteRenderer.gameObject.GetComponent<Animator>() == null)
             characterChanger.characterChangeAnimator = spriteRenderer.gameObject.AddComponent<Animator>();
         if (characterChanger.characterChangeAnimator != null && characterChangerAnimatorController != null && characterChanger.characterChangeAnimator.runtimeAnimatorController != characterChangerAnimatorController)
             characterChanger.characterChangeAnimator.runtimeAnimatorController = characterChangerAnimatorController;
+
+        //Movements
+        controls.Duel.Horizontal.performed += ctx => ManageMovementsInputs(ctx.ReadValue<float>());
+        controls.Duel.Horizontal.canceled += ctx => ManageMovementsInputs(0);
+
+        //Attack
+        controls.Duel.Attack.started += ctx => ManageChargeInput();
+        controls.Duel.Attack.canceled += ctx =>
+        {
+            canCharge = true;
+            ReleaseAttack();
+        };
+
+    }
+
+    private void OnEnable()
+    {
+        controls.Duel.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Duel.Disable();
     }
 
     public virtual void Start()
@@ -594,7 +620,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.normal:
                 ManageJumpInput();
-                ManageChargeInput();
+                //ManageChargeInput();
                 ManageDashInput();
                 ManagePommel();
                 ManageParryInput();
@@ -623,7 +649,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.canAttackAfterAttack:
                 ManageJumpInput();
-                ManageChargeInput();
+                //ManageChargeInput();
                 ManageDashInput();
                 ManagePommel();
                 ManageParryInput();
@@ -660,7 +686,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.dashing:
                 ManageDashInput();
-                ManageChargeInput();
+                //ManageChargeInput();
                 ManagePommel();
                 ManageParryInput();
                 ManageMaintainParryInput();
@@ -817,12 +843,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
-                ManageMovementsInputs();
+                //ManageMovementsInputs();
                 ManageOrientation();
                 break;
 
             case STATE.normal:                                                      // NORMAL
-                ManageMovementsInputs();
+                //ManageMovementsInputs();
                 ManageOrientation();
                 ManageStaminaRegen();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -830,7 +856,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.charging:                                                // CHARGING
-                ManageMovementsInputs();
+                //ManageMovementsInputs();
                 ManageStaminaRegen();
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -839,7 +865,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.attacking:                                               // ATTACKING
                 RunDash();
-                ManageMovementsInputs();
+                //ManageMovementsInputs();
                 if (hasFinishedAnim)
                 {
                     hasFinishedAnim = false;
@@ -946,13 +972,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.enemyKilled:                                     // ENEMY KILLED
-                ManageMovementsInputs();
+                //ManageMovementsInputs();
                 SetStaminaBarsOpacity(0);
                 playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
                 break;
 
             case STATE.enemyKilledEndMatch:                                     // ENEMY KILLED END MATCH
-                ManageMovementsInputs();
+                //ManageMovementsInputs();
                 SetStaminaBarsOpacity(0);
                 break;
 
@@ -1877,9 +1903,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region MOVEMENTS
     // MOVEMENTS
-    public virtual void ManageMovementsInputs()
+    public virtual void ManageMovementsInputs(float velocity)
     {
-
+        Debug.Log(velocity);
         // The player move if they can in their state
         if (rb.simulated == false)
             rb.simulated = true;
@@ -1890,12 +1916,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 if (photonView.IsMine)
                 {
-                    rb.velocity = new Vector2(InputManager.Instance.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+                    rb.velocity = new Vector2(velocity * actualMovementsSpeed, rb.velocity.y);
                 }
             }
             else
             {
-                rb.velocity = new Vector2(InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+                rb.velocity = new Vector2(velocity * actualMovementsSpeed, rb.velocity.y);
             }
         }
 
@@ -2117,7 +2143,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             // Player presses attack button
-            if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
+            //OLD_INPUT
+            //if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
+            if (canCharge)
             {
                 if (stamina >= staminaCostForMoves)
                 {
@@ -2146,12 +2174,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
 
             // ANIMATION STAMINA
-            if (InputManager.Instance.playerInputs[playerNum].attackDown && canCharge && stamina <= staminaCostForMoves)
+            if (canCharge && stamina <= staminaCostForMoves)
                 TriggerNotEnoughStaminaAnim(true);
-
-            // Player releases attack button
-            if (!InputManager.Instance.playerInputs[playerNum].attack)
-                canCharge = true;
         }
     }
 
