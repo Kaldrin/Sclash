@@ -42,10 +42,6 @@ public class StoryPlayer : Player
 
     public override void FixedUpdate()
     {
-        Debug.Log(
-            controls.Duel.Horizontal.ReadValue<float>()
-        );
-
         base.FixedUpdate();
         if (playerIsAI)
             if (solo_iAScript == null)
@@ -179,17 +175,19 @@ public class StoryPlayer : Player
         }
     }
 
-    public override void ManageMovementsInputs(float velocity)
+    public override void ManageMovementsInputs()
     {
         if (playerIsAI)
         {
-            base.ManageMovementsInputs(velocity);
+            base.ManageMovementsInputs();
             return;
         }
 
+        float v = controls.Duel.Horizontal.ReadValue<float>();
+
         rb.simulated = true;
 
-        rb.velocity = new Vector2(velocity * actualMovementsSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(v * actualMovementsSpeed, rb.velocity.y);
 
         if (Mathf.Abs(rb.velocity.x) > minSpeedForWalkFX && GameManager.Instance.gameState == GameManager.GAMESTATE.game && playerState == Player.STATE.normal)
         {

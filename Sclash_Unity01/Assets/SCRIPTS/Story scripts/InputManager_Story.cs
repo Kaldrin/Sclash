@@ -11,8 +11,10 @@ public class InputManager_Story : InputManager
         playerInputs = new PlayerInputs[1];
     }
 
-    void Awake()
+    new void Awake()
     {
+        base.Awake();
+
         Instance = Instance_Solo = this;
     }
 

@@ -117,9 +117,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     private void Awake()
     {
         controls = new PlayerControls();
-
-        controls.Duel.Horizontal.performed += ctx => UpdateAnims(ctx.ReadValue<float>());
-        controls.Duel.Horizontal.canceled += ctx => UpdateAnims(0);
     }
 
     private void OnEnable()
@@ -144,8 +141,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
                 return;
 
 
-        /*if (InputManager.Instance.playerInputs.Length > playerScript.playerNum)
-            UpdateAnims(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);*/
+        //if (InputManager.Instance.playerInputs.Length > playerScript.playerNum)
+        //UpdateAnims(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal); 
+        UpdateAnims(controls.Duel.Horizontal.ReadValue<float>());
 
         UpdateWalkDirection();
         UpdateIdleStateDependingOnStamina(playerScript.stamina);
