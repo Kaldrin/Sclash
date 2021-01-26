@@ -503,7 +503,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region BASE FUNCTIONS
     protected void Awake()
     {
-        controls = new PlayerControls();
+        controls = GameManager.Instance.Controls;
 
         // GET PLAYER CHARACTER CHANGE ANIMATOR (Because I always forget to add it back while editing the animations (Because I have to remove it, it conflicts with the main animator))
         if (spriteRenderer.gameObject.GetComponent<Animator>() == null)

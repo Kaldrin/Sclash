@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 // This script, unique in the scene on the manager, manages the inputs of the player, it is a useful bridge between the input system and the player script. Heavily used by a lot of scripts
 // OPTIMIZED ?
@@ -84,26 +85,44 @@ public class InputManager : MonoBehaviour
 
     protected PlayerControls controls;
 
+    [SerializeField]
+    PlayerInput[] inputs = new PlayerInput[2];
+
     #region FUNCTIONS
     #region BASE FUNCTIONS
+
+    private void OnPlayerJoined(PlayerInput playerInput)
+    {
+        //Assign controller to player
+        if (inputs[0] == null)
+            inputs[0] = playerInput;
+        else
+            inputs[1] = playerInput;
+    }
+
     protected void Awake()
     {
         Instance = this;
 
-        controls = new PlayerControls();
+        controls = GameManager.Instance.Controls;
 
         //Show score
-        controls.Duel.Score.performed += ctx => scoreInput = true;
+        /*controls.Duel.Score.performed += ctx => scoreInput = true;
         controls.Duel.Score.canceled += ctx => scoreInput = false;
 
         //Manage horizontal input            
         controls.Duel.Horizontal.performed += ctx => { playerInputs[0].horizontal = ctx.ReadValue<float>(); };
         controls.Duel.Horizontal.canceled += ctx => { playerInputs[0].horizontal = 0; };
 
+        //Manage vertical input
+        controls.Duel.Vertical.performed += ctx => { playerInputs[0].vertical = ctx.ReadValue<float>(); };
+        controls.Duel.Vertical.canceled += ctx => { playerInputs[0].vertical = 0; };
+
         //Manage Attack inputs
         controls.Duel.Attack.started += ctx => { playerInputs[0].attack = true; playerInputs[0].attackDown = true; };
         controls.Duel.Attack.performed += ctx => { playerInputs[0].attackDown = false; };
         controls.Duel.Attack.canceled += ctx => { playerInputs[0].attack = false; playerInputs[0].attackDown = false; };
+
 
         //Manage pommel inputs
         controls.Duel.Pommel.started += ctx => { playerInputs[0].kick = true; };
@@ -122,7 +141,14 @@ public class InputManager : MonoBehaviour
 
         //Manage Jump inputs
         controls.Duel.Jump.started += ctx => { playerInputs[0].jump = true; };
-        controls.Duel.Jump.canceled += ctx => { playerInputs[0].jump = false; };
+        controls.Duel.Jump.canceled += ctx => { playerInputs[0].jump = false; };*/
+
+        //Manage sneath draw inputs
+        /*Disabled for now
+        controls.Duel.SneathDraw.started += ctx => { playerInputs[0].battleSneathDraw = true; };
+        controls.Duel.SneathDraw.canceled += ctx => { playerInputs[0].battleSneathDraw = false; };
+        */
+
     }
 
     private void OnEnable()
@@ -145,14 +171,14 @@ public class InputManager : MonoBehaviour
             //scoreInput = Input.GetButton("Score");
 
             // Menu input
-            submitInputUp = (submitInput && !Input.GetButton("Submit"));
-            submitInput = Input.GetButton("Submit");
+            submitInputUp = (submitInput && !controls.Menu.Submit.triggered);
+            submitInput = controls.Menu.Submit.triggered;
 
 
             // Players inputs
             for (int i = 0; i < playerInputs.Length; i++)
             {
-                ManageCharacSelectInput(i);
+                // ManageCharacSelectInput(i);
 
                 if (GameManager.Instance.playersList.Count > 0)
                     if (GameManager.Instance.playersList[i] != null)
@@ -163,19 +189,19 @@ public class InputManager : MonoBehaviour
 
 
                 //ManageHorizontalInput(i);
-                ManageVerticalInput(i);
+                //ManageVerticalInput(i);
                 //ManageDashInput(i);
                 //ManageKickInput(i);
                 //ManageJumpInput(i);
                 //ManageParryInput(i);
-                ManageBattleSneathDrawInput(i);
-                ManageAttackInput(i);
+                //ManageBattleSneathDrawInput(i);
+                //ManageAttackInput(i);
 
-                ManageAnyKeyInput(i);
-                ManageReallyAnyKeyInput(i);
+                //ManageAnyKeyInput(i);
+                //ManageReallyAnyKeyInput(i);
 
-                ManageScoreInput(i);
-                ManagePauseInput(i);
+                //ManageScoreInput(i);
+                //ManagePauseInput(i);
             }
         }
     }
@@ -238,7 +264,7 @@ public class InputManager : MonoBehaviour
     #region VERTICAL
     protected void ManageVerticalInput(int i)
     {
-        playerInputs[i].vertical = Input.GetAxis(verticalAxis + i);
+        //playerInputs[i].vertical = Input.GetAxis(verticalAxis + i);
     }
     #endregion
 
@@ -262,7 +288,7 @@ public class InputManager : MonoBehaviour
 
     void ManageBattleSneathDrawInput(int i)
     {
-        playerInputs[i].battleSneathDraw = Input.GetButton(battleSneathDrawAxis + i);
+        //playerInputs[i].battleSneathDraw = Input.GetButton(battleSneathDrawAxis + i);
     }
     #endregion
 

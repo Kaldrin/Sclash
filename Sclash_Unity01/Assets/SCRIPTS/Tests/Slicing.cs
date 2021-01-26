@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using EzySlice;
+using UnityEngine.InputSystem;
 
 public class Slicing : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class Slicing : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Keyboard.current.wKey.wasPressedThisFrame)
         {
             plane.transform.eulerAngles = new Vector3(0, 0, Random.Range(-30f, 30f));
 

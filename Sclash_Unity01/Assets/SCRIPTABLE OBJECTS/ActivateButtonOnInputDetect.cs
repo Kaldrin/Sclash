@@ -14,21 +14,25 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
 
 
 
-
+    PlayerControls controls;
+    private void Start()
+    {
+        controls = GameManager.Instance.Controls;
+    }
 
 
     // Update is called once per frame
     void Update()
     {
-        if (enabled && isActiveAndEnabled && Mathf.Abs(Input.GetAxis(axisToCheck)) > 0.1f)
+        if (enabled && isActiveAndEnabled && Mathf.Abs(controls.Menu.Menusecondary.ReadValue<float>()) > 0.1f)
         {
             if (superiorOrInferior)
             {
-                if (Input.GetAxis(axisToCheck) < valueToCheck)
+                if (controls.Menu.Menusecondary.ReadValue<float>() < valueToCheck)
                     hasBeenChecked = false;
 
 
-                if (Input.GetAxis(axisToCheck) > valueToCheck && !hasBeenChecked)
+                if (controls.Menu.Menusecondary.ReadValue<float>() > valueToCheck && !hasBeenChecked)
                 {
                     hasBeenChecked = true;
                     buttonToActivate.onClick.Invoke();
@@ -36,11 +40,11 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
             }
             else
             {
-                if (Input.GetAxis(axisToCheck) > valueToCheck)
+                if (controls.Menu.Menusecondary.ReadValue<float>() > valueToCheck)
                     hasBeenChecked = false;
 
 
-                if (Input.GetAxis(axisToCheck) < valueToCheck && !hasBeenChecked)
+                if (controls.Menu.Menusecondary.ReadValue<float>() < valueToCheck && !hasBeenChecked)
                 {
                     hasBeenChecked = true;
                     buttonToActivate.onClick.Invoke();

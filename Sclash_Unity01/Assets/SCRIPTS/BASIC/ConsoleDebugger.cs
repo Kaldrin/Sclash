@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.InputSystem;
 
 public class ConsoleDebugger : MonoBehaviour
 {
@@ -93,7 +94,7 @@ public class ConsoleDebugger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Quote))
+        if (Keyboard.current.quoteKey.wasPressedThisFrame)
         {
             show = !show;
         }

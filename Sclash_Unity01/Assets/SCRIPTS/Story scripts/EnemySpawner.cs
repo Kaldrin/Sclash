@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Keyboard.current.pKey.wasPressedThisFrame)
         {
             SpawnEnemy();
         }

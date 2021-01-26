@@ -14,7 +14,7 @@ public class MenuBrowser2D : MonoBehaviour
     #region VARIABLES
     [Header("MANAGERS")]
     [SerializeField] RumbleManager rumbleManager = null;
-    
+
 
 
     #region BROWSING
@@ -112,23 +112,24 @@ public class MenuBrowser2D : MonoBehaviour
 
 
 
-
-
+    PlayerControls controls;
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
     void Awake()
     {
+        controls = GameManager.Instance.Controls;
+
         FixButtonColorUsageList();
 
 
         // BROWSING DIRECTION
         if (invertVerticalAxis)
-            horizontalDirection = - horizontalDirection;
+            horizontalDirection = -horizontalDirection;
 
 
         if (invertVerticalAxis)
-            verticalDirection = - verticalDirection;
+            verticalDirection = -verticalDirection;
 
 
         // SWAP VERTICAL / HORIZONTAL AXIS TO BROWSE
@@ -140,6 +141,10 @@ public class MenuBrowser2D : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        controls.Menu.Disable();
+    }
 
     void Start()
     {
@@ -154,31 +159,33 @@ public class MenuBrowser2D : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
+        Debug.Log(controls.Menu.Navigate.ReadValue<Vector2>());
         if (enabled && isActiveAndEnabled)
         {
             if (elements2D.Length > 0)
             {
+
                 // H AXIS
                 // Detects H axis let go
-                if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
+                if (Mathf.Abs(controls.Menu.Navigate.ReadValue<Vector2>().x) <= horizontalRestZone)
                     hAxisInUse = false;
 
 
                 // Move sliders with horizontal
                 if (!hAxisInUse)
                 {
-                    if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone)
+                    if (controls.Menu.Navigate.ReadValue<Vector2>().x > horizontalInputDetectionZone)
                     {
                         HorizontalBrowse(1);
                         hAxisInUse = true;
                     }
-                    else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone)
+                    else if (controls.Menu.Navigate.ReadValue<Vector2>().x < -horizontalInputDetectionZone)
                     {
                         HorizontalBrowse(-1);
                         hAxisInUse = true;
                     }
                 }
-            
+
 
 
 
@@ -188,20 +195,20 @@ public class MenuBrowser2D : MonoBehaviour
 
                 // V AXIS
                 // Detects V axis let go
-                if (Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
+                if (Mathf.Abs(controls.Menu.Navigate.ReadValue<Vector2>().y) <= verticalInputRestZone)
                     vAxisInUse = false;
 
 
                 if (!vAxisInUse)
                 {
                     // Detects positive V axis input
-                    if (Input.GetAxis(verticalAxis) > verticalInputDetectionZone)
+                    if (controls.Menu.Navigate.ReadValue<Vector2>().y > verticalInputDetectionZone)
                     {
                         VerticalBrowse(1);
                         vAxisInUse = true;
                     }
                     // Detects negative V axis input
-                    else if (Input.GetAxis(verticalAxis) < -verticalInputDetectionZone)
+                    else if (controls.Menu.Navigate.ReadValue<Vector2>().y < -verticalInputDetectionZone)
                     {
                         VerticalBrowse(-1);
                         vAxisInUse = true;
@@ -211,8 +218,8 @@ public class MenuBrowser2D : MonoBehaviour
 
 
             // BACK
-            if (canBack && Input.GetButtonUp(backButton))
-                    backElement.GetComponent<Button>().onClick.Invoke();
+            if (canBack && controls.Menu.Back.triggered)
+                backElement.GetComponent<Button>().onClick.Invoke();
         }
     }
 
@@ -220,6 +227,8 @@ public class MenuBrowser2D : MonoBehaviour
     // OnEnable is called each time the object is set from inactive to active
     void OnEnable()
     {
+
+        controls.Menu.Enable();
         if (callSpecialElementWhenEnabled && enabledSpecialElement != null)
             enabledSpecialElement.onClick.Invoke();
 
@@ -315,7 +324,7 @@ public class MenuBrowser2D : MonoBehaviour
                 XIndex = 0;
             }
             else
-                XIndex = elements2D[YIndex].line.Length - 1; 
+                XIndex = elements2D[YIndex].line.Length - 1;
         }
 
 
@@ -398,7 +407,7 @@ public class MenuBrowser2D : MonoBehaviour
                 XIndex = FindObjectIndexInGameObjectArray(hoveredObject, elements2D[i].line);
                 YIndex = i;
             }
-        
+
 
         if (elements2D[YIndex].line[XIndex].GetComponent<Button>() || elements2D[YIndex].line[XIndex].GetComponent<TMP_InputField>())
             Select(true);

@@ -28,8 +28,6 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The MapLoader script instance reference")]
     [SerializeField] public MapLoader mapLoader = null;
 
-    protected InputManager inputManager = null;
-
     [Tooltip("The CameraShake scripts instances references in the scene")]
     [SerializeField]
     public CameraShake
@@ -286,8 +284,11 @@ public class GameManager : MonoBehaviourPun
 
 
 
-
-
+    public PlayerControls Controls
+    {
+        get { return _controls; }
+    }
+    protected PlayerControls _controls;
 
 
     #region FUNCTIONS
@@ -295,7 +296,7 @@ public class GameManager : MonoBehaviourPun
     public virtual void Awake()                                        // AWAKE
     {
         Instance = this;
-        inputManager = InputManager.Instance;
+        _controls = new PlayerControls();
 
         // DEMO
         if (demo)
@@ -308,13 +309,21 @@ public class GameManager : MonoBehaviourPun
         }
     }
 
+
+    private void OnEnable()
+    {
+        _controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _controls.Disable();
+    }
+
     // Start is called before the first frame update
     public virtual void Start()
     {
-        if (inputManager == null)
-            inputManager = InputManager.Instance;
-
-        inputManager.P2Input += ConnectPlayer2;
+        InputManager.Instance.P2Input += ConnectPlayer2;
 
         // Set variables
         score = new Vector2(0, 0);
@@ -482,7 +491,7 @@ public class GameManager : MonoBehaviourPun
             Destroy(playersList[1].GetComponent<IAScript>());
         }
 
-        inputManager.P2Input -= ConnectPlayer2;
+        InputManager.Instance.P2Input -= ConnectPlayer2;
     }
 
     // Begins the StartMatch coroutine, this function is called by the menu button Sclash
@@ -682,6 +691,7 @@ public class GameManager : MonoBehaviourPun
             Player playerScript = null;
 
             playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            playersList[i].gameObject.name = "Player" + (i + 1);
             //IAScript ia = null;
             /*
     #if UNITY_EDITOR
@@ -1077,7 +1087,7 @@ public class GameManager : MonoBehaviourPun
 
     private void OnMouseDown()
     {
-        
+
     }
 
 
@@ -1457,7 +1467,7 @@ public class GameManager : MonoBehaviourPun
     {
         int nextStageIndex = mapLoader.currentMapIndex;
         int loopCount = 0;
-        
+
 
         if (!demo)
         {
@@ -1540,7 +1550,7 @@ public class GameManager : MonoBehaviourPun
                     }
             }
         }
-        
+
 
         return nextStageIndex;
     }

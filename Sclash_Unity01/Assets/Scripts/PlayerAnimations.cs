@@ -116,15 +116,15 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     #region BASE FUNCTIONS
     private void Awake()
     {
-        controls = new PlayerControls();
+        controls = GameManager.Instance.Controls;
     }
 
-    private void OnEnable()
+    new private void OnEnable()
     {
         controls.Duel.Enable();
     }
 
-    private void OnDisable()
+    new private void OnDisable()
     {
         controls.Duel.Disable();
     }

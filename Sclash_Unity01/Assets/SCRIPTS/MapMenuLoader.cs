@@ -84,12 +84,15 @@ public class MapMenuLoader : MonoBehaviour
 
 
 
+    PlayerControls controls;
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
     // Start is called before the first frame update
     void Start()
     {
+        controls = GameManager.Instance.Controls;
+
         ChangeStageMode(0);
     }
 
@@ -118,17 +121,17 @@ public class MapMenuLoader : MonoBehaviour
     #region STAGE MODE
     void ManageStageModeChange()
     {
-        if (canInputModeChange && hasFinishedChangingMode && Mathf.Abs(Input.GetAxis(stageModeSwitchAxis)) > stageModeSwitchAxisDeadzone)
+        if (canInputModeChange && hasFinishedChangingMode && Mathf.Abs(controls.Menu.Menutriggers.ReadValue<float>()) > stageModeSwitchAxisDeadzone)
         {
             canInputModeChange = false;
-            
 
-            if (Input.GetAxis(stageModeSwitchAxis) < -stageModeSwitchAxisDeadzone)
+
+            if (controls.Menu.Menutriggers.ReadValue<float>() < -stageModeSwitchAxisDeadzone)
                 ChangeStageMode(-1);
-            else if (Input.GetAxis(stageModeSwitchAxis) > -stageModeSwitchAxisDeadzone)
+            else if (controls.Menu.Menutriggers.ReadValue<float>() > -stageModeSwitchAxisDeadzone)
                 ChangeStageMode(1);
         }
-        else if (Mathf.Abs(Input.GetAxis(stageModeSwitchAxis)) < stageModeSwitchAxisDeadzone)
+        else if (Mathf.Abs(controls.Menu.Menutriggers.ReadValue<float>()) < stageModeSwitchAxisDeadzone)
             canInputModeChange = true;
     }
 

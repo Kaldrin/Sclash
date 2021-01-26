@@ -1,0 +1,256 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &83232066514886214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8152234578319473099}
+  - component: {fileID: 3053598135626648823}
+  - component: {fileID: 388678509469647181}
+  m_Layer: 0
+  m_Name: PlayerInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8152234578319473099
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83232066514886214}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 189.13525, y: 307.79822, z: -677.79456}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3053598135626648823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83232066514886214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45aaf8a7de93cbd4e94a81bf5a443b23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_playerIndex: 0
+--- !u!114 &388678509469647181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83232066514886214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 8a06502bc856c694aa39a49606369654,
+    type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnHorizontal
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ecfc9c6c-ee25-42a3-85ae-aa53222a36c4
+    m_ActionName: Duel/Horizontal[/Keyboard/a,/Keyboard/d,/DualShock4GamepadHID/leftStick/x,/DualShock4GamepadHID/leftStick/x]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnVertical
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: eeaff253-a1b1-4a0e-affd-149ab803cb59
+    m_ActionName: Duel/Vertical[/Keyboard/s,/Keyboard/w,/DualShock4GamepadHID/leftStick/y,/DualShock4GamepadHID/leftStick/y]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f0f20444-dae2-470f-911b-fef06aa160fa
+    m_ActionName: Duel/Attack[/Keyboard/f,/DualShock4GamepadHID/buttonWest,/DualShock4GamepadHID/buttonWest,/DualShock4GamepadHID/rightShoulder,/DualShock4GamepadHID/rightShoulder]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnParry
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 8ecf76c9-9aef-41d2-9509-3e8679e70749
+    m_ActionName: Duel/Parry[/Keyboard/g,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID/buttonSouth,/DualShock4GamepadHID/buttonSouth,/DualShock4GamepadHID/leftShoulder,/DualShock4GamepadHID/leftShoulder]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnPommel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 675835d2-57b9-4aa4-a42f-20b6fb465d5f
+    m_ActionName: Duel/Pommel[/DualShock4GamepadHID/buttonNorth,/DualShock4GamepadHID/buttonNorth,/Keyboard/h]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnDash
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5c56dba8-13ec-4540-aab0-9d81aa5f5195
+    m_ActionName: Duel/Dash[/DualShock4GamepadHID/rightStick/x,/DualShock4GamepadHID/rightStick/x,/DualShock4GamepadHID/leftStick/x,/DualShock4GamepadHID/leftStick/x,/Keyboard/q,/Keyboard/e,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnAnyKey
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 037904d4-99ff-4089-ad00-cc2017560d3e
+    m_ActionName: Duel/AnyKey[/Keyboard/anyKey]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnJump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 7bb3c27c-d4d9-40a4-9735-044e185edc04
+    m_ActionName: Duel/Jump[/Keyboard/w,/DualShock4GamepadHID/leftStick/up,/DualShock4GamepadHID/leftStick/up]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnScore
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 46a42fcd-33e5-40cf-ba8b-5b65eba8418f
+    m_ActionName: Duel/Score[/Keyboard/tab,/DualShock4GamepadHID/select,/DualShock4GamepadHID/select]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnPause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4d5ec2e8-df09-4527-a6db-f06ad59617e2
+    m_ActionName: Duel/Pause[/Keyboard/escape,/DualShock4GamepadHID/start,/DualShock4GamepadHID/start]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 006318a6-baf0-44e8-9680-be652cf9ee67
+    m_ActionName: Duel/Sneath/Draw[/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID/buttonEast,/Keyboard/j]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: fac4db56-8fd7-4991-aa85-5533d7d43de0
+    m_ActionName: Menu/Submit[/DualShock4GamepadHID/buttonSouth,/DualShock4GamepadHID/buttonSouth,/Keyboard/enter,/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bc81dab4-18c9-4221-848d-e1d343c9ca4d
+    m_ActionName: Menu/Back[/Keyboard/escape,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bddede42-e2b7-4089-8c5c-2d3316dca9ad
+    m_ActionName: Menu/Cancel[/Keyboard/escape,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7edbba51-8092-4010-9d90-e4e3b53f6fe3
+    m_ActionName: Menu/Navigate[/DualShock4GamepadHID/leftStick/up,/DualShock4GamepadHID/leftStick/up,/DualShock4GamepadHID/rightStick/up,/DualShock4GamepadHID/rightStick/up,/DualShock4GamepadHID/leftStick/down,/DualShock4GamepadHID/leftStick/down,/DualShock4GamepadHID/rightStick/down,/DualShock4GamepadHID/rightStick/down,/DualShock4GamepadHID/leftStick/left,/DualShock4GamepadHID/leftStick/left,/DualShock4GamepadHID/rightStick/left,/DualShock4GamepadHID/rightStick/left,/DualShock4GamepadHID/leftStick/right,/DualShock4GamepadHID/leftStick/right,/DualShock4GamepadHID/rightStick/right,/DualShock4GamepadHID/rightStick/right,/DualShock4GamepadHID/dpad,/DualShock4GamepadHID/dpad,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0de4fb2d-1f81-4cf5-9ebb-2d31d0f719a6
+    m_ActionName: Menu/Menu triggers[/DualShock4GamepadHID/leftShoulder,/DualShock4GamepadHID/leftShoulder,/DualShock4GamepadHID/rightShoulder,/DualShock4GamepadHID/rightShoulder]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8df4e28f-e17b-46f2-adf6-0f6634a1d006
+    m_ActionName: Menu/Menu secondary[/DualShock4GamepadHID/buttonWest,/DualShock4GamepadHID/buttonWest]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Duel
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}

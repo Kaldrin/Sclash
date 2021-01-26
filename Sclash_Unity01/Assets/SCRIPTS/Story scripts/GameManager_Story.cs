@@ -20,6 +20,7 @@ public class GameManager_Story : GameManager
     public override void Awake()
     {
         Instance = this;
+        _controls = new PlayerControls();
     }
 
     public override void Start()

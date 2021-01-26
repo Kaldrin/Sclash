@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class AsynTest : MonoBehaviour
 {
     void Update()
     {
         // Press the space key to start coroutine
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Keyboard.current.spaceKey.isPressed)
         {
             // Use a coroutine to load the Scene in the background
             Debug.Log("Start async load");
             StartCoroutine(LoadYourAsyncScene());
-            
+
         }
     }
 

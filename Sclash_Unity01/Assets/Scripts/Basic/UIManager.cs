@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class UIManager : MonoBehaviour {
+public class UIManager : MonoBehaviour
+{
 
-
+    PlayerControls controls;
     Animator uiAnimator;
 
 
@@ -43,18 +45,35 @@ public class UIManager : MonoBehaviour {
 
     // BASE FUNCTIONS
     // Use this for initialization
-    void Start () {
+    private void Awake()
+    {
+        controls = GameManager.Instance.Controls;
+    }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
+
+    void Start()
+    {
         uiAnimator = GetComponent<Animator>();
         lockCursor(cursorLocked);
     }
-	
-	// Update is called once per graphic frame
-	void Update () {
-		if (Input.GetKeyUp(pauseKey))
+
+    // Update is called once per graphic frame
+    void Update()
+    {
+        if (controls.Duel.Pause.triggered)
         {
             Pause();
         }
-	}
+    }
 
 
 
@@ -75,7 +94,7 @@ public class UIManager : MonoBehaviour {
         {
             uiAnimator.SetBool("Pause", true);
             freezeObjects(false);
-            lockCursor(false);  
+            lockCursor(false);
             callFunctionsOnPause();
         }
     }

@@ -150,8 +150,8 @@ public class SceneManage : MonoBehaviour
 
         for (int i = 0; i < keys.Length; i++)
         {
-            if (!Input.GetKey(keys[i]))
-                notPressed = true;
+            // if (!Input.GetKey(keys[i]))
+            notPressed = true;
         }
 
 
