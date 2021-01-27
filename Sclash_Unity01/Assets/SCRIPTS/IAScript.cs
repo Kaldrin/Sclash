@@ -91,7 +91,8 @@ public class IAScript : MonoBehaviour
     #region Built-in methods
     void Awake()
     {
-        GameManager.Instance.ResetGameEvent += OnDisable;
+        if (GameManager.Instance != null)
+            GameManager.Instance.ResetGameEvent += OnDisable;
     }
 
     void OnEnable()

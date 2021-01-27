@@ -107,6 +107,7 @@ public class MapLoader : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
+        // POST PROCESS
         // Blends last and current stages post process volumes profiles for smooth transition
         if (enabled && cameraPostProcessVolume.enabled)
         {
@@ -159,6 +160,7 @@ public class MapLoader : MonoBehaviour
 
 
 
+
     void SetRemoteVariables(ConfigResponse response) // Get remote config variables
     {
         season = ConfigManager.appConfig.GetInt("season");
@@ -182,8 +184,6 @@ public class MapLoader : MonoBehaviour
                 gameManager.playersList[i].GetComponent<CharacterChanger>().charactersDatabase = gameManager.christmasCharactersData;
                 gameManager.playersList[i].GetComponent<CharacterChanger>().masksDatabase = gameManager.christmasMasksDatabase;
                 gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase = gameManager.christmasWeaponsDatabase;
-                //gameManager.playersList[i].GetComponent<CharacterChanger>().weapon.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase.weaponsList[1].sprite;
-
             }
         }
 
@@ -278,6 +278,7 @@ public class MapLoader : MonoBehaviour
             currentMap = Instantiate(mapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
         currentMapIndex = mapIndex;
 
+        
 
 
         // POST PROCESS
@@ -294,7 +295,12 @@ public class MapLoader : MonoBehaviour
 
 
         // AUDIO
-        audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[currentMapIndex].musicIndex);
+        if (special)
+            audioManager.ChangeSelectedMusicIndex(specialMapsData.stagesLists[currentMapIndex].musicIndex);
+        else
+            audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[currentMapIndex].musicIndex);
+
+
 
 
         // SAVES
@@ -363,6 +369,10 @@ public class MapLoader : MonoBehaviour
             gameManager.roundTransitionLeavesFX.gameObject.SetActive(true);
             gameManager.roundTransitionLeavesFX.Play();
             canLoadNewMap = false;
+
+            // MUSIC
+            audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[index].musicIndex);
+
 
 
             yield return new WaitForSeconds(1.5f);

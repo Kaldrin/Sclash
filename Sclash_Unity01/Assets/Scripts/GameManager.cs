@@ -235,6 +235,8 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] MenuBrowser mainMenuBrowser = null;
     [SerializeField] GameObject stagesButton = null;
     [SerializeField] GameObject demoStagesButton = null;
+    [SerializeField] GameObject storyButton = null;
+    [SerializeField] GameObject demoStoryButton = null;
     [SerializeField] public CharactersDatabase demoCharactersData = null;
     [SerializeField] public CharactersDatabase christmasCharactersData = null;
     [SerializeField] public MasksDatabase demoMasksDatabase = null;
@@ -298,8 +300,11 @@ public class GameManager : MonoBehaviourPun
         {
             demoMark.SetActive(true);
             demoStagesButton.SetActive(true);
+            demoStoryButton.SetActive(true);
             mainMenuBrowser.elements[2] = demoStagesButton;
             stagesButton.SetActive(false);
+            storyButton.SetActive(false);
+            mainMenuBrowser.elements[4] = demoStoryButton;
             charactersData = demoCharactersData;
         }
     }
@@ -1156,7 +1161,7 @@ public class GameManager : MonoBehaviourPun
         if (on)
         {
             // Deactivates background elements for only orange color
-            /*
+            /* DONT DELETE
             for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
                 mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
                 */
@@ -1203,8 +1208,8 @@ public class GameManager : MonoBehaviourPun
                 {
                     try
                     {
-                        // Store original color
-                        originalMeshRenderersColors.Add(meshRenderers[i].material.color);
+                        // Store original color DONT DELETE
+                        //originalMeshRenderersColors.Add(meshRenderers[i].material.color);
                         // Set black
                         meshRenderers[i].material.color = Color.black;
                     }
@@ -1252,28 +1257,28 @@ public class GameManager : MonoBehaviourPun
         }
         else
         {
+            
             // RESET ALL
             // SPRITES
+            
             if (spriteRenderers != null && spriteRenderers.Length > 0)
             {
-                try
-                {
-                    for (int i = 0; i < spriteRenderers.Length; i++)
-                        if (!spriteRenderers[i].CompareTag("NonBlackFX"))
-                        {
-                            spriteRenderers[i].color = originalSpriteRenderersColors[i];
-                            spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
-                        }
-                }
-                catch {}
+                for (int i = 0; i < spriteRenderers.Length; i++)
+                    if (spriteRenderers[i] != null && !spriteRenderers[i].CompareTag("NonBlackFX"))
+                    {
+                        spriteRenderers[i].color = originalSpriteRenderersColors[i];
+                        spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
+                    }
             }
-            // MESHES
+            /*
+            // MESHES DONT DELETE
             if (meshRenderers != null && meshRenderers.Length > 0)
             {
                 for (int i = 0; i < meshRenderers.Length; i++)
                     if (meshRenderers[i] != null && !meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                         meshRenderers[i].material.color = originalMeshRenderersColors[i];
             }
+            */
             // SKINNED MESHES
             if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
             {
@@ -1298,6 +1303,7 @@ public class GameManager : MonoBehaviourPun
                         catch { }
                     } 
             // LIGHTS
+            /* DONT DELETE
             if (lights != null && lights.Length > 0)
                 for (int i = 0; i < lights.Length; i++)
                     try
@@ -1306,12 +1312,14 @@ public class GameManager : MonoBehaviourPun
                                 lights[i].gameObject.SetActive(true);
                     }
                     catch { }
+                    */
 
-
+            /* DONT DELETE
             // Reactivates the background of the map if it's referenced
             if (mapLoader.currentMap.GetComponent<MapPrefab>() && mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length > 0)
                 for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
                     mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
+            */
         }
     }
 

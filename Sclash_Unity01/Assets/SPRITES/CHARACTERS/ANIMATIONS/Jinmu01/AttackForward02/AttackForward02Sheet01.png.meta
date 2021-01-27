@@ -17,8 +17,14 @@ TextureImporter:
   - first:
       213: -5481206519435658032
     second: AttackForward02Sheet01_4
+  - first:
+      213: -3961550674753164049
+    second: AttackForward02Sheet01_0
+  - first:
+      213: -9058671720375318659
+    second: AttackForward02Sheet01_1
   externalObjects: {}
-  serializedVersion: 10
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -72,8 +78,9 @@ TextureImporter:
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  applyGammaDecoding: 1
   platformSettings:
-  - serializedVersion: 2
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -84,7 +91,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -95,7 +103,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -106,6 +115,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -124,8 +134,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e003233e5d78df348a6b4fe8d6f0f594
-      internalID: 2413752383767467355
+      spriteID: fece0a786aeb509c0800000000000000
+      internalID: -3961550674753164049
       vertices: []
       indices: 
       edges: []
@@ -145,35 +155,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 75edc3cbfcfb3ad43b8fdd25e49e8364
-      internalID: -981823457097923057
+      spriteID: d770722b012294280800000000000000
+      internalID: -9058671720375318659
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
       name: AttackForward02Sheet01_2
-      rect:
-        serializedVersion: 2
-        x: 2560
-        y: 1280
-        width: 1280
-        height: 1280
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8bb73885ae2b8874f9c20e52e806a42d
-      internalID: -7819887447018635875
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AttackForward02Sheet01_3
       rect:
         serializedVersion: 2
         x: 0
@@ -187,29 +176,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9796a3dd11f04164ca11c49e6c5917b0
-      internalID: 1148088921105887580
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AttackForward02Sheet01_4
-      rect:
-        serializedVersion: 2
-        x: 1280
-        y: 0
-        width: 1280
-        height: 1280
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aebfc61f466146c4cb8e63f31f396069
-      internalID: -5481206519435658032
+      spriteID: d9dfae86ccd2a7390800000000000000
+      internalID: -7819887447018635875
       vertices: []
       indices: 
       edges: []

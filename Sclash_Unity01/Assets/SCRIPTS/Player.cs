@@ -982,7 +982,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 characterChanger.enabled = false;
 
                 if (playerNum == 0)
-                    if (!ConnectManager.Instance.connectedToMaster)
+                    if (ConnectManager.Instance != null && !ConnectManager.Instance.connectedToMaster)
                         gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
 
@@ -1509,7 +1509,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     void ManageIA()
     {
-        if (ConnectManager.Instance.connectedToMaster)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
             return;
 
         if (inputManager.playerInputs[playerNum].switchChar && opponent.playerIsAI)
@@ -1855,7 +1855,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (!playerIsAI)
         {
-            if (ConnectManager.Instance.connectedToMaster)
+            if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
             {
                 if (photonView.IsMine)
                     rb.velocity = new Vector2(inputManager.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
@@ -1905,7 +1905,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detects draw input
     void ManageDraw()
     {
-        if (ConnectManager.Instance.connectedToMaster)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
         {
             if (inputManager.playerInputs[0].anyKey)
                 photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
@@ -2025,7 +2025,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Manages the detection of attack charge inputs
     void ManageChargeInput()
     {
-        if (ConnectManager.Instance.enableMultiplayer)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
         {
             // Player presses attack button
             if (inputManager.playerInputs[0].attack && canCharge)
@@ -2111,7 +2111,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void ManageCharging()
     {
         // Online
-        if (ConnectManager.Instance.connectedToMaster && photonView.IsMine)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster && photonView.IsMine)
         {
             //Player releases attack button
             if (!inputManager.playerInputs[0].attack)
@@ -2483,7 +2483,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // If online, only take inputs from player 1
         if (canBriefParry)
         {
-            if (ConnectManager.Instance.enableMultiplayer)
+            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
             {
                 if (inputManager.playerInputs[0].parry && canParry)
                 {
@@ -2553,7 +2553,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detect pommel inputs
     void ManagePommel()
     {
-        if (ConnectManager.Instance.connectedToMaster)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
         {
             if (!inputManager.playerInputs[0].kick)
                 canPommel = true;
@@ -2793,7 +2793,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void ManageDashInput()
     {
         // If multiplayer, only check for input 1
-        if (ConnectManager.Instance.connectedToMaster)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
         {
 
             // Detects dash with basic input rather than double tap, shortcut
