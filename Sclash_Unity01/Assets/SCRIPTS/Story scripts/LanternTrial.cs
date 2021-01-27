@@ -23,12 +23,6 @@ public class LanternTrial : MonoBehaviour
     {
         if (Keyboard.current.tKey.wasPressedThisFrame)
             DropLantern();
-
-        //OLD_INPUT
-        /*if (Input.GetKeyDown(KeyCode.T))
-        {
-            DropLantern();
-        }*/
     }
 
     private void DropLantern()

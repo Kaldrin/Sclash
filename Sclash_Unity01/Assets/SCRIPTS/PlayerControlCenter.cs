@@ -8,58 +8,24 @@ public class PlayerControlCenter : MonoBehaviour
     PlayerInput m_playerInput;
     [SerializeField]
     int m_playerIndex;
+    float m_DashOrientation = 0f;
 
-    PlayerControls controls;
+
+    Player attachedPlayer;
 
     private void Start()
     {
         m_playerInput = GetComponent<PlayerInput>();
         m_playerIndex = m_playerInput.playerIndex;
-        /*controls = new PlayerControls();
-        controls.Enable();
-
-        //Show score
-        controls.Duel.Score.performed += ctx => InputManager.Instance.scoreInput = true;
-        controls.Duel.Score.canceled += ctx => InputManager.Instance.scoreInput = false;
-
-        //Manage horizontal input            
-        controls.Duel.Horizontal.performed += ctx => { InputManager.Instance.playerInputs[m_playerIndex].horizontal = ctx.ReadValue<float>(); };
-        controls.Duel.Horizontal.canceled += ctx => { InputManager.Instance.playerInputs[m_playerIndex].horizontal = 0; };
-
-        //Manage vertical input
-        controls.Duel.Vertical.performed += ctx => { InputManager.Instance.playerInputs[m_playerIndex].vertical = ctx.ReadValue<float>(); };
-        controls.Duel.Vertical.canceled += ctx => { InputManager.Instance.playerInputs[m_playerIndex].vertical = 0; };
-
-        //Manage Attack inputs
-        controls.Duel.Attack.started += ctx => { InputManager.Instance.playerInputs[m_playerIndex].attack = true; InputManager.Instance.playerInputs[m_playerIndex].attackDown = true; };
-        controls.Duel.Attack.performed += ctx => { InputManager.Instance.playerInputs[m_playerIndex].attackDown = false; };
-        controls.Duel.Attack.canceled += ctx => { InputManager.Instance.playerInputs[m_playerIndex].attack = false; InputManager.Instance.playerInputs[m_playerIndex].attackDown = false; };
-
-
-        //Manage pommel inputs
-        controls.Duel.Pommel.started += ctx => { InputManager.Instance.playerInputs[m_playerIndex].kick = true; };
-        controls.Duel.Pommel.canceled += ctx => { InputManager.Instance.playerInputs[m_playerIndex].kick = false; };
-
-        //Manage parry inputs
-        controls.Duel.Parry.started += ctx => { InputManager.Instance.playerInputs[m_playerIndex].parry = true; InputManager.Instance.playerInputs[m_playerIndex].parryDown = true; };
-        controls.Duel.Parry.performed += ctx => { InputManager.Instance.playerInputs[m_playerIndex].parryDown = false; };
-        controls.Duel.Parry.canceled += ctx => { InputManager.Instance.playerInputs[m_playerIndex].parry = false; InputManager.Instance.playerInputs[m_playerIndex].parryDown = false; };
-
-        //Manage dash inputs
-        float m_DashOrientation = 0f;
-        controls.Duel.Dash.started += ctx => { m_DashOrientation = Mathf.Sign(ctx.ReadValue<float>()); };
-        controls.Duel.Dash.performed += ctx => { InputManager.Instance.playerInputs[m_playerIndex].dash = m_DashOrientation; };
-        controls.Duel.Dash.canceled += ctx => { InputManager.Instance.playerInputs[m_playerIndex].dash = 0; };
-
-        //Manage Jump inputs
-        controls.Duel.Jump.started += ctx => { InputManager.Instance.playerInputs[m_playerIndex].jump = true; };
-        controls.Duel.Jump.canceled += ctx => { InputManager.Instance.playerInputs[m_playerIndex].jump = false; };*/
+        attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
     }
 
 
     public void OnHorizontal(InputAction.CallbackContext ctx)
     {
         InputManager.Instance.playerInputs[m_playerIndex].horizontal = ctx.ReadValue<float>();
+        if (attachedPlayer != null)
+            attachedPlayer.ManageMovementsInputs(ctx);
     }
 
     public void OnVertical(InputAction.CallbackContext ctx)
@@ -110,13 +76,15 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext ctx)
     {
-        float m_DashOrientation = 0f;
         if (ctx.started)
             m_DashOrientation = Mathf.Sign(ctx.ReadValue<float>());
-        else if (ctx.performed)
+        if (ctx.performed)
             InputManager.Instance.playerInputs[m_playerIndex].dash = m_DashOrientation;
-        else if (ctx.canceled)
-            InputManager.Instance.playerInputs[m_playerIndex].dash = 0;
+        if (ctx.canceled)
+        {
+            InputManager.Instance.playerInputs[m_playerIndex].dash = 0f;
+            m_DashOrientation = 0f;
+        }
     }
 
     public void OnPause(InputAction.CallbackContext ctx)
@@ -136,6 +104,15 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnAnyKey(InputAction.CallbackContext ctx)
     {
-        InputManager.Instance.playerInputs[m_playerIndex].anyKey = ctx.started;
+        if (ctx.started)
+        {
+            InputManager.Instance.playerInputs[m_playerIndex].anyKey = true;
+            InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = true;
+        }
+        else if (ctx.canceled)
+        {
+            InputManager.Instance.playerInputs[m_playerIndex].anyKey = false;
+            InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = false;
+        }
     }
 }

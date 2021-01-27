@@ -175,15 +175,15 @@ public class StoryPlayer : Player
         }
     }
 
-    public override void ManageMovementsInputs()
+    public override void ManageMovementsInputs(InputAction.CallbackContext ctx)
     {
         if (playerIsAI)
         {
-            base.ManageMovementsInputs();
+            base.ManageMovementsInputs(ctx);
             return;
         }
 
-        float v = controls.Duel.Horizontal.ReadValue<float>();
+        float v = ctx.ReadValue<float>();
 
         rb.simulated = true;
 
