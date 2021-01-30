@@ -11,6 +11,8 @@ public class PlayerControlCenter : MonoBehaviour
     float m_DashOrientation = 0f;
 
 
+    PlayerControls controls;
+
     Player attachedPlayer;
 
     private void Start()
@@ -19,7 +21,6 @@ public class PlayerControlCenter : MonoBehaviour
         m_playerIndex = m_playerInput.playerIndex;
         attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
     }
-
 
     public void OnHorizontal(InputAction.CallbackContext ctx)
     {

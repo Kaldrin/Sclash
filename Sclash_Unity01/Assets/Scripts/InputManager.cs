@@ -85,19 +85,21 @@ public class InputManager : MonoBehaviour
 
     protected PlayerControls controls;
 
+    List<Gamepad> gamepads;
+
     [SerializeField]
-    PlayerInput[] inputs = new PlayerInput[2];
+    List<PlayerInput> inputs = new List<PlayerInput>();
+
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
 
-    private void OnPlayerJoined(PlayerInput playerInput)
+    void Start()
     {
-        //Assign controller to player
-        if (inputs[0] == null)
-            inputs[0] = playerInput;
-        else
-            inputs[1] = playerInput;
+        gamepads = new List<Gamepad>();
+        var Gamepads = Gamepad.all;
+        foreach (Gamepad g in Gamepads)
+            gamepads.Add(g);
     }
 
     protected void Awake()
@@ -110,15 +112,33 @@ public class InputManager : MonoBehaviour
     // Update is called once per graphic frame
     public virtual void Update()
     {
-        var Gamepads = Gamepad.all;
-        foreach (Gamepad g in Gamepads)
+        if (inputs.Count < 2)
         {
-            if (g.buttonWest.isPressed)
-            {
-                Debug.Log("Button pressed, assign to player !");
-            }
-        }
+            PlayerInput p = null;
 
+            foreach (Gamepad g in gamepads)
+            {
+                if (g.startButton.wasPressedThisFrame)
+                {
+                    p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "Gamepad Scheme", g);
+                    gamepads.Remove(g);
+                    break;
+                }
+            }
+
+            if (Keyboard.current.fKey.wasPressedThisFrame)
+            {
+                p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "WASDScheme", Keyboard.current);
+            }
+
+            if (Keyboard.current.numpad1Key.wasPressedThisFrame)
+            {
+                p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current);
+            }
+
+            if (p != null)
+                inputs.Add(p);
+        }
 
         if (enabled && isActiveAndEnabled)
         {
@@ -128,7 +148,6 @@ public class InputManager : MonoBehaviour
             // Menu input
             submitInputUp = (submitInput && !controls.Menu.Submit.triggered);
             submitInput = controls.Menu.Submit.triggered;
-
 
             // Players inputs
             for (int i = 0; i < playerInputs.Length; i++)

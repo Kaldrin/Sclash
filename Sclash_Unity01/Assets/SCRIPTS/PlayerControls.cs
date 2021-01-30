@@ -1161,17 +1161,35 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         {
             ""name"": ""WASDScheme"",
             ""bindingGroup"": ""WASDScheme"",
-            ""devices"": []
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         },
         {
             ""name"": ""ArrowScheme"",
             ""bindingGroup"": ""ArrowScheme"",
-            ""devices"": []
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         },
         {
             ""name"": ""Gamepad Scheme"",
             ""bindingGroup"": ""Gamepad Scheme"",
-            ""devices"": []
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Gamepad>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         }
     ]
 }");
