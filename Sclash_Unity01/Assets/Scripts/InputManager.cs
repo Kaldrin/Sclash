@@ -105,65 +105,20 @@ public class InputManager : MonoBehaviour
         Instance = this;
 
         controls = GameManager.Instance.Controls;
-
-        //Show score
-        /*controls.Duel.Score.performed += ctx => scoreInput = true;
-        controls.Duel.Score.canceled += ctx => scoreInput = false;
-
-        //Manage horizontal input            
-        controls.Duel.Horizontal.performed += ctx => { playerInputs[0].horizontal = ctx.ReadValue<float>(); };
-        controls.Duel.Horizontal.canceled += ctx => { playerInputs[0].horizontal = 0; };
-
-        //Manage vertical input
-        controls.Duel.Vertical.performed += ctx => { playerInputs[0].vertical = ctx.ReadValue<float>(); };
-        controls.Duel.Vertical.canceled += ctx => { playerInputs[0].vertical = 0; };
-
-        //Manage Attack inputs
-        controls.Duel.Attack.started += ctx => { playerInputs[0].attack = true; playerInputs[0].attackDown = true; };
-        controls.Duel.Attack.performed += ctx => { playerInputs[0].attackDown = false; };
-        controls.Duel.Attack.canceled += ctx => { playerInputs[0].attack = false; playerInputs[0].attackDown = false; };
-
-
-        //Manage pommel inputs
-        controls.Duel.Pommel.started += ctx => { playerInputs[0].kick = true; };
-        controls.Duel.Pommel.canceled += ctx => { playerInputs[0].kick = false; };
-
-        //Manage parry inputs
-        controls.Duel.Parry.started += ctx => { playerInputs[0].parry = true; playerInputs[0].parryDown = true; };
-        controls.Duel.Parry.performed += ctx => { playerInputs[0].parryDown = false; };
-        controls.Duel.Parry.canceled += ctx => { playerInputs[0].parry = false; playerInputs[0].parryDown = false; };
-
-        //Manage dash inputs
-        float m_DashOrientation = 0f;
-        controls.Duel.Dash.started += ctx => { m_DashOrientation = Mathf.Sign(ctx.ReadValue<float>()); };
-        controls.Duel.Dash.performed += ctx => { playerInputs[0].dash = m_DashOrientation; };
-        controls.Duel.Dash.canceled += ctx => { playerInputs[0].dash = 0; };
-
-        //Manage Jump inputs
-        controls.Duel.Jump.started += ctx => { playerInputs[0].jump = true; };
-        controls.Duel.Jump.canceled += ctx => { playerInputs[0].jump = false; };*/
-
-        //Manage sneath draw inputs
-        /*Disabled for now
-        controls.Duel.SneathDraw.started += ctx => { playerInputs[0].battleSneathDraw = true; };
-        controls.Duel.SneathDraw.canceled += ctx => { playerInputs[0].battleSneathDraw = false; };
-        */
-
-    }
-
-    private void OnEnable()
-    {
-        controls.Duel.Enable();
-    }
-
-    private void OnDisable()
-    {
-        controls.Duel.Disable();
     }
 
     // Update is called once per graphic frame
     public virtual void Update()
     {
+        var Gamepads = Gamepad.all;
+        foreach (Gamepad g in Gamepads)
+        {
+            if (g.buttonWest.isPressed)
+            {
+                Debug.Log("Button pressed, assign to player !");
+            }
+        }
+
 
         if (enabled && isActiveAndEnabled)
         {
@@ -253,7 +208,7 @@ public class InputManager : MonoBehaviour
     // PAUSE
     protected void ManagePauseInput(int i)
     {
-        playerInputs[i].pauseUp = Input.GetButtonUp(pauseAxis + i);
+        //playerInputs[i].pauseUp = Input.GetButtonUp(pauseAxis + i);
     }
     #endregion
 
@@ -264,7 +219,7 @@ public class InputManager : MonoBehaviour
     #region VERTICAL
     protected void ManageVerticalInput(int i)
     {
-        //playerInputs[i].vertical = Input.GetAxis(verticalAxis + i);
+        // playerInputs[i].vertical = Input.GetAxis(verticalAxis + i);
     }
     #endregion
 

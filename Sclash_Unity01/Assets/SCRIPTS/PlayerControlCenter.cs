@@ -49,6 +49,8 @@ public class PlayerControlCenter : MonoBehaviour
             InputManager.Instance.playerInputs[m_playerIndex].attack = false;
             InputManager.Instance.playerInputs[m_playerIndex].attackDown = false;
         }
+
+        OnAnyKey(ctx);
     }
 
     public void OnParry(InputAction.CallbackContext ctx)
@@ -67,11 +69,14 @@ public class PlayerControlCenter : MonoBehaviour
             InputManager.Instance.playerInputs[m_playerIndex].parry = false;
             InputManager.Instance.playerInputs[m_playerIndex].parryDown = false;
         }
+
+        OnAnyKey(ctx);
     }
 
     public void OnPommel(InputAction.CallbackContext ctx)
     {
         InputManager.Instance.playerInputs[m_playerIndex].kick = ctx.performed;
+        OnAnyKey(ctx);
     }
 
     public void OnDash(InputAction.CallbackContext ctx)
@@ -89,7 +94,10 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnPause(InputAction.CallbackContext ctx)
     {
-
+        if (ctx.started)
+            InputManager.Instance.playerInputs[m_playerIndex].pauseUp = true;
+        if (ctx.canceled)
+            InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
     }
 
     public void OnScore(InputAction.CallbackContext ctx)
@@ -100,6 +108,14 @@ public class PlayerControlCenter : MonoBehaviour
     public void OnJump(InputAction.CallbackContext ctx)
     {
         InputManager.Instance.playerInputs[m_playerIndex].jump = ctx.started;
+    }
+
+    public void OnSneath(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started)
+            InputManager.Instance.playerInputs[m_playerIndex].battleSneathDraw = true;
+        if (ctx.canceled)
+            InputManager.Instance.playerInputs[m_playerIndex].battleSneathDraw = false;
     }
 
     public void OnAnyKey(InputAction.CallbackContext ctx)
