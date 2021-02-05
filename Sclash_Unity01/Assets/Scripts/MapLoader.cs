@@ -90,7 +90,8 @@ public class MapLoader : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    void Awake(){
+    void Awake()                                                                                                        // AWAKE
+    {
         Instance = this;
 
 
@@ -105,11 +106,11 @@ public class MapLoader : MonoBehaviour
     }
     
     // Update is called once per graphic frame
-    void Update()
+    void Update()                                                                                                                           // UPDATE
     {
         // POST PROCESS
         // Blends last and current stages post process volumes profiles for smooth transition
-        if (enabled && cameraPostProcessVolume.enabled)
+        if (enabled && isActiveAndEnabled && cameraPostProcessVolume.enabled)
         {
             if (postProcessVolumeBlendState == 1)
             {
@@ -134,7 +135,7 @@ public class MapLoader : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Start()                                                                                                                            // START
     {
         // STAGES MENU
         if (gameManager.demo)
@@ -146,7 +147,7 @@ public class MapLoader : MonoBehaviour
         mapMenuLoader.SetUpMenu();
     }
 
-    void OnDestroy()
+    void OnDestroy()                                                                                            // ON DESTROY
     {
         // REMOTE CONFIG STUFF FOR DEMO
         ConfigManager.FetchCompleted -= SetRemoteVariables;
@@ -259,6 +260,7 @@ public class MapLoader : MonoBehaviour
                 if (mapContainer.transform.GetChild(i).gameObject.activeInHierarchy)
                     currentMap = mapContainer.transform.GetChild(i).gameObject;
     }
+
 
     // Immediatly changes the map
     public void SetMap(int mapIndex, bool special)

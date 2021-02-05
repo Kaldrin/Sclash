@@ -108,24 +108,30 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    private void Start()
+    private void Start()                                                                                    // START
     {
         animatorBaseSpeed = animator.speed;
     }
 
-    void FixedUpdate()
+    void FixedUpdate()                                                                                      // FIXED UPDATE
     {
-        if (photonView != null)
-            if (!photonView.IsMine)
-                return;
+        if (enabled && isActiveAndEnabled)
+        {
+            if (photonView != null)
+                if (!photonView.IsMine)
+                    return;
 
 
-        UpdateAnims();
-        UpdateWalkDirection();
-        UpdateIdleStateDependingOnStamina(playerScript.stamina);
-        animator.SetFloat(verticalSpeed, rigid.velocity.y);
+            UpdateAnims();
+            UpdateWalkDirection();
+            UpdateIdleStateDependingOnStamina(playerScript.stamina);
+            animator.SetFloat(verticalSpeed, rigid.velocity.y);
+        }
     }
     #endregion
+
+
+
 
 
 
@@ -330,12 +336,13 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region DRAW ANIMATION
+    // DRAW
     // Triggers the draw animation
     public void TriggerDraw()
     {
         animator.SetTrigger(draw);
     }
-
+    // SNEATH
     // Triggers the sneath animation
     public void TriggerSneath()
     {
@@ -347,18 +354,19 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     #region BATTLE SNEATH / DRAW ANIMATIONS
+    // SNEATH
     public void TriggerBattleSneath()
     {
         animator.SetTrigger(battleSneath);
         animator.ResetTrigger(battleDraw);
     }
-
+    // DRAW
     public void TriggerBattleDraw()
     {
         animator.SetTrigger(battleDraw);
         animator.ResetTrigger(battleSneath);
     }
-
+    // RESET
     public void ResetBattleSneath()
     {
         animator.ResetTrigger(battleSneath);
@@ -370,23 +378,24 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region PARRY ANIMATION
+    //PARRY
     // Triggers on / off parry animation
     public void TriggerParry()
     {
         animator.SetTrigger(parryOn);
     }
-
+    // RESET
     // Resets the parry animation triggers
     public void ResetParry()
     {
         animator.ResetTrigger(parryOn);
     }
-
+    // PERFECT
     public void TriggerPerfectParry()
     {
         animator.SetTrigger(perfectParry);
     }
-
+    // PERFECT RESET
     // Resets the parry animation triggers
     public void ResetPerfectParry()
     {
@@ -422,23 +431,24 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region POMMEL ANIMATION
+    // POMMEL
     // Trigger on pommel animation
     public void TriggerPommel()
     {
         animator.SetTrigger(pommelOn);
     }
-
+    // RESET
     public void ResetPommelTrigger()
     {
         animator.ResetTrigger(pommelOn);
     }
-
+    // POMMELED
     // Trigger on pommeled animation
     public void TriggerPommeled()
     {
         animator.SetTrigger(pommeledOn);
     }
-
+    // RESET
     public void ResetPommeledTrigger()
     {
         animator.ResetTrigger(pommeledOn);
@@ -450,6 +460,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region CHARGE ANIMATIONS
+    // CHARGE
     // Trigger charge animation
     public void TriggerCharge(bool state)
     {
@@ -461,13 +472,13 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         else
             animator.ResetTrigger(chargeOn);
     }
-
+    // MAX
     // Trigger max charge reached animation
     public void TriggerMaxCharge()
     {
         animator.SetTrigger(maxCharge);
     }
-
+    // CANCEL
     // Cancel charge animation
     public void CancelCharge(bool state)
     {
@@ -484,6 +495,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     # region  CLASHED ANIMATIONS
     // Trigger on clashed animation
+    // CLASHED
     public void TriggerClashed(bool state)
     {
         if (state)
@@ -491,7 +503,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         else
             animator.SetTrigger(clashedOff);
     }
-
+    // RESET
     public void ResetClashedTrigger()
     {
         animator.ResetTrigger(clashedOn);
@@ -504,17 +516,18 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
     # region DEATH ANIMATION
+    // DEATH
     // Trigger death animation
     public void TriggerDeath()
     {
         animator.SetTrigger(deathOn);
     }
-
+    // DEAD
     public void DeathActivated(bool state)
     {
         animator.SetBool(dead, state);
     }
-
+    // REALLY DEAD
     public void TriggerRealDeath()
     {
         animator.SetTrigger(reallyDead);

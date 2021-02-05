@@ -11,19 +11,25 @@ public class MoveWithMouse : MonoBehaviour
 
 
 
-    void Start()
+
+
+
+    void Start()                                                                                    // START
     {
         if (enabled)
         {
             Cursor.visible = true;
+
+
             if (cam == null)
                 cam = Camera.main;
         }
     }
 
-    void Update()
+
+    void Update()                                                               // UPDATE
     {
-        if (enabled)
+        if (enabled && isActiveAndEnabled)
         {
             Vector2 pos = cam.ScreenToWorldPoint(Input.mousePosition);
             transform.position = Input.mousePosition;

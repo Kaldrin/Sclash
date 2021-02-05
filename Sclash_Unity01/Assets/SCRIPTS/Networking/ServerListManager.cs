@@ -6,67 +6,92 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
+
+
+// Online script
+//Created for Unity 2019.1.1f1
 public class ServerListManager : MonoBehaviourPunCallbacks
 {
-    public static ServerListManager Instance;
+    public static ServerListManager Instance = null;
 
-    [SerializeField]
-    GameObject serverItemPrefab;
 
-    [SerializeField]
-    TMP_InputField serverParameters;
+    [SerializeField] GameObject serverItemPrefab = null;
+    [SerializeField] TMP_InputField serverParameters = null;
+    [SerializeField] TextMeshProUGUI placeholderText = null;
 
-    [SerializeField]
-    TextMeshProUGUI placeholderText;
 
-    public List<RoomInfo> roomInfosList;
-
-    public ServerFinder serverFinder;
+    public List<RoomInfo> roomInfosList = new List<RoomInfo>();
+    public ServerFinder serverFinder = null;
 
     /*public string[] serverNames;
     public string[] serverIPs;*/
 
-    #region Base Functions
-    private void Awake()
+
+
+
+
+
+
+
+
+    #region BASE FUNCTIONS
+    private void Awake()                                            // AWAKE
     {
         Instance = this;
     }
 
-    private void FixedUpdate()
-    {
-        if (roomInfosList == null)
-            return;
 
-        if (roomInfosList.Count == 0)
-            placeholderText.enabled = true;
-        else
-            placeholderText.enabled = false;
+    private void FixedUpdate()                                                      // FIXED UPDATE
+    {
+        if (enabled && isActiveAndEnabled)
+        {
+            if (roomInfosList == null)
+                return;
+
+
+            if (roomInfosList.Count == 0)
+            {
+                if (placeholderText != null)
+                    placeholderText.enabled = true;
+                else
+                    Debug.Log("Placeholder text not found, ignoring");
+            }
+            else
+                placeholderText.enabled = false;
+        }
     }
 
-    public override void OnEnable()
+
+    public override void OnEnable()                                                 // ON ENABLE
     {
         DisplayServerList();
     }
 
-    public override void OnDisable()
+
+    public override void OnDisable()                                                    // ON DISABLE
     {
         ClearServerList();
     }
     #endregion
 
+
+
+
+
+    // CLEAR
     private void ClearServerList()
     {
         foreach (Transform c in transform)
-        {
             Destroy(c.gameObject);
-        }
-
     }
 
+
+    // DISPLAY
     public void DisplayServerList()
     {
         //Remove all instanciated server items
         ClearServerList();
+
 
         if (roomInfosList == null)
         {
@@ -74,27 +99,23 @@ public class ServerListManager : MonoBehaviourPunCallbacks
             return;
         }
 
+
         //Instantiate a server item for each server founds
         for (int i = 0; i < roomInfosList.Count; i++)
-        {
             if (serverParameters.text != "")
             {
                 if (roomInfosList[i].Name.ToLower() == serverParameters.text.ToLower())
-                {
                     InstantiateServerItem(i);
-                }
             }
             else
-            {
                 InstantiateServerItem(i);
-            }
-        }
     }
+
 
     private void InstantiateServerItem(int i)
     {
         Debug.Log("Instantiate Server item");
-        //Instantiate the server item
+        // Instantiates the server item
         GameObject serverItem = Instantiate(serverItemPrefab, transform);
         serverItem.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (string)roomInfosList[i].CustomProperties["rn"];
         serverItem.GetComponent<ServerItemInfos>().roomName = (string)roomInfosList[i].CustomProperties["rn"];
@@ -103,7 +124,9 @@ public class ServerListManager : MonoBehaviourPunCallbacks
 
         //serverItem.GetComponent<ServerItemInfos>().roomMaxPlayerCount = int.Parse((string)roomInfosList[i].CustomProperties["pc"]);
 
+
         serverItem.GetComponent<ServerItemInfos>().room = roomInfosList[i];
+
 
         if (i % 2 == 1)
         {

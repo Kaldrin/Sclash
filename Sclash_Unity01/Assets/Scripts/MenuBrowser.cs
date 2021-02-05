@@ -10,9 +10,6 @@ using UnityEngine.EventSystems;
 public class MenuBrowser : MonoBehaviour
 {
     #region VARIABLES
-
-
-
     #region BROWSING
     [Header("BROWSING")]
     [Tooltip("The list of elements to browse in this menu page")]
@@ -20,11 +17,14 @@ public class MenuBrowser : MonoBehaviour
     [Tooltip("The back element of this menu page that allows for ")]
     [SerializeField] public GameObject backElement = null;
 
+
     [Tooltip("The index of the selected menu element in the elements list")]
     [SerializeField] public int browseIndex = 0;
     [SerializeField] bool applyDefaultIndexOnEnable = false;
     [SerializeField] int defaultIndex = 0;
     int sens = 1;
+
+
 
     [SerializeField] bool invertVerticalAxis = false;
     [SerializeField]
@@ -33,7 +33,6 @@ public class MenuBrowser : MonoBehaviour
         swapAxis = false,
         allowHorizontalJump = false;
     [SerializeField] int horizontalJumpAmount = 4;
-
     [SerializeField] bool autoEnableWhenHovered = false;
     #endregion
 
@@ -56,6 +55,7 @@ public class MenuBrowser : MonoBehaviour
     [SerializeField] string horizontalAxis = "Horizontal";
     [SerializeField] string verticalAxis = "Vertical";
     [SerializeField] string backButton = "Back";
+    [SerializeField] string submitButton = "Submit";
     bool vAxisInUse = false;
     bool hAxisInUse = false;
 
@@ -116,7 +116,7 @@ public class MenuBrowser : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    void Awake()
+    void Awake()                                                                                            // AWAKE
     {
 
         FixButtonColorUsageList();
@@ -139,7 +139,7 @@ public class MenuBrowser : MonoBehaviour
     }
 
 
-    void Start()
+    void Start()                                                                                            // START
     {
         VerticalBrowse(0);
         Select(false);
@@ -148,76 +148,82 @@ public class MenuBrowser : MonoBehaviour
     }
 
 
-    void Update()
+    void Update()                                                                                                   // UPDATE
     {
-        if (elements.Length > 0)
+        if (isActiveAndEnabled && enabled)
         {
-            // H AXIS
-            // Detects H axis let go
-            if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
-                hAxisInUse = false;
-
-
-            // Move sliders with horizontal
-            if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
+            if (elements.Length > 0)
             {
-                // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
-                if (callSpecialElementWhenHorizontal)
-                    positiveHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
-                else if (allowHorizontalJump)
-                    VerticalBrowse(horizontalJumpAmount);
-                else if (elements[browseIndex].GetComponent<SliderToVolume>())
-                    elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
+                // H AXIS
+                // Detects H axis let go
+                if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
+                    hAxisInUse = false;
 
 
-                hAxisInUse = true;
+                // Move sliders with horizontal
+                if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
+                {
+                    // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
+                    if (callSpecialElementWhenHorizontal)
+                        positiveHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
+                    else if (allowHorizontalJump)
+                        VerticalBrowse(horizontalJumpAmount);
+                    else if (elements[browseIndex].GetComponent<SliderToVolume>())
+                        elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
+
+
+                    hAxisInUse = true;
+                }
+                else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
+                {
+                    // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
+                    if (callSpecialElementWhenHorizontal)
+                        negativeHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
+                    else if (allowHorizontalJump)
+                        VerticalBrowse(-horizontalJumpAmount);
+                    else if (elements[browseIndex].GetComponent<SliderToVolume>())
+                        elements[browseIndex].GetComponent<SliderToVolume>().slider.value--;
+
+
+                    hAxisInUse = true;
+                }
+
+
+
+
+
+
+
+                // V AXIS
+                // Detects V axis let go
+                if (vAxisInUse && Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
+                    vAxisInUse = false;
+
+
+                if (!vAxisInUse)
+                {
+                    // Detects positive V axis input
+                    if (Input.GetAxis(verticalAxis) > verticalInputDetectionZone)
+                        VerticalBrowse(1);
+
+
+                    // Detects negative V axis input
+                    if (Input.GetAxis(verticalAxis) < -verticalInputDetectionZone)
+                        VerticalBrowse(-1);
+                }
             }
-            else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
-            {
-                // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
-                if (callSpecialElementWhenHorizontal)
-                    negativeHorizontalSpecialElement.GetComponent<Button>().onClick.Invoke();
-                else if (allowHorizontalJump)
-                    VerticalBrowse(-horizontalJumpAmount);
-                else if (elements[browseIndex].GetComponent<SliderToVolume>())
-                    elements[browseIndex].GetComponent<SliderToVolume>().slider.value--;
-
-
-                hAxisInUse = true;
-            }
 
 
 
 
 
-
-
-            // V AXIS
-            // Detects V axis let go
-            if (vAxisInUse && Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
-                vAxisInUse = false;
-
-
-            if (!vAxisInUse)
-            {
-                // Detects positive V axis input
-                if (Input.GetAxis(verticalAxis) > verticalInputDetectionZone)
-                    VerticalBrowse(1);
-
-
-                // Detects negative V axis input
-                if (Input.GetAxis(verticalAxis) < -verticalInputDetectionZone)
-                    VerticalBrowse(-1);
-            }
+            // BACK
+            ManageBack();
         }
-
-
-        // BACK
-        ManageBack();
     }
 
     // OnEnable is called each time the object is set from inactive to active
-    void OnEnable()
+    void OnEnable()                                                                                                                         // ON ENABLE
     {
         if (callSpecialElementWhenEnabled && enabledSpecialElement != null)
             enabledSpecialElement.onClick.Invoke();
@@ -232,7 +238,7 @@ public class MenuBrowser : MonoBehaviour
         UpdateColors();
     }
 
-    private void OnDisable()
+    private void OnDisable()                                                                                                                // ON DISABLE
     {
         UpdateColors();
     }
@@ -320,9 +326,7 @@ public class MenuBrowser : MonoBehaviour
     public void Back()
     {
         if (canBack && backElement != null)
-        {
             backElement.GetComponent<Button>().onClick.Invoke();
-        }
     }
     #endregion
 
@@ -347,11 +351,13 @@ public class MenuBrowser : MonoBehaviour
 
 
                 if (elements[browseIndex].GetComponent<Button>())
-                {
                     elements[browseIndex].GetComponent<Button>().Select();
-                }
                 else if (elements[browseIndex].GetComponent<TMP_InputField>())
+                {
+                    //PointerEventData pointerEvent = null;
                     elements[browseIndex].GetComponent<TMP_InputField>().Select();
+                    //elements[browseIndex].GetComponent<TMP_InputField>().OnPointerEnter(pointerEvent);
+                }
                 else if (elements[browseIndex].GetComponent<EventTrigger>()) { }
             }
         }

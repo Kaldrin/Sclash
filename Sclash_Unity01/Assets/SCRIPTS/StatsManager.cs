@@ -4,8 +4,15 @@ using UnityEngine;
 using System;
 using System.IO;
 
+
+
+// Script that manages the recording of fights to have data
 public class StatsManager : MonoBehaviour
 {
+    // SINGLETON
+    [HideInInspector] public static StatsManager Instance = null;
+
+
     [SerializeField] GameManager gameManager = null;
     [SerializeField] MapLoader mapLoader = null;
     [SerializeField] Stats statsAsset = null;
@@ -29,11 +36,19 @@ public class StatsManager : MonoBehaviour
 
 
 
+
+    #region FUNCTIONS
+    private void Awake()                                                    // AWAKE
+    {
+        Instance = this;
+    }
+
+
     // Start is called before the first frame update
-    void Start()
+    void Start()                                                                        // START
     {
         InitalizeNewGame(0, 0, 0);
-        //Debug.Log(statsAsset.globalStats[0].gamesList.Count);
+
 
         // Intializing variables to prevent null reference exceptions
         InitializeNewRound();
@@ -45,7 +60,6 @@ public class StatsManager : MonoBehaviour
 
 
     #region GAME
-    // GAME
     public void InitalizeNewGame(int gameType, int character0, int character1)
     {
         currentGame.index = statsAsset.globalStats[gameType].gamesList.Count;
@@ -64,7 +78,6 @@ public class StatsManager : MonoBehaviour
         currentGame.date.day = DateTime.Now.Day;
         currentGame.date.hour = DateTime.Now.Hour;
         currentGame.date.minute = DateTime.Now.Minute;
-
 
 
         // Characters
@@ -90,12 +103,16 @@ public class StatsManager : MonoBehaviour
             Debug.Log("Problem when finalizing the recording of the game, can't save the number of rounds played for some reason");
             currentGame.roundsPlayed = 1;
         }
+
+
         currentGame.duration = Time.time - currentGameStartTime;
         currentGame.gameFinished = finished;
         currentGame.finalScore = gameManager.score;
 
 
         GlobalStat newGlobalStats = statsAsset.globalStats[gameType];
+
+
         try
         {
             newGlobalStats.gamesList.Add(currentGame);
@@ -105,7 +122,9 @@ public class StatsManager : MonoBehaviour
             Debug.Log("Problem when finalizing the recording of the game, can't save the game element for some reason");
         }
 
+
         statsAsset.globalStats[gameType] = newGlobalStats;
+
 
         ComputeGameDatas();
     }
@@ -143,14 +162,13 @@ public class StatsManager : MonoBehaviour
 
 
         currentRoundStartTime = Time.time;
-
-        //Debug.Log("Initialized round");
     }
 
     public void FinalizeRound(int winner)
     {
         currentRound.duration = Time.time - currentRoundStartTime;
         currentRound.winner = winner;
+
 
         try
         {
@@ -185,6 +203,8 @@ public class StatsManager : MonoBehaviour
             newAction.index = 0;
             Debug.Log("Problem recording the action, can't set its index depending on the size of the round's action list for this player for some reason");
         }
+
+
         newAction.timeCode = Time.time - currentRoundStartTime;
         newAction.level = level;
 
@@ -236,32 +256,25 @@ public class StatsManager : MonoBehaviour
             newGlobalStat.gamesList = statsAsset.globalStats[o].gamesList;
 
 
+
             // Total play time
             totalPlayTime = 0;
 
-
             for (int i = 0; i < statsAsset.globalStats[o].gamesList.Count; i++)
-            {
                 totalPlayTime += statsAsset.globalStats[o].gamesList[i].duration;
-            }
-
 
             newGlobalStat.totalPlayTime = totalPlayTime;
-
-
             newGlobalStat.totalGamesPlayed = statsAsset.globalStats[o].gamesList.Count;
+
+
 
 
             // Total games finished
             totalGamesFinished = 0;
 
-
             for (int i = 0; i < statsAsset.globalStats[o].gamesList.Count; i++)
-            {
                 if (statsAsset.globalStats[o].gamesList[i].gameFinished)
                     totalGamesFinished++;
-            }
-
 
             newGlobalStat.totalGamesFinished = totalGamesFinished;
 
@@ -272,26 +285,21 @@ public class StatsManager : MonoBehaviour
             // Total rounds played
             totalRoundsPlayed = 0;
 
-
             for (int i = 0; i < statsAsset.globalStats[o].gamesList.Count; i++)
-            {
                 totalRoundsPlayed += statsAsset.globalStats[o].gamesList[i].roundsPlayed;
-            }
-
 
             newGlobalStat.totalRoundsPlayed = totalRoundsPlayed;
+
+
 
 
 
             // Average game duration
             averageFinishedGameDuration = 0;
 
-
             for (int i = 0; i < statsAsset.globalStats[o].gamesList.Count; i++)
-            {
                 if (statsAsset.globalStats[o].gamesList[i].gameFinished)
                     averageFinishedGameDuration += statsAsset.globalStats[o].gamesList[i].duration;
-            }
 
             if (averageFinishedGameDuration / newGlobalStat.totalGamesFinished >= 0)
                 newGlobalStat.averageFinishedGameDuration = averageFinishedGameDuration / newGlobalStat.totalGamesFinished;
@@ -299,17 +307,15 @@ public class StatsManager : MonoBehaviour
                 newGlobalStat.averageFinishedGameDuration = 0;
 
 
+
+
+
             // Average round duration
             averageRoundDuration = 0;
 
-
             for (int i = 0; i < statsAsset.globalStats[o].gamesList.Count; i++)
-            {
                 for (int y = 0; y < statsAsset.globalStats[o].gamesList[i].rounds.Count; y++)
-                {
                     averageRoundDuration += statsAsset.globalStats[o].gamesList[i].rounds[y].duration;
-                }
-            }
 
             if (averageRoundDuration / newGlobalStat.totalRoundsPlayed >= 0)
                 newGlobalStat.averageRoundDuration = averageRoundDuration / newGlobalStat.totalRoundsPlayed;
@@ -318,20 +324,22 @@ public class StatsManager : MonoBehaviour
 
 
 
+
+
             // Average rounds number per finished game
             averageRoundNumberPerFinishedGame = 0;
 
-
             for (int i = 0; i < statsAsset.globalStats[o].gamesList.Count; i++)
-            {
                 if (statsAsset.globalStats[o].gamesList[i].gameFinished)
                     averageRoundNumberPerFinishedGame += statsAsset.globalStats[o].gamesList[i].roundsPlayed;
-            }
 
             if (averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished >= 0)
                 newGlobalStat.averageRoundsNumberPerFinishedGame = averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished;
             else
                 newGlobalStat.averageRoundsNumberPerFinishedGame = 0;
+
+
+
 
 
             // Actions
@@ -353,78 +361,72 @@ public class StatsManager : MonoBehaviour
 
 
             for (int i = 0; i < newGlobalStat.gamesList.Count; i++)
-            {
                 for (int y = 0; y < newGlobalStat.gamesList[i].rounds.Count; y++)
                 {
                     try
                     {
                         for (int z = 0; z < newGlobalStat.gamesList[i].rounds[y].actions.Count; z++)    // Problème que j'arrive pas à identifier ici qui softlock le jeu (Null reference exception)
-                        {
                             for (int w = 0; w < newGlobalStat.gamesList[i].rounds[y].actions[z].actionsList.Count; w++)
-                            {
                                 switch (newGlobalStat.gamesList[i].rounds[y].actions[z].actionsList[w].name)
                                 {
-                                    case ACTION.charge:
+                                    case ACTION.charge:                     // CHARGE
                                         charge++;
                                         break;
 
-                                    case ACTION.forwardAttack:
+                                    case ACTION.forwardAttack:                  // FORWARD ATTACK
                                         forwardAttack++;
                                         break;
 
-                                    case ACTION.backwardsAttack:
+                                    case ACTION.backwardsAttack:                    // BACKWARDS ATTACK
                                         backwardsAttack++;
                                         break;
 
-                                    case ACTION.neutralAttack:
+                                    case ACTION.neutralAttack:                          // NEUTRAL ATTACK
                                         neutralAttack++;
                                         break;
 
-                                    case ACTION.death:
+                                    case ACTION.death:                              // DEATH
                                         death++;
                                         break;
 
-                                    case ACTION.forwardDash:
+                                    case ACTION.forwardDash:                                    // FORWARD DASH
                                         forwardDash++;
                                         break;
 
-                                    case ACTION.backwardsDash:
+                                    case ACTION.backwardsDash:                                          // BACKWARDS DASH
                                         backwardsDash++;
                                         break;
 
-                                    case ACTION.pommel:
+                                    case ACTION.pommel:                                     // POMMEL
                                         pommel++;
                                         break;
 
-                                    case ACTION.successfulPommel:
+                                    case ACTION.successfulPommel:                                       // SUCCESSFUL POMMEL
                                         successfulPommel++;
                                         break;
 
-                                    case ACTION.parry:
+                                    case ACTION.parry:                                  // PARRY
                                         parry++;
                                         break;
 
-                                    case ACTION.successfulParry:
+                                    case ACTION.successfulParry:                                // SUCCESSFUL PARRY
                                         successfulParry++;
                                         break;
 
-                                    case ACTION.clash:
+                                    case ACTION.clash:                                             // CLASH
                                         clash++;
                                         break;
 
-                                    case ACTION.dodge:
+                                    case ACTION.dodge:                                          // DODGE
                                         dodge++;
                                         break;
                                 }
-                            }
-                        }
                     }
                     catch
                     {
                         Debug.Log("Problem counting the number of each actions for local or online stats, can't access the list of list of actions for some reason");
                     }
                 }
-            }
 
 
             newGlobalStat.charge = charge;
@@ -481,11 +483,8 @@ public class StatsManager : MonoBehaviour
         // Games list
         newGlobalStat.gamesList = statsAsset.globalStats[1].gamesList;
 
-
         for (int i = 0; i < statsAsset.globalStats[2].gamesList.Count; i++)
-        {
             newGlobalStat.gamesList.Add(statsAsset.globalStats[2].gamesList[i]);
-        }
 
 
 
@@ -496,10 +495,8 @@ public class StatsManager : MonoBehaviour
 
 
         for (int i = 0; i < statsAsset.globalStats[0].gamesList.Count; i++)
-        {
             if (statsAsset.globalStats[0].gamesList[i].gameFinished)
                 averageFinishedGameDuration += statsAsset.globalStats[0].gamesList[i].duration;
-        }
 
         if (averageFinishedGameDuration / newGlobalStat.totalGamesFinished >= 0)
             newGlobalStat.averageFinishedGameDuration = averageFinishedGameDuration / newGlobalStat.totalGamesFinished;
@@ -517,12 +514,8 @@ public class StatsManager : MonoBehaviour
 
 
         for (int i = 0; i < statsAsset.globalStats[0].gamesList.Count; i++)
-        {
             for (int y = 0; y < statsAsset.globalStats[0].gamesList[i].rounds.Count; y++)
-            {
                 averageRoundDuration += statsAsset.globalStats[0].gamesList[i].rounds[y].duration;
-            }
-        }
 
         if (averageRoundDuration / newGlobalStat.totalRoundsPlayed >= 0)
             newGlobalStat.averageRoundDuration = averageRoundDuration / newGlobalStat.totalRoundsPlayed;
@@ -540,10 +533,8 @@ public class StatsManager : MonoBehaviour
 
 
         for (int i = 0; i < statsAsset.globalStats[0].gamesList.Count; i++)
-        {
             if (statsAsset.globalStats[0].gamesList[i].gameFinished)
                 averageRoundNumberPerFinishedGame += statsAsset.globalStats[0].gamesList[i].roundsPlayed;
-        }
 
         if (averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished >= 0)
             newGlobalStat.averageRoundsNumberPerFinishedGame = averageRoundNumberPerFinishedGame / newGlobalStat.totalGamesFinished;
@@ -631,62 +622,26 @@ public class StatsManager : MonoBehaviour
 
 
 
-    // SAVE & LOADS
+    #region SAVE & LOADS
+    // SAVE
     void SaveStats()
     {
-        /*
-        // Save forever
-        SaveGameManager.Load();
-        JsonSave save = SaveGameManager.GetCurrentSave();
-
-
-        save.stats = statsAsset;
-        //save.hasBeenSavedOnce = true;
-
-        Debug.Log("Saved user data");
-        Debug.Log(Application.persistentDataPath);
-        SaveGameManager.Save();
-        */
-
         string json = JsonUtility.ToJson(statsAsset);
         File.WriteAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFileName, json);
     }
 
+
+    // LOAD
     void LoadStats()
     {
-        /*
-        
-        // Loads actual saves
-        SaveGameManager.Load();
-        JsonSave save = SaveGameManager.GetCurrentSave();
-
-        if (save.stats != null)
-            statsAsset = save.stats;
-        else
-        {
-            ReinitializeAllData();
-            SaveStats();
-        }
-
-        Debug.Log("Loaded user data");
-        */
-
-
-        //Stats data = null;
-        //Debug.Log(File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFilName));
-
         if (File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFileName))
         {
-            //data = ScriptableObject.CreateInstance<Stats>();
             string json = File.ReadAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + statsSaveFileName);
             JsonUtility.FromJsonOverwrite(json, statsAsset);
-
-            //statsAsset = data;
         }
         else
-        {
-            //data = Resources.Load<Stats>("Stats Data");
             ReinitializeAllData();
-        }
     }
+    #endregion
+    #endregion
 }

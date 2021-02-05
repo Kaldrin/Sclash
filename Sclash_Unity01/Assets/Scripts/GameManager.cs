@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviourPun
 {
     #region VARIABLES
     #region MANAGERS
-    public static GameManager Instance;
+    [HideInInspector] public static GameManager Instance;
     [Header("MANAGERS")]
     [Tooltip("The AudioManager script instance reference")]
     [SerializeField] AudioManager audioManager = null;
@@ -237,6 +237,8 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] GameObject demoStagesButton = null;
     [SerializeField] GameObject storyButton = null;
     [SerializeField] GameObject demoStoryButton = null;
+    [SerializeField] GameObject onlineButton = null;
+    [SerializeField] GameObject demoOnlineButton = null;
     [SerializeField] public CharactersDatabase demoCharactersData = null;
     [SerializeField] public CharactersDatabase christmasCharactersData = null;
     [SerializeField] public MasksDatabase demoMasksDatabase = null;
@@ -295,18 +297,10 @@ public class GameManager : MonoBehaviourPun
         Instance = this;
         inputManager = InputManager.Instance;
 
+
         // DEMO
         if (demo)
-        {
-            demoMark.SetActive(true);
-            demoStagesButton.SetActive(true);
-            demoStoryButton.SetActive(true);
-            mainMenuBrowser.elements[2] = demoStagesButton;
-            stagesButton.SetActive(false);
-            storyButton.SetActive(false);
-            mainMenuBrowser.elements[4] = demoStoryButton;
-            charactersData = demoCharactersData;
-        }
+            TriggerDemoVersion();
     }
 
 
@@ -324,13 +318,14 @@ public class GameManager : MonoBehaviourPun
 
 
         // START GAME
-        StartCoroutine(SetupGame());
+        SetupGame();
     }
 
     
     private void Update()                                       // UPDATE
     {
-        if (enabled && cheatCodes)
+        // IF CHEATS ON
+        if (enabled && isActiveAndEnabled && cheatCodes)
             if (Input.GetKeyUp(slowTimeKey))
                 if (timeSlowDownSteps != null)
                 {
@@ -353,15 +348,90 @@ public class GameManager : MonoBehaviourPun
     }
 
 
-    private void FixedUpdate()
+    private void FixedUpdate()                                                  // FIXED UPDATE
     {
-        // EFFECTS
-        RunTimeScaleUpdate();
+        if (enabled && isActiveAndEnabled)
+        {
+            // EFFECTS
+            RunTimeScaleUpdate();
 
-        if (!ConnectManager.Instance.connectedToMaster)
-            scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
+
+            // ONLINE STUFF
+            if (!ConnectManager.Instance.connectedToMaster)
+                scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
+        }
     }
     #endregion
+
+
+
+
+
+
+
+
+    // DEMO
+    void TriggerDemoVersion()
+    {
+        // CHARACTERS DATA
+        if (demoCharactersData != null)
+            charactersData = demoCharactersData;
+        else
+            Debug.Log("Can't find demo characters data, ignoring");
+
+       // DEMO INDICATOR
+        if (demoMark != null)
+            demoMark.SetActive(true);
+        else
+            Debug.Log("Can't find demo mark object, ignoring");
+
+
+        // DEMO BUTTONS
+        if (demoStagesButton != null)
+            demoStagesButton.SetActive(true);
+        else
+            Debug.Log("Can't find demo stages button, ignoring");
+        if (demoStoryButton != null)
+            demoStoryButton.SetActive(true);
+        else
+            Debug.Log("Can't find demo story button, ignoring");
+        if (demoOnlineButton != null)
+            demoOnlineButton.SetActive(true);
+        else
+            Debug.Log("Can't find demo online button, ignoring");
+
+
+        // NORMAL BUTTONS
+        if (stagesButton != null)
+            stagesButton.SetActive(false);
+        else
+            Debug.Log("Can't find stages button, ignoring");
+        if (storyButton != null)
+            storyButton.SetActive(false);
+        else
+            Debug.Log("Can't find story button, ignoring");
+        if (onlineButton != null)
+            onlineButton.SetActive(false);
+        else
+            Debug.Log("Can't find online button, ignoring");
+
+
+        // BROWSING
+        if (mainMenuBrowser != null && mainMenuBrowser.elements.Length > 0)
+        {
+            if (demoStagesButton != null && mainMenuBrowser.elements.Length > 2)
+                mainMenuBrowser.elements[2] = demoStagesButton;
+            if (demoOnlineButton != null && mainMenuBrowser.elements.Length > 3)
+                mainMenuBrowser.elements[3] = demoOnlineButton;
+            if (demoStoryButton != null && mainMenuBrowser.elements.Length > 4)
+                mainMenuBrowser.elements[4] = demoStoryButton;
+        }
+        else
+            Debug.Log("Problem with main menu browser, ignoring");
+    }
+
+
+
 
 
 
@@ -436,22 +506,33 @@ public class GameManager : MonoBehaviourPun
 
 
     #region BEGIN GAME
+    // SETUP
     // Setup the game before it starts
-    IEnumerator SetupGame()
+    void SetupGame()
     {
         // SOUND
         // Set on the menu music
         audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
 
 
+        // PLAYERS
         SpawnPlayers();
-        yield return new WaitForSeconds(0.5f);
+
+
+        Invoke("SetupGame2", 0.5f);
+    }
+
+    void SetupGame2()
+    {
         cameraManager.FindPlayers();
 
 
         for (int i = 0; i < playersList.Count; i++)
             playersList[i].GetComponent<Player>().ManageOrientation();
     }
+
+
+
 
     void ConnectPlayer2()
     {
@@ -807,6 +888,7 @@ public class GameManager : MonoBehaviourPun
 
 
     #region ROUND TO ROUND & SCORE
+    // DEAD
     // Executed when a player dies, starts the score display and next round parameters
     public void APlayerIsDead(int incomingWinning)
     {
@@ -834,22 +916,28 @@ public class GameManager : MonoBehaviourPun
             StartCoroutine(NextRoundCoroutine());
     }
 
+
+    // SCORE
     void UpdatePlayersScoreValues()
     {
         score[winningPlayerIndex] += 1;
 
         for (int i = 0; i < playersList.Count; i++)
             scoresDisplays[i].text = score[i].ToString();
-        //scoreTextComponent.text = ScoreBuilder();
     }
 
+
     // Builds the score display message
+    /*
     string ScoreBuilder()
     {
         string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
         return scoreString;
     }
+    */
 
+
+    // WON ?
     bool CheckIfThePlayerWon()
     {
         if (score[winningPlayerIndex] >= scoreToWin)
@@ -858,14 +946,15 @@ public class GameManager : MonoBehaviourPun
             return false;
     }
 
-    // Start next round
+
+    // NEXT ROUND
+    // Starts next round
     IEnumerator NextRoundCoroutine()
     {
-        //Debug.Log("Next round");
         yield return new WaitForSecondsRealtime(timeBeforeNextRoundTransitionTriggers);
 
 
-        StartCoroutine(ShowScoreBetweenRoundsCoroutine());
+        ShowScoreBetweenRoundsCoroutine();
 
 
         // FX
@@ -897,14 +986,23 @@ public class GameManager : MonoBehaviourPun
         audioManager.roundBeginsRandomSoundSource.Play();
     }
 
+
+    // DISPLAY SCORE
     // Displays the current score for a given amount of time
-    IEnumerator ShowScoreBetweenRoundsCoroutine()
+    void ShowScoreBetweenRoundsCoroutine()
     {
         scoreObject.GetComponent<Animator>().SetBool("On", true);
-        yield return new WaitForSeconds(betweenRoundsScoreShowDuration);
+
+
+        Invoke("HideScoreBetweenRounds", betweenRoundsScoreShowDuration);
+    }
+    void HideScoreBetweenRounds()
+    {
         scoreObject.GetComponent<Animator>().SetBool("On", false);
     }
 
+
+    // RESET
     // Reset the score and its display
     void ResetScore()
     {
@@ -914,6 +1012,8 @@ public class GameManager : MonoBehaviourPun
             scoresDisplays[i].text = "0";
     }
 
+
+    // MAX SCORE
     public void UpdateMaxScoreDisplay()
     {
         maxScoreTextDisplay.text = scoreToWin.ToString();
@@ -1107,8 +1207,8 @@ public class GameManager : MonoBehaviourPun
 
 
 
-
-    //RENAME HERE IF WORKING
+    // END
+    // RENAME HERE IF WORKING
     void EndGame()
     {
         // GAME STATE
@@ -1132,6 +1232,7 @@ public class GameManager : MonoBehaviourPun
     }
 
 
+    // DEATH
     // Animation
     void TriggerFallDeadAnimation()
     {
@@ -1139,6 +1240,7 @@ public class GameManager : MonoBehaviourPun
     }
 
 
+    // MENU
     void ShowMenu()
     {
         // MENU
@@ -1271,7 +1373,7 @@ public class GameManager : MonoBehaviourPun
                     }
             }
             /*
-            // MESHES DONT DELETE
+            // MESHES DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             if (meshRenderers != null && meshRenderers.Length > 0)
             {
                 for (int i = 0; i < meshRenderers.Length; i++)
@@ -1303,7 +1405,7 @@ public class GameManager : MonoBehaviourPun
                         catch { }
                     } 
             // LIGHTS
-            /* DONT DELETE
+            /* DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             if (lights != null && lights.Length > 0)
                 for (int i = 0; i < lights.Length; i++)
                     try
@@ -1314,7 +1416,7 @@ public class GameManager : MonoBehaviourPun
                     catch { }
                     */
 
-            /* DONT DELETE
+            /* DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // Reactivates the background of the map if it's referenced
             if (mapLoader.currentMap.GetComponent<MapPrefab>() && mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length > 0)
                 for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
@@ -1324,6 +1426,7 @@ public class GameManager : MonoBehaviourPun
     }
 
 
+    // SLOW MO
     // Starts the SlowMo coroutine
     public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
@@ -1431,13 +1534,18 @@ public class GameManager : MonoBehaviourPun
 
 
 
+
+
+
     # region SECONDARY FUNCTIONS
+    // STAGE INDEX
     int CalculateNextStageIndex()
     {
         int nextStageIndex = mapLoader.currentMapIndex;
         int loopCount = 0;
         
 
+        // IF NO DEMO
         if (!demo)
         {
             // DAY NIGHT
@@ -1489,9 +1597,11 @@ public class GameManager : MonoBehaviourPun
                 }
             }
             // RANDOM
+            // If not day / night
             else if (gameParameters.randomStage)
             {
                 nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+
 
                 if (gameParameters.useCustomListForRandom)
                     while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex)
@@ -1525,6 +1635,7 @@ public class GameManager : MonoBehaviourPun
     }
 
 
+    // COMPARE FLOATS
     // Compares 2 floats with a range of tolerance
     public static bool FastApproximately(float a, float b, float threshold)
     {

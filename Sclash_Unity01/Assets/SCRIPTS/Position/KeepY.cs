@@ -25,8 +25,8 @@ public class KeepY : MonoBehaviour
 
 
 
-
-    private void Start()
+    #region FUNCTIONS
+    private void Start()                                                            // START
     {
         if (delayBeforeActivation)
         {
@@ -38,29 +38,41 @@ public class KeepY : MonoBehaviour
     }
 
 
-    private void Update()
+    private void Update()                                                                           // UPDATE
     {
-        // CHECK DELAY FINISHED
-        if (!canBeActivated && delayBeforeActivation && Time.time - delayStartTime >= delay)
+        if (isActiveAndEnabled && enabled)
         {
-            canBeActivated = true;
+            // CHECK DELAY FINISHED
+            if (!canBeActivated && delayBeforeActivation && Time.time - delayStartTime >= delay)
+            {
+                canBeActivated = true;
 
 
-            if (takeCurrentYOnActivation)
-                yToKeep = transform.position.y;
+                if (takeCurrentYOnActivation)
+                    yToKeep = transform.position.y;
+            }
+
+
+            if (activeAtRunTime && canBeActivated)
+                if (transform.position.y != yToKeep)
+                    transform.position = new Vector3(transform.position.x, yToKeep, transform.position.z);
         }
+}
 
 
-        if (isActiveAndEnabled && enabled && activeAtRunTime && canBeActivated)
-            if (transform.position.y != yToKeep)
-                transform.position = new Vector3(transform.position.x, yToKeep, transform.position.z);
-    }
 
 
+
+
+
+
+
+    // EDITOR
     private void OnDrawGizmos()
     {
         if (isActiveAndEnabled && enabled && !activeAtRunTime)
             if (transform.position.y != yToKeep)
                 transform.position = new Vector3(transform.position.x, yToKeep, transform.position.z);
     }
+    #endregion
 }

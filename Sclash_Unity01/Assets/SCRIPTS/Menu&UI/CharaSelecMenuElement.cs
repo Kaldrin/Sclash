@@ -3,6 +3,8 @@ using TMPro;
 using UnityEngine.UI;
 
 
+
+
 // This script is for the character selection, it's put on every element of the menu
 public class CharaSelecMenuElement : MonoBehaviour
 {
@@ -16,8 +18,13 @@ public class CharaSelecMenuElement : MonoBehaviour
 
     public void SelecSelf()
     {
-        characterChanger.verticalIndex = index;
-        characterChanger.VerticalSelectionChange();
+        if (characterChanger != null)
+        {
+            characterChanger.verticalIndex = index;
+            characterChanger.VerticalSelectionChange();
+        }
+        else
+            Debug.Log("Can't find character changer, ignoring");
     }
 
 
@@ -26,6 +33,14 @@ public class CharaSelecMenuElement : MonoBehaviour
         SelecSelf();
         characterChanger.HorizontalSwitch(direction);
     }
+
+
+
+
+
+
+
+
 
 
 

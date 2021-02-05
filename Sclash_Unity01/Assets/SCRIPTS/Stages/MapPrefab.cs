@@ -29,7 +29,7 @@ public class MapPrefab : MonoBehaviour
 
     #region FUNCTIONS
     // BASIC FUNCTIONS
-    private void Start()
+    private void Start()                                                                        // START
     {
         EnableClothCollision();
     }
@@ -92,7 +92,7 @@ public class MapPrefab : MonoBehaviour
     void EnableClothCollision()
     {
         // SCARFS
-        Scarf02[] scarfs = FindObjectsOfType<Scarf02>();
+        Scarf02[] scarfs = FindObjectsOfType<Scarf02>();                                                        // FIND
 
 
         if (scarfs != null && scarfs.Length > 0)
@@ -121,25 +121,29 @@ public class MapPrefab : MonoBehaviour
         {
             if (backgroundElements.Length > 0)
                 for (int i = 0; i < backgroundElements.Length; i++)
-                    if (backgroundElements[i].activeInHierarchy)
-                        backgroundElements[i].SetActive(false);
+                    if (backgroundElements[i] != null)
+                        if (backgroundElements[i].activeInHierarchy)
+                            backgroundElements[i].SetActive(false);
 
             if (objectsToActivateOnDramaticScreen.Length > 0)
                 for (int i = 0; i < objectsToActivateOnDramaticScreen.Length; i++)
-                    if (!objectsToActivateOnDramaticScreen[i].activeInHierarchy)
-                        objectsToActivateOnDramaticScreen[i].SetActive(true);
+                    if (objectsToActivateOnDramaticScreen[i] != null)
+                        if (!objectsToActivateOnDramaticScreen[i].activeInHierarchy)
+                            objectsToActivateOnDramaticScreen[i].SetActive(true);
         }
         else
         {
             if (backgroundElements.Length > 0)
                 for (int i = 0; i < backgroundElements.Length; i++)
-                    if (!backgroundElements[i].activeInHierarchy)
-                        backgroundElements[i].SetActive(true);
+                    if (backgroundElements[i] != null)
+                        if (!backgroundElements[i].activeInHierarchy)
+                            backgroundElements[i].SetActive(true);
 
             if (objectsToActivateOnDramaticScreen.Length > 0)
                 for (int i = 0; i < objectsToActivateOnDramaticScreen.Length; i++)
-                    if (!objectsToActivateOnDramaticScreen[i].activeInHierarchy)
-                        objectsToActivateOnDramaticScreen[i].SetActive(false);
+                    if (objectsToActivateOnDramaticScreen[i] != null)
+                        if (!objectsToActivateOnDramaticScreen[i].activeInHierarchy)
+                            objectsToActivateOnDramaticScreen[i].SetActive(false);
         }
 
 
@@ -149,13 +153,15 @@ public class MapPrefab : MonoBehaviour
             if (previewMenuInEditor)
             {
                 for (int i = 0; i < objectsToDisableDuringMenu.Length; i++)
-                    if (objectsToDisableDuringMenu[i].activeInHierarchy)
-                        objectsToDisableDuringMenu[i].SetActive(false);
+                    if (objectsToDisableDuringMenu[i] != null)
+                        if (objectsToDisableDuringMenu[i].activeInHierarchy)
+                            objectsToDisableDuringMenu[i].SetActive(false);
             }
             else
                 for (int i = 0; i < objectsToDisableDuringMenu.Length; i++)
-                    if (!objectsToDisableDuringMenu[i].activeInHierarchy)
-                        objectsToDisableDuringMenu[i].SetActive(true);
+                    if (objectsToDisableDuringMenu[i] != null)
+                        if (!objectsToDisableDuringMenu[i].activeInHierarchy)
+                            objectsToDisableDuringMenu[i].SetActive(true);
         }
     }
     #endregion

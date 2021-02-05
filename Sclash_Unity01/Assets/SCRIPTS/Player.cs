@@ -12,34 +12,17 @@ using Photon.Pun;
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region Events
-
     public delegate void OnDrawnEvent();
     public event OnDrawnEvent DrawnEvent;
-
-
     #endregion
 
 
     #region VARIABLES
     #region MANAGERS
     [Header("MANAGERS")]
-    // Audio manager
-    [Tooltip("The name of the object in the scene containing the AudioManager script component, to find its reference")]
-    [SerializeField] string audioManagerName = "GlobalManager";
     AudioManager audioManager;
-
-    // Game manager
-    [Tooltip("The name of the object in the scene containing the GlobalManager script component, to find its reference")]
-    [SerializeField] string gameManagerName = "GlobalManager";
     [HideInInspector] public GameManager gameManager;
-
-    // Input manager
-    [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
-    [SerializeField] string inputManagerName = "GlobalManager";
     InputManager inputManager = null;
-
-    // Stats manager
-    [SerializeField] string statsManagerName = "GlobalManager";
     StatsManager statsManager = null;
     #endregion
 
@@ -104,6 +87,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] bool hasFinishedAnim = false;
     [SerializeField] bool waitingForNextAttack = false;
     [SerializeField] bool hasAttackRecoveryAnimFinished = false;
+
+    public enum CharacterType
+    {
+        duel,
+        campaign,
+    }
+
+    [SerializeField] public CharacterType characterType = CharacterType.duel;
     #endregion
 
 
@@ -477,8 +468,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region FUNCTIONS
-    #region BASE FUNCTIONS
-    private void Awake()
+    #region BASE FUNCTIONS 
+    private void Awake()                                                    // AWAKE
     {
         // GET PLAYER CHARACTER CHANGE ANIMATOR (Because I always forget to add it back while editing the animations (Because I have to remove it, it conflicts with the main animator))
         if (spriteRenderer.gameObject.GetComponent<Animator>() == null)
@@ -487,15 +478,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             characterChanger.characterChangeAnimator.runtimeAnimatorController = characterChangerAnimatorController;
     }
 
-    void Start()
+    void Start()                                                                // START
     {
         // GET MANAGERS
-        audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
-        gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
-        // Get input manager
-        inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
-        // Get stats manager
-        statsManager = GameObject.Find(statsManagerName).GetComponent<StatsManager>();
+        //audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
+        audioManager = AudioManager.Instance;
+        //gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
+        gameManager = GameManager.Instance;
+        //inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
+        inputManager = InputManager.Instance;
+        //statsManager = GameObject.Find(statsManagerName).GetComponent<StatsManager>();
+        statsManager = StatsManager.Instance;
+
 
         // The forward attack touches a little behind the character for cool effects
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
@@ -506,7 +500,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // Reset all the player's values and variable to start fresh
-        StartCoroutine(GetOtherPlayerNum());
+        Invoke("GetOtherPlayerNum", 0.2f);
         SetUpStaminaBars();
         deathFXbaseAngles = deathBloodFX.transform.localEulerAngles;
         ResetAllPlayerValuesForNextMatch();
@@ -525,415 +519,429 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Update is called once per graphic frame
-    void Update()
+    void Update()                                                                                                // UPDATE
     {
-        if (photonView != null && !photonView.IsMine)
+        if (enabled && isActiveAndEnabled)
         {
-            UpdateStaminaSlidersValue();
-            UpdateStaminaColor();
+            // ONLINE
+            if (photonView != null && !photonView.IsMine)
+            {
+                UpdateStaminaSlidersValue();
+                UpdateStaminaColor();
 
-            SetStaminaBarsOpacity(staminaBarsOpacity);
 
-            return;
+                SetStaminaBarsOpacity(staminaBarsOpacity);
+
+
+                return;
+            }
+
+
+            if (opponent == null)
+                FindOpponent();
+
+
+            // Action depending on state
+            switch (playerState)
+            {
+                case STATE.frozen:                          // FROZEN                         
+                    break;
+
+                case STATE.sneathing:                       // SNEATHING
+                    break;
+
+                case STATE.sneathed:                        // SNEATHED
+                    ManageOrientation();
+                    ManageIA();
+                    ManageDraw();
+                    break;
+
+                case STATE.drawing:                                // DRAWING
+                    break;
+
+                case STATE.battleDrawing:                              // BATTLE DRAWING
+                    break;
+
+                case STATE.battleSneathing:                                 // BATTLE SNEATHING
+                    break;
+
+                case STATE.battleSneathedNormal:                            // BATTLE SNEATHED NORMAL
+                    ManageBattleDraw();
+                    break;
+
+                case STATE.normal:                                              // NORMAL
+                    ManageJumpInput();
+                    ManageChargeInput();
+                    ManageDashInput();
+                    ManagePommel();
+                    ManageParryInput();
+                    ManageMaintainParryInput();
+                    ManageBattleSneath();
+
+                    UpdateStaminaSlidersValue();
+                    UpdateStaminaColor();
+
+                    UpdateChargeShadowSize();
+                    break;
+
+                case STATE.charging:                                    // CHARGING
+                    ManageDashInput();
+                    ManagePommel();
+                    ManageParryInput();
+                    ManageMaintainParryInput();
+                    ManageCharging();
+
+                    UpdateChargeShadowSize();
+                    break;
+
+                case STATE.attacking:                                           // ATTACKING
+                    UpdateChargeShadowSize();
+                    break;
+
+                case STATE.canAttackAfterAttack:                                        // CAN ATTACK AFTER ATTACK
+                    ManageJumpInput();
+                    ManageChargeInput();
+                    ManageDashInput();
+                    ManagePommel();
+                    ManageParryInput();
+                    ManageMaintainParryInput();
+
+                    UpdateStaminaSlidersValue();
+                    UpdateStaminaColor();
+
+                    UpdateChargeShadowSize();
+                    break;
+
+                case STATE.recovering:                                      // RECOVERING
+                    UpdateChargeShadowSize();
+                    break;
+
+                case STATE.pommeling:                                           // POMMELING
+                    ManageDashInput();
+                    break;
+
+                case STATE.parrying:                                            // PARRYING
+                    UpdateStaminaSlidersValue();
+                    UpdateStaminaColor();
+                    break;
+
+                case STATE.maintainParrying:                                    // MAINTING PARYYING
+                    ManageMaintainParryInput();
+                    break;
+
+                case STATE.preparingToJump:                                             // PREPARING TO JUMP
+                    break;
+
+                case STATE.jumping:                                                 // JUMPING
+                    break;
+
+                case STATE.dashing:                                                     // DASHING
+                    ManageDashInput();
+                    ManageChargeInput();
+                    ManagePommel();
+                    ManageParryInput();
+                    ManageMaintainParryInput();
+                    break;
+
+                case STATE.clashed:                                             // CLASHED
+                    RunDash();
+                    break;
+
+                case STATE.enemyKilled:                                                     // ENEMY KILLED
+                    break;
+
+                case STATE.enemyKilledEndMatch:                                             // ENEMY KILLED END MATCH
+                    break;
+
+                case STATE.dead:                                                // DEAD
+                    break;
+            }
+
+
+            // Cheatcodes to use for development purposes
+            if (gameManager.cheatCodes)
+                CheatsInputs();
         }
-
-        if (opponent == null)
-            FindOpponent();
-
-        // Action depending on state
-        switch (playerState)
-        {
-            case STATE.frozen:
-                break;
-
-            case STATE.sneathing:
-                break;
-
-            case STATE.sneathed:
-                ManageOrientation();
-                ManageIA();
-                ManageDraw();
-                break;
-
-            case STATE.drawing:
-                break;
-
-            case STATE.battleDrawing:
-                break;
-
-            case STATE.battleSneathing:
-                break;
-
-            case STATE.battleSneathedNormal:
-                ManageBattleDraw();
-                break;
-
-            case STATE.normal:
-                ManageJumpInput();
-                ManageChargeInput();
-                ManageDashInput();
-                ManagePommel();
-                ManageParryInput();
-                ManageMaintainParryInput();
-                ManageBattleSneath();
-
-                UpdateStaminaSlidersValue();
-                UpdateStaminaColor();
-
-                UpdateChargeShadowSize();
-                break;
-
-            case STATE.charging:
-                ManageDashInput();
-                ManagePommel();
-                ManageParryInput();
-                ManageMaintainParryInput();
-                ManageCharging();
-
-                UpdateChargeShadowSize();
-                break;
-
-            case STATE.attacking:
-                UpdateChargeShadowSize();
-                break;
-
-            case STATE.canAttackAfterAttack:
-                ManageJumpInput();
-                ManageChargeInput();
-                ManageDashInput();
-                ManagePommel();
-                ManageParryInput();
-                ManageMaintainParryInput();
-
-                UpdateStaminaSlidersValue();
-                UpdateStaminaColor();
-
-                UpdateChargeShadowSize();
-                break;
-
-            case STATE.recovering:
-                UpdateChargeShadowSize();
-                break;
-
-            case STATE.pommeling:
-                ManageDashInput();
-                break;
-
-            case STATE.parrying:
-                UpdateStaminaSlidersValue();
-                UpdateStaminaColor();
-                break;
-
-            case STATE.maintainParrying:
-                ManageMaintainParryInput();
-                break;
-
-            case STATE.preparingToJump:
-                break;
-
-            case STATE.jumping:
-                break;
-
-            case STATE.dashing:
-                ManageDashInput();
-                ManageChargeInput();
-                ManagePommel();
-                ManageParryInput();
-                ManageMaintainParryInput();
-                break;
-
-            case STATE.clashed:
-                RunDash();
-                break;
-
-            case STATE.enemyKilled:
-                break;
-
-            case STATE.enemyKilledEndMatch:
-                break;
-
-            case STATE.dead:
-                break;
-        }
-
-
-        // Cheatcodes to use for development purposes
-        if (gameManager.cheatCodes)
-            CheatsInputs();
     }
 
     // FixedUpdate is called 50 times per second
-    void FixedUpdate()
+    void FixedUpdate()                                                                                                                      // FIXED UPDATE
     {
-        // ONLINE
-        if (photonView != null && !photonView.IsMine)
+        if (enabled && isActiveAndEnabled)
         {
-            Vector2 lagDistance = netTargetPos - rb.position;
-            //Debug.Log(lagDistance);
-
-            // HIGH DISTANCE -> TELEPORT PLAYER
-            if (lagDistance.magnitude > 3f)
+            // ONLINE
+            if (photonView != null && !photonView.IsMine)
             {
-                rb.position = netTargetPos;
-                lagDistance = Vector2.zero;
+                Vector2 lagDistance = netTargetPos - rb.position;
+                //Debug.Log(lagDistance);
+
+
+                // HIGH DISTANCE -> TELEPORT PLAYER
+                if (lagDistance.magnitude > 3f)
+                {
+                    rb.position = netTargetPos;
+                    lagDistance = Vector2.zero;
+                }
+
+
+                if (lagDistance.magnitude < 0.11f)
+                    // Player is nearly at the point
+                    rb.velocity = Vector2.zero;
+                else
+                {
+                    //Player must move to the point
+                    if (playerState != STATE.dashing)
+                        rb.velocity = new Vector2(lagDistance.normalized.x * baseMovementsSpeed, rb.velocity.y);
+                    else
+                        rb.velocity = new Vector2(lagDistance.normalized.x * 15, rb.velocity.y);
+                }
+
+
+                return;
             }
 
-            if (lagDistance.magnitude < 0.11f)
-                // Player is nearly at the point
-                rb.velocity = Vector2.zero;
+
+
+            // KICK FRAMES
+            if (kickFrame)
+                ApplyPommelHitbox();
+
+
+
+            // Transparency on dodge frames
+            if (cheatSettings.useTransparencyForDodgeFrames && untouchableFrame)
+            {
+                if (spriteRenderer != null)
+                    spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
+                if (maskSpriteRenderer != null)
+                    maskSpriteRenderer.color = new Color(maskSpriteRenderer.color.r, maskSpriteRenderer.color.g, maskSpriteRenderer.color.b, untouchableFrameOpacity);
+                if (weaponSpriteRenderer != null)
+                    weaponSpriteRenderer.color = new Color(weaponSpriteRenderer.color.r, weaponSpriteRenderer.color.g, weaponSpriteRenderer.color.b, untouchableFrameOpacity);
+                if (sheathSpriteRenderer != null)
+                    sheathSpriteRenderer.color = new Color(sheathSpriteRenderer.color.r, sheathSpriteRenderer.color.g, sheathSpriteRenderer.color.b, untouchableFrameOpacity);
+                if (scarfRenderer != null)
+                    scarfRenderer.material.color = new Color(scarfRenderer.material.color.r, scarfRenderer.material.color.g, scarfRenderer.material.color.b, untouchableFrameOpacity);
+            }
             else
             {
-                //Player must move to the point
-                if (playerState != STATE.dashing)
-                    rb.velocity = new Vector2(lagDistance.normalized.x * baseMovementsSpeed, rb.velocity.y);
-                else
-                    rb.velocity = new Vector2(lagDistance.normalized.x * 15, rb.velocity.y);
-
+                if (spriteRenderer != null)
+                    spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
+                if (maskSpriteRenderer != null)
+                    maskSpriteRenderer.color = new Color(maskSpriteRenderer.color.r, maskSpriteRenderer.color.g, maskSpriteRenderer.color.b, 1);
+                if (weaponSpriteRenderer != null)
+                    weaponSpriteRenderer.color = new Color(weaponSpriteRenderer.color.r, weaponSpriteRenderer.color.g, weaponSpriteRenderer.color.b, 1);
+                if (sheathSpriteRenderer != null)
+                    sheathSpriteRenderer.color = new Color(sheathSpriteRenderer.color.r, sheathSpriteRenderer.color.g, sheathSpriteRenderer.color.b, 1);
+                if (scarfRenderer != null)
+                    scarfRenderer.material.color = new Color(scarfRenderer.material.color.r, scarfRenderer.material.color.g, scarfRenderer.material.color.b, 1);
             }
 
-            return;
-        }
 
 
-        // KICK FRAMES
-        if (kickFrame)
-            ApplyPommelHitbox();
+            // Behaviour depending on state
+            switch (playerState)
+            {
+                case STATE.frozen:                                                      // FROZEN
+                    SetStaminaBarsOpacity(0);
+                    rb.velocity = Vector2.zero;
+                    break;
 
+                case STATE.sneathing:                                                       // SNEATHING
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    if (hasFinishedAnim)
+                    {
+                        hasFinishedAnim = false;
+                        SwitchState(STATE.sneathed);
+                    }
+                    break;
 
+                case STATE.sneathed:                                                    // SNEATHED
+                    ManageStaminaRegen();
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    rb.velocity = new Vector2(0, rb.velocity.y);
+                    break;
 
-        // Transparency on dodge frames
-        if (cheatSettings.useTransparencyForDodgeFrames && untouchableFrame)
-        {
-            if (spriteRenderer != null)
-                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, untouchableFrameOpacity);
-            if (maskSpriteRenderer != null)
-                maskSpriteRenderer.color = new Color(maskSpriteRenderer.color.r, maskSpriteRenderer.color.g, maskSpriteRenderer.color.b, untouchableFrameOpacity);
-            if (weaponSpriteRenderer != null)
-                weaponSpriteRenderer.color = new Color(weaponSpriteRenderer.color.r, weaponSpriteRenderer.color.g, weaponSpriteRenderer.color.b, untouchableFrameOpacity);
-            if (sheathSpriteRenderer != null)
-                sheathSpriteRenderer.color = new Color(sheathSpriteRenderer.color.r, sheathSpriteRenderer.color.g, sheathSpriteRenderer.color.b, untouchableFrameOpacity);
-            if (scarfRenderer != null)
-                scarfRenderer.material.color = new Color(scarfRenderer.material.color.r, scarfRenderer.material.color.g, scarfRenderer.material.color.b, untouchableFrameOpacity);
-        }
-        else
-        {
-            if (spriteRenderer != null)
-                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1);
-            if (maskSpriteRenderer != null)
-                maskSpriteRenderer.color = new Color(maskSpriteRenderer.color.r, maskSpriteRenderer.color.g, maskSpriteRenderer.color.b, 1);
-            if (weaponSpriteRenderer != null)
-                weaponSpriteRenderer.color = new Color(weaponSpriteRenderer.color.r, weaponSpriteRenderer.color.g, weaponSpriteRenderer.color.b, 1);
-            if (sheathSpriteRenderer != null)
-                sheathSpriteRenderer.color = new Color(sheathSpriteRenderer.color.r, sheathSpriteRenderer.color.g, sheathSpriteRenderer.color.b, 1);
-            if (scarfRenderer != null)
-                scarfRenderer.material.color = new Color(scarfRenderer.material.color.r, scarfRenderer.material.color.g, scarfRenderer.material.color.b, 1);
-        }
+                case STATE.drawing:                                                     // DRAWING
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    if (DrawnEvent != null)
+                        DrawnEvent();
+                    if (hasFinishedAnim)
+                    {
+                        hasFinishedAnim = false;
+                        SwitchState(STATE.normal);
+                        gameManager.SaberDrawn(playerNum);
+                    }
+                    break;
 
+                case STATE.battleDrawing:                                               // BATTLE DRAWING
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    rb.velocity = Vector2.zero;
+                    if (hasFinishedAnim)
+                        SwitchState(STATE.normal);
+                    break;
 
+                case STATE.battleSneathing:                                                     // BATTLE SNEATHING
+                    if (hasFinishedAnim)
+                        SwitchState(STATE.battleSneathedNormal);
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    rb.velocity = Vector2.zero;
+                    break;
 
-        // Behaviour depending on state
-        switch (playerState)
-        {
-            case STATE.frozen:                                                      // FROZEN
-                SetStaminaBarsOpacity(0);
-                rb.velocity = Vector2.zero;
-                break;
+                case STATE.battleSneathedNormal:                                            // BATTLE SNEATHED NORMAL
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    ManageMovementsInputs();
+                    ManageOrientation();
+                    break;
 
-            case STATE.sneathing:                                                       // SNEATHING
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                if (hasFinishedAnim)
-                {
-                    hasFinishedAnim = false;
-                    SwitchState(STATE.sneathed);
-                }
-                break;
+                case STATE.normal:                                                      // NORMAL
+                    ManageMovementsInputs();
+                    ManageOrientation();
+                    ManageStaminaRegen();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
+                    break;
 
-            case STATE.sneathed:                                                    // SNEATHED
-                ManageStaminaRegen();
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                rb.velocity = new Vector2(0, rb.velocity.y);
-                break;
+                case STATE.charging:                                                // CHARGING
+                    ManageMovementsInputs();
+                    ManageStaminaRegen();
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    break;
 
-            case STATE.drawing:                                                     // DRAWING
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                if (DrawnEvent != null)
-                    DrawnEvent();
-                if (hasFinishedAnim)
-                {
-                    hasFinishedAnim = false;
-                    SwitchState(STATE.normal);
-                    gameManager.SaberDrawn(playerNum);
-                }
-                break;
+                case STATE.attacking:                                               // ATTACKING
+                    RunDash();
+                    ManageMovementsInputs();
+                    if (hasFinishedAnim)
+                    {
+                        hasFinishedAnim = false;
+                        SwitchState(STATE.recovering);
+                    }
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    // Apply damages if the current attack animation has entered active frame, thus activating the bool in the animation
+                    if (activeFrame)
+                        ApplyAttackHitbox();
+                    break;
 
-            case STATE.battleDrawing:                                               // BATTLE DRAWING
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                rb.velocity = Vector2.zero;
-                if (hasFinishedAnim)
-                    SwitchState(STATE.normal);
-                break;
+                case STATE.canAttackAfterAttack:                                    // CAN ATTACK AFTER ATTACK
+                    ManageStaminaRegen();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    if (hasAttackRecoveryAnimFinished)
+                    {
+                        hasFinishedAnim = false;
+                        SwitchState(STATE.normal);
+                    }
+                    break;
 
-            case STATE.battleSneathing:                                                     // BATTLE SNEATHING
-                if (hasFinishedAnim)
-                    SwitchState(STATE.battleSneathedNormal);
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                rb.velocity = Vector2.zero;
-                break;
+                case STATE.recovering:                                              // RECOVERING
+                    if (waitingForNextAttack)
+                        SwitchState(STATE.canAttackAfterAttack);
+                    if (hasAttackRecoveryAnimFinished)
+                    {
+                        hasFinishedAnim = false;
+                        SwitchState(STATE.normal);
+                    }
+                    ManageStaminaRegen();
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    RunDash();
+                    rb.velocity = Vector3.zero;
+                    break;
 
-            case STATE.battleSneathedNormal:                                            // BATTLE SNEATHED NORMAL
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                ManageMovementsInputs();
-                ManageOrientation();
-                break;
+                case STATE.pommeling:                                               // POMMELING
+                    RunDash();
+                    if (hasFinishedAnim)
+                    {
+                        hasFinishedAnim = false;
+                        SwitchState(STATE.normal);
+                    }
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    rb.velocity = Vector3.zero;
+                    break;
 
-            case STATE.normal:                                                      // NORMAL
-                ManageMovementsInputs();
-                ManageOrientation();
-                ManageStaminaRegen();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
-                break;
+                case STATE.parrying:                                                // PARRYING
+                    RunDash();
+                    if (hasFinishedAnim)
+                    {
+                        hasFinishedAnim = false;
+                        SwitchState(STATE.normal);
+                    }
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    rb.velocity = Vector3.zero;
+                    break;
 
-            case STATE.charging:                                                // CHARGING
-                ManageMovementsInputs();
-                ManageStaminaRegen();
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                break;
+                case STATE.maintainParrying:                                        // MAINTAIN PARRY
+                    RunDash();
+                    if (hasFinishedAnim)
+                        SwitchState(STATE.normal);
+                    StaminaCost(maintainParryStaminaCostOverTime, false);
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    break;
 
-            case STATE.attacking:                                               // ATTACKING
-                RunDash();
-                ManageMovementsInputs();
-                if (hasFinishedAnim)
-                {
-                    hasFinishedAnim = false;
-                    SwitchState(STATE.recovering);
-                }
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                // Apply damages if the current attack animation has entered active frame, thus activating the bool in the animation
-                if (activeFrame)
-                    ApplyAttackHitbox();
-                break;
+                case STATE.preparingToJump:                                         // PREPARING TO JUMP
+                    if (hasFinishedAnim)
+                        ActuallyJump();
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    break;
 
-            case STATE.canAttackAfterAttack:                                    // CAN ATTACK AFTER ATTACK
-                ManageStaminaRegen();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                if (hasAttackRecoveryAnimFinished)
-                {
-                    hasFinishedAnim = false;
-                    SwitchState(STATE.normal);
-                }
-                break;
+                case STATE.jumping:                                                 // JUMPING
+                    if (hasAttackRecoveryAnimFinished)
+                        SwitchState(STATE.normal);
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    break;
 
-            case STATE.recovering:                                              // RECOVERING
-                if (waitingForNextAttack)
-                    SwitchState(STATE.canAttackAfterAttack);
-                if (hasAttackRecoveryAnimFinished)
-                {
-                    hasFinishedAnim = false;
-                    SwitchState(STATE.normal);
-                }
-                ManageStaminaRegen();
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                RunDash();
-                rb.velocity = Vector3.zero;
-                break;
+                case STATE.dashing:                                                 // DASHING
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
+                    RunDash();
+                    break;
 
-            case STATE.pommeling:                                               // POMMELING
-                RunDash();
-                if (hasFinishedAnim)
-                {
-                    hasFinishedAnim = false;
-                    SwitchState(STATE.normal);
-                }
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                rb.velocity = Vector3.zero;
-                break;
+                case STATE.clashed:                                                     // CLASHED
+                    ManageStaminaRegen();
+                    UpdateStaminaSlidersValue();
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    UpdateStaminaColor();
 
-            case STATE.parrying:                                                // PARRYING
-                RunDash();
-                if (hasFinishedAnim)
-                {
-                    hasFinishedAnim = false;
-                    SwitchState(STATE.normal);
-                }
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                rb.velocity = Vector3.zero;
-                break;
+                    rb.velocity = Vector3.zero;
+                    break;
 
-            case STATE.maintainParrying:                                        // MAINTAIN PARRY
-                RunDash();
-                if (hasFinishedAnim)
-                    SwitchState(STATE.normal);
-                StaminaCost(maintainParryStaminaCostOverTime, false);
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                break;
+                case STATE.enemyKilled:                                     // ENEMY KILLED
+                    ManageMovementsInputs();
+                    SetStaminaBarsOpacity(0);
+                    playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
+                    break;
 
-            case STATE.preparingToJump:                                         // PREPARING TO JUMP
-                if (hasFinishedAnim)
-                    ActuallyJump();
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                break;
+                case STATE.enemyKilledEndMatch:                                     // ENEMY KILLED END MATCH
+                    ManageMovementsInputs();
+                    SetStaminaBarsOpacity(0);
+                    break;
 
-            case STATE.jumping:                                                 // JUMPING
-                if (hasAttackRecoveryAnimFinished)
-                    SwitchState(STATE.normal);
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                break;
-
-            case STATE.dashing:                                                 // DASHING
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-                RunDash();
-                break;
-
-            case STATE.clashed:                                                     // CLASHED
-                ManageStaminaRegen();
-                UpdateStaminaSlidersValue();
-                SetStaminaBarsOpacity(staminaBarsOpacity);
-                UpdateStaminaColor();
-
-                rb.velocity = Vector3.zero;
-                break;
-
-            case STATE.enemyKilled:                                     // ENEMY KILLED
-                ManageMovementsInputs();
-                SetStaminaBarsOpacity(0);
-                playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
-                break;
-
-            case STATE.enemyKilledEndMatch:                                     // ENEMY KILLED END MATCH
-                ManageMovementsInputs();
-                SetStaminaBarsOpacity(0);
-                break;
-
-            case STATE.dead:
-                break;
+                case STATE.dead:                                        // DEAD
+                    break;
+            }
         }
     }
     #endregion
@@ -973,7 +981,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 actualMovementsSpeed = sneathedMovementsSpeed;
                 rb.simulated = true;
 
-                characterChanger.enabled = true;
+                if (characterType == CharacterType.duel)
+                    characterChanger.enabled = true;
                 break;
 
             case STATE.drawing:                                         // DRAWING
@@ -1156,11 +1165,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region PLAYERS IDENTIFICATION
-    IEnumerator GetOtherPlayerNum()
+    // ENEMY NUM
+    void GetOtherPlayerNum()
     {
-        yield return new WaitForSeconds(0.2f);
-
-
         for (int i = 0; i < gameManager.playersList.Count; i++)
             if (i != playerNum)
                 otherPlayerNum = i;
@@ -1187,7 +1194,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region RESET ALL VALUES
     public void ResetAllPlayerValuesForNextMatch()
     {
-        SwitchState(Player.STATE.frozen);
+        // Set up the character depending on the game's part
+        if (characterType == CharacterType.duel)
+            SwitchState(Player.STATE.frozen);
+        else if (characterType == CharacterType.campaign)
+            SwitchState(Player.STATE.sneathed);
 
 
         currentHealth = maxHealth;
@@ -1250,6 +1261,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
         bool hit = false;
+
 
         if (playerState != STATE.dead)
         {
@@ -1325,10 +1337,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // STATS
-                if (statsManager)
-                    statsManager.AddAction(ACTION.successfulParry, playerNum, 0);
-                else
-                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+                if (characterType == CharacterType.duel)
+                {
+                    if (statsManager)
+                        statsManager.AddAction(ACTION.successfulParry, playerNum, 0);
+                    else
+                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                }
             }
             // UNTOUCHABLE FRAMES
             else if (untouchableFrame)
@@ -1341,10 +1356,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // STATS
-                if (statsManager)
-                    statsManager.AddAction(ACTION.dodge, playerNum, 0);
-                else
-                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+                if (characterType == CharacterType.duel)
+                {
+                    if (statsManager)
+                        statsManager.AddAction(ACTION.dodge, playerNum, 0);
+                    else
+                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                }
             }
             // TOUCHED
             else
@@ -1449,10 +1467,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // STATS
-            if (statsManager)
-                statsManager.AddAction(ACTION.death, playerNum, 0);
-            else
-                Debug.Log("Couldn't access statsManager to record action, ignoring");
+            if (characterType == CharacterType.duel)
+            {
+                if (statsManager)
+                    statsManager.AddAction(ACTION.death, playerNum, 0);
+                else
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+            }
         }
     }
 
@@ -1512,7 +1533,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
             return;
 
-        if (inputManager.playerInputs[playerNum].switchChar && opponent.playerIsAI)
+
+        if (inputManager != null && inputManager.playerInputs[playerNum].switchChar && opponent.playerIsAI)
         {
             IAScript enemyIA = opponent.GetComponent<IAScript>();
 
@@ -1618,7 +1640,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 stamina = 0;
 
 
-
             // SOUND
             // Used all stamina sfx
             if (stamina < staminaCostForMoves)
@@ -1629,6 +1650,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     Debug.Log("Couldn't fine stamina end audio source, ignoring");
             }
             
+
             // Used stamina sfx
             if (staminaUseSFX != null)
                 staminaUseSFX.Play();
@@ -1646,7 +1668,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void UpdateStaminaSlidersValue()
     {
         // DETECT STAMINA CHARGE UP
-        if (Mathf.FloorToInt(oldStaminaValue) < Mathf.FloorToInt(stamina) && !gameManager.playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
+        if (Mathf.FloorToInt(oldStaminaValue) < Mathf.FloorToInt(stamina) && (characterType == CharacterType.campaign || (characterType == CharacterType.duel && !gameManager.playerDead && gameManager.gameState == GameManager.GAMESTATE.game)))
             if (!staminaRecupAnimOn && !staminaBreakAnimOn)
             {
                 staminaBarChargedAudioEffectSource.Play();
@@ -1787,6 +1809,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             yield return new WaitForSecondsRealtime(0.01f);
         }
 
+
         if (cheatSettings.useExtraDiegeticFX)
             staminaRecupFinishedFX.Play();
         staminaRecupAnimOn = false;
@@ -1845,13 +1868,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region MOVEMENTS
-    // MOVEMENTS
     public void ManageMovementsInputs()
     {
-
         // The player move if they can in their state
         if (rb.simulated == false)
             rb.simulated = true;
+
 
         if (!playerIsAI)
         {
@@ -1865,9 +1887,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
 
 
-
         // FX
-        if (Mathf.Abs(rb.velocity.x) > minSpeedForWalkFX && GameManager.Instance.gameState == GameManager.GAMESTATE.game && playerState == Player.STATE.normal)
+        if (Mathf.Abs(rb.velocity.x) > minSpeedForWalkFX && playerState == Player.STATE.normal && (characterType == CharacterType.campaign || (characterType == CharacterType.duel && GameManager.Instance.gameState == GameManager.GAMESTATE.game)))
         {
             if ((rb.velocity.x * -transform.localScale.x) < 0)
             {
@@ -2047,10 +2068,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                     // STATS
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.charge, playerNum, 0);
-                    else
-                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                    if (characterType == CharacterType.duel)
+                    {
+                        if (statsManager)
+                            statsManager.AddAction(ACTION.charge, playerNum, 0);
+                        else
+                            Debug.Log("Couldn't access statsManager to record action, ignoring");
+                    }
 
 
                     // FX
@@ -2087,10 +2111,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                     // STATS
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.charge, playerNum, 0);
-                    else
-                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                    if (characterType == CharacterType.duel)
+                    {
+                        if (statsManager)
+                            statsManager.AddAction(ACTION.charge, playerNum, 0);
+                        else
+                            Debug.Log("Couldn't access statsManager to record action, ignoring");
+                    }
 
 
                     // FX
@@ -2136,7 +2163,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
-                if (ConnectManager.Instance.enableMultiplayer)
+                if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                     photonView.RPC("ReleaseAttack", RpcTarget.All);
                 else
                     ReleaseAttack();
@@ -2157,6 +2184,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 // FX
                 chargeFX.Play();
             }
+
 
             if (chargeLevel >= maxChargeLevel)
             {
@@ -2286,7 +2314,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         float dashDirection = 0;
 
         int inputNum;
-        if (ConnectManager.Instance.connectedToMaster)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
             inputNum = 0;
         else
             inputNum = playerNum;
@@ -2309,10 +2337,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // STATS
-                if (statsManager)
-                    statsManager.AddAction(ACTION.forwardAttack, inputNum, saveChargeLevelForStats);
-                else
-                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+                if (characterType == CharacterType.duel)
+                {
+                    if (statsManager)
+                        statsManager.AddAction(ACTION.forwardAttack, inputNum, saveChargeLevelForStats);
+                    else
+                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                }
             }
             else
             {
@@ -2324,10 +2355,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // STATS
-                if (statsManager)
-                    statsManager.AddAction(ACTION.backwardsAttack, inputNum, saveChargeLevelForStats);
-                else
-                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+                if (characterType == CharacterType.duel)
+                {
+                    if (statsManager)
+                        statsManager.AddAction(ACTION.backwardsAttack, inputNum, saveChargeLevelForStats);
+                    else
+                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                }
             }
         }
         else
@@ -2337,10 +2371,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // STATS
-            if (statsManager)
-                statsManager.AddAction(ACTION.neutralAttack, inputNum, saveChargeLevelForStats);
-            else
-                Debug.Log("Couldn't access statsManager to record action, ignoring");
+            if (characterType == CharacterType.duel)
+            {
+                if (statsManager)
+                    statsManager.AddAction(ACTION.neutralAttack, inputNum, saveChargeLevelForStats);
+                else
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+            }
         }
 
 
@@ -2535,10 +2572,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         StaminaCost(staminaCostForMoves, true);
 
         // STATS
-        if (statsManager)
-            statsManager.AddAction(ACTION.parry, playerNum, chargeLevel);
-        else
-            Debug.Log("Couldn't access statsManager to record action, ignoring");
+        if (characterType == CharacterType.duel)
+        {
+             if (statsManager)
+                statsManager.AddAction(ACTION.parry, playerNum, chargeLevel);
+            else
+                Debug.Log("Couldn't access statsManager to record action, ignoring");
+        }
     }
     #endregion
 
@@ -2553,6 +2593,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Detect pommel inputs
     void ManagePommel()
     {
+        // ONLINE
         if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
         {
             if (!inputManager.playerInputs[0].kick)
@@ -2597,10 +2638,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         // STATS
-        if (statsManager)
-            statsManager.AddAction(ACTION.pommel, playerNum, chargeLevel);
-        else
-            Debug.Log("Couldn't access statsManager to record action, ignoring");
+        if (characterType == CharacterType.duel)
+        {
+            if (statsManager)
+                statsManager.AddAction(ACTION.pommel, playerNum, chargeLevel);
+            else
+                Debug.Log("Couldn't access statsManager to record action, ignoring");
+        }
     }
 
     // Apply pommel hitbox depending on kick frames
@@ -2718,10 +2762,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
             // STATS
-            if (statsManager)
-                statsManager.AddAction(ACTION.successfulPommel, otherPlayerNum, chargeLevel);
-            else
-                Debug.Log("Couldn't access statsManager to record action, ignoring");
+            if (characterType == CharacterType.duel)
+            {
+                if (statsManager)
+                    statsManager.AddAction(ACTION.successfulPommel, otherPlayerNum, chargeLevel);
+                else
+                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+            }
         }
     }
     #endregion
@@ -2788,7 +2835,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region DASH
-    //DASH
     // Functions to detect the dash input etc
     void ManageDashInput()
     {
@@ -2947,10 +2993,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // STATS
-                if (statsManager)
-                    statsManager.AddAction(ACTION.forwardDash, otherPlayerNum, chargeLevel);
-                else
-                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+                if (characterType == CharacterType.duel)
+                {
+                    if (statsManager)
+                        statsManager.AddAction(ACTION.forwardDash, otherPlayerNum, chargeLevel);
+                    else
+                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                }
             }
             else
             {
@@ -2959,10 +3008,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
                 // STATS
-                if (statsManager)
-                    statsManager.AddAction(ACTION.backwardsDash, otherPlayerNum, chargeLevel);
-                else
-                    Debug.Log("Couldn't access statsManager to record action, ignoring");
+                if (characterType == CharacterType.duel)
+                {
+                    if (statsManager)
+                        statsManager.AddAction(ACTION.backwardsDash, otherPlayerNum, chargeLevel);
+                    else
+                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                }
             }
 
 
@@ -3038,12 +3090,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (!photonView.IsMine)
                 return;
 
+
         // Orient towards the enemy if player can in their current state
         if (canOrientTowardsEnemy)
         {
             GameObject z = null, p1 = null, p2 = null;
             Vector3 self = Vector3.zero, other = Vector3.zero;
             Player[] stats = new Player[2];
+
+
             for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
             {
                 if (GameManager.Instance.playersList[i] == null)
@@ -3053,10 +3108,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 stats[i] = GameManager.Instance.playersList[i].GetComponent<Player>();
             }
 
+
             foreach (Player stat in stats)
             {
                 if (stat == null)
                     return;
+
 
                 switch (stat.playerNum)
                 {
@@ -3073,6 +3130,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
 
+
             if (p1 == null)
             {
                 Debug.LogWarning("Player 1 not found");
@@ -3080,7 +3138,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 z.transform.position = Vector3.zero;
                 p1 = z;
             }
-
             if (p2 == null)
             {
                 Debug.LogWarning("Player 2 not found");
@@ -3088,6 +3145,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 z.transform.position = Vector3.zero;
                 p2 = z;
             }
+
 
             if (p1 == gameObject)
             {
@@ -3100,9 +3158,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 other = p1.transform.position;
             }
 
-            float sign = Mathf.Sign(self.x - other.x);
 
+            float sign = Mathf.Sign(self.x - other.x);
             Destroy(z);
+
 
             if (orientationCooldownFinished)
                 ApplyOrientation(sign);
@@ -3110,9 +3169,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
         if (Time.time >= orientationCooldown + orientationCooldownStartTime)
-        {
             orientationCooldownFinished = true;
-        }
     }
 
 
@@ -3163,6 +3220,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         */
 
+
         if (Mathf.Sign(gameManager.playersList[otherPlayerNum].transform.localScale.x) == Mathf.Sign(transform.localScale.x))
             deathBloodFX.gameObject.transform.localEulerAngles = new Vector3(deathBloodFXRotation.x, deathBloodFXRotation.y, -deathBloodFXRotationForDirectionChange * transform.localScale.x);
     }
@@ -3186,11 +3244,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 0.2f, 1));
     }
 
+
     // Draw the attack range is the attack is in active frames in the scene viewer
     private void OnDrawGizmos()
     {
         if (activeFrame)
             Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + baseBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + baseBackAttackRangeDisjoint, 0.2f, 1));
+
 
         if (kickFrame)
             Gizmos.DrawWireCube(new Vector3(transform.position.x + (transform.localScale.x * -kickRange / 2), transform.position.y, transform.position.z), new Vector3(kickRange, 0.2f, 1));
@@ -3201,23 +3261,51 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
+    // To set which particles are active depending of the terrain
+    public void SetParticleSets(int index)
+    {
+        bool state = false;
+
+
+        for (int y = 0; y < particlesSets.Count; y++)
+        {
+            if (y == index)
+                state = true;
+            else
+                state = false;
+
+
+            for (int o = 0; o < particlesSets[y].particleSystems.Count; o++)
+                particlesSets[y].particleSystems[o].SetActive(state);
+        }
+    }
+
+
+
+
+
+
 
 
     #region CHEATS
     void CheatsInputs()
     {
+        // CLASH
         if (Input.GetKeyDown(cheatSettings.clashCheatKey))
             TriggerClash();
 
 
+        // DEATH
         if (Input.GetKeyDown(cheatSettings.deathCheatKey))
             TakeDamage(gameObject, 1);
 
 
+        // STAMINA MAX
         if (Input.GetKeyDown(cheatSettings.staminaCheatKey))
             stamina = maxStamina;
 
 
+        // REGEN STAMINA
         if (Input.GetKeyDown(cheatSettings.stopStaminaRegenCheatKey))
         {
             if (canRegenStamina)
@@ -3227,12 +3315,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
 
 
+        // RECUP STAMINA
         if (Input.GetKeyDown(cheatSettings.triggerStaminaRecupAnim))
             StartCoroutine(TriggerStaminaRecupAnim());
     }
 
     #endregion
     #endregion
+
+
+
+
+
 
 
     #region Network

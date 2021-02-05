@@ -15,15 +15,17 @@ public class PlayRandomSoundInList : MonoBehaviour
 
 
 
+
+
     // BASE FUNCTIONS
-    private void Start()
+    private void Start()                                                        // START
     {
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
     }
 
 
-    void FixedUpdate()
+    void FixedUpdate()                                                                      // FIXED UPDATE
     {
         if (enabled && isActiveAndEnabled)
             if (play)

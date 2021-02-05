@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
 
+
+
+
+
 // Plugged on an audio source, this script allows to modulate the pitch of the source when it plays for variation purposes
 // OPTIMIZED
 [RequireComponent(typeof(AudioSource))]
@@ -18,7 +22,7 @@ public class PitchModulator : MonoBehaviour
 
 
 
-    private void Awake()
+    private void Awake()                                                                // AWAKE
     {
         if (!sourceToModulate)
             sourceToModulate = GetComponent<AudioSource>();
@@ -27,24 +31,29 @@ public class PitchModulator : MonoBehaviour
         basePitch = sourceToModulate.pitch;
     }
 
-    private void OnEnable()
+    private void OnEnable()                                                         // ON ENABLE
     {
         sourceToModulate.pitch = Random.Range(basePitch * pitchModulationLimits.x, basePitch * pitchModulationLimits.y);
     }
 
     // Update is called once per frame
-    void Update()
+    void Update()                                                                                   // UPDATE
     {
-        if (sourceToModulate != null && sourceToModulate.enabled && !modulateOnEnabled && enabled && isActiveAndEnabled)
+        if (enabled && isActiveAndEnabled)
         {
-            if (!sourceToModulate.isPlaying && oldIsPlaying)
-                sourceToModulate.pitch = Random.Range(basePitch * pitchModulationLimits.x, basePitch * pitchModulationLimits.y);
+            if (sourceToModulate != null && sourceToModulate.enabled && !modulateOnEnabled )
+            {
+                if (!sourceToModulate.isPlaying && oldIsPlaying)
+                    sourceToModulate.pitch = Random.Range(basePitch * pitchModulationLimits.x, basePitch * pitchModulationLimits.y);
 
 
-            oldIsPlaying = sourceToModulate.isPlaying;
+                oldIsPlaying = sourceToModulate.isPlaying;
+            }
         }
     }
     
+
+
 
 
 

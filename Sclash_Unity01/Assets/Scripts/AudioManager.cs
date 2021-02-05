@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
+
 // Script that manages most audio stuff of the game, especially music
 // OPTIMIZED I THINK ?
 public class AudioManager : MonoBehaviour
 {
     #region VARIABLES
+    // SINGLETON
+    [HideInInspector] public static AudioManager Instance = null;
+
+
+
     #region MANAGERS
     [Header("MANAGERS")]
-    // Name of the GameManager to find it in the scene
+    [Tooltip("Name of the GameManager to find it in the scene")]
     [SerializeField] GameManager gameManager = null;
-    // Name of the CameraManager to find it in the scene
+    [Tooltip("Name of the CameraManager to find it in the scene")]
     [SerializeField] CameraManager cameraManager = null;
     #endregion
 
@@ -21,7 +27,7 @@ public class AudioManager : MonoBehaviour
 
     // This one might be useless
     [Header("SOUND FUNCTIONS")]
-    // A script that provides premade sound functions to play a little more easily with audio sources
+    [Tooltip("A script that provides premade sound functions to play a little more easily with audio sources (I don't know why I made this it's useless but I'm scared to remove it now)")]
     [SerializeField] SoundFunctions soundFunctions = null;
 
 
@@ -70,7 +76,6 @@ public class AudioManager : MonoBehaviour
     List<float> phasesMainVolumeObjectives = new List<float>(3) { 0, 0, 0 };
     List<float> phasesStrikesVolumeObjectives = new List<float>(3) { 0, 0, 0 };
     [SerializeField] Vector2 playersDistanceForStrikesVolumeLimits = new Vector2(6, 15);
-    //float winVolumeObjective = 0;
     float windVolumeObjective = 0;
     [SerializeField] float volumeFadeSpeed = 0.01f;
     #endregion
@@ -121,7 +126,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource deathSoundFXAudioSource = null;
     [SerializeField] AudioSource slowMoInAudioSource = null;
     [SerializeField] AudioSource slowMoOutAudioSource = null;
-    // Sound FXs audio sources but with a script to play a random sound in a previously filled list
+    [Tooltip("Sound FXs audio sources but with a script to play a random sound in a previously filled list")]
     [SerializeField] public PlayRandomSoundInList matchBeginsRandomSoundSource = null;
     [SerializeField] public PlayRandomSoundInList roundBeginsRandomSoundSource = null;
     #endregion
@@ -141,14 +146,6 @@ public class AudioManager : MonoBehaviour
 
 
     GameObject[] playersList;
-    //float distanceBetweenPlayers = 0;
-
-
-
-
-    //[Header("CHEATS")]
-    //[SerializeField] KeyCode phaseUpCheatKey = KeyCode.Alpha8;
-    //[SerializeField] KeyCode phaseDownCheatKey = KeyCode.Alpha7;
     #endregion
 
 
@@ -167,14 +164,15 @@ public class AudioManager : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    private void Awake()
+    private void Awake()                                                                                    // AWAKE
     {
+        Instance = this;
         GetSourcesDefaultVolume();
     }
 
 
     // Start is called before the first frame update
-    void Start()
+    void Start()                                                                                                    // START
     {
         // Finds the players in the scene to use their data
         FindPlayers();
@@ -182,7 +180,7 @@ public class AudioManager : MonoBehaviour
 
 
     // FixedUpdate is called 50 times per frame
-    private void FixedUpdate()
+    private void FixedUpdate()                                                                                          // FIXED UPDATE
     {
         if (enabled && isActiveAndEnabled)
             switch (audioState)
@@ -228,6 +226,7 @@ public class AudioManager : MonoBehaviour
 
 
     #region AUDIO STATES
+    // SWITCH STATE
     public void SwitchAudioState(AUDIOSTATE newAudioState)
     {
         oldAudioState = audioState;
@@ -361,6 +360,7 @@ public class AudioManager : MonoBehaviour
     {
         int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
 
+
         if (currentBattleIntensity > 0 && (currentMaxScore < gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase))
             if (Time.time - decreaseBattleIntensityLoopStartTime >= decreaseBattleIntensityEveryDuration)
             {
@@ -418,6 +418,7 @@ public class AudioManager : MonoBehaviour
                 if (currentMusicPhase < maxPhase)
                     phaseTransitionStemAudioSource.Play();
 
+
                 isMaxPhase = true;
                 ImmediatelySwitchPhase(0, true, maxPhase);
             }
@@ -451,6 +452,7 @@ public class AudioManager : MonoBehaviour
 
                 phasesStrikesAudioSources[i].Play();
             }
+
 
             decrementCurrentPhaseAtNextLoop = false;
         }
@@ -550,6 +552,7 @@ public class AudioManager : MonoBehaviour
                 windAudioSource.volume = windVolumeObjective;
         }
 
+
         // MENU
         if (menuAudioSource.volume != menuVolumeObjective)
         {
@@ -562,6 +565,7 @@ public class AudioManager : MonoBehaviour
             else if (volumeFadeDirection < 0 && menuAudioSource.volume <= menuVolumeObjective)
                 menuAudioSource.volume = menuVolumeObjective;
         }
+
 
         // MAIN
         for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
@@ -576,6 +580,7 @@ public class AudioManager : MonoBehaviour
                 else if (volumeFadeDirection < 0 && phasesMainAudioSources[i].volume <= phasesMainVolumeObjectives[i])
                     phasesMainAudioSources[i].volume = phasesMainVolumeObjectives[i];
             }
+
 
         // STRIKES
         for (int i = 0; i < phasesStrikesVolumeObjectives.Count; i++)
@@ -602,6 +607,7 @@ public class AudioManager : MonoBehaviour
         else if (tempVolume > maxPhasesStrikesVolumes[currentMusicPhase])
             tempVolume = maxPhasesStrikesVolumes[currentMusicPhase];
 
+
         phasesStrikesVolumeObjectives[currentMusicPhase] = tempVolume;
     }
     #endregion
@@ -610,22 +616,28 @@ public class AudioManager : MonoBehaviour
 
 
 
+
     #region SOUND FX
+    // CLASH
     // Plays clash sound FX
     public void TriggerClashAudioCoroutine()
     {
-        StartCoroutine(ClashAudioCoroutine());
+        ClashAudioCoroutine();
     }
-
-
-    IEnumerator ClashAudioCoroutine()
+    void ClashAudioCoroutine()
     {
         soundFunctions.PlaySoundFromSource(clashImpactSoundFXAudioSOurce);
-        yield return new WaitForSecondsRealtime(clashReverbDelay);
+        //yield return new WaitForSecondsRealtime(clashReverbDelay);
+        //soundFunctions.PlaySoundFromSource(clashReverbSoundFXAudioSource);
+        Invoke("ClashAudioStep2", clashReverbDelay);
+    }
+    void ClashAudioStep2()
+    {
         soundFunctions.PlaySoundFromSource(clashReverbSoundFXAudioSource);
     }
 
 
+    // PARRY
     // Plays successful parry sound FX
     public void TriggerParriedAudio()
     {
@@ -633,6 +645,7 @@ public class AudioManager : MonoBehaviour
     }
 
 
+    // SLASH
     // Triggers successful attack sound FX play
     public void TriggerSuccessfulAttackAudio()
     {
@@ -641,6 +654,7 @@ public class AudioManager : MonoBehaviour
     }
 
 
+    // SLOW MO
     public void TriggerSlowMoAudio(bool inOut)
     {
         if (inOut)

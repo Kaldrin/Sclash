@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+
 // Store the list of the characters and all their properties
 [System.Serializable]
 public struct Character

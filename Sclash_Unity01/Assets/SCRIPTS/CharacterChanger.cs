@@ -85,12 +85,12 @@ public class CharacterChanger : MonoBehaviour
 
 
     #region FUNCTIONS
-    void Awake()
+    void Awake()                                                                                // AWAKE
     {
         // GameManager.Instance.ResetGameEvent +=
     }
 
-    void OnEnable()
+    void OnEnable()                                                                             // ONE ENABLE
     {
         //IAChanger iachanger = GetComponent<IAChanger>();
         //iachanger.SwitchIAMode(false);
@@ -219,10 +219,12 @@ public class CharacterChanger : MonoBehaviour
             UICharacternames.Add(GameObject.Find(nameName + i).GetComponent<TextMeshProUGUI>());
         }
 
+
         // VERTICAL SELECTION
         verticalElements.Clear();
         verticalMenu = GameObject.Find(charaSelecMenuName + playerScript.playerNum);
     
+
         for (int i = 0; i < verticalMenu.transform.childCount; i++)
         {
              verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
@@ -357,6 +359,7 @@ public class CharacterChanger : MonoBehaviour
 
 
     #region CHANGES
+    // CHARACTER
     public IEnumerator ApplyCharacterChange(int direction)
     {
         // Get the script with the references to the displays of this element
@@ -464,6 +467,7 @@ public class CharacterChanger : MonoBehaviour
     }
 
 
+    // MASK
     public IEnumerator ApplyMaskChange(int direction)
     {
         // Get the script with the references to the displays of this element
@@ -508,6 +512,7 @@ public class CharacterChanger : MonoBehaviour
     }
 
 
+    // WEAPON
     public IEnumerator ApplyWeaponChange(int direction)
     {
         // Get the script with the references to the displays of this element
@@ -552,6 +557,7 @@ public class CharacterChanger : MonoBehaviour
     }
 
 
+    // PLAYER
     public IEnumerator ApplyPlayerChange(int direction)
     {
         // Get the script with the references to the displays of this element
@@ -591,6 +597,7 @@ public class CharacterChanger : MonoBehaviour
 
 
 
+    // CHARACTER 2
     public IEnumerator ApplyCharacter2Change(int direction)
     {
         // Get the script with the references to the displays of this element

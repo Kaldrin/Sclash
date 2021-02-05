@@ -17,14 +17,14 @@ public class PlayParticleSystem : MonoBehaviour
 
 
 
-    void Start()
+    void Start()                                                                        // START
     {
         if (particleSystemToPlay == null)
             particleSystemToPlay = GetComponent<ParticleSystem>();
     }
 
 
-    void Update()
+    void Update()                                                                       // UPDATE
     {
         if (enabled && isActiveAndEnabled)
         {
@@ -37,6 +37,8 @@ public class PlayParticleSystem : MonoBehaviour
                 particleSystemToPlay.Play();
         }
     }
+
+
 
 
 
