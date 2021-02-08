@@ -28,15 +28,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject[] spawnlist;
     [SerializeField] TMP_InputField[] parametersInputs = null;
 
-    
+
     string[] newRoomParameters = { "rn", "pc", "rc" };
     ExitGames.Client.Photon.Hashtable customRoomProperties;
     readonly string DefaultRoomName = "ROOM NAME";
-
-
-
-
-
 
 
 
@@ -69,13 +64,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 Connect();
     }
     #endregion
-
-
-
-
-
-
-
 
 
 
@@ -202,12 +190,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
         attackSignParticlesMain.startColor = GameManager.Instance.attackSignColors[stats.playerNum];
 
-        stats.playerLight.color = GameManager.Instance.playerLightsColors[stats.playerNum];
-
-
         if (!GameManager.Instance.playersList.Contains(newPlayer))
             GameManager.Instance.playersList.Add(newPlayer);
 
+        stats.characterNameDisplay.text = GameManager.Instance.charactersData.charactersList[0].name;
+        stats.characterNameDisplay.color = GameManager.Instance.playersColors[stats.playerNum];
+        stats.characterIdentificationArrow.color = GameManager.Instance.playersColors[stats.playerNum];
 
         yield return new WaitForEndOfFrame();
 
@@ -498,7 +486,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         RoomOptions options = new RoomOptions();
         options.CustomRoomPropertiesForLobby = newRoomParameters;
 
-        Debug.Log(customRoomProperties);
+        foreach (TMP_InputField input in parametersInputs)
+        {
+            if (input.text == "")
+                input.text = input.placeholder.GetComponent<TextMeshProUGUI>().text;
+        }
+
+        Debug.LogFormat("{0} {1} {2}", parametersInputs[0].text, parametersInputs[1].text, parametersInputs[2].text);
+
         customRoomProperties = new ExitGames.Client.Photon.Hashtable()
         {
             {"rn", parametersInputs[0].text },
@@ -531,9 +526,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         GameObject.Find("RightPanel").GetComponent<Animator>().Play("SlideOut");
         GameObject.Find("LeftPanel").GetComponent<Animator>().Play("SlideOut");
-        //GameObject.Find("MenuLayout").SetActive(false);
-        GameObject.Find("BackIndicator").SetActive(false);
-
 
         Invoke("DisableMenu", 0.25f);
     }

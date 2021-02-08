@@ -24,7 +24,10 @@ public class ServerItemInfos : MonoBehaviour
 
     private void Awake()
     {
+
         roomInfosPanel = GameObject.Find("RoomInfo_Panel");
+
+
 
         if (roomInfosPanel == null)
         {
@@ -38,7 +41,7 @@ public class ServerItemInfos : MonoBehaviour
 
     public void DisplayInfos()
     {
-        
+
 
         for (int i = 0; i < roomInfosElements.Length; i++)
         {
@@ -55,7 +58,7 @@ public class ServerItemInfos : MonoBehaviour
                 case 3:
                     roomInfosElements[i].GetComponent<TextMeshProUGUI>().text = roundCount.ToString(); ;
                     break;
-                    
+
                 default:
                     break;
             }
@@ -65,7 +68,7 @@ public class ServerItemInfos : MonoBehaviour
     public void SelectServer()
     {
         ServerItemInfos[] serverItemList = FindObjectsOfType<ServerItemInfos>();
-        foreach(ServerItemInfos item in serverItemList)
+        foreach (ServerItemInfos item in serverItemList)
         {
             item.selected = false;
         }
