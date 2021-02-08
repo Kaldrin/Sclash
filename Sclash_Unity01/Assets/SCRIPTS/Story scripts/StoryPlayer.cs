@@ -175,15 +175,16 @@ public class StoryPlayer : Player
         }
     }
 
-    public override void ManageMovementsInputs(InputAction.CallbackContext ctx)
+    public override void ManageMovementsInputs(/*InputAction.CallbackContext ctx*/)
     {
         if (playerIsAI)
         {
-            base.ManageMovementsInputs(ctx);
+            base.ManageMovementsInputs(/*ctx*/);
             return;
         }
 
-        float v = ctx.ReadValue<float>();
+        //float v = ctx.ReadValue<float>();
+        float v = InputManager.Instance.playerInputs[0].horizontal;
 
         rb.simulated = true;
 

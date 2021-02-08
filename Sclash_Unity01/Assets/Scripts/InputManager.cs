@@ -84,10 +84,25 @@ public class InputManager : MonoBehaviour
 
 
     protected PlayerControls controls;
-
-    List<Gamepad> gamepads;
+    bool WASDjoined = false;
+    bool Arrowjoined = false;
 
     [SerializeField]
+    List<Gamepad> gamepads;
+    public int GamepadCount
+    {
+        get { return _gamepadCount; }
+        set
+        {
+            if (_gamepadCount != value)
+            {
+                _gamepadCount = value;
+                NewController();
+            }
+        }
+    }
+    private int _gamepadCount;
+
     List<PlayerInput> inputs = new List<PlayerInput>();
 
 
@@ -97,9 +112,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         gamepads = new List<Gamepad>();
-        var Gamepads = Gamepad.all;
-        foreach (Gamepad g in Gamepads)
-            gamepads.Add(g);
+        NewController();
     }
 
     protected void Awake()
@@ -112,200 +125,136 @@ public class InputManager : MonoBehaviour
     // Update is called once per graphic frame
     public virtual void Update()
     {
-        if (inputs.Count < 2)
-        {
-            PlayerInput p = null;
-
-            foreach (Gamepad g in gamepads)
-            {
-                if (g.startButton.wasPressedThisFrame)
-                {
-                    p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "Gamepad Scheme", g);
-                    gamepads.Remove(g);
-                    break;
-                }
-            }
-
-            if (Keyboard.current.fKey.wasPressedThisFrame)
-            {
-                p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "WASDScheme", Keyboard.current);
-            }
-
-            if (Keyboard.current.numpad1Key.wasPressedThisFrame)
-            {
-                p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current);
-            }
-
-            if (p != null)
-                inputs.Add(p);
-        }
+        GamepadCount = Gamepad.all.Count;
+        ManageControllers();
 
         if (enabled && isActiveAndEnabled)
         {
-            // In game info display input
-            //scoreInput = Input.GetButton("Score");
-
-            // Menu input
-            submitInputUp = (submitInput && !controls.Menu.Submit.triggered);
-            submitInput = controls.Menu.Submit.triggered;
-
             // Players inputs
             for (int i = 0; i < playerInputs.Length; i++)
             {
-                // ManageCharacSelectInput(i);
-
                 if (GameManager.Instance.playersList.Count > 0)
+                {
                     if (GameManager.Instance.playersList[i] != null)
                     {
                         if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
                             return;
                     }
-
-
-                //ManageHorizontalInput(i);
-                //ManageVerticalInput(i);
-                //ManageDashInput(i);
-                //ManageKickInput(i);
-                //ManageJumpInput(i);
-                //ManageParryInput(i);
-                //ManageBattleSneathDrawInput(i);
-                //ManageAttackInput(i);
-
-                //ManageAnyKeyInput(i);
-                //ManageReallyAnyKeyInput(i);
-
-                //ManageScoreInput(i);
-                //ManagePauseInput(i);
+                }
             }
         }
     }
     #endregion
 
-
-
-    #region REALLY ANY KEY
-    protected void ManageReallyAnyKeyInput(int i)
+    //TODO finish new controller 
+    private void NewController()
     {
-        playerInputs[i].reallyanykey = Input.anyKey;
-        //playerInputs[i].reallyanykey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
-    }
-    #endregion
-
-
-    #region ANY KEY
-    protected void ManageAnyKeyInput(int i)
-    {
-        playerInputs[i].anyKeyDown = (!playerInputs[i].anyKey && (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].kick));
-
-        //playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].jump || playerInputs[i].kick || Mathf.Abs(playerInputs[i].horizontal) > axisDeadZone || playerInputs[i].dash > axisDeadZone);
-        playerInputs[i].anyKey = (playerInputs[i].attack || playerInputs[i].parry || playerInputs[i].kick);
-    }
-    #endregion
-
-
-
-    #region SCORE
-    protected void ManageScoreInput(int i)
-    {
-        playerInputs[i].scoreUp = playerInputs[i].score && !Input.GetButton(scoreAxis + i);
-        playerInputs[i].score = Input.GetButton(scoreAxis + i);
+        Debug.Log("Controller plugged in");
+        var Gamepads = Gamepad.all;
+        foreach (Gamepad g in Gamepads)
+        {
+            if (!gamepads.Contains(g))
+            {
+                gamepads.Add(g);
+            }
+        }
     }
 
-
-    protected void ManageCharacSelectInput(int i)
+    private void ManageControllers()
     {
-        playerInputs[i].switchChar = Input.GetButtonDown(selectcharAxis + i);
+        PlayerInput p = null;
 
-        if (i == 1 && playerInputs[i].switchChar)
-            if (P2Input != null)
-                P2Input();
+        switch (inputs.Count)
+        {
+            case 0:
+                if (Keyboard.current.fKey.wasPressedThisFrame && !WASDjoined)
+                {
+                    p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "WASDScheme", Keyboard.current);
+                    WASDjoined = true;
+                }
+
+                if (Keyboard.current.numpad1Key.wasPressedThisFrame && !Arrowjoined)
+                {
+                    p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current);
+                    Arrowjoined = true;
+                }
+                break;
+
+            case 1:
+                if (Arrowjoined)
+                    break;
+                else if (Keyboard.current.numpad1Key.wasPressedThisFrame)
+                {
+                    p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current);
+                    Arrowjoined = true;
+                }
+                break;
+
+            case 2:
+                for (int i = 0; i < inputs.Count; i++)
+                {
+                    if (inputs[i].currentControlScheme == "WASDScheme" || inputs[i].currentControlScheme == "ArrowScheme")
+                    {
+                        foreach (Gamepad g in gamepads)
+                        {
+                            if (g.startButton.wasPressedThisFrame)
+                            {
+                                inputs[i].SwitchCurrentControlScheme(g);
+                                gamepads.Remove(g);
+                                Debug.Log("Controller connected for J" + (i + 1));
+                                return;
+                            }
+                        }
+                    }
+                }
+                return;
+        }
+
+        foreach (Gamepad g in gamepads)
+        {
+            if (g.startButton.wasPressedThisFrame)
+            {
+                p = PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "Gamepad Scheme", g);
+                gamepads.Remove(g);
+                break;
+            }
+        }
+
+        if (p != null)
+            inputs.Add(p);
     }
-    #endregion
 
-
-    #region PAUSE
-    // PAUSE
-    protected void ManagePauseInput(int i)
+    public void LostDevice(PlayerInput input)
     {
-        //playerInputs[i].pauseUp = Input.GetButtonUp(pauseAxis + i);
+        int index = -1;
+        for (int i = 0; i < inputs.Count; i++)
+        {
+            if (inputs[i] == input)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        switch (index)
+        {
+            case 0:
+                input.SwitchCurrentControlScheme("WASDScheme", Keyboard.current);
+                break;
+
+            case 1:
+                input.SwitchCurrentControlScheme("ArrowScheme", Keyboard.current);
+                break;
+
+            case -1:
+                return;
+        }
     }
-    #endregion
 
-
-
-
-
-    #region VERTICAL
-    protected void ManageVerticalInput(int i)
+    public void RegainedDevice(PlayerInput input)
     {
-        // playerInputs[i].vertical = Input.GetAxis(verticalAxis + i);
+        Debug.Log("Device regained !");
     }
-    #endregion
-
-
-
-
-
-    #region HORIZONTAL
-    protected void ManageHorizontalInput(int i)
-    {
-        //playerInputs[i].horizontal = Input.GetAxis(horizontalAxis + i);
-    }
-
-
-    // DASH
-    protected void ManageDashInput(int i)
-    {
-        //playerInputs[i].dash = Input.GetAxis(dashAxis + i);
-    }
-
-
-    void ManageBattleSneathDrawInput(int i)
-    {
-        //playerInputs[i].battleSneathDraw = Input.GetButton(battleSneathDrawAxis + i);
-    }
-    #endregion
-
-
-
-    #region ATTACK
-    // KICK
-    protected void ManageAttackInput(int i)
-    {
-        // playerInputs[i].attackDown = (!playerInputs[i].attack && (Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone));
-        // playerInputs[i].attack = Input.GetButton(attackAxis + i) || Input.GetAxis(attackAxis + i) > axisDeadZone;
-    }
-    #endregion
-
-
-
-
-    #region KICK
-    // KICK
-    protected void ManageKickInput(int i)
-    {
-        //playerInputs[i].kick = Input.GetButton(pommelAxis + i);
-    }
-    #endregion
-
-
-    #region PARRY
-    // KICK
-    protected void ManageParryInput(int i)
-    {
-        //playerInputs[i].parryDown = (!playerInputs[i].parry && (Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone));
-        //playerInputs[i].parry = Input.GetButton(parryAxis + i) || Input.GetAxis(parryAxis + i) > axisDeadZone;
-    }
-    #endregion
-
-
-    #region JUMP
-    protected void ManageJumpInput(int i)
-    {
-        //playerInputs[i].jump = Input.GetButtonDown(jumpAxis + i);
-        //playerInputs[i].jump = (Input.GetAxis(jumpAxis + i) >= axisDeadZone);
-    }
-    #endregion
 
     #endregion
 }

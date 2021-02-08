@@ -60,9 +60,8 @@ public class PressLongToCallButton : MonoBehaviour
 
     private void Update()
     {
-        if (GameObject.Find("GlobalManager"))
-            if (GameObject.Find("GlobalManager").GetComponent<InputManager>().submitInputUp)
-                pressing = false;
+        if (InputManager.Instance.submitInputUp)
+            pressing = false;
     }
 
 

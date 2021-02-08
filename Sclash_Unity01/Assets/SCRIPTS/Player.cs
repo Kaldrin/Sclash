@@ -815,12 +815,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
                 UpdateStaminaColor();
-                //ManageMovementsInputs();
+                ManageMovementsInputs();
                 ManageOrientation();
                 break;
 
             case STATE.normal:                                                      // NORMAL
-                //ManageMovementsInputs();
+                ManageMovementsInputs();
                 ManageOrientation();
                 ManageStaminaRegen();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -828,7 +828,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.charging:                                                // CHARGING
-                //ManageMovementsInputs();
+                ManageMovementsInputs();
                 ManageStaminaRegen();
                 UpdateStaminaSlidersValue();
                 SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -837,7 +837,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             case STATE.attacking:                                               // ATTACKING
                 RunDash();
-                //ManageMovementsInputs();
+                ManageMovementsInputs();
                 if (hasFinishedAnim)
                 {
                     hasFinishedAnim = false;
@@ -944,13 +944,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 break;
 
             case STATE.enemyKilled:                                     // ENEMY KILLED
-                //ManageMovementsInputs();
+                ManageMovementsInputs();
                 SetStaminaBarsOpacity(0);
                 playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
                 break;
 
             case STATE.enemyKilledEndMatch:                                     // ENEMY KILLED END MATCH
-                //ManageMovementsInputs();
+                ManageMovementsInputs();
                 SetStaminaBarsOpacity(0);
                 break;
 
@@ -1874,11 +1874,58 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     #region MOVEMENTS
-    // MOVEMENTS
-    public virtual void ManageMovementsInputs(InputAction.CallbackContext ctx)
-    {
 
+    public virtual void ManageMovementsInputs()
+    {
+        /*  if (rb.simulated == false)
+              rb.simulated = true;
+  */
+        if (!playerIsAI)
+        {
+            if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
+            {
+                if (photonView.IsMine)
+                    rb.velocity = new Vector2(InputManager.Instance.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
+            }
+            else
+                rb.velocity = new Vector2(InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+        }
+
+
+
+        // FX
+        if (Mathf.Abs(rb.velocity.x) > minSpeedForWalkFX && GameManager.Instance.gameState == GameManager.GAMESTATE.game && playerState == Player.STATE.normal)
+        {
+            if ((rb.velocity.x * -transform.localScale.x) < 0)
+            {
+                walkFXFront.Stop();
+
+
+                if (!walkFXBack.isPlaying)
+                    walkFXBack.Play();
+            }
+            else
+            {
+                if (!walkFXFront.isPlaying)
+                    walkFXFront.Play();
+
+
+                walkFXBack.Stop();
+            }
+        }
+        else
+        {
+            walkFXBack.Stop();
+            walkFXFront.Stop();
+        }
+    }
+
+    // MOVEMENTS
+    /*public virtual void ManageMovementsInputs(InputAction.CallbackContext ctx)
+    {
         float velocity = ctx.ReadValue<float>();
+
+
 
         // The player move if they can in their state
         if (rb.simulated == false)
@@ -1926,7 +1973,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             walkFXBack.Stop();
             walkFXFront.Stop();
         }
-    }
+    }*/
     #endregion
 
 

@@ -10,6 +10,7 @@ public class PlayerControlCenter : MonoBehaviour
     int m_playerIndex;
     float m_DashOrientation = 0f;
 
+    bool horizontalInput = false;
 
     PlayerControls controls;
 
@@ -22,11 +23,14 @@ public class PlayerControlCenter : MonoBehaviour
         attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
     }
 
+    private void Update()
+    {
+        InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
+    }
+
     public void OnHorizontal(InputAction.CallbackContext ctx)
     {
         InputManager.Instance.playerInputs[m_playerIndex].horizontal = ctx.ReadValue<float>();
-        if (attachedPlayer != null)
-            attachedPlayer.ManageMovementsInputs(ctx);
     }
 
     public void OnVertical(InputAction.CallbackContext ctx)
@@ -96,14 +100,29 @@ public class PlayerControlCenter : MonoBehaviour
     public void OnPause(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
-            InputManager.Instance.playerInputs[m_playerIndex].pauseUp = true;
-        if (ctx.canceled)
+        {
             InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
+        }
+
+        if (ctx.canceled)
+        {
+            InputManager.Instance.playerInputs[m_playerIndex].pauseUp = true;
+        }
     }
 
     public void OnScore(InputAction.CallbackContext ctx)
     {
-        InputManager.Instance.scoreInput = ctx.started;
+        if (ctx.started)
+        {
+            InputManager.Instance.playerInputs[m_playerIndex].scoreUp = true;
+            InputManager.Instance.scoreInput = true;
+        }
+
+        if (ctx.canceled)
+        {
+            InputManager.Instance.playerInputs[m_playerIndex].scoreUp = false;
+            InputManager.Instance.scoreInput = false;
+        }
     }
 
     public void OnJump(InputAction.CallbackContext ctx)
@@ -131,5 +150,30 @@ public class PlayerControlCenter : MonoBehaviour
             InputManager.Instance.playerInputs[m_playerIndex].anyKey = false;
             InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = false;
         }
+    }
+
+    public void OnSubmit(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started)
+        {
+            InputManager.Instance.submitInput = true;
+            InputManager.Instance.submitInputUp = false;
+        }
+
+        if (ctx.canceled)
+        {
+            InputManager.Instance.submitInput = false;
+            InputManager.Instance.submitInputUp = true;
+        }
+    }
+
+    public void OnDeviceLost(PlayerInput input)
+    {
+        InputManager.Instance.LostDevice(input);
+    }
+
+    public void OnDeviceRegained(PlayerInput input)
+    {
+        InputManager.Instance.RegainedDevice(input);
     }
 }

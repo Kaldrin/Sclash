@@ -37,8 +37,12 @@ public class IAScript : MonoBehaviour
     [SerializeField]
     public Player opponent
     {
-        get { return GetPlayer(); }
+        get { return _opponent; }
+        set { _opponent = value; }
     }
+    private Player _opponent;
+
+
 
     bool isWaiting;
     protected bool isClose = true;
@@ -141,19 +145,11 @@ public class IAScript : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (opponent == null)
+            _opponent = GetPlayer();
+
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.game && ready)
         {
-            //RESET WEIGHTS ON DEATH
-            if (opponent.playerState == Player.STATE.enemyKilled || attachedPlayer.playerState == Player.STATE.enemyKilled)
-            {
-                ManageMovementsInputs(0);
-                foreach (Actions a in actionsList)
-                {
-                    ResetSelfWeight(a);
-                }
-                return;
-            }
-
             UpdateWeightSum();
 
             //MANAGE DISTANCE
@@ -219,6 +215,20 @@ public class IAScript : MonoBehaviour
                 AddWeights();
 
             SelectAction();
+        }
+
+        if (GameManager.Instance.gameState == GameManager.GAMESTATE.roundFinished)
+        {
+            //RESET WEIGHTS ON DEATH
+            if (opponent.playerState == Player.STATE.dead)
+            {
+                ManageMovementsInputs(0);
+                foreach (Actions a in actionsList)
+                {
+                    ResetSelfWeight(a);
+                }
+                return;
+            }
         }
     }
 

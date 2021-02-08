@@ -6,7 +6,6 @@ using UnityEditor;
 public class DestructibleElement : MonoBehaviour
 {
     public enum e_Materials { None, Wood, Stone, Fabric }
-
     public e_Materials m_Material;
 
     [SerializeField]
@@ -69,6 +68,7 @@ public class DestructibleElement : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(DestructibleElement))]
 public class DestructibleElementEditor : Editor
 {
@@ -94,3 +94,4 @@ public class DestructibleElementEditor : Editor
         }
     }
 }
+#endif

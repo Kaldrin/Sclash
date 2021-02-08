@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(StoryPlayer))]
 public class PlayerEditor : Editor
 {
@@ -26,3 +27,4 @@ public class PlayerEditor : Editor
     }
 
 }
+#endif
