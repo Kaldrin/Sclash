@@ -17,13 +17,19 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
     bool isConnecting = false;
-    string gameVersion = "2.7";
+    string gameVersion = "3.1.5";
     public bool connectedToMaster = false;
     public bool enableMultiplayer;
     public GameObject localPlayer;
     public int localPlayerNum;
     GameObject[] spawners;
 
+    [SerializeField]
+    private Animator RightPanel;
+    [SerializeField]
+    private Animator LeftPanel;
+    [SerializeField]
+    private GameObject multiplayerMenu;
 
     [SerializeField] GameObject[] spawnlist;
     [SerializeField] TMP_InputField[] parametersInputs = null;
@@ -524,8 +530,19 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     void WaitScene()
     {
-        GameObject.Find("RightPanel").GetComponent<Animator>().Play("SlideOut");
-        GameObject.Find("LeftPanel").GetComponent<Animator>().Play("SlideOut");
+        if (RightPanel == null)
+        {
+            RightPanel = GameObject.Find("RightPanel").GetComponent<Animator>();
+            Debug.LogWarning("Panel not referenced in script", gameObject);
+        }
+        if (LeftPanel == null)
+        {
+            LeftPanel = GameObject.Find("LeftPanel").GetComponent<Animator>();
+            Debug.LogWarning("Panel not referenced in script", gameObject);
+        }
+
+        RightPanel.Play("SlideOut");
+        LeftPanel.Play("SlideOut");
 
         Invoke("DisableMenu", 0.25f);
     }
@@ -533,7 +550,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     void DisableMenu()
     {
-        GameObject.Find("MultiplayerMenu").SetActive(false);
+        if (multiplayerMenu == null)
+        {
+            multiplayerMenu = GameObject.Find("MultiplayerMenu");
+            Debug.LogWarning("Multiplayer menu not referenced in the script", gameObject);
+        }
+
+        multiplayerMenu.SetActive(false);
     }
 
 
