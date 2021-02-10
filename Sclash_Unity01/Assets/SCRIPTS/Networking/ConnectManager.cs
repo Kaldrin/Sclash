@@ -11,54 +11,72 @@ using Steamworks;
 [RequireComponent(typeof(PhotonView))]
 public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 {
-
     public static ConnectManager Instance;
-
     AudioManager audioManager;
 
+
+
     bool isConnecting = false;
-
-    string gameVersion = "";
+    string gameVersion = "3.1.5";
     public bool connectedToMaster = false;
-    public bool enableMultiplayer = false;
-
+    public bool enableMultiplayer;
     public GameObject localPlayer;
     public int localPlayerNum;
-
     GameObject[] spawners;
 
-    [SerializeField] GameObject[] spawnlist;
+    [SerializeField]
+    private Animator RightPanel;
+    [SerializeField]
+    private Animator LeftPanel;
+    [SerializeField]
+    private GameObject multiplayerMenu;
 
-    [SerializeField] TMP_InputField[] parametersInputs;
+    [SerializeField] GameObject[] spawnlist;
+    [SerializeField] TMP_InputField[] parametersInputs = null;
+
 
     string[] newRoomParameters = { "rn", "pc", "rc" };
     ExitGames.Client.Photon.Hashtable customRoomProperties;
     readonly string DefaultRoomName = "ROOM NAME";
 
-    #region Base methods
 
-    void Awake()
+
+
+
+
+    #region BASE FUNCTIONS
+    void Awake()                                                                                // AWAKE
     {
         Instance = this;
-        gameVersion = Application.version;
-
         audioManager = FindObjectOfType<AudioManager>();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.NetworkingClient.EnableLobbyStatistics = true;
     }
 
-    void Start()
+    void Start()                                                                                // START
     {
         if (enableMultiplayer)
             Connect();
 
+
         spawners = GameManager.Instance.playerSpawns;
     }
+
+
+    void Update()                                                                               // UPDATE
+    {
+        if (enabled && isActiveAndEnabled)
+            if (enableMultiplayer && !PhotonNetwork.IsConnected && isConnecting)
+                Connect();
+    }
     #endregion
+
+
 
     public void Connect()
     {
         Debug.Log("Connecting ...");
+
 
         if (!PhotonNetwork.IsConnected)
         {
@@ -68,31 +86,22 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
     }
 
-    void Update()
-    {
-        if (enableMultiplayer && !PhotonNetwork.IsConnected && !isConnecting)
-        {
-            Connect();
-        }
-    }
 
     public void JoinRoom()
     {
         if (!connectedToMaster)
         {
             if (!enableMultiplayer)
-            {
                 GameManager.Instance.StartMatch();
-            }
             else
-            {
                 Debug.LogWarning("Can't join room if you're not connected");
-            }
             return;
         }
 
+
         PhotonNetwork.JoinRandomRoom();
     }
+
 
     public void JoinSelectedRoom(TextMeshProUGUI roomName)
     {
@@ -115,54 +124,62 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         enableMultiplayer = multiplayer;
     }
 
-    #region Init room
 
+
+
+
+
+    #region Init room
     /// <summary>
     /// Initialise tous les paramètres pour se connecter au mode en ligne.
     /// </summary>
     /// <param name="isJoining"></param>
 
+
     public void InitMultiplayerMatch(bool isJoining = true)
     {
         // DELETE EXISTING PLAYERS IN SCENE //
         foreach (GameObject p in GameManager.Instance.playersList)
-        {
             Destroy(p);
-        }
 
         GameManager.Instance.playersList.Clear();
 
-        //  JOIN OR CREATE ROOM  //
 
+        //  JOIN OR CREATE ROOM  //
         if (isJoining)
             JoinRoom();
     }
+
 
     IEnumerator JoinRoomCoroutine()
     {
         // INSTANTIATE PLAYER //
         ///Get player spawns
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
-
         GameObject newPlayer = PhotonNetwork.Instantiate("PlayerNetwork", spawnPos, Quaternion.identity);
+
 
         if (SteamManager.Initialized)
             newPlayer.name = SteamFriends.GetPersonaName();
         else
             newPlayer.name = "Player" + PhotonNetwork.CurrentRoom.PlayerCount;
 
+
         CameraManager.Instance.FindPlayers();
 
+
         Debug.LogFormat("Spawning on spawner {0} : {1}", spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1], spawnPos);
+
 
         Player stats = newPlayer.GetComponent<Player>();
         PlayerAnimations playerAnimations = newPlayer.GetComponent<PlayerAnimations>();
 
+
         ///Manage Input
         InputManager.Instance.playerInputs = new InputManager.PlayerInputs[1];
-
         stats.playerNum = PhotonNetwork.CurrentRoom.PlayerCount - 1;
         stats.ResetAllPlayerValuesForNextMatch();
+
 
         ///Animation setup
         //playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
@@ -173,42 +190,52 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         //playerAnimations.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * stats.playerNum + 2;
         //playerAnimations.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * stats.playerNum - 2;
 
+
         ///FX Setup
         ParticleSystem attackSignParticles = stats.attackRangeFX.GetComponent<ParticleSystem>();
         ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
         attackSignParticlesMain.startColor = GameManager.Instance.attackSignColors[stats.playerNum];
 
-        stats.playerLight.color = GameManager.Instance.playerLightsColors[stats.playerNum];
-
-
         if (!GameManager.Instance.playersList.Contains(newPlayer))
             GameManager.Instance.playersList.Add(newPlayer);
 
+        stats.characterNameDisplay.text = GameManager.Instance.charactersData.charactersList[0].name;
+        stats.characterNameDisplay.color = GameManager.Instance.playersColors[stats.playerNum];
+        stats.characterIdentificationArrow.color = GameManager.Instance.playersColors[stats.playerNum];
 
         yield return new WaitForEndOfFrame();
+
 
         // INIT MATCH //
         stats.SwitchState(Player.STATE.sneathed);
 
+
         /// Wait 0.1 seconds
         yield return new WaitForSeconds(0.1f);
+
 
         GameManager.Instance.SwitchState(GameManager.GAMESTATE.game);
         CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.battle);
 
+
         //audioManager.ActivateWind();
+
 
         /// Wait 0.5 seconds
         yield return new WaitForSeconds(0.5f);
 
+
         audioManager.matchBeginsRandomSoundSource.Play();
+
 
         Debug.Log("PUN : OnJoinedRoom() called by PUN. Player is now in a room");
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
+
         CameraManager.Instance.actualXSmoothMovementsMultiplier = CameraManager.Instance.battleXSmoothMovementsMultiplier;
         CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
         CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
+
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -216,12 +243,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             photonView.RPC("SyncRoundCount", RpcTarget.AllBuffered, GameManager.Instance.scoreToWin);
         }
     }
-
     #endregion
 
 
-    #region Monobehaviour Callbacks
 
+
+
+    #region Monobehaviour Callbacks
     public override void OnConnectedToMaster()
     {
         isConnecting = false;
@@ -241,7 +269,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.LogWarningFormat("PUN : Failed to join a room");
         Debug.Log("PUN : CreateRoom called");
 
+
         string randRoomName = Time.time.ToString();
+
 
         if (SteamManager.Initialized)
         {
@@ -253,6 +283,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         RoomOptions options = new RoomOptions();
         options.CustomRoomPropertiesForLobby = newRoomParameters;
 
+
         customRoomProperties = new ExitGames.Client.Photon.Hashtable()
         {
             {"rn", randRoomName },
@@ -260,7 +291,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             {"rc", "10"}
         };
 
+
         options.CustomRoomProperties = customRoomProperties;
+
 
         if (parametersInputs.Length > 0)
         {
@@ -270,9 +303,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 options.MaxPlayers = 2;
         }
 
-        PhotonNetwork.CreateRoom(randRoomName, options);
 
+        PhotonNetwork.CreateRoom(randRoomName, options);
     }
+
 
     public void LeaveLobby()
     {
@@ -280,32 +314,42 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         PhotonNetwork.Disconnect();
     }
 
+
     public override void OnDisconnected(DisconnectCause cause)
     {
         connectedToMaster = false;
         Debug.LogWarning(cause);
     }
 
+
     public override void OnJoinedRoom()
     {
         StartCoroutine(JoinRoomCoroutine());
     }
 
+
     [PunRPC]
     void GetAllPlayers()
     {
         Debug.Log("Get all players in room");
+
+
         if (PhotonNetwork.CurrentRoom.PlayerCount != GameManager.Instance.playersList.Count)
         {
             GameManager.Instance.playersList.Clear();
 
+
             Debug.Log("Update playerlists");
+
 
             Player p2 = null;
             Player[] playersStats = FindObjectsOfType<Player>();
+
+
             for (int i = 0; i < playersStats.Length; i++)
             {
                 GameManager.Instance.playersList.Add(playersStats[i].gameObject);
+
 
                 //Instantiate 2nd player
                 p2 = playersStats[i];
@@ -319,6 +363,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 //p2Anim.legsMask.GetComponent<SpriteMask>().frontSortingOrder = 10 * p2.playerNum + 2;
                 //p2Anim.legsMask.GetComponent<SpriteMask>().backSortingOrder = 10 * p2.playerNum - 2;
 
+
                 ///FX Setup
                 ParticleSystem attackSignParticles = p2.attackRangeFX.GetComponent<ParticleSystem>();
                 ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
@@ -329,9 +374,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
             if (PhotonNetwork.CurrentRoom.PlayerCount != GameManager.Instance.playersList.Count)
-            {
                 Invoke("WaitForInstantiation", 0.5f);
-            }
             else
             {
                 for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
@@ -341,6 +384,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                         GameManager.Instance.playersList[i]
                     );
 
+
                     if (GameManager.Instance.playersList[i] == null)
                     {
                         Invoke("WaitForInstantiation", 0.5f);
@@ -348,10 +392,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                     }
                 }
 
+
                 foreach (Player p in playersStats)
-                {
                     p.ManageOrientation();
-                }
+
 
                 Debug.Log("All players are here");
                 CameraManager.Instance.FindPlayers();
@@ -389,17 +433,23 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             }
         }
 
+
         Debug.LogFormat("{0} joined the room", other.NickName);
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
+
         GameObject otherPlayer = GameManager.Instance.GetOtherPlayer(localPlayer);
+
+
         if (otherPlayer == null)
         {
             photonView.RPC("GetAllPlayers", RpcTarget.AllViaServer);
             return;
         }
 
+
         GameManager.Instance.playersList.Add(otherPlayer);
+
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -422,16 +472,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.game)
         {
-
             //GameManager.Instance.
             Debug.LogWarning("Player Left in the middle of the game");
             //SceneManage.Instance.Restart();
             GameManager.Instance.APlayerLeft();
         }
         else
-        {
             Debug.Log("Player left room");
-        }
+
 
         base.OnPlayerLeftRoom(otherPlayer);
     }
@@ -440,8 +488,17 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         InitMultiplayerMatch(false);
 
+
         RoomOptions options = new RoomOptions();
         options.CustomRoomPropertiesForLobby = newRoomParameters;
+
+        foreach (TMP_InputField input in parametersInputs)
+        {
+            if (input.text == "")
+                input.text = input.placeholder.GetComponent<TextMeshProUGUI>().text;
+        }
+
+        Debug.LogFormat("{0} {1} {2}", parametersInputs[0].text, parametersInputs[1].text, parametersInputs[2].text);
 
         customRoomProperties = new ExitGames.Client.Photon.Hashtable()
         {
@@ -450,36 +507,58 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             {"rc", parametersInputs[2].text }
         };
 
+
         options.CustomRoomProperties = customRoomProperties;
         GameManager.Instance.scoreToWin = int.Parse(parametersInputs[2].text);
+
 
         if (parametersInputs[1].text != "")
             options.MaxPlayers = byte.Parse(parametersInputs[1].text);
         else
             options.MaxPlayers = 2;
 
+
         PhotonNetwork.CreateRoom(parametersInputs[0].text, options);
     }
+
 
     public void WaitSceneLoading()
     {
         Invoke("WaitScene", 2f);
     }
 
+
     void WaitScene()
     {
-        GameObject.Find("RightPanel").GetComponent<Animator>().Play("SlideOut");
-        GameObject.Find("LeftPanel").GetComponent<Animator>().Play("SlideOut");
-        //GameObject.Find("MenuLayout").SetActive(false);
-        GameObject.Find("BackIndicator").SetActive(false);
+        if (RightPanel == null)
+        {
+            RightPanel = GameObject.Find("RightPanel").GetComponent<Animator>();
+            Debug.LogWarning("Panel not referenced in script", gameObject);
+        }
+        if (LeftPanel == null)
+        {
+            LeftPanel = GameObject.Find("LeftPanel").GetComponent<Animator>();
+            Debug.LogWarning("Panel not referenced in script", gameObject);
+        }
+
+        RightPanel.Play("SlideOut");
+        LeftPanel.Play("SlideOut");
 
         Invoke("DisableMenu", 0.25f);
     }
 
+
     void DisableMenu()
     {
-        GameObject.Find("MultiplayerMenu").SetActive(false);
+        if (multiplayerMenu == null)
+        {
+            multiplayerMenu = GameObject.Find("MultiplayerMenu");
+            Debug.LogWarning("Multiplayer menu not referenced in the script", gameObject);
+        }
+
+        multiplayerMenu.SetActive(false);
     }
+
 
     [PunRPC]
     void SyncMap(int targetMapIndex)
@@ -488,11 +567,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         MapLoader.Instance.SetMap(targetMapIndex, false);
     }
 
+
     [PunRPC]
     void SyncRoundCount(int targetScoreWin)
     {
         GameManager.Instance.scoreToWin = targetScoreWin;
     }
-
     #endregion
 }

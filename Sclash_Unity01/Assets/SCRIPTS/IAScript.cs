@@ -111,7 +111,8 @@ public class IAScript : MonoBehaviour
 
     void Awake()
     {
-        GameManager.Instance.ResetGameEvent += OnDisable;
+        if (GameManager.Instance != null)
+            GameManager.Instance.ResetGameEvent += OnDisable;
     }
 
     void OnEnable()

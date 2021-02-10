@@ -9753,7 +9753,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 3
@@ -14627,7 +14627,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 3
@@ -19470,7 +19470,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 3
@@ -23568,6 +23568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   previewDramaticScreenInEditor: 0
+  previewMenuInEditor: 0
   backgroundElements:
   - {fileID: 951107940185676289}
   - {fileID: 4537346144447157801}
@@ -23639,6 +23640,7 @@ MonoBehaviour:
   - {fileID: 1219420922}
   objectsToActivateOnDramaticScreen:
   - {fileID: 8257960394353004664}
+  objectsToDisableDuringMenu: []
   animatorToEnableOnStart: {fileID: 0}
   disableAnimatorAfterDuration: 1
   durationBeforeDisablingAnimator: 5
@@ -35395,7 +35397,7 @@ ParticleSystem:
     range: {x: 0, y: 1}
     separateAxes: 0
   RotationBySpeedModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 3

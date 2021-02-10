@@ -12,10 +12,11 @@ public class Scarf02 : MonoBehaviour
 
 
 
-    private void OnEnable()
+    private void OnEnable()                                                             // ON ENABLE
     {
         if (clothToAssignCollidersTo == null)
             clothToAssignCollidersTo = GetComponent<Cloth>();
+
 
         FindColliders();
     }
@@ -27,6 +28,9 @@ public class Scarf02 : MonoBehaviour
         if (clothToAssignCollidersTo != null)
             clothToAssignCollidersTo.capsuleColliders = FindObjectsOfType<CapsuleCollider>();
     }
+
+
+
 
 
 

@@ -17,8 +17,14 @@ TextureImporter:
   - first:
       213: -7822063960450498979
     second: AttackBackwards02Sheet01_4
+  - first:
+      213: -42236027678437333
+    second: AttackBackwards02Sheet01_0
+  - first:
+      213: 8622784169690081866
+    second: AttackBackwards02Sheet01_1
   externalObjects: {}
-  serializedVersion: 10
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -72,8 +78,9 @@ TextureImporter:
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  applyGammaDecoding: 1
   platformSettings:
-  - serializedVersion: 2
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -84,7 +91,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -95,7 +103,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -106,6 +115,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -124,8 +134,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a2b538c62efb41d4da0c6515c9380eb5
-      internalID: -3508974950412669238
+      spriteID: b20d08d7e82f96ff0800000000000000
+      internalID: -42236027678437333
       vertices: []
       indices: 
       edges: []
@@ -145,35 +155,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d44d6695409fee044991d69c8a03f576
-      internalID: -4137856537858692396
+      spriteID: a4a2d3154884aa770800000000000000
+      internalID: 8622784169690081866
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
       name: AttackBackwards02Sheet01_2
-      rect:
-        serializedVersion: 2
-        x: 2560
-        y: 1280
-        width: 1280
-        height: 1280
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 76b4bf4135f2e544cb2e251f51019b39
-      internalID: -7298084597039118259
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AttackBackwards02Sheet01_3
       rect:
         serializedVersion: 2
         x: 0
@@ -187,29 +176,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b5c0f1d9ee5290549aff18f14fca56f1
-      internalID: 910052225571654016
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AttackBackwards02Sheet01_4
-      rect:
-        serializedVersion: 2
-        x: 1280
-        y: 0
-        width: 1280
-        height: 1280
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7ccfb67f45111e549afa8e5d02ee1ebb
-      internalID: -7822063960450498979
+      spriteID: d48cbb4d9bef7ba90800000000000000
+      internalID: -7298084597039118259
       vertices: []
       indices: 
       edges: []

@@ -20,9 +20,11 @@ public class SceneManage : MonoBehaviour
     [SerializeField] Animator sceneSwitchAnimator = null;
 
     Scene sceneToLoad;
+    int index = 0;
     public bool proceedToLoadScene = false;
     bool quit = false;
     bool canLoadScene = true;
+    bool loadWithIndex = false;
 
 
 
@@ -42,14 +44,14 @@ public class SceneManage : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    void Awake()
+    void Awake()                                                            // AWAKE
     {
         Instance = this;
     }
 
 
     // Use this for initialization
-    void Start()
+    void Start()                                                                // START
     {
         // If chosen, starts the coroutine that will load the indicated scene after the indicated duration
         if (autoLoadSceneAfterDuration)
@@ -58,7 +60,7 @@ public class SceneManage : MonoBehaviour
 
 
     // FixedUpdate is called 50 times per second
-    void Update()
+    void Update()                                                                   // UPDATE
     {
         if (isActiveAndEnabled && enabled)
         {
@@ -75,7 +77,11 @@ public class SceneManage : MonoBehaviour
                 else if (canLoadScene)
                 {
                     canLoadScene = false;
-                    LoadScene(sceneToLoad);
+
+                    if (loadWithIndex)
+                        LoadScene(index);
+                    else
+                        LoadScene(sceneToLoad);
                 }
             }
         }
@@ -93,12 +99,29 @@ public class SceneManage : MonoBehaviour
 
 
         SceneManager.LoadSceneAsync(sceneToAutoLoadIndex);
+
+        Invoke("SceneManager.LoadSceneAsync()", durationBeforeAutoLoadScene);
     }
 
     void LoadScene(Scene scene)
     {
         SceneManager.LoadSceneAsync(scene.name);
     }
+
+    void LoadScene(int index)
+    {
+        SceneManager.LoadScene(index);
+    }
+
+
+    // Set which scene should be loaded after the close scene anim
+    public void SetLoadScene(int sceneIndex)
+    {
+        loadWithIndex = true;
+        index = sceneIndex;
+        sceneSwitchAnimator.SetTrigger("CloseScene");
+    }
+
 
     // Set which scene should be loaded after the close scene anim
     public void SetLoadScene(Scene scene)
@@ -156,6 +179,16 @@ public class SceneManage : MonoBehaviour
 
 
         return !notPressed;
+    }
+
+
+
+    private static string NameFromIndex(int index)
+    {
+        string scenePath = SceneUtility.GetScenePathByBuildIndex(index);
+        
+        string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+        return sceneName;
     }
     #endregion
 }

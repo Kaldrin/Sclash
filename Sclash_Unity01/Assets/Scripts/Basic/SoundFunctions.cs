@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+// Useless trash but it's actually used for bad reasons so don't remove its
 public class SoundFunctions : MonoBehaviour {
 
 
@@ -18,6 +21,7 @@ public class SoundFunctions : MonoBehaviour {
     {
         AudioSource soundObject = null;
 
+
         if (GameObject.Find(sound).GetComponent<AudioSource>())
         {
             soundObject = GameObject.Find(sound).GetComponent<AudioSource>();
@@ -32,6 +36,7 @@ public class SoundFunctions : MonoBehaviour {
     public void PlaySoundFromSource(AudioSource audioSource)
     {
         AudioSource soundObject = null;
+
 
         if (audioSource)
         {
@@ -58,6 +63,7 @@ public class SoundFunctions : MonoBehaviour {
     {
         AudioSource soundObject = null;
 
+
         if (GameObject.Find(sound).GetComponent<AudioSource>())
         {
             soundObject = GameObject.Find(sound).GetComponent<AudioSource>();
@@ -77,6 +83,7 @@ public class SoundFunctions : MonoBehaviour {
     public void SetAudioActiveFromSource(AudioSource audioSource, bool state, bool loop)
     {
         AudioSource soundObject = null;
+
 
         if (audioSource)
         {
@@ -107,6 +114,7 @@ public class SoundFunctions : MonoBehaviour {
     {
         AudioSource soundObject = null;
 
+
         if (GameObject.Find(sound).GetComponent<AudioSource>())
         {
             soundObject = GameObject.Find(sound).GetComponent<AudioSource>();
@@ -121,6 +129,7 @@ public class SoundFunctions : MonoBehaviour {
     public void SetAudioMuteFromSource(AudioSource audioSource, bool state)
     {
         AudioSource soundObject = null;
+
 
         if (audioSource)
         {

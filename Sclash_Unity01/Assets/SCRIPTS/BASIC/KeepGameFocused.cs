@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// OPTIMIZED
 public class KeepGameFocused : MonoBehaviour
 {
-    // BASE FUNCTIONS
-    // Start is called before the first frame update
-    void Start()
+    void Start()                                                                        // START
     {
         Application.runInBackground = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 }

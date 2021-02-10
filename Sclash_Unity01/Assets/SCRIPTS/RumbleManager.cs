@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using XInputDotNetPure;
 
+
+
+
 // This is the rumble manager.
 // It manages all controller rumbles in the game
 // Any rumble that should occur will be called here
@@ -36,7 +39,12 @@ public class RumbleManager : MonoBehaviour
     {
         // If controller rumbles are enabled, rumble
         if (enableControllerRumble)
-            StartCoroutine(RumblePlayer01Coroutine(rumbleSettings.rumbleDuration, rumbleSettings.rumbleStrengthLeft, rumbleSettings.rumbleStrengthRight, rumbleSettings.rumbleNumber, rumbleSettings.betweenRumblesDuration));
+        {
+            if (rumbleSettings != null)
+                StartCoroutine(RumblePlayer01Coroutine(rumbleSettings.rumbleDuration, rumbleSettings.rumbleStrengthLeft, rumbleSettings.rumbleStrengthRight, rumbleSettings.rumbleNumber, rumbleSettings.betweenRumblesDuration));
+            else
+                Debug.Log("Rumble settings not found, ignoring");
+        }
     }
 
 
@@ -61,6 +69,11 @@ public class RumbleManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(betweenRumblesDuration);
         }
     }
+
+
+
+
+
 
 
 

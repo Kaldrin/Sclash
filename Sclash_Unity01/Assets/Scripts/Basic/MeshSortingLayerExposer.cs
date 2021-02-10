@@ -17,16 +17,20 @@ public sealed class MeshSortingLayerExposer : MonoBehaviour
 
 
 
-    public void OnValidate()
+    public void OnValidate()                                                    // ON VALIDATE
     {
         apply();
     }
 
 
-    public void OnEnable()
+    public void OnEnable()                                                                      // ON ENABLE
     {
         apply();
     }
+
+
+
+
 
 
     private void apply()

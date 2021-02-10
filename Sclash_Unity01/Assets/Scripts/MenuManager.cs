@@ -6,7 +6,9 @@ using UnityEngine.UI;
 using TMPro;
 
 
+// Manages menus in the duel scene, but only partly, the code is quite a mess on this side
 // Created for Unity 2019.1.1f1
+// NNOT OPTIMIZED
 public class MenuManager : MonoBehaviour
 {
     # region VARIABLES
@@ -132,33 +134,40 @@ public class MenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // FILLS SCRIPTABLE OBJECTS
         LoadAudioSaveInScriptableObject();
         LoadGameSaveInScriptableObject();
+
+
+        // FILLS SCENE FROM SCRIPTABLE OBJECTS
         SetUpAudioSettingsFromScriptableObject();
         SetUpGameSettingsFromScriptableObject();
+
+
         Cursor.visible = true;
     }
 
     // Update is called once per grahic frame
     void Update()
     {
-        switch (GameManager.Instance.gameState)
+        if (enabled && isActiveAndEnabled)
         {
-            case GameManager.GAMESTATE.game:
-                if (canPauseOn)
-                    ManagePauseOnInput();
-                ManageInfosDisplayInput();
-                break;
+            switch (gameManager.gameState)
+            {
+                case GameManager.GAMESTATE.game:                        // GAME
+                    if (canPauseOn)
+                        ManagePauseOnInput();
+                    ManageInfosDisplayInput();
+                    break;
 
-            case GameManager.GAMESTATE.paused:
-                ManagePauseOutInput();
-                break;
-        }
+                case GameManager.GAMESTATE.paused:                      // PAUSED
+                    ManagePauseOutInput();
+                    break;
+            }
 
 
-        if (pauseCooldownOn && Time.time - pauseCooldownStartTime > pauseCooldownDuration)
-        {
-            pauseCooldownOn = false;
+            if (pauseCooldownOn && Time.time - pauseCooldownStartTime > pauseCooldownDuration)
+                pauseCooldownOn = false;
         }
     }
     # endregion
@@ -213,13 +222,12 @@ public class MenuManager : MonoBehaviour
 
 
     # region PAUSE
+    // PAUSE INPUT
     // Input to activate pause
     void ManagePauseOnInput()
     {
         if (!pauseCooldownOn)
-        {
             for (int i = 0; i < inputManager.playerInputs.Length; i++)
-            {
                 if (inputManager.playerInputs[i].pauseUp)
                 {
                     playerWhoPaused = i;
@@ -227,24 +235,22 @@ public class MenuManager : MonoBehaviour
                     pauseCooldownStartTime = Time.time;
                     TriggerPause(true);
                 }
-            }
-        }
     }
-
+    // PAUDE OFF INPUT
     // Input to deactivate pause by the player who activated it only
     void ManagePauseOutInput()
     {
         if (!pauseCooldownOn)
-        {
             if (inputManager.playerInputs[playerWhoPaused].pauseUp)
             {
                 pauseCooldownOn = false;
                 pauseCooldownStartTime = Time.time;
                 TriggerPause(false);
             }
-        }
     }
 
+
+    // SWITCH PAUSED
     public void SwitchPause()
     {
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.paused)
@@ -252,12 +258,14 @@ public class MenuManager : MonoBehaviour
         else
             TriggerPause(true);
     }
-
+    // PAUSE OFF
     public void PauseOff()
     {
         TriggerPause(false);
     }
 
+
+    // PAUSE FUNCTION
     public void TriggerPause(bool state)
     {
         if (state)
@@ -308,6 +316,7 @@ public class MenuManager : MonoBehaviour
         Cursor.visible = state;
     }
 
+
     void RestoreCanPauseOn()
     {
         canPauseOn = true;
@@ -338,6 +347,7 @@ public class MenuManager : MonoBehaviour
 
 
     #region SAVE / LOAD PARAMETERS
+    // GAME SETTINGS FROM SAVE TO SCRIPTABLE OBJECTS
     public void LoadGameSaveInScriptableObject()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();
@@ -345,7 +355,7 @@ public class MenuManager : MonoBehaviour
         menuParametersSaveScriptableObject.displayHelp = save.displayHelp;
         menuParametersSaveScriptableObject.roundToWin = save.roundsToWin;
     }
-
+    // AUDIO SETTINGS FROM SAVE TO SCRIPTABLE OBJECT
     public void LoadAudioSaveInScriptableObject()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();
@@ -393,6 +403,8 @@ public class MenuManager : MonoBehaviour
             menuParametersSaveScriptableObject.voiceVolume = save.voiceVolume;
     }
 
+
+    // SET UP GAME SETTINGS
     public void SetUpGameSettingsFromScriptableObject()
     {
         roundsToWinSlider.value = menuParametersSaveScriptableObject.roundToWin;
@@ -405,7 +417,7 @@ public class MenuManager : MonoBehaviour
             GameManager.Instance.playerKeysIndicators[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
         }
     }
-
+    // SET UP AUDIO SETTINGS
     public void SetUpAudioSettingsFromScriptableObject()
     {
         masterVolume.slider.value = menuParametersSaveScriptableObject.masterVolume;
@@ -427,12 +439,14 @@ public class MenuManager : MonoBehaviour
         voiceVolume.UpdateVolume();
     }
 
+
+    // SAVE GAME SETTINGS
     public void SaveGameSettingsInScriptableObject()
     {
         menuParametersSaveScriptableObject.roundToWin = Mathf.FloorToInt(roundsToWinSlider.value);
         menuParametersSaveScriptableObject.displayHelp = displayHelpCheckBox.activeInHierarchy;
     }
-
+    // SAVE AUDIO SETTINGS
     public void SaveAudioSettingsInScriptableObject()
     {
         menuParametersSaveScriptableObject.masterVolume = masterVolume.slider.value;
@@ -444,6 +458,8 @@ public class MenuManager : MonoBehaviour
         menuParametersSaveScriptableObject.roundToWin = GameManager.Instance.scoreToWin;
     }
 
+
+    // GAME SETTINGS FROM SCRIPTABLE OBJECT TO SAVE
     public void SaveGameSettingsFromScriptableObject()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();
@@ -453,8 +469,7 @@ public class MenuManager : MonoBehaviour
 
         SaveGameManager.Save();
     }
-
-    // Save menu parameters
+    // AUDIO SETTINGS FROM SCRIPTABLE OBJECT TO SAVE
     public void SaveAudioSettingsFromScriptableObject()
     {
         JsonSave save = SaveGameManager.GetCurrentSave();
@@ -471,8 +486,5 @@ public class MenuManager : MonoBehaviour
         SaveGameManager.Save();
     }
     #endregion
-
-
-
     # endregion
 }
