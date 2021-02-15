@@ -42,7 +42,7 @@ public class CameraShake : MonoBehaviour
 
     # region FUNCTIONS
     // BASE FUNCTIONS
-    void Awake()
+    void Awake()                                                                    // AWAKE
     {
         if (camTransform == null)
             camTransform = GetComponent(typeof(Transform)) as Transform;
@@ -54,7 +54,7 @@ public class CameraShake : MonoBehaviour
 
 
     // OnEnable is called each time the object is set from inactive to active
-    void OnEnable()
+    void OnEnable()                                                                 // ON ENABLE
     {
         originalPos = camTransform.localPosition;
         beforeShakePos = originalPos;

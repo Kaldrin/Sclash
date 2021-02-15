@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviourPun
     #region START
     [Header("START")]
     [Tooltip("The delay before the battle camera values are entered in the camera parameters to make it reactive for battle once the game started, because the smooth camera values stay some time to smooth the zoom towards the scene")]
-    [SerializeField] float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
+    [SerializeField] public float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
     [SerializeField] Animator drawTextAnimator = null;
     bool drawTextVisible = false;
     # endregion
@@ -658,9 +658,13 @@ public class GameManager : MonoBehaviourPun
         {
             allPlayersHaveDrawn = true;
 
-            for (int i = 0; i < playersList.Count; i++)
-                if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
-                    allPlayersHaveDrawn = false;
+            if (playersList.Count < 2)
+                allPlayersHaveDrawn = false;
+            else
+                for (int i = 0; i < playersList.Count; i++)
+                    if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
+                        allPlayersHaveDrawn = false;
+
 
 
             if (allPlayersHaveDrawn)
@@ -740,6 +744,9 @@ public class GameManager : MonoBehaviourPun
     }
 
     #region PLAYERS
+    /// <summary>
+    /// Instantiates the players in the duel scene
+    /// </summary>
     // Spawns the players
     void SpawnPlayers()
     {

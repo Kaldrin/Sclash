@@ -25,11 +25,8 @@ public class MenuBrowser : MonoBehaviour
     int sens = 1;
 
 
-
     [SerializeField] bool invertVerticalAxis = false;
-    [SerializeField]
-    bool
-        canBack = false,
+    [SerializeField] bool canBack = false,
         swapAxis = false,
         allowHorizontalJump = false;
     [SerializeField] int horizontalJumpAmount = 4;
@@ -55,7 +52,7 @@ public class MenuBrowser : MonoBehaviour
     [SerializeField] string horizontalAxis = "Horizontal";
     [SerializeField] string verticalAxis = "Vertical";
     [SerializeField] string backButton = "Back";
-    [SerializeField] string submitButton = "Submit";
+    //[SerializeField] string submitButton = "Submit";
     bool vAxisInUse = false;
     bool hAxisInUse = false;
 
@@ -328,6 +325,12 @@ public class MenuBrowser : MonoBehaviour
         if (canBack && backElement != null)
             backElement.GetComponent<Button>().onClick.Invoke();
     }
+
+
+    public void SetIndex(int index = 0)
+    {
+        browseIndex = index;
+    }
     #endregion
 
 
@@ -470,20 +473,21 @@ public class MenuBrowser : MonoBehaviour
                 {
                     // If the element is set to change its color when selected, changes it
                     if (shouldUseButtonColorSwitch[i])
-                    {
                         if (g.GetComponent<Image>())
                             g.GetComponent<Image>().color = buttonSelectedColor;
-                    }
                 }
                 catch { }
 
 
                 // Changes text color of the element's children
-                for (int j = 0; j < g.transform.childCount; j++)
+                if (g != null)
                 {
-                    if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
-                        g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textSelectedColor;
+                    for (int j = 0; j < g.transform.childCount; j++)
+                        if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
+                            g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textSelectedColor;
                 }
+                else
+                    Debug.Log("Error, can't find element " + i + ", ignoring");
             }
             // if the checked element is not the currently selected one
             else
@@ -501,10 +505,8 @@ public class MenuBrowser : MonoBehaviour
 
                 // Changes text color of the element's children
                 for (int j = 0; j < g.transform.childCount; j++)
-                {
                     if (g.transform.GetChild(j).GetComponent<TextMeshProUGUI>())
                         g.transform.GetChild(j).GetComponent<TextMeshProUGUI>().color = textDefaultColor;
-                }
             }
         }
     }
@@ -515,7 +517,7 @@ public class MenuBrowser : MonoBehaviour
 
 
 
-    // SECONDARY FUNCTIONS
+    #region SECONDARY FUNCTIONS
     // Returns true if element is contained in referenced array
     bool isObjectInGameObjectArray(GameObject objectToFind, GameObject[] array)
     {
@@ -536,5 +538,6 @@ public class MenuBrowser : MonoBehaviour
 
         return 0;
     }
+    #endregion
     #endregion
 }

@@ -146,8 +146,11 @@ public class CharacterChanger : MonoBehaviour
             verticalIndex = 3;
             StartCoroutine(ApplyPlayerChange(0));
 
-            verticalIndex = 4;
-            StartCoroutine(ApplyCharacter2Change(0));
+            if (!ConnectManager.Instance.enableMultiplayer)
+            {
+                verticalIndex = 4;
+                StartCoroutine(ApplyCharacter2Change(0));
+            }
         }
 
         // Character
@@ -202,6 +205,11 @@ public class CharacterChanger : MonoBehaviour
             fullObjectsAnimators[playerScript.playerNum].SetBool("On", state);
         if (characterChangeAnimator)
             characterChangeAnimator.enabled = state;
+
+
+        // ACTIVATE ALL BUTTONS
+        for (int i = 0; i < verticalElements.Count; i++)
+            verticalElements[i].SetBool("Disabled", false);
     }
 
 
@@ -232,27 +240,41 @@ public class CharacterChanger : MonoBehaviour
              verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
         }
 
-        currentMaxVerticalIndex = verticalMenu.transform.childCount - 1;
+
+        // ONLINE
+        if (ConnectManager.Instance.enableMultiplayer && playerScript.playerNum == 0)
+            currentMaxVerticalIndex = verticalMenu.transform.childCount - 3;
+        // OFFLINE
+        else
+            currentMaxVerticalIndex = verticalMenu.transform.childCount - 1;
     }
 
 
     void ManageVerticalSelectionChange()
     {
-        if (canChangeVertical && (Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].vertical) > 0.5f))
+        // INPUT INDEX
+        // Old input
+        int inputPlayernUm = playerScript.playerNum;
+
+        if (ConnectManager.Instance.enableMultiplayer)
+            inputPlayernUm = 0;
+
+       
+        if (canChangeVertical && (Mathf.Abs(InputManager.Instance.playerInputs[inputPlayernUm].vertical) > 0.5f))
         {
-            VerticalSelectionChange();
+            VerticalSelectionChange(inputPlayernUm);
             canChangeVertical = false;
         }
-        else if (!canChangeVertical && Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].vertical) < 0.5f)
-            canChangeVertical = true;     
+        else if (!canChangeVertical && Mathf.Abs(InputManager.Instance.playerInputs[inputPlayernUm].vertical) < 0.5f)
+            canChangeVertical = true;
     }
    
 
-    public void VerticalSelectionChange()
+    public void VerticalSelectionChange(int playerIndex = 0)
     {
-        if (InputManager.Instance.playerInputs[playerScript.playerNum].vertical > 0.5f)
+        if (InputManager.Instance.playerInputs[playerIndex].vertical > 0.5f)
             verticalIndex--;
-        else if (InputManager.Instance.playerInputs[playerScript.playerNum].vertical < -0.5f)
+        else if (InputManager.Instance.playerInputs[playerIndex].vertical < -0.5f)
             verticalIndex++;
 
 
@@ -278,17 +300,25 @@ public class CharacterChanger : MonoBehaviour
 
     void ManageHorizontalSwitch()
     {
-        if (canChangeHorizontal && (Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal) > 0.5f))
+        // INPUT INDEX
+        // Old input
+        int inputPlayernUm = playerScript.playerNum;
+
+        if (ConnectManager.Instance.enableMultiplayer)
+            inputPlayernUm = 0;
+
+
+        if (canChangeHorizontal && (Mathf.Abs(InputManager.Instance.playerInputs[inputPlayernUm].horizontal) > 0.5f))
         {
-            if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal > 0.5f)
+            if (InputManager.Instance.playerInputs[inputPlayernUm].horizontal > 0.5f)
                 HorizontalSwitch(1);
-            else if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal < -0.5f)
+            else if (InputManager.Instance.playerInputs[inputPlayernUm].horizontal < -0.5f)
                 HorizontalSwitch(-1);
             
 
             canChangeHorizontal = false;
         }
-        else if (!canChangeHorizontal && Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal) < 0.5f)
+        else if (!canChangeHorizontal && Mathf.Abs(InputManager.Instance.playerInputs[inputPlayernUm].horizontal) < 0.5f)
             canChangeHorizontal = true;
     }
 
@@ -584,15 +614,23 @@ public class CharacterChanger : MonoBehaviour
         // ENABLE CHARACTER CHANGE
         verticalElements[verticalElements.Count - 1].SetBool("Disabled", !player2ModesDatabase.player2modes[currentAI_Index].AI);
         playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
+        playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
         playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().iaScript.enabled = player2ModesDatabase.player2modes[currentAI_Index].AI;
         playerScript.iaScript.SetDifficulty(player2ModesDatabase.player2modes[currentAI_Index].difficulty);
 
-        if (!player2ModesDatabase.player2modes[currentAI_Index].AI)
+
+        // ONLINE, NO IA CHOICE
+        if (ConnectManager.Instance.enableMultiplayer)
         {
-            currentMaxVerticalIndex = verticalElements.Count - 2;
+            verticalElements[verticalElements.Count - 2].SetBool("Disabled", true);
         }
         else
-            currentMaxVerticalIndex = verticalElements.Count - 1;
+        {
+            if (!player2ModesDatabase.player2modes[currentAI_Index].AI)
+                currentMaxVerticalIndex = verticalElements.Count - 2;
+            else
+                currentMaxVerticalIndex = verticalElements.Count - 1;
+        }
     }
 
 

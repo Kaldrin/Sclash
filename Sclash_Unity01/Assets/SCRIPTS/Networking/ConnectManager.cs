@@ -35,6 +35,23 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
+    [Header("ONLINE MENU")]
+    [SerializeField] GameObject connectionWindow = null;
+    [SerializeField] GameObject serverListBrowser = null;
+    [SerializeField] MenuBrowser multiplayerBrowser = null;
+    [SerializeField] GameObject backBrowser = null;
+    [SerializeField] GameObject timeoutWindow = null;
+    [SerializeField] GameObject rightPart = null;
+    [SerializeField] GameObject leftPart = null;
+    [SerializeField] GameObject screenTitle = null;
+
+
+
+    [Header("CHARACTER CHANGE")]
+    [SerializeField] List<GameObject> characterChangeDisplays = new List<GameObject>(2);
+
+
+
 
 
 
@@ -78,6 +95,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             PhotonNetwork.ConnectUsingSettings();
             isConnecting = true;
         }
+
+
+        // CONNEXION WAIT
+        ConnexionWaitDisplay(true);
     }
 
 
@@ -175,6 +196,21 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         stats.ResetAllPlayerValuesForNextMatch();
 
 
+
+
+        // CHARACTER CHANGE
+        if (stats.playerNum > 0)
+        {
+            if (characterChangeDisplays[0] != null)
+                characterChangeDisplays[0].SetActive(false);
+        }
+        else if (stats.playerNum == 0)
+            if (characterChangeDisplays[0] != null)
+                characterChangeDisplays[0].SetActive(true);
+
+
+
+
         ///Animation setup
         //playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
         //splayerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
@@ -193,6 +229,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         if (!GameManager.Instance.playersList.Contains(newPlayer))
             GameManager.Instance.playersList.Add(newPlayer);
 
+
+
+
+
         stats.characterNameDisplay.text = GameManager.Instance.charactersData.charactersList[0].name;
         stats.characterNameDisplay.color = GameManager.Instance.playersColors[stats.playerNum];
         stats.characterIdentificationArrow.color = GameManager.Instance.playersColors[stats.playerNum];
@@ -205,12 +245,29 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
         /// Wait 0.1 seconds
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(1f);
+
+
+        // SLIDE ANIM
+        WaitScene();
 
 
         GameManager.Instance.SwitchState(GameManager.GAMESTATE.game);
+        AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
         CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.battle);
 
+
+        // AUDIO
+        audioManager.matchBeginsRandomSoundSource.Play();
+
+
+
+        // STAGE
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("SyncMap", RpcTarget.AllBuffered, MapLoader.Instance.currentMapIndex);
+            photonView.RPC("SyncRoundCount", RpcTarget.AllBuffered, GameManager.Instance.scoreToWin);
+        }
 
         //audioManager.ActivateWind();
 
@@ -219,23 +276,27 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         yield return new WaitForSeconds(0.5f);
 
 
-        audioManager.matchBeginsRandomSoundSource.Play();
+        
 
 
         Debug.Log("PUN : OnJoinedRoom() called by PUN. Player is now in a room");
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
 
+        
+
+
+        // RESET MENU
+        multiplayerBrowser.enabled = true;
+
+
+        yield return new WaitForSeconds(GameManager.Instance.timeBeforeBattleCameraActivationWhenGameStarts);
+
+
+
         CameraManager.Instance.actualXSmoothMovementsMultiplier = CameraManager.Instance.battleXSmoothMovementsMultiplier;
         CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
         CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
-
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC("SyncMap", RpcTarget.AllBuffered, MapLoader.Instance.currentMapIndex);
-            photonView.RPC("SyncRoundCount", RpcTarget.AllBuffered, GameManager.Instance.scoreToWin);
-        }
     }
     #endregion
 
@@ -250,6 +311,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         connectedToMaster = true;
         Debug.Log("PUN : OnConnectedToMaster() was called by PUN");
         PhotonNetwork.JoinLobby();
+
+
+        // CONNEXION WINDOW
+        ConnexionWaitDisplay(false);
     }
 
     public override void OnJoinedLobby()
@@ -306,6 +371,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         Debug.Log("Leave Lobby called");
         PhotonNetwork.Disconnect();
+
+        // CONNEXION WINDOW
+        ConnexionWaitDisplay(false);
     }
 
 
@@ -313,6 +381,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         connectedToMaster = false;
         Debug.LogWarning(cause);
+
+        SetMultiplayer(false);
+
+
+        // TIME OUT DISPLAY
+        if (cause == DisconnectCause.ClientTimeout)
+            if (timeoutWindow != null)
+                timeoutWindow.SetActive(true);
+            else
+                Debug.Log("Can't find timeout window, ignoring");
     }
 
 
@@ -320,6 +398,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         StartCoroutine(JoinRoomCoroutine());
     }
+
+
+
+
 
 
     [PunRPC]
@@ -396,6 +478,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             }
         }
     }
+
+
+
 
 
 
@@ -518,7 +603,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void WaitSceneLoading()
     {
-        Invoke("WaitScene", 2f);
+        //Invoke("WaitScene", 0.5f);
     }
 
 
@@ -526,6 +611,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         GameObject.Find("RightPanel").GetComponent<Animator>().Play("SlideOut");
         GameObject.Find("LeftPanel").GetComponent<Animator>().Play("SlideOut");
+
+
+        // DISABLE MENU
+        if (rightPart != null)
+            rightPart.SetActive(false);
+        if (leftPart != null)
+            leftPart.SetActive(false);
+        if (screenTitle != null)
+            screenTitle.SetActive(false);
+
 
         Invoke("DisableMenu", 0.25f);
     }
@@ -538,6 +633,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
     [PunRPC]
+    // SYNC STAGE OF THE JOINING PLAYER
     void SyncMap(int targetMapIndex)
     {
         Debug.Log("SyncMap called");
@@ -549,6 +645,40 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     void SyncRoundCount(int targetScoreWin)
     {
         GameManager.Instance.scoreToWin = targetScoreWin;
+    }
+
+
+
+
+
+
+    // MENU
+    void ConnexionWaitDisplay(bool state = false)
+    {
+        if (connectionWindow != null)
+            connectionWindow.SetActive(state);
+        else
+            Debug.Log("Can't find connection window, ignoring");
+
+        if (serverListBrowser != null)
+            serverListBrowser.SetActive(!state);
+        else
+            Debug.Log("Can't find server list browser, ignoring");
+
+        if (multiplayerBrowser != null)
+            multiplayerBrowser.gameObject.SetActive(!state);
+        else
+            Debug.Log("Can't find multiplayer browser, ignoring");
+
+        if (backBrowser != null)
+            backBrowser.SetActive(state);
+        else
+            Debug.Log("Can't find multiplayer browser, ignoring");
+
+        if (timeoutWindow != null)
+            timeoutWindow.SetActive(false);
+        else
+            Debug.Log("Can't find timeout window, ignoring");
     }
     #endregion
 }

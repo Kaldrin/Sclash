@@ -12,51 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
   m_Name: RemoteConfigDataStoreAsset
   m_EditorClassIdentifier: 
-  configId: 8e07a2e4-692f-4bac-a6c6-dd0147645ad6
-  currentEnvironment: Release
-  currentEnvironmentId: 55a9a63f-e8ff-40e9-acde-2918309d8ef7
-  currentEnvironmentIsDefault: 1
+  configId: 
+  currentEnvironment: Please create an environment.
+  currentEnvironmentId: 
+  currentEnvironmentIsDefault: 0
   addedRulesIDs: []
   updatedRulesIDs: []
   deletedRulesIDs: []
-  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"f16396cd-5d78-478b-b959-a5041455a68b\"\r\n   
-    },\r\n    \"rs\": {\r\n      \"key\": \"season\",\r\n      \"type\": \"int\",\r\n     
-    \"value\": 3\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"31abae04-fcc2-4d58-8d9b-1b93d1bdfe76\"\r\n    },\r\n    \"rs\": {\r\n     
-    \"key\": \"halloween\",\r\n      \"type\": \"bool\",\r\n      \"value\": false\r\n   
-    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"17b59b95-fe59-4b24-9d48-e1bfdd284cdc\"\r\n   
-    },\r\n    \"rs\": {\r\n      \"key\": \"christmas\",\r\n      \"type\": \"bool\",\r\n     
-    \"value\": true\r\n    }\r\n  }\r\n]"
-  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"f16396cd-5d78-478b-b959-a5041455a68b\"\r\n   
-    },\r\n    \"rs\": {\r\n      \"key\": \"season\",\r\n      \"type\": \"int\",\r\n     
-    \"value\": 3\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"31abae04-fcc2-4d58-8d9b-1b93d1bdfe76\"\r\n    },\r\n    \"rs\": {\r\n     
-    \"key\": \"halloween\",\r\n      \"type\": \"bool\",\r\n      \"value\": false\r\n   
-    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"17b59b95-fe59-4b24-9d48-e1bfdd284cdc\"\r\n   
-    },\r\n    \"rs\": {\r\n      \"key\": \"christmas\",\r\n      \"type\": \"bool\",\r\n     
-    \"value\": true\r\n    }\r\n  }\r\n]"
-  _environments: "[\r\n  {\r\n    \"projectId\": \"4666d9a9-9b53-4361-8543-85214aafc218\",\r\n   
-    \"name\": \"Release\",\r\n    \"id\": \"55a9a63f-e8ff-40e9-acde-2918309d8ef7\",\r\n   
-    \"createdAt\": \"2020-09-09T18:17:29Z\",\r\n    \"updatedAt\": \"2020-09-10T10:25:12Z\",\r\n   
-    \"isDefault\": true\r\n  },\r\n  {\r\n    \"projectId\": \"4666d9a9-9b53-4361-8543-85214aafc218\",\r\n   
-    \"name\": \"Dev\",\r\n    \"id\": \"0a92f748-4915-419b-8589-299f5de1078a\",\r\n   
-    \"createdAt\": \"2020-09-09T18:17:59Z\",\r\n    \"updatedAt\": \"2020-09-10T10:10:36Z\",\r\n   
-    \"isDefault\": false\r\n  }\r\n]"
-  _rulesList: "[\r\n  {\r\n    \"projectId\": \"4666d9a9-9b53-4361-8543-85214aafc218\",\r\n   
-    \"environmentId\": \"55a9a63f-e8ff-40e9-acde-2918309d8ef7\",\r\n    \"configId\":
-    \"8e07a2e4-692f-4bac-a6c6-dd0147645ad6\",\r\n    \"name\": \"Season\",\r\n   
-    \"enabled\": false,\r\n    \"condition\": \"true\",\r\n    \"rolloutPercentage\":
-    100,\r\n    \"value\": [],\r\n    \"id\": \"32db8427-a332-4e6d-8962-af5c01b5d51b\",\r\n   
-    \"priority\": 1000,\r\n    \"type\": \"segmentation\",\r\n    \"startDate\":
-    null,\r\n    \"endDate\": null,\r\n    \"metadata\": null,\r\n    \"audience\":
-    null,\r\n    \"kpi\": null,\r\n    \"createdAt\": \"2020-09-10T10:34:12Z\",\r\n   
-    \"updatedAt\": \"2020-12-24T18:26:27Z\"\r\n  }\r\n]"
-  _lastCachedRulesList: "[\r\n  {\r\n    \"projectId\": \"4666d9a9-9b53-4361-8543-85214aafc218\",\r\n   
-    \"environmentId\": \"55a9a63f-e8ff-40e9-acde-2918309d8ef7\",\r\n    \"configId\":
-    \"8e07a2e4-692f-4bac-a6c6-dd0147645ad6\",\r\n    \"name\": \"Season\",\r\n   
-    \"enabled\": false,\r\n    \"condition\": \"true\",\r\n    \"rolloutPercentage\":
-    100,\r\n    \"value\": [],\r\n    \"id\": \"32db8427-a332-4e6d-8962-af5c01b5d51b\",\r\n   
-    \"priority\": 1000,\r\n    \"type\": \"segmentation\",\r\n    \"startDate\":
-    null,\r\n    \"endDate\": null,\r\n    \"metadata\": null,\r\n    \"audience\":
-    null,\r\n    \"kpi\": null,\r\n    \"createdAt\": \"2020-09-10T10:34:12Z\",\r\n   
-    \"updatedAt\": \"2020-12-24T18:26:27Z\"\r\n  }\r\n]"
+  _rsKeyList: '[]'
+  _rsLastCachedKeyList: '[]'
+  _environments: '[]'
+  _rulesList: '[]'
+  _lastCachedRulesList: '[]'
