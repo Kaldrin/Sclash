@@ -77,7 +77,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         Debug.Log("Connecting ...");
 
-
         if (!PhotonNetwork.IsConnected)
         {
             PhotonNetwork.GameVersion = gameVersion;
@@ -156,7 +155,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         // INSTANTIATE PLAYER //
         ///Get player spawns
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
-        GameObject newPlayer = PhotonNetwork.Instantiate("PlayerNetwork", spawnPos, Quaternion.identity);
+        GameObject newPlayer = PhotonNetwork.Instantiate("Prefabs/PlayerNetwork", spawnPos, Quaternion.identity);
 
 
         if (SteamManager.Initialized)

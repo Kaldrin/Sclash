@@ -113,12 +113,12 @@ public class MenuBrowser : MonoBehaviour
 
 
 
+    PlayerControls controls;
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
     void Awake()                                                                                            // AWAKE
     {
-
         FixButtonColorUsageList();
 
 
@@ -141,6 +141,7 @@ public class MenuBrowser : MonoBehaviour
 
     void Start()                                                                                            // START
     {
+        controls = GameManager.Instance.Controls;
         VerticalBrowse(0);
         Select(false);
         Select(true);
@@ -156,12 +157,14 @@ public class MenuBrowser : MonoBehaviour
             {
                 // H AXIS
                 // Detects H axis let go
-                if (Mathf.Abs(Input.GetAxisRaw(horizontalAxis)) <= horizontalRestZone)
+                if (Mathf.Abs(controls.UI.Navigate.ReadValue<Vector2>().x) <= horizontalRestZone)
+                {
                     hAxisInUse = false;
+                }
 
 
                 // Move sliders with horizontal
-                if (Input.GetAxis(horizontalAxis) > horizontalInputDetectionZone && !hAxisInUse)
+                if (controls.UI.Navigate.ReadValue<Vector2>().x > horizontalInputDetectionZone && !hAxisInUse)
                 {
                     // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
                     if (callSpecialElementWhenHorizontal)
@@ -174,7 +177,7 @@ public class MenuBrowser : MonoBehaviour
 
                     hAxisInUse = true;
                 }
-                else if (Input.GetAxis(horizontalAxis) < -horizontalInputDetectionZone & !hAxisInUse)
+                else if (controls.UI.Navigate.ReadValue<Vector2>().x < -horizontalInputDetectionZone & !hAxisInUse)
                 {
                     // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
                     if (callSpecialElementWhenHorizontal)
@@ -196,19 +199,21 @@ public class MenuBrowser : MonoBehaviour
 
                 // V AXIS
                 // Detects V axis let go
-                if (vAxisInUse && Mathf.Abs(Input.GetAxis(verticalAxis)) <= verticalInputRestZone)
+                if (Mathf.Abs(controls.UI.Navigate.ReadValue<Vector2>().y) <= verticalInputRestZone)
+                {
                     vAxisInUse = false;
+                }
 
 
                 if (!vAxisInUse)
                 {
                     // Detects positive V axis input
-                    if (Input.GetAxis(verticalAxis) > verticalInputDetectionZone)
+                    if (controls.UI.Navigate.ReadValue<Vector2>().y > verticalInputDetectionZone)
                         VerticalBrowse(1);
 
 
                     // Detects negative V axis input
-                    if (Input.GetAxis(verticalAxis) < -verticalInputDetectionZone)
+                    if (controls.UI.Navigate.ReadValue<Vector2>().y < -verticalInputDetectionZone)
                         VerticalBrowse(-1);
                 }
             }
@@ -310,7 +315,7 @@ public class MenuBrowser : MonoBehaviour
     void ManageBack()
     {
         if (canBack && backElement != null)
-            if (Input.GetButtonUp(backButton))
+            if (controls.UI.Cancel.triggered)
             {
                 backElement.GetComponent<Button>().onClick.Invoke();
 

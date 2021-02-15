@@ -279,11 +279,13 @@ public class IAScript : MonoBehaviour
     void FindOpponent()
     {
         Debug.Log("Looking for opponent");
-
-        if (opponent.GetType() != typeof(StoryPlayer))
-            opponent.DrawnEvent += EnemyReady;
-        else
-            EnemyReady();
+        if (opponent != null)
+        {
+            if (opponent.GetType() != typeof(StoryPlayer))
+                opponent.DrawnEvent += EnemyReady;
+            else
+                EnemyReady();
+        }
     }
 
     protected void AddWeights()

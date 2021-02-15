@@ -19,7 +19,7 @@ public class ControllerDetector : MonoBehaviour
 
 
     void Update()
-    {
+    {/*
         if (enabled && isActiveAndEnabled && doDetectController)
         {
             if (Cursor.visible)
@@ -40,6 +40,6 @@ public class ControllerDetector : MonoBehaviour
                         Cursor.lockState = CursorLockMode.None;
                         Cursor.visible = true;
                     }
-        }
+        }*/
     }
 }

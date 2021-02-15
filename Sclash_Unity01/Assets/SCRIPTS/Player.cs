@@ -9,7 +9,7 @@ using Photon.Realtime;
 
 // Main player script for duel mode
 // A LITTLE MESSY ?
-public class Player : MonoBehaviourPunCallbacks, IPunObservable
+public class Player : MonoBehaviourPunCallbacks
 {
     #region Events
     public delegate void OnDrawnEvent();
@@ -32,7 +32,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Stats manager
     [SerializeField] string statsManagerName = "GlobalManager";
 
-    StatsManager statsManager = null;
+    protected StatsManager statsManager = null;
     #endregion
 
 
@@ -131,7 +131,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [Header("HEALTH")]
     [Tooltip("The maximum health of the player")]
     [SerializeField] float maxHealth = 1;
-    float currentHealth;
+    protected float currentHealth;
     #endregion
 
 
@@ -165,7 +165,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         staminaRecupAnimRegenSpeed = 0.025f;
     [HideInInspector] public float stamina = 0;
     float currentTimeBeforeStaminaRegen = 0;
-    float staminaBarsOpacity = 1;
+    protected float staminaBarsOpacity = 1;
     float oldStaminaValue = 0;
 
 
@@ -191,14 +191,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     #region MOVEMENTS SETTING
     [Header("MOVEMENTS")]
     [Tooltip("The default movement speed of the player")]
-    [SerializeField] float baseMovementsSpeed = 2.5f;
+    [SerializeField] protected float baseMovementsSpeed = 2.5f;
     [SerializeField] float chargeMovementsSpeed = 1.2f;
     [SerializeField] float sneathedMovementsSpeed = 1.8f;
     [SerializeField] float attackingMovementsSpeed = 2.2f;
     [HideInInspector] public float actualMovementsSpeed = 1;
 
     Vector3 oldPos = Vector3.zero;
-    Vector2 netTargetPos = Vector2.zero;
+    protected Vector2 netTargetPos = Vector2.zero;
     //float lerpValue = 0f;
     //bool lerpToTarget = false;
     #endregion
@@ -259,8 +259,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector] public int chargeLevel = 1;
 
     [Tooltip("Charge duration parameters")]
-    [SerializeField] float durationToNextChargeLevel = 0.7f;
-    [SerializeField] float maxHoldDurationAtMaxCharge = 2f;
+    [SerializeField] protected float durationToNextChargeLevel = 0.7f;
+    [SerializeField] protected float maxHoldDurationAtMaxCharge = 2f;
     [SerializeField] float attackReleaseAxisInputDeadZoneForDashAttack = 0.1f;
     protected float
         maxChargeLevelStartTime = 0,
@@ -322,10 +322,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     protected DASHSTEP currentDashStep = DASHSTEP.invalidated;
     protected DASHSTEP currentShortcutDashStep = DASHSTEP.invalidated;
 
-    Vector3 initPos;
-    Vector3 targetPos;
+    protected Vector3 initPos;
+    protected Vector3 targetPos;
 
-    bool isDashing = false;
+    protected bool isDashing = false;
     #endregion
 
 
@@ -343,13 +343,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("POMMELED")]
     [Tooltip("The distance the player will be pushed on when pommeled")]
-    [SerializeField] float kickKnockbackDistance = 1f;
+    [SerializeField] protected float kickKnockbackDistance = 1f;
 
 
 
     [Header("PARRY")]
     [HideInInspector] public bool canParry = true;
-    int currentParryFramesPressed = 0;
+    protected int currentParryFramesPressed = 0;
 
 
     [Header("MAINTAIN PARRY")]
@@ -406,7 +406,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("CHARGE FX")]
     [Tooltip("The slider component reference to move the charging FX on the katana")]
-    [SerializeField] Slider chargeSlider = null;
+    [SerializeField] protected Slider chargeSlider = null;
     [SerializeField] protected ParticleSystem chargeFlareFX = null;
     [SerializeField] protected ParticleSystem chargeFX = null;
     [SerializeField] protected ParticleSystem chargeFullFX = null;
@@ -468,7 +468,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     // NETWORK
-    bool enemyDead = false;
+    protected bool enemyDead = false;
 
 
 
@@ -507,7 +507,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             characterChanger.characterChangeAnimator.runtimeAnimatorController = characterChangerAnimatorController;
     }
 
-    void Start()                                                                // START
+    public virtual void Start()                                                                // START
     {
         // GET MANAGERS
         //audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
@@ -1029,10 +1029,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     characterChanger.EnableVisuals(false);
                 }
 
-                if (playerNum == 0) Z
+                if (playerNum == 0)
                     if (!ConnectManager.Instance.connectedToMaster)
-                    if (GameManager.Instance.playersList.Count > 1)
-                        GameManager.Instance.playersList[1].GetComponent<IAChanger>().enabled = false;
+                        if (GameManager.Instance.playersList.Count > 1)
+                            GameManager.Instance.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
 
             case STATE.battleDrawing:                                             // BATTLE DRAWING
@@ -1655,6 +1655,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Function to decrement to stamina
     public void StaminaCost(float cost, bool playFX)
     {
+        Debug.Log("Losing stamine");
         if (!cheatSettings.infiniteStamina)
         {
             stamina -= cost;
@@ -1691,7 +1692,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // Update stamina slider value
-    void UpdateStaminaSlidersValue()
+    protected void UpdateStaminaSlidersValue()
     {
         // DETECT STAMINA CHARGE UP
         if (Mathf.FloorToInt(oldStaminaValue) < Mathf.FloorToInt(stamina) && (characterType == CharacterType.campaign || (characterType == CharacterType.duel && !gameManager.playerDead && gameManager.gameState == GameManager.GAMESTATE.game)))
@@ -2015,7 +2016,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     #region DRAW
     // Detects draw input
-    void ManageDraw()
+    protected virtual void ManageDraw()
     {
         if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
         {
@@ -2238,7 +2239,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    void ManageCharging()
+    protected virtual void ManageCharging()
     {
         // Online
         if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster && photonView.IsMine)

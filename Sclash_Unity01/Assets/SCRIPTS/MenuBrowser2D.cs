@@ -141,11 +141,6 @@ public class MenuBrowser2D : MonoBehaviour
         }
     }
 
-    private void OnDisable()
-    {
-        controls.Menu.Disable();
-    }
-
     void Start()
     {
         VerticalBrowse(0);
@@ -159,7 +154,6 @@ public class MenuBrowser2D : MonoBehaviour
     // Update is called once per graphic frame
     void Update()
     {
-        Debug.Log(controls.Menu.Navigate.ReadValue<Vector2>());
         if (enabled && isActiveAndEnabled)
         {
             if (elements2D.Length > 0)
@@ -167,19 +161,19 @@ public class MenuBrowser2D : MonoBehaviour
 
                 // H AXIS
                 // Detects H axis let go
-                if (Mathf.Abs(controls.Menu.Navigate.ReadValue<Vector2>().x) <= horizontalRestZone)
+                if (Mathf.Abs(controls.UI.Navigate.ReadValue<Vector2>().x) <= horizontalRestZone)
                     hAxisInUse = false;
 
 
                 // Move sliders with horizontal
                 if (!hAxisInUse)
                 {
-                    if (controls.Menu.Navigate.ReadValue<Vector2>().x > horizontalInputDetectionZone)
+                    if (controls.UI.Navigate.ReadValue<Vector2>().x > horizontalInputDetectionZone)
                     {
                         HorizontalBrowse(1);
                         hAxisInUse = true;
                     }
-                    else if (controls.Menu.Navigate.ReadValue<Vector2>().x < -horizontalInputDetectionZone)
+                    else if (controls.UI.Navigate.ReadValue<Vector2>().x < -horizontalInputDetectionZone)
                     {
                         HorizontalBrowse(-1);
                         hAxisInUse = true;
@@ -195,20 +189,20 @@ public class MenuBrowser2D : MonoBehaviour
 
                 // V AXIS
                 // Detects V axis let go
-                if (Mathf.Abs(controls.Menu.Navigate.ReadValue<Vector2>().y) <= verticalInputRestZone)
+                if (Mathf.Abs(controls.UI.Navigate.ReadValue<Vector2>().y) <= verticalInputRestZone)
                     vAxisInUse = false;
 
 
                 if (!vAxisInUse)
                 {
                     // Detects positive V axis input
-                    if (controls.Menu.Navigate.ReadValue<Vector2>().y > verticalInputDetectionZone)
+                    if (controls.UI.Navigate.ReadValue<Vector2>().y > verticalInputDetectionZone)
                     {
                         VerticalBrowse(1);
                         vAxisInUse = true;
                     }
                     // Detects negative V axis input
-                    else if (controls.Menu.Navigate.ReadValue<Vector2>().y < -verticalInputDetectionZone)
+                    else if (controls.UI.Navigate.ReadValue<Vector2>().y < -verticalInputDetectionZone)
                     {
                         VerticalBrowse(-1);
                         vAxisInUse = true;
@@ -218,7 +212,7 @@ public class MenuBrowser2D : MonoBehaviour
 
 
             // BACK
-            if (canBack && controls.Menu.Back.triggered)
+            if (canBack && controls.UI.Cancel.triggered)
                 backElement.GetComponent<Button>().onClick.Invoke();
         }
     }
@@ -227,8 +221,6 @@ public class MenuBrowser2D : MonoBehaviour
     // OnEnable is called each time the object is set from inactive to active
     void OnEnable()
     {
-
-        controls.Menu.Enable();
         if (callSpecialElementWhenEnabled && enabledSpecialElement != null)
             enabledSpecialElement.onClick.Invoke();
 

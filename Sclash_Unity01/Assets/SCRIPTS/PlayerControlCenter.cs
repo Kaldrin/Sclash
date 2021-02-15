@@ -87,9 +87,14 @@ public class PlayerControlCenter : MonoBehaviour
     public void OnDash(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
-            m_DashOrientation = Mathf.Sign(ctx.ReadValue<float>());
+        {
+            if (m_DashOrientation == 0f)
+                m_DashOrientation = Mathf.Sign(ctx.ReadValue<float>());
+        }
         if (ctx.performed)
+        {
             InputManager.Instance.playerInputs[m_playerIndex].dash = m_DashOrientation;
+        }
         if (ctx.canceled)
         {
             InputManager.Instance.playerInputs[m_playerIndex].dash = 0f;

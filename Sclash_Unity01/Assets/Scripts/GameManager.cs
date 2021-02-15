@@ -363,23 +363,22 @@ public class GameManager : MonoBehaviourPun
                 }
             }
     }
-}
 
-// FixedUpdate is called 50 times per second
-public virtual void FixedUpdate()
-{
-    if (enabled && isActiveAndEnabled)
+    // FixedUpdate is called 50 times per second
+    public virtual void FixedUpdate()
     {
-        // EFFECTS
-        RunTimeScaleUpdate();
+        if (enabled && isActiveAndEnabled)
+        {
+            // EFFECTS
+            RunTimeScaleUpdate();
 
 
-        // ONLINE STUFF
-        if (!ConnectManager.Instance.connectedToMaster)
-            scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
+            // ONLINE STUFF
+            if (!ConnectManager.Instance.connectedToMaster)
+                scoreToWin = Mathf.FloorToInt(scoreToWinSliderComponent.value);
+        }
     }
-}
-#endregion
+    #endregion
 
 
 
@@ -388,65 +387,65 @@ public virtual void FixedUpdate()
 
 
 
-// DEMO
-void TriggerDemoVersion()
-{
-    // CHARACTERS DATA
-    if (demoCharactersData != null)
-        charactersData = demoCharactersData;
-    else
-        Debug.Log("Can't find demo characters data, ignoring");
-
-    // DEMO INDICATOR
-    if (demoMark != null)
-        demoMark.SetActive(true);
-    else
-        Debug.Log("Can't find demo mark object, ignoring");
-
-
-    // DEMO BUTTONS
-    if (demoStagesButton != null)
-        demoStagesButton.SetActive(true);
-    else
-        Debug.Log("Can't find demo stages button, ignoring");
-    if (demoStoryButton != null)
-        demoStoryButton.SetActive(true);
-    else
-        Debug.Log("Can't find demo story button, ignoring");
-    if (demoOnlineButton != null)
-        demoOnlineButton.SetActive(true);
-    else
-        Debug.Log("Can't find demo online button, ignoring");
-
-
-    // NORMAL BUTTONS
-    if (stagesButton != null)
-        stagesButton.SetActive(false);
-    else
-        Debug.Log("Can't find stages button, ignoring");
-    if (storyButton != null)
-        storyButton.SetActive(false);
-    else
-        Debug.Log("Can't find story button, ignoring");
-    if (onlineButton != null)
-        onlineButton.SetActive(false);
-    else
-        Debug.Log("Can't find online button, ignoring");
-
-
-    // BROWSING
-    if (mainMenuBrowser != null && mainMenuBrowser.elements.Length > 0)
+    // DEMO
+    void TriggerDemoVersion()
     {
-        if (demoStagesButton != null && mainMenuBrowser.elements.Length > 2)
-            mainMenuBrowser.elements[2] = demoStagesButton;
-        if (demoOnlineButton != null && mainMenuBrowser.elements.Length > 3)
-            mainMenuBrowser.elements[3] = demoOnlineButton;
-        if (demoStoryButton != null && mainMenuBrowser.elements.Length > 4)
-            mainMenuBrowser.elements[4] = demoStoryButton;
+        // CHARACTERS DATA
+        if (demoCharactersData != null)
+            charactersData = demoCharactersData;
+        else
+            Debug.Log("Can't find demo characters data, ignoring");
+
+        // DEMO INDICATOR
+        if (demoMark != null)
+            demoMark.SetActive(true);
+        else
+            Debug.Log("Can't find demo mark object, ignoring");
+
+
+        // DEMO BUTTONS
+        if (demoStagesButton != null)
+            demoStagesButton.SetActive(true);
+        else
+            Debug.Log("Can't find demo stages button, ignoring");
+        if (demoStoryButton != null)
+            demoStoryButton.SetActive(true);
+        else
+            Debug.Log("Can't find demo story button, ignoring");
+        if (demoOnlineButton != null)
+            demoOnlineButton.SetActive(true);
+        else
+            Debug.Log("Can't find demo online button, ignoring");
+
+
+        // NORMAL BUTTONS
+        if (stagesButton != null)
+            stagesButton.SetActive(false);
+        else
+            Debug.Log("Can't find stages button, ignoring");
+        if (storyButton != null)
+            storyButton.SetActive(false);
+        else
+            Debug.Log("Can't find story button, ignoring");
+        if (onlineButton != null)
+            onlineButton.SetActive(false);
+        else
+            Debug.Log("Can't find online button, ignoring");
+
+
+        // BROWSING
+        if (mainMenuBrowser != null && mainMenuBrowser.elements.Length > 0)
+        {
+            if (demoStagesButton != null && mainMenuBrowser.elements.Length > 2)
+                mainMenuBrowser.elements[2] = demoStagesButton;
+            if (demoOnlineButton != null && mainMenuBrowser.elements.Length > 3)
+                mainMenuBrowser.elements[3] = demoOnlineButton;
+            if (demoStoryButton != null && mainMenuBrowser.elements.Length > 4)
+                mainMenuBrowser.elements[4] = demoStoryButton;
+        }
+        else
+            Debug.Log("Problem with main menu browser, ignoring");
     }
-    else
-        Debug.Log("Problem with main menu browser, ignoring");
-}
 
 
 
@@ -458,72 +457,72 @@ void TriggerDemoVersion()
 
 
 
-#region GAME STATE
-public void SwitchState(GAMESTATE newState)
-{
-    oldState = gameState;
-    gameState = newState;
-
-
-    switch (gameState)
+    #region GAME STATE
+    public void SwitchState(GAMESTATE newState)
     {
-        case GAMESTATE.menu:                                        // MENU
-            break;
+        oldState = gameState;
+        gameState = newState;
 
-        case GAMESTATE.loading:                                                 // LOADING
-            playerDead = false;
-            menuManager.TriggerPause(false);
-            menuManager.winScreen.SetActive(false);
-            scoreObject.GetComponent<Animator>().SetBool("On", false);
-            // IN GAME HELP
-            characterSelectionHelpAnimator.SetBool("On", false);
-            Cursor.visible = false;
-            break;
 
-        case GAMESTATE.intro:                                           // INTRO
-            break;
+        switch (gameState)
+        {
+            case GAMESTATE.menu:                                        // MENU
+                break;
 
-        case GAMESTATE.game:                                                    // GAME
-            if (oldState == GAMESTATE.paused)
-            {
+            case GAMESTATE.loading:                                                 // LOADING
+                playerDead = false;
+                menuManager.TriggerPause(false);
+                menuManager.winScreen.SetActive(false);
+                scoreObject.GetComponent<Animator>().SetBool("On", false);
+                // IN GAME HELP
+                characterSelectionHelpAnimator.SetBool("On", false);
+                Cursor.visible = false;
+                break;
+
+            case GAMESTATE.intro:                                           // INTRO
+                break;
+
+            case GAMESTATE.game:                                                    // GAME
+                if (oldState == GAMESTATE.paused)
+                {
+                    for (int i = 0; i < playersList.Count; i++)
+                    {
+                        playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
+                    }
+                }
+
+                try
+                {
+                    cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+                    mainMenu.SetActive(false);
+                    blurPanel.SetActive(false);
+                }
+                catch
+                {
+
+                }
+
+                Cursor.visible = false;
+                break;
+
+            case GAMESTATE.paused:                                                      // PAUSED
                 for (int i = 0; i < playersList.Count; i++)
-                {
-                    playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
-                    playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
-                }
-            }
+                    if (playersList[i] != null)
+                    {
+                        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
+                    }
+                break;
 
-            try
-            {
-                cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
-                mainMenu.SetActive(false);
-                blurPanel.SetActive(false);
-            }
-            catch
-            {
-
-            }
-
-            Cursor.visible = false;
-            break;
-
-        case GAMESTATE.paused:                                                      // PAUSED
-            for (int i = 0; i < playersList.Count; i++)
-                if (playersList[i] != null)
-                {
-                    playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-                    playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
-                }
-            break;
-
-        case GAMESTATE.finished:                                                // FINISHED
-            menuManager.winMessage.SetActive(true);
-            if (oldState == GAMESTATE.paused)
-                menuManager.SwitchPause();
-            break;
+            case GAMESTATE.finished:                                                // FINISHED
+                menuManager.winMessage.SetActive(true);
+                if (oldState == GAMESTATE.paused)
+                    menuManager.SwitchPause();
+                break;
+        }
     }
-}
-#endregion
+    #endregion
 
 
 
@@ -532,1155 +531,1155 @@ public void SwitchState(GAMESTATE newState)
 
 
 
-#region BEGIN GAME
-// SETUP
-// Setup the game before it starts
-void SetupGame()
-{
-    // SOUND
-    // Set on the menu music
-    audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
-
-
-    // PLAYERS
-    SpawnPlayers();
-
-
-    Invoke("SetupGame2", 0.5f);
-}
-
-void SetupGame2()
-{
-    cameraManager.FindPlayers();
-
-
-    for (int i = 0; i < playersList.Count; i++)
-        playersList[i].GetComponent<Player>().ManageOrientation();
-}
-
-
-
-
-void ConnectPlayer2()
-{
-    Debug.Log("Player2 joined");
-    player2Detected = true;
-
-
-    bool removeWarning = player2Detected;
-
-
-    if (playersList[1].GetComponent<Player>().playerIsAI)
+    #region BEGIN GAME
+    // SETUP
+    // Setup the game before it starts
+    void SetupGame()
     {
-        playersList[1].GetComponent<Player>().playerIsAI = false;
-        Destroy(playersList[1].GetComponent<IAScript>());
+        // SOUND
+        // Set on the menu music
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
+
+
+        // PLAYERS
+        SpawnPlayers();
+
+
+        Invoke("SetupGame2", 0.5f);
     }
 
-    InputManager.Instance.P2Input -= ConnectPlayer2;
-}
-
-// Begins the StartMatch coroutine, this function is called by the menu button Sclash
-public void StartMatch()
-{
-    StartCoroutine(StartMatchCoroutine());
-}
-
-public void ManageAI()
-{
-    foreach (Player p in FindObjectsOfType<Player>())
-        p.gameObject.AddComponent<IAScript>();
-
-    StartMatch();
-}
-
-// Starts the match, activates the camera cinematic zoom and then switches to battle camera
-public IEnumerator StartMatchCoroutine()
-{
-    StopCoroutine(StartMatchCoroutine());
-
-
-    // FX
-    hajimeFX.Play();
-
-
-    // AUDIO
-    audioManager.FindPlayers();
-    audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
-
-
-    // SCORE DISPLAY
-    UpdateMaxScoreDisplay();
-    ResetScore();
-
-
-    for (int i = 0; i < playersList.Count; i++)
+    void SetupGame2()
     {
-        scoresNames[i].name = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
-        scoresNames[i].color = playersColors[i];
-        scoresDisplays[i].color = playersColors[i];
-        playerHelpTextIdentifiers[i].color = playersColors[i];
-        playerHelpIconIdentifiers[i].color = playersColors[i];
+        cameraManager.FindPlayers();
+
+
+        for (int i = 0; i < playersList.Count; i++)
+            playersList[i].GetComponent<Player>().ManageOrientation();
     }
 
 
-    // IN GAME HELP
-    characterSelectionHelpAnimator.SetBool("On", true);
 
 
-    yield return new WaitForSeconds(0.1f);
-
-
-    for (int i = 0; i < playersList.Count; i++)
-        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
-
-
-    // STATE
-    SwitchState(GAMESTATE.game);
-    cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
-
-
-    yield return new WaitForSeconds(0.5f);
-
-    /*
-    for (int i = 0; i < playersList.Count; i++)
-        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
-        */
-
-
-    yield return new WaitForSeconds(timeBeforeBattleCameraActivationWhenGameStarts);
-
-
-    // Change camera speeds
-    cameraManager.actualXSmoothMovementsMultiplier = cameraManager.battleXSmoothMovementsMultiplier;
-    cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
-    cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
-
-
-    yield return new WaitForSeconds(10f);
-
-
-    // Appears draw text if both players haven't drawn
-    allPlayersHaveDrawn = true;
-
-
-    for (int i = 0; i < playersList.Count; i++)
-        if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
-            allPlayersHaveDrawn = false;
-
-
-    // DRAW DISPLAY
-    if (!allPlayersHaveDrawn)
+    void ConnectPlayer2()
     {
-        drawTextVisible = true;
-        drawTextAnimator.ResetTrigger("FadeIn");
-        drawTextAnimator.SetTrigger("FadeIn");
-        drawTextAnimator.ResetTrigger("FadeOut");
+        Debug.Log("Player2 joined");
+        player2Detected = true;
+
+
+        bool removeWarning = player2Detected;
+
+
+        if (playersList[1].GetComponent<Player>().playerIsAI)
+        {
+            playersList[1].GetComponent<Player>().playerIsAI = false;
+            Destroy(playersList[1].GetComponent<IAScript>());
+        }
+
+        InputManager.Instance.P2Input -= ConnectPlayer2;
     }
-}
 
-// A saber has been drawn, stores it and checks if both players have drawn
-public void SaberDrawn(int playerNum)
-{
-    if (audioManager.audioState == AudioManager.AUDIOSTATE.beforeBattle || audioManager.audioState == AudioManager.AUDIOSTATE.pause)
+    // Begins the StartMatch coroutine, this function is called by the menu button Sclash
+    public void StartMatch()
     {
+        StartCoroutine(StartMatchCoroutine());
+    }
+
+    public void ManageAI()
+    {
+        foreach (Player p in FindObjectsOfType<Player>())
+            p.gameObject.AddComponent<IAScript>();
+
+        StartMatch();
+    }
+
+    // Starts the match, activates the camera cinematic zoom and then switches to battle camera
+    public IEnumerator StartMatchCoroutine()
+    {
+        StopCoroutine(StartMatchCoroutine());
+
+
+        // FX
+        hajimeFX.Play();
+
+
+        // AUDIO
+        audioManager.FindPlayers();
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
+
+
+        // SCORE DISPLAY
+        UpdateMaxScoreDisplay();
+        ResetScore();
+
+
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            scoresNames[i].name = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
+            scoresNames[i].color = playersColors[i];
+            scoresDisplays[i].color = playersColors[i];
+            playerHelpTextIdentifiers[i].color = playersColors[i];
+            playerHelpIconIdentifiers[i].color = playersColors[i];
+        }
+
+
+        // IN GAME HELP
+        characterSelectionHelpAnimator.SetBool("On", true);
+
+
+        yield return new WaitForSeconds(0.1f);
+
+
+        for (int i = 0; i < playersList.Count; i++)
+            playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
+
+
+        // STATE
+        SwitchState(GAMESTATE.game);
+        cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+
+
+        yield return new WaitForSeconds(0.5f);
+
+        /*
+        for (int i = 0; i < playersList.Count; i++)
+            playersList[i].GetComponent<Player>().SwitchState(Player.STATE.sneathed);
+            */
+
+
+        yield return new WaitForSeconds(timeBeforeBattleCameraActivationWhenGameStarts);
+
+
+        // Change camera speeds
+        cameraManager.actualXSmoothMovementsMultiplier = cameraManager.battleXSmoothMovementsMultiplier;
+        cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
+        cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
+
+
+        yield return new WaitForSeconds(10f);
+
+
+        // Appears draw text if both players haven't drawn
         allPlayersHaveDrawn = true;
+
 
         for (int i = 0; i < playersList.Count; i++)
             if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
                 allPlayersHaveDrawn = false;
 
 
-        if (allPlayersHaveDrawn)
+        // DRAW DISPLAY
+        if (!allPlayersHaveDrawn)
         {
-            //audioManager.ActivateBattleMusic();
-            audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
+            drawTextVisible = true;
+            drawTextAnimator.ResetTrigger("FadeIn");
+            drawTextAnimator.SetTrigger("FadeIn");
+            drawTextAnimator.ResetTrigger("FadeOut");
+        }
+    }
+
+    // A saber has been drawn, stores it and checks if both players have drawn
+    public void SaberDrawn(int playerNum)
+    {
+        if (audioManager.audioState == AudioManager.AUDIOSTATE.beforeBattle || audioManager.audioState == AudioManager.AUDIOSTATE.pause)
+        {
+            allPlayersHaveDrawn = true;
+
+            for (int i = 0; i < playersList.Count; i++)
+                if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
+                    allPlayersHaveDrawn = false;
 
 
-            // IN GAME HELP
-            characterSelectionHelpAnimator.SetBool("On", false);
-
-
-            // STATS
-            statsManager.InitalizeNewGame(1, playersList[0].GetComponent<CharacterChanger>().currentCharacterIndex, playersList[1].GetComponent<CharacterChanger>().currentCharacterIndex);
-            statsManager.InitializeNewRound();
-
-
-            // STAGE
-            if (mapLoader.currentMap != null && mapLoader.currentMap.GetComponent<MapPrefab>())
-                mapLoader.currentMap.GetComponent<MapPrefab>().TriggerStartStage();
-            else
-                Debug.Log("Couldn't find current stage script, ignoring");
-
-
-            // Makes draw text disappear if it has appeared
-            if (drawTextVisible)
+            if (allPlayersHaveDrawn)
             {
-                drawTextAnimator.ResetTrigger("FadeOut");
-                drawTextAnimator.SetTrigger("FadeOut");
-                drawTextAnimator.ResetTrigger("FadeIn");
+                //audioManager.ActivateBattleMusic();
+                audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
+
+
+                // IN GAME HELP
+                characterSelectionHelpAnimator.SetBool("On", false);
+
+
+                // STATS
+                statsManager.InitalizeNewGame(1, playersList[0].GetComponent<CharacterChanger>().currentCharacterIndex, playersList[1].GetComponent<CharacterChanger>().currentCharacterIndex);
+                statsManager.InitializeNewRound();
+
+
+                // STAGE
+                if (mapLoader.currentMap != null && mapLoader.currentMap.GetComponent<MapPrefab>())
+                    mapLoader.currentMap.GetComponent<MapPrefab>().TriggerStartStage();
+                else
+                    Debug.Log("Couldn't find current stage script, ignoring");
+
+
+                // Makes draw text disappear if it has appeared
+                if (drawTextVisible)
+                {
+                    drawTextAnimator.ResetTrigger("FadeOut");
+                    drawTextAnimator.SetTrigger("FadeOut");
+                    drawTextAnimator.ResetTrigger("FadeIn");
+                }
             }
         }
     }
-}
-#endregion
+    #endregion
 
 
 
 
 
-void SpawnAI()
-{
-    playersList.Clear();
-    for (int i = 0; i < playerSpawns.Length; i++)
+    void SpawnAI()
     {
-        //PlayerStats playerStats;
-        PlayerAnimations playerAnimations;
-        //PlayerAttack playerAttack;
-        Player playerScript = null;
+        playersList.Clear();
+        for (int i = 0; i < playerSpawns.Length; i++)
+        {
+            //PlayerStats playerStats;
+            PlayerAnimations playerAnimations;
+            //PlayerAttack playerAttack;
+            Player playerScript = null;
 
-        GameObject AI = (GameObject)Resources.Load("Prefabs/PlayerAI");
+            GameObject AI = (GameObject)Resources.Load("Prefabs/PlayerAI");
 
-        playersList.Add(Instantiate(AI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-        playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
-        playerScript = playersList[i].GetComponent<Player>();
-        playerScript.playerNum = i;
-        playerScript.ResetAllPlayerValuesForNextMatch();
-
-
-
-        // ANIMATIONS
-        playerAnimations.spriteRenderer.color = playersColors[i];
-        playerAnimations.legsSpriteRenderer.color = playersColors[i];
-
-        playerAnimations.spriteRenderer.sortingOrder = 10 * i;
-        playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
+            playersList.Add(Instantiate(AI, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
+            playerScript = playersList[i].GetComponent<Player>();
+            playerScript.playerNum = i;
+            playerScript.ResetAllPlayerValuesForNextMatch();
 
 
-        // FX
-        ParticleSystem attackSignParticles = playerScript.attackRangeFX.GetComponent<ParticleSystem>();
-        ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
-        attackSignParticlesMain.startColor = attackSignColors[i];
+
+            // ANIMATIONS
+            playerAnimations.spriteRenderer.color = playersColors[i];
+            playerAnimations.legsSpriteRenderer.color = playersColors[i];
+
+            playerAnimations.spriteRenderer.sortingOrder = 10 * i;
+            playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i;
 
 
-        playerScript.playerLight.color = playerLightsColors[i];
+            // FX
+            ParticleSystem attackSignParticles = playerScript.attackRangeFX.GetComponent<ParticleSystem>();
+            ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
+            attackSignParticlesMain.startColor = attackSignColors[i];
+
+
+            playerScript.playerLight.color = playerLightsColors[i];
+        }
     }
-}
 
-#region PLAYERS
-// Spawns the players
-void SpawnPlayers()
-{
-    for (int i = 0; i < playerSpawns.Length; i++)
+    #region PLAYERS
+    // Spawns the players
+    void SpawnPlayers()
     {
-        PlayerAnimations playerAnimations;
-        Player playerScript = null;
-
-        playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-        playersList[i].gameObject.name = "Player" + (i + 1);
-        //IAScript ia = null;
-        /*
-#if UNITY_EDITOR
-        if (letThemFight || i == 1)
-            ia = playersList[i].AddComponent<IAScript>();
-#else
-        if (i == 1)
-            ia = playersList[i].AddComponent<IAScript>();
-#endif
-        if (ia != null)
-            ia.SetDifficulty(IAScript.Difficulty.Hard);
-            */
-        playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
-        playerScript = playersList[i].GetComponent<Player>();
-        playerScript.playerNum = i;
-        playerScript.ResetAllPlayerValuesForNextMatch();
-
-
-
-        // ANIMATIONS
-        playerAnimations.spriteRenderer.sortingOrder = 10 * i;
-        playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i - 1;
-
-
-        // FX
-        ParticleSystem attackSignParticles = playerScript.attackRangeFX.GetComponent<ParticleSystem>();
-        ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
-        attackSignParticlesMain.startColor = attackSignColors[i];
-
-
-        // VISUAL IDENTIFICATION
-        playerScript.characterNameDisplay.text = charactersData.charactersList[0].name;
-        playerScript.characterNameDisplay.color = playersColors[i];
-        playerScript.characterIdentificationArrow.color = playersColors[i];
-
-        if (demo)
+        for (int i = 0; i < playerSpawns.Length; i++)
         {
-            playerScript.characterChanger.charactersDatabase = demoCharactersData;
-            playerScript.characterChanger.masksDatabase = demoMasksDatabase;
-            playerScript.characterChanger.weaponsDatabase = demoWeaponsDatabase;
+            PlayerAnimations playerAnimations;
+            Player playerScript = null;
+
+            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            playersList[i].gameObject.name = "Player" + (i + 1);
+            //IAScript ia = null;
+            /*
+    #if UNITY_EDITOR
+            if (letThemFight || i == 1)
+                ia = playersList[i].AddComponent<IAScript>();
+    #else
+            if (i == 1)
+                ia = playersList[i].AddComponent<IAScript>();
+    #endif
+            if (ia != null)
+                ia.SetDifficulty(IAScript.Difficulty.Hard);
+                */
+            playerAnimations = playersList[i].GetComponent<PlayerAnimations>();
+            playerScript = playersList[i].GetComponent<Player>();
+            playerScript.playerNum = i;
+            playerScript.ResetAllPlayerValuesForNextMatch();
+
+
+
+            // ANIMATIONS
+            playerAnimations.spriteRenderer.sortingOrder = 10 * i;
+            playerAnimations.legsSpriteRenderer.sortingOrder = 10 * i - 1;
+
+
+            // FX
+            ParticleSystem attackSignParticles = playerScript.attackRangeFX.GetComponent<ParticleSystem>();
+            ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
+            attackSignParticlesMain.startColor = attackSignColors[i];
+
+
+            // VISUAL IDENTIFICATION
+            playerScript.characterNameDisplay.text = charactersData.charactersList[0].name;
+            playerScript.characterNameDisplay.color = playersColors[i];
+            playerScript.characterIdentificationArrow.color = playersColors[i];
+
+            if (demo)
+            {
+                playerScript.characterChanger.charactersDatabase = demoCharactersData;
+                playerScript.characterChanger.masksDatabase = demoMasksDatabase;
+                playerScript.characterChanger.weaponsDatabase = demoWeaponsDatabase;
+            }
+            //playerScript.playerLight.color = playerLightsColors[i];
         }
-        //playerScript.playerLight.color = playerLightsColors[i];
     }
-}
 
-// Reset all the players' variables for next round
-void ResetPlayersForNextMatch()
-{
-    if (playerSpawns.Length < 2)
-        playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+    // Reset all the players' variables for next round
+    void ResetPlayersForNextMatch()
+    {
+        if (playerSpawns.Length < 2)
+            playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
-    if (ConnectManager.Instance.connectedToMaster)
-        foreach (GameObject p in playersList)
-        {
-            int _tempPNum = p.GetComponent<Player>().playerNum;
+        if (ConnectManager.Instance.connectedToMaster)
+            foreach (GameObject p in playersList)
+            {
+                int _tempPNum = p.GetComponent<Player>().playerNum;
 
-            p.GetComponent<PlayerAnimations>().TriggerSneath();
+                p.GetComponent<PlayerAnimations>().TriggerSneath();
 
-            p.transform.position = playerSpawns[_tempPNum].transform.position;
-            p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
-            p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
+                p.transform.position = playerSpawns[_tempPNum].transform.position;
+                p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
 
-            p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
-        }
-    else
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+            }
+        else
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                GameObject p = playersList[i];
+
+
+                playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
+
+
+                p.transform.position = playerSpawns[i].transform.position;
+                p.transform.rotation = playerSpawns[i].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
+
+
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+            }
+
+        playerDead = false;
+    }
+
+    // Reset all the players' variables for next round
+    void ResetPlayersForNextRound()
+    {
+        if (playerSpawns.Length < 2)
+            playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+
+        if (ConnectManager.Instance.connectedToMaster)
+            foreach (GameObject p in playersList)
+            {
+                int _tempPNum = p.GetComponent<Player>().playerNum;
+
+                p.transform.position = playerSpawns[_tempPNum].transform.position;
+                p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+                p.GetComponent<Player>().SwitchState(Player.STATE.normal);
+
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
+
+                p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
+            }
+        else
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                GameObject p = playersList[i];
+
+                p.transform.position = playerSpawns[i].transform.position;
+                p.transform.rotation = playerSpawns[i].transform.rotation;
+                p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
+                p.GetComponent<Player>().SwitchState(Player.STATE.normal);
+
+
+                p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
+            }
+        playerDead = false;
+    }
+
+    public GameObject GetOtherPlayer(GameObject o)
+    {
         for (int i = 0; i < playersList.Count; i++)
-        {
-            GameObject p = playersList[i];
+            if (playersList[i] == o)
+                return o;
 
-
-            playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
-
-
-            p.transform.position = playerSpawns[i].transform.position;
-            p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
-
-
-            p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
-        }
-
-    playerDead = false;
-}
-
-// Reset all the players' variables for next round
-void ResetPlayersForNextRound()
-{
-    if (playerSpawns.Length < 2)
-        playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
-
-    if (ConnectManager.Instance.connectedToMaster)
-        foreach (GameObject p in playersList)
-        {
-            int _tempPNum = p.GetComponent<Player>().playerNum;
-
-            p.transform.position = playerSpawns[_tempPNum].transform.position;
-            p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
-            p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
-            p.GetComponent<Player>().SwitchState(Player.STATE.normal);
-
-            p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
-
-            p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
-        }
-    else
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            GameObject p = playersList[i];
-
-            p.transform.position = playerSpawns[i].transform.position;
-            p.transform.rotation = playerSpawns[i].transform.rotation;
-            p.GetComponent<PlayerAnimations>().ResetAnimsForNextRound();
-            p.GetComponent<Player>().SwitchState(Player.STATE.normal);
-
-
-            p.GetComponent<Player>().ResetAllPlayerValuesForNextRound();
-        }
-    playerDead = false;
-}
-
-public GameObject GetOtherPlayer(GameObject o)
-{
-    for (int i = 0; i < playersList.Count; i++)
-        if (playersList[i] == o)
-            return o;
-
-    return null;
-}
-
-#endregion
-
-
-
-
-
-
-
-
-#region ROUND TO ROUND & SCORE
-// DEAD
-// Executed when a player dies, starts the score display and next round parameters
-public void APlayerIsDead(int incomingWinning)
-{
-    winningPlayerIndex = incomingWinning;
-    losingPlayerIndex = 1 - winningPlayerIndex;
-
-    // STATS
-    try
-    {
-        statsManager.FinalizeRound(winningPlayerIndex);
-    }
-    catch
-    {
-        Debug.Log("Error while finalizing the recording of the current round, ignoring");
+        return null;
     }
 
+    #endregion
 
 
-    playerDead = true;
-    UpdatePlayersScoreValues();
-    SwitchState(GAMESTATE.roundFinished);
 
 
-    if (CheckIfThePlayerWon())
-        APlayerWon();
-    else
-        StartCoroutine(NextRoundCoroutine());
-}
 
 
-// SCORE
-void UpdatePlayersScoreValues()
-{
-    score[winningPlayerIndex] += 1;
-
-    for (int i = 0; i < playersList.Count; i++)
-        scoresDisplays[i].text = score[i].ToString();
-}
 
 
-// Builds the score display message
-/*
-string ScoreBuilder()
-{
-    string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
-    return scoreString;
-}
-*/
-
-
-// WON ?
-bool CheckIfThePlayerWon()
-{
-    if (score[winningPlayerIndex] >= scoreToWin)
-        return true;
-    else
-        return false;
-}
-
-
-// NEXT ROUND
-// Starts next round
-IEnumerator NextRoundCoroutine()
-{
-    yield return new WaitForSecondsRealtime(timeBeforeNextRoundTransitionTriggers);
-
-
-    ShowScoreBetweenRoundsCoroutine();
-
-
-    // FX
-    roundTransitionLeavesFX.Play();
-
-
-    yield return new WaitForSeconds(1.5f);
-
-
-    ResetPlayersForNextRound();
-
-
-    // STATS
-    try
+    #region ROUND TO ROUND & SCORE
+    // DEAD
+    // Executed when a player dies, starts the score display and next round parameters
+    public void APlayerIsDead(int incomingWinning)
     {
-        statsManager.InitializeNewRound();
-    }
-    catch
-    {
-        Debug.Log("Error while initializing a new round, ignoring");
-    }
+        winningPlayerIndex = incomingWinning;
+        losingPlayerIndex = 1 - winningPlayerIndex;
 
-
-    yield return new WaitForSeconds(1f);
-
-
-    SwitchState(GAMESTATE.game);
-
-
-    // AUDIO
-    audioManager.roundBeginsRandomSoundSource.Play();
-}
-
-
-// DISPLAY SCORE
-// Displays the current score for a given amount of time
-void ShowScoreBetweenRoundsCoroutine()
-{
-    scoreObject.GetComponent<Animator>().SetBool("On", true);
-
-
-    Invoke("HideScoreBetweenRounds", betweenRoundsScoreShowDuration);
-}
-void HideScoreBetweenRounds()
-{
-    scoreObject.GetComponent<Animator>().SetBool("On", false);
-}
-
-
-// RESET
-// Reset the score and its display
-void ResetScore()
-{
-    score = new Vector2(0, 0);
-
-    for (int i = 0; i < playersList.Count; i++)
-        scoresDisplays[i].text = "0";
-}
-
-
-// MAX SCORE
-public void UpdateMaxScoreDisplay()
-{
-    maxScoreTextDisplay.text = scoreToWin.ToString();
-}
-#endregion
-
-
-
-
-
-
-
-#region RESTART GAME
-// Calls ResetGame coroutine, called by main menu button at the end of the match
-public void ResetGame()
-{
-    StartCoroutine(ResetGameCoroutine(false));
-}
-
-// Calls ResetGame coroutine, called by main menu button at the end of the match
-public void ResetGameAndRematch()
-{
-    ResetGameEvent();
-    StartCoroutine(ResetGameCoroutine(true));
-}
-
-// Resets the match settings and values for a next match
-IEnumerator ResetGameCoroutine(bool rematchRightAfter)
-{
-    // STATS
-    if (gameState != GAMESTATE.finished && allPlayersHaveDrawn)
-    {
+        // STATS
         try
         {
-            statsManager.FinalizeGame(false, 1);
+            statsManager.FinalizeRound(winningPlayerIndex);
+        }
+        catch
+        {
+            Debug.Log("Error while finalizing the recording of the current round, ignoring");
+        }
+
+
+
+        playerDead = true;
+        UpdatePlayersScoreValues();
+        SwitchState(GAMESTATE.roundFinished);
+
+
+        if (CheckIfThePlayerWon())
+            APlayerWon();
+        else
+            StartCoroutine(NextRoundCoroutine());
+    }
+
+
+    // SCORE
+    void UpdatePlayersScoreValues()
+    {
+        score[winningPlayerIndex] += 1;
+
+        for (int i = 0; i < playersList.Count; i++)
+            scoresDisplays[i].text = score[i].ToString();
+    }
+
+
+    // Builds the score display message
+    /*
+    string ScoreBuilder()
+    {
+        string scoreString = "<color=#FF0000>" + score[0].ToString() + "</color> / <color=#0000FF>" + score[1].ToString() + "</color>";
+        return scoreString;
+    }
+    */
+
+
+    // WON ?
+    bool CheckIfThePlayerWon()
+    {
+        if (score[winningPlayerIndex] >= scoreToWin)
+            return true;
+        else
+            return false;
+    }
+
+
+    // NEXT ROUND
+    // Starts next round
+    IEnumerator NextRoundCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(timeBeforeNextRoundTransitionTriggers);
+
+
+        ShowScoreBetweenRoundsCoroutine();
+
+
+        // FX
+        roundTransitionLeavesFX.Play();
+
+
+        yield return new WaitForSeconds(1.5f);
+
+
+        ResetPlayersForNextRound();
+
+
+        // STATS
+        try
+        {
+            statsManager.InitializeNewRound();
+        }
+        catch
+        {
+            Debug.Log("Error while initializing a new round, ignoring");
+        }
+
+
+        yield return new WaitForSeconds(1f);
+
+
+        SwitchState(GAMESTATE.game);
+
+
+        // AUDIO
+        audioManager.roundBeginsRandomSoundSource.Play();
+    }
+
+
+    // DISPLAY SCORE
+    // Displays the current score for a given amount of time
+    void ShowScoreBetweenRoundsCoroutine()
+    {
+        scoreObject.GetComponent<Animator>().SetBool("On", true);
+
+
+        Invoke("HideScoreBetweenRounds", betweenRoundsScoreShowDuration);
+    }
+    void HideScoreBetweenRounds()
+    {
+        scoreObject.GetComponent<Animator>().SetBool("On", false);
+    }
+
+
+    // RESET
+    // Reset the score and its display
+    void ResetScore()
+    {
+        score = new Vector2(0, 0);
+
+        for (int i = 0; i < playersList.Count; i++)
+            scoresDisplays[i].text = "0";
+    }
+
+
+    // MAX SCORE
+    public void UpdateMaxScoreDisplay()
+    {
+        maxScoreTextDisplay.text = scoreToWin.ToString();
+    }
+    #endregion
+
+
+
+
+
+
+
+    #region RESTART GAME
+    // Calls ResetGame coroutine, called by main menu button at the end of the match
+    public void ResetGame()
+    {
+        StartCoroutine(ResetGameCoroutine(false));
+    }
+
+    // Calls ResetGame coroutine, called by main menu button at the end of the match
+    public void ResetGameAndRematch()
+    {
+        ResetGameEvent();
+        StartCoroutine(ResetGameCoroutine(true));
+    }
+
+    // Resets the match settings and values for a next match
+    IEnumerator ResetGameCoroutine(bool rematchRightAfter)
+    {
+        // STATS
+        if (gameState != GAMESTATE.finished && allPlayersHaveDrawn)
+        {
+            try
+            {
+                statsManager.FinalizeGame(false, 1);
+            }
+            catch
+            {
+                Debug.Log("Error while finalizing the recording of the current game, ignoring");
+            }
+        }
+
+
+        // ONLINE
+        if (photonView != null && PhotonNetwork.InRoom)
+            PhotonNetwork.LeaveRoom();
+
+
+        // NEXT STAGE
+        int newStageIndex = mapLoader.currentMapIndex;
+
+        if (gameState == GAMESTATE.finished)
+            if (rematchRightAfter)
+                newStageIndex = CalculateNextStageIndex();
+
+
+        // STATE
+        SwitchState(GAMESTATE.loading);
+
+
+        // Activates the menu blur panel if it is not supposed to start a new match right after
+        if (!rematchRightAfter)
+            blurPanel.SetActive(true);
+
+        // IN GAME INDICATIONS
+        drawTextAnimator.ResetTrigger("FadeOut");
+        drawTextAnimator.SetTrigger("FadeOut");
+        drawTextAnimator.ResetTrigger("FadeIn");
+        for (int i = 0; i < playersList.Count; i++)
+        {
+            playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+            inGameHelp[i].SetBool("On", false);
+            playerKeysIndicators[i].SetBool("On", false);
+        }
+
+
+        // FX
+        roundTransitionLeavesFX.Play();
+
+
+        // AUDIO
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.none);
+
+
+        yield return new WaitForSecondsRealtime(resetGameDelay);
+
+
+        ResetPlayersForNextMatch();
+        TriggerMatchEndFilterEffect(false);
+
+
+        // PLAYERS LIGHTS / COLORS
+        for (int i = 0; i < playersList.Count; i++)
+            if (playersList[i].GetComponent<Player>().playerLight != null)
+            {
+                playersList[i].GetComponent<Player>().playerLight.color = playerLightsColors[i];
+                playersList[i].GetComponent<Player>().playerLight.intensity = 5;
+            }
+
+
+        // NEXT STAGE
+        if (demo && mapLoader.halloween) // Halloween stage for demo
+            mapLoader.SetMap(0, true);
+        else if (demo && mapLoader.christmas) // Christmas stage for demo
+            mapLoader.SetMap(1, true);
+
+        else
+            mapLoader.SetMap(newStageIndex, false);
+
+
+        ResetScore();
+
+
+        // CAMERA
+        cameraManager.SwitchState(CameraManager.CAMERASTATE.inactive);
+        cameraManager.actualXSmoothMovementsMultiplier = cameraManager.cinematicXSmoothMovementsMultiplier;
+        cameraManager.actualZoomSmoothDuration = cameraManager.cinematicZoomSmoothDuration;
+        cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
+        cameraManager.cameraComponent.transform.position = cameraManager.cameraBasePos;
+
+
+        // Restarts a new match right after it is finished being set up
+        if (rematchRightAfter)
+            StartCoroutine(StartMatchCoroutine());
+        else
+        {
+            // STATE
+            SwitchState(GAMESTATE.menu);
+
+            // Activates the main menu if it is not supposed to start a new match right after
+            menuManager.mainMenu.SetActive(true);
+            Cursor.visible = true;
+
+
+            // AUDIO
+            audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
+        }
+    }
+    #endregion
+
+
+
+
+    private void OnMouseDown()
+    {
+
+    }
+
+
+
+    #region MATCH END
+    public void APlayerLeft()
+    {
+        foreach (GameObject p in playersList)
+            if (p != null)
+                continue;
+            else
+            {
+                playersList.Remove(p);
+                break;
+            }
+
+        Debug.Log("<color=red>The opponent left</color>");
+        //APlayerWon();
+    }
+
+
+    void APlayerWon()
+    {
+        // STATS
+        try
+        {
+            statsManager.FinalizeGame(true, 1);
         }
         catch
         {
             Debug.Log("Error while finalizing the recording of the current game, ignoring");
         }
-    }
 
 
-    // ONLINE
-    if (photonView != null && PhotonNetwork.InRoom)
-        PhotonNetwork.LeaveRoom();
+        // AUDIO
+        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.won);
 
 
-    // NEXT STAGE
-    int newStageIndex = mapLoader.currentMapIndex;
-
-    if (gameState == GAMESTATE.finished)
-        if (rematchRightAfter)
-            newStageIndex = CalculateNextStageIndex();
-
-
-    // STATE
-    SwitchState(GAMESTATE.loading);
-
-
-    // Activates the menu blur panel if it is not supposed to start a new match right after
-    if (!rematchRightAfter)
-        blurPanel.SetActive(true);
-
-    // IN GAME INDICATIONS
-    drawTextAnimator.ResetTrigger("FadeOut");
-    drawTextAnimator.SetTrigger("FadeOut");
-    drawTextAnimator.ResetTrigger("FadeIn");
-    for (int i = 0; i < playersList.Count; i++)
-    {
-        playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
-        inGameHelp[i].SetBool("On", false);
-        playerKeysIndicators[i].SetBool("On", false);
-    }
-
-
-    // FX
-    roundTransitionLeavesFX.Play();
-
-
-    // AUDIO
-    audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.none);
-
-
-    yield return new WaitForSecondsRealtime(resetGameDelay);
-
-
-    ResetPlayersForNextMatch();
-    TriggerMatchEndFilterEffect(false);
-
-
-    // PLAYERS LIGHTS / COLORS
-    for (int i = 0; i < playersList.Count; i++)
-        if (playersList[i].GetComponent<Player>().playerLight != null)
+        // SCORE
+        scoreObject.GetComponent<Animator>().SetBool("On", false);
+        for (int i = 0; i < playersList.Count; i++)
         {
-            playersList[i].GetComponent<Player>().playerLight.color = playerLightsColors[i];
-            playersList[i].GetComponent<Player>().playerLight.intensity = 5;
+            playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+            inGameHelp[i].SetBool("On", false);
+            playerKeysIndicators[i].SetBool("On", false);
         }
 
-
-    // NEXT STAGE
-    if (demo && mapLoader.halloween) // Halloween stage for demo
-        mapLoader.SetMap(0, true);
-    else if (demo && mapLoader.christmas) // Christmas stage for demo
-        mapLoader.SetMap(1, true);
-
-    else
-        mapLoader.SetMap(newStageIndex, false);
+        Invoke("EndGame", 4f);
+    }
+    #endregion
 
 
-    ResetScore();
 
-
-    // CAMERA
-    cameraManager.SwitchState(CameraManager.CAMERASTATE.inactive);
-    cameraManager.actualXSmoothMovementsMultiplier = cameraManager.cinematicXSmoothMovementsMultiplier;
-    cameraManager.actualZoomSmoothDuration = cameraManager.cinematicZoomSmoothDuration;
-    cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
-    cameraManager.cameraComponent.transform.position = cameraManager.cameraBasePos;
-
-
-    // Restarts a new match right after it is finished being set up
-    if (rematchRightAfter)
-        StartCoroutine(StartMatchCoroutine());
-    else
+    // END
+    // RENAME HERE IF WORKING
+    void EndGame()
     {
-        // STATE
-        SwitchState(GAMESTATE.menu);
+        // GAME STATE
+        SwitchState(GAMESTATE.finished);
 
-        // Activates the main menu if it is not supposed to start a new match right after
-        menuManager.mainMenu.SetActive(true);
+
+        // PLAYER STATE
+        playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.sneathing);
+        playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+
+
+        // WIN MENU
+        menuManager.SetUpWinMenu(charactersData.charactersList[playersList[winningPlayerIndex].GetComponent<Player>().characterIndex].name, playersColors[winningPlayerIndex], score, playersColors);
+
+
+        // ANIMATION
+        Invoke("TriggerFallDeadAnimation", 2f);
+
+
+        Invoke("ShowMenu", 2f + timeBeforeWinScreenAppears);
+    }
+
+
+    // DEATH
+    // Animation
+    void TriggerFallDeadAnimation()
+    {
+        playersList[losingPlayerIndex].GetComponent<PlayerAnimations>().TriggerRealDeath();
+    }
+
+
+    // MENU
+    void ShowMenu()
+    {
+        // MENU
+        blurPanel.SetActive(false);
+        menuManager.winScreen.SetActive(true);
         Cursor.visible = true;
 
 
         // AUDIO
-        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
+        audioManager.winMusicAudioSource.Play();
     }
-}
-#endregion
 
 
 
 
-private void OnMouseDown()
-{
 
-}
-
-
-
-#region MATCH END
-public void APlayerLeft()
-{
-    foreach (GameObject p in playersList)
-        if (p != null)
-            continue;
-        else
+    #region EFFECTS
+    public void TriggerMatchEndFilterEffect(bool on)
+    {
+        if (on)
         {
-            playersList.Remove(p);
-            break;
-        }
+            // Deactivates background elements for only orange color
+            /* DONT DELETE
+            for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+                mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
+                */
 
-    Debug.Log("<color=red>The opponent left</color>");
-    //APlayerWon();
-}
-
-
-void APlayerWon()
-{
-    // STATS
-    try
-    {
-        statsManager.FinalizeGame(true, 1);
-    }
-    catch
-    {
-        Debug.Log("Error while finalizing the recording of the current game, ignoring");
-    }
-
-
-    // AUDIO
-    audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.won);
-
-
-    // SCORE
-    scoreObject.GetComponent<Animator>().SetBool("On", false);
-    for (int i = 0; i < playersList.Count; i++)
-    {
-        playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
-        inGameHelp[i].SetBool("On", false);
-        playerKeysIndicators[i].SetBool("On", false);
-    }
-
-    Invoke("EndGame", 4f);
-}
-#endregion
+            // STAGE ELEMENTS
+            if (mapLoader.currentMap != null && mapLoader.currentMap.GetComponent<MapPrefab>())
+                mapLoader.currentMap.GetComponent<MapPrefab>().TriggerDramaticScreen();
 
 
 
-// END
-// RENAME HERE IF WORKING
-void EndGame()
-{
-    // GAME STATE
-    SwitchState(GAMESTATE.finished);
+            // List of all renderers for the death VFX
+            spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
+            meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
+            skinnedMeshRenderers = GameObject.FindObjectsOfType<SkinnedMeshRenderer>();
+            particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
+            lights = GameObject.FindObjectsOfType<Light>();
 
 
-    // PLAYER STATE
-    playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.sneathing);
-    playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-
-
-    // WIN MENU
-    menuManager.SetUpWinMenu(charactersData.charactersList[playersList[winningPlayerIndex].GetComponent<Player>().characterIndex].name, playersColors[winningPlayerIndex], score, playersColors);
-
-
-    // ANIMATION
-    Invoke("TriggerFallDeadAnimation", 2f);
-
-
-    Invoke("ShowMenu", 2f + timeBeforeWinScreenAppears);
-}
-
-
-// DEATH
-// Animation
-void TriggerFallDeadAnimation()
-{
-    playersList[losingPlayerIndex].GetComponent<PlayerAnimations>().TriggerRealDeath();
-}
-
-
-// MENU
-void ShowMenu()
-{
-    // MENU
-    blurPanel.SetActive(false);
-    menuManager.winScreen.SetActive(true);
-    Cursor.visible = true;
-
-
-    // AUDIO
-    audioManager.winMusicAudioSource.Play();
-}
+            // All renderers' original properties storage for the death VFX reset
+            originalSpriteRenderersColors = new List<Color>();
+            originalSpriteRenderersMaterials = new List<Material>();
+            originalMeshRenderersColors = new List<Color>();
+            skinnedMeshRenderesColors = new List<Color>();
+            originalParticleSystemsColors = new List<Color>();
+            originalLightsIntensities = new List<float>();
+            originalParticleSystemsGradients = new List<Gradient>();
 
 
 
-
-
-#region EFFECTS
-public void TriggerMatchEndFilterEffect(bool on)
-{
-    if (on)
-    {
-        // Deactivates background elements for only orange color
-        /* DONT DELETE
-        for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
-            mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
-            */
-
-        // STAGE ELEMENTS
-        if (mapLoader.currentMap != null && mapLoader.currentMap.GetComponent<MapPrefab>())
-            mapLoader.currentMap.GetComponent<MapPrefab>().TriggerDramaticScreen();
-
-
-
-        // List of all renderers for the death VFX
-        spriteRenderers = GameObject.FindObjectsOfType<SpriteRenderer>();
-        meshRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
-        skinnedMeshRenderers = GameObject.FindObjectsOfType<SkinnedMeshRenderer>();
-        particleSystems = GameObject.FindObjectsOfType<ParticleSystem>();
-        lights = GameObject.FindObjectsOfType<Light>();
-
-
-        // All renderers' original properties storage for the death VFX reset
-        originalSpriteRenderersColors = new List<Color>();
-        originalSpriteRenderersMaterials = new List<Material>();
-        originalMeshRenderersColors = new List<Color>();
-        skinnedMeshRenderesColors = new List<Color>();
-        originalParticleSystemsColors = new List<Color>();
-        originalLightsIntensities = new List<float>();
-        originalParticleSystemsGradients = new List<Gradient>();
-
-
-
-        // SET ALL BLACK
-        // SPRITES
-        for (int i = 0; i < spriteRenderers.Length; i++)
-            if (!spriteRenderers[i].CompareTag("NonBlackFX"))
-            {
-                originalSpriteRenderersColors.Add(spriteRenderers[i].color);
-                spriteRenderers[i].color = Color.black;
-
-                originalSpriteRenderersMaterials.Add(spriteRenderers[i].material);
-                spriteRenderers[i].material = deathFXSpriteMaterial;
-            }
-        // MESHES
-        for (int i = 0; i < meshRenderers.Length; i++)
-            if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
-            {
-                try
-                {
-                    // Store original color DONT DELETE
-                    //originalMeshRenderersColors.Add(meshRenderers[i].material.color);
-                    // Set black
-                    meshRenderers[i].material.color = Color.black;
-                }
-                catch { }
-            }
-        // SKINNED MESHES
-        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
-            if (!skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
-            {
-                try
-                {
-                    // Store original color
-                    skinnedMeshRenderesColors.Add(skinnedMeshRenderers[i].material.color);
-                    // Set black
-                    skinnedMeshRenderers[i].material.color = Color.black;
-                }
-                catch { }
-            }
-        // PARTICLES
-        for (int i = 0; i < particleSystems.Length; i++)
-            if (particleSystems[i] != null && !particleSystems[i].CompareTag("NonBlackFX") && particleSystems[i].gameObject.activeInHierarchy && particleSystems[i].isPlaying)
-            {
-                // INDIVIDUAL
-                ParticleSystem.Particle[] particles = new ParticleSystem.Particle[particleSystems[i].particleCount];
-                particleSystems[i].GetParticles(particles);
-
-                for (int o = 0; o < particles.Length; o++)
-                    particles[o].startColor = Color.black;
-                particleSystems[i].SetParticles(particles, particles.Length);
-
-
-                // SYSTEMS
-                ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
-                originalParticleSystemsColors.Add(particleSystemMain.startColor.color);
-                particleSystemMain.startColor = Color.black;
-                originalParticleSystemsGradients.Add(particleSystemMain.startColor.gradient);
-                particleSystemMain.startColor = deathVFXGradientForParticles;
-            }
-
-
-        // LIGHTS
-        for (int i = 0; i < lights.Length; i++)
-            if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
-                lights[i].gameObject.SetActive(false);
-    }
-    else
-    {
-
-        // RESET ALL
-        // SPRITES
-
-        if (spriteRenderers != null && spriteRenderers.Length > 0)
-        {
+            // SET ALL BLACK
+            // SPRITES
             for (int i = 0; i < spriteRenderers.Length; i++)
-            {
-                if (spriteRenderers[i] != null && !spriteRenderers[i].CompareTag("NonBlackFX"))
+                if (!spriteRenderers[i].CompareTag("NonBlackFX"))
                 {
-                    spriteRenderers[i].color = originalSpriteRenderersColors[i];
-                    spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
+                    originalSpriteRenderersColors.Add(spriteRenderers[i].color);
+                    spriteRenderers[i].color = Color.black;
+
+                    originalSpriteRenderersMaterials.Add(spriteRenderers[i].material);
+                    spriteRenderers[i].material = deathFXSpriteMaterial;
                 }
-            }
-        }
-        /*
-        // MESHES DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if (meshRenderers != null && meshRenderers.Length > 0)
-        {
+            // MESHES
             for (int i = 0; i < meshRenderers.Length; i++)
-                if (meshRenderers[i] != null && !meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
-                    meshRenderers[i].material.color = originalMeshRenderersColors[i];
-        }
-        */
-        // SKINNED MESHES
-        if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
-        {
-            for (int i = 0; i < skinnedMeshRenderers.Length; i++)
-                if (skinnedMeshRenderers[i] != null && !skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
-                    skinnedMeshRenderers[i].material.color = skinnedMeshRenderesColors[i];
-        }
-        // PARTICLES
-        if (particleSystems != null && particleSystems.Length > 0)
-            for (int i = 0; i < particleSystems.Length; i++)
-                if (particleSystems[i] != null && !particleSystems[i].CompareTag("NonBlackFX"))
+                if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                 {
                     try
                     {
-                        ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
-
-
-
-                        particleSystemMain.startColor = originalParticleSystemsGradients[i];
-                        particleSystemMain.startColor = originalParticleSystemsColors[i];
+                        // Store original color DONT DELETE
+                        //originalMeshRenderersColors.Add(meshRenderers[i].material.color);
+                        // Set black
+                        meshRenderers[i].material.color = Color.black;
                     }
                     catch { }
                 }
-        // LIGHTS
-        /* DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if (lights != null && lights.Length > 0)
-            for (int i = 0; i < lights.Length; i++)
-                try
+            // SKINNED MESHES
+            for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                if (!skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
                 {
-                    if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
-                        lights[i].gameObject.SetActive(true);
+                    try
+                    {
+                        // Store original color
+                        skinnedMeshRenderesColors.Add(skinnedMeshRenderers[i].material.color);
+                        // Set black
+                        skinnedMeshRenderers[i].material.color = Color.black;
+                    }
+                    catch { }
                 }
-                catch { }
-                */
+            // PARTICLES
+            for (int i = 0; i < particleSystems.Length; i++)
+                if (particleSystems[i] != null && !particleSystems[i].CompareTag("NonBlackFX") && particleSystems[i].gameObject.activeInHierarchy && particleSystems[i].isPlaying)
+                {
+                    // INDIVIDUAL
+                    ParticleSystem.Particle[] particles = new ParticleSystem.Particle[particleSystems[i].particleCount];
+                    particleSystems[i].GetParticles(particles);
 
-        /* DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // Reactivates the background of the map if it's referenced
-        if (mapLoader.currentMap.GetComponent<MapPrefab>() && mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length > 0)
-            for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
-                mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
-        */
-    }
-}
-
-
-// SLOW MO
-// Starts the SlowMo coroutine
-public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
-{
-    if (useSlowMotion)
-    {
-        StopCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
-        StartCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
-    }
-}
+                    for (int o = 0; o < particles.Length; o++)
+                        particles[o].startColor = Color.black;
+                    particleSystems[i].SetParticles(particles, particles.Length);
 
 
-// Slow motion and zoom for a given duration
-IEnumerator SlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
-{
-    // CAMERA STATE
-    cameraManager.SwitchState(CameraManager.CAMERASTATE.eventcam);
+                    // SYSTEMS
+                    ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
+                    originalParticleSystemsColors.Add(particleSystemMain.startColor.color);
+                    particleSystemMain.startColor = Color.black;
+                    originalParticleSystemsGradients.Add(particleSystemMain.startColor.gradient);
+                    particleSystemMain.startColor = deathVFXGradientForParticles;
+                }
 
 
-    // TIME
-    actualTimeScaleUpdateSmoothness = fadeSpeed;
-    timeScaleObjective = slowMoTimeScale;
-
-
-    // FX
-    if (useAnimeLines)
-    {
-        if (animeLinesFx != null)
-            animeLinesFx.Play();
+            // LIGHTS
+            for (int i = 0; i < lights.Length; i++)
+                if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
+                    lights[i].gameObject.SetActive(false);
+        }
         else
-            Debug.Log("Couldn't find anime lines FX, ignoring");
-    }
-
-
-
-    // AUDIO
-    if (score[winningPlayerIndex] < scoreToWin)
-        audioManager.TriggerSlowMoAudio(true);
-
-
-    yield return new WaitForSecondsRealtime(slowMoEffectDuration);
-
-
-    // TIME
-    actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
-    timeScaleObjective = baseTimeScale;
-
-
-    // CAMERA
-    cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
-
-
-    // AUDIO
-    /*
-    for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
-    {
-        audioManager.battleMusicPhaseSources[i].pitch = 1;
-        audioManager.battleMusicStrikesSources[i].pitch = 1;
-    }
-    */
-    if (score[winningPlayerIndex] < scoreToWin)
-        audioManager.TriggerSlowMoAudio(false);
-
-
-    yield return new WaitForSecondsRealtime(0.5f);
-
-
-    // TIME
-    Time.timeScale = timeScaleObjective;
-    // FX
-    if (useAnimeLines)
-    {
-        if (animeLinesFx != null)
-            animeLinesFx.Stop();
-        else
-            Debug.Log("Couldn't find anime lines FX, ignoring");
-    }
-}
-
-
-// Update the timescale smoothly for smooth slow mo effects in FixedUpdate
-void RunTimeScaleUpdate()
-{
-    if (runTimeScaleUpdate)
-    {
-        if (FastApproximately(Time.timeScale, timeScaleObjective, 0.06f) || timeScaleObjective == Time.timeScale)
-            Time.timeScale = timeScaleObjective;
-        else
-            Time.timeScale += actualTimeScaleUpdateSmoothness * Mathf.Sign(timeScaleObjective - Time.timeScale);
-
-
-        if (Time.timeScale <= minTimeScale)
-            Time.timeScale = minTimeScale;
-
-
-        for (int i = 0; i < audioManager.phasesMainAudioSources.Count; i++)
         {
-            audioManager.phasesMainAudioSources[i].pitch = Time.timeScale;
-            audioManager.phasesStrikesAudioSources[i].pitch = Time.timeScale;
+
+            // RESET ALL
+            // SPRITES
+
+            if (spriteRenderers != null && spriteRenderers.Length > 0)
+            {
+                for (int i = 0; i < spriteRenderers.Length; i++)
+                {
+                    if (spriteRenderers[i] != null && !spriteRenderers[i].CompareTag("NonBlackFX"))
+                    {
+                        spriteRenderers[i].color = originalSpriteRenderersColors[i];
+                        spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
+                    }
+                }
+            }
+            /*
+            // MESHES DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (meshRenderers != null && meshRenderers.Length > 0)
+            {
+                for (int i = 0; i < meshRenderers.Length; i++)
+                    if (meshRenderers[i] != null && !meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
+                        meshRenderers[i].material.color = originalMeshRenderersColors[i];
+            }
+            */
+            // SKINNED MESHES
+            if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
+            {
+                for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                    if (skinnedMeshRenderers[i] != null && !skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
+                        skinnedMeshRenderers[i].material.color = skinnedMeshRenderesColors[i];
+            }
+            // PARTICLES
+            if (particleSystems != null && particleSystems.Length > 0)
+                for (int i = 0; i < particleSystems.Length; i++)
+                    if (particleSystems[i] != null && !particleSystems[i].CompareTag("NonBlackFX"))
+                    {
+                        try
+                        {
+                            ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
+
+
+
+                            particleSystemMain.startColor = originalParticleSystemsGradients[i];
+                            particleSystemMain.startColor = originalParticleSystemsColors[i];
+                        }
+                        catch { }
+                    }
+            // LIGHTS
+            /* DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (lights != null && lights.Length > 0)
+                for (int i = 0; i < lights.Length; i++)
+                    try
+                    {
+                        if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
+                            lights[i].gameObject.SetActive(true);
+                    }
+                    catch { }
+                    */
+
+            /* DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // Reactivates the background of the map if it's referenced
+            if (mapLoader.currentMap.GetComponent<MapPrefab>() && mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length > 0)
+                for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
+                    mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(true);
+            */
         }
     }
-}
 
 
-
-#endregion
-
-
-
-
-
-#region SECONDARY FUNCTIONS
-// STAGE INDEX
-int CalculateNextStageIndex()
-{
-    int nextStageIndex = mapLoader.currentMapIndex;
-    int loopCount = 0;
-
-
-    // IF NO DEMO
-    if (!demo)
+    // SLOW MO
+    // Starts the SlowMo coroutine
+    public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
     {
-        // DAY NIGHT
-        if (gameParameters.dayNightCycle)
+        if (useSlowMotion)
         {
-            if (!gameParameters.randomStage)
-            {
-                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
-                    nextStageIndex = mapLoader.currentMapIndex + 1;
-                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.night)
-                    nextStageIndex = mapLoader.currentMapIndex - 1;
-            }
+            StopCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
+            StartCoroutine(SlowMoCoroutine(slowMoEffectDuration, slowMoTimeScale, fadeSpeed));
+        }
+    }
+
+
+    // Slow motion and zoom for a given duration
+    IEnumerator SlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
+    {
+        // CAMERA STATE
+        cameraManager.SwitchState(CameraManager.CAMERASTATE.eventcam);
+
+
+        // TIME
+        actualTimeScaleUpdateSmoothness = fadeSpeed;
+        timeScaleObjective = slowMoTimeScale;
+
+
+        // FX
+        if (useAnimeLines)
+        {
+            if (animeLinesFx != null)
+                animeLinesFx.Play();
             else
+                Debug.Log("Couldn't find anime lines FX, ignoring");
+        }
+
+
+
+        // AUDIO
+        if (score[winningPlayerIndex] < scoreToWin)
+            audioManager.TriggerSlowMoAudio(true);
+
+
+        yield return new WaitForSecondsRealtime(slowMoEffectDuration);
+
+
+        // TIME
+        actualTimeScaleUpdateSmoothness = roundEndTimeScaleFadeSpeed;
+        timeScaleObjective = baseTimeScale;
+
+
+        // CAMERA
+        cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+
+
+        // AUDIO
+        /*
+        for (int i = 0; i < audioManager.battleMusicPhaseSources.Length; i++)
+        {
+            audioManager.battleMusicPhaseSources[i].pitch = 1;
+            audioManager.battleMusicStrikesSources[i].pitch = 1;
+        }
+        */
+        if (score[winningPlayerIndex] < scoreToWin)
+            audioManager.TriggerSlowMoAudio(false);
+
+
+        yield return new WaitForSecondsRealtime(0.5f);
+
+
+        // TIME
+        Time.timeScale = timeScaleObjective;
+        // FX
+        if (useAnimeLines)
+        {
+            if (animeLinesFx != null)
+                animeLinesFx.Stop();
+            else
+                Debug.Log("Couldn't find anime lines FX, ignoring");
+        }
+    }
+
+
+    // Update the timescale smoothly for smooth slow mo effects in FixedUpdate
+    void RunTimeScaleUpdate()
+    {
+        if (runTimeScaleUpdate)
+        {
+            if (FastApproximately(Time.timeScale, timeScaleObjective, 0.06f) || timeScaleObjective == Time.timeScale)
+                Time.timeScale = timeScaleObjective;
+            else
+                Time.timeScale += actualTimeScaleUpdateSmoothness * Mathf.Sign(timeScaleObjective - Time.timeScale);
+
+
+            if (Time.timeScale <= minTimeScale)
+                Time.timeScale = minTimeScale;
+
+
+            for (int i = 0; i < audioManager.phasesMainAudioSources.Count; i++)
             {
-                if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
-                    nextStageIndex = mapLoader.currentMapIndex + 1;
+                audioManager.phasesMainAudioSources[i].pitch = Time.timeScale;
+                audioManager.phasesStrikesAudioSources[i].pitch = Time.timeScale;
+            }
+        }
+    }
+
+
+
+    #endregion
+
+
+
+
+
+    #region SECONDARY FUNCTIONS
+    // STAGE INDEX
+    int CalculateNextStageIndex()
+    {
+        int nextStageIndex = mapLoader.currentMapIndex;
+        int loopCount = 0;
+
+
+        // IF NO DEMO
+        if (!demo)
+        {
+            // DAY NIGHT
+            if (gameParameters.dayNightCycle)
+            {
+                if (!gameParameters.randomStage)
+                {
+                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
+                        nextStageIndex = mapLoader.currentMapIndex + 1;
+                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.night)
+                        nextStageIndex = mapLoader.currentMapIndex - 1;
+                }
                 else
                 {
-                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-
-                    if (gameParameters.useCustomListForRandom)
-                        while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex || !(mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.day))
-                        {
-                            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-                            loopCount++;
-
-
-                            if (loopCount >= 100)
-                            {
-                                nextStageIndex = 0;
-                                break;
-                            }
-                        }
+                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
+                        nextStageIndex = mapLoader.currentMapIndex + 1;
                     else
-                        while (nextStageIndex == mapLoader.currentMapIndex || mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.night)
-                        {
-                            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-                            loopCount++;
+                    {
+                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
 
-
-                            if (loopCount >= 100)
+                        if (gameParameters.useCustomListForRandom)
+                            while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex || !(mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.day))
                             {
-                                Debug.Log("Couldn't find random day map that is not this one, taking index 0 instead");
-                                nextStageIndex = 0;
-                                break;
+                                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                                loopCount++;
+
+
+                                if (loopCount >= 100)
+                                {
+                                    nextStageIndex = 0;
+                                    break;
+                                }
                             }
-                        }
+                        else
+                            while (nextStageIndex == mapLoader.currentMapIndex || mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.night)
+                            {
+                                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                                loopCount++;
+
+
+                                if (loopCount >= 100)
+                                {
+                                    Debug.Log("Couldn't find random day map that is not this one, taking index 0 instead");
+                                    nextStageIndex = 0;
+                                    break;
+                                }
+                            }
+                    }
                 }
             }
-        }
-        // RANDOM
-        // If not day / night
-        else if (gameParameters.randomStage)
-        {
-            nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+            // RANDOM
+            // If not day / night
+            else if (gameParameters.randomStage)
+            {
+                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
 
 
-            if (gameParameters.useCustomListForRandom)
-                while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex)
-                {
-                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
-
-                    loopCount++;
-                    if (loopCount >= 100)
+                if (gameParameters.useCustomListForRandom)
+                    while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex)
                     {
-                        nextStageIndex = 0;
-                        break;
-                    }
-                }
-            else
-                while (nextStageIndex == mapLoader.currentMapIndex)
-                {
-                    nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
 
-                    loopCount++;
-                    if (loopCount >= 100)
-                    {
-                        nextStageIndex = 0;
-                        break;
+                        loopCount++;
+                        if (loopCount >= 100)
+                        {
+                            nextStageIndex = 0;
+                            break;
+                        }
                     }
-                }
+                else
+                    while (nextStageIndex == mapLoader.currentMapIndex)
+                    {
+                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+
+                        loopCount++;
+                        if (loopCount >= 100)
+                        {
+                            nextStageIndex = 0;
+                            break;
+                        }
+                    }
+            }
         }
+
+
+        return nextStageIndex;
     }
 
 
-    return nextStageIndex;
-}
-
-
-// COMPARE FLOATS
-// Compares 2 floats with a range of tolerance
-public static bool FastApproximately(float a, float b, float threshold)
-{
-    return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
-}
+    // COMPARE FLOATS
+    // Compares 2 floats with a range of tolerance
+    public static bool FastApproximately(float a, float b, float threshold)
+    {
+        return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
+    }
     #endregion
     #endregion
 
