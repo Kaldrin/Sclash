@@ -177,7 +177,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         // INSTANTIATE PLAYER //
         ///Get player spawns
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
-        GameObject newPlayer = PhotonNetwork.Instantiate("PlayerNetwork", spawnPos, Quaternion.identity);
+        GameObject newPlayer = PhotonNetwork.Instantiate("Prefabs/PlayerNetwork", spawnPos, Quaternion.identity);
 
 
         if (SteamManager.Initialized)
@@ -209,10 +209,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             if (characterChangeDisplays[0] != null)
                 characterChangeDisplays[0].SetActive(false);
+            if (characterChangeDisplays[1] != null)
+                characterChangeDisplays[1].SetActive(true);
         }
         else if (stats.playerNum == 0)
+        {
             if (characterChangeDisplays[0] != null)
                 characterChangeDisplays[0].SetActive(true);
+            if (characterChangeDisplays[1] != null)
+                characterChangeDisplays[1].SetActive(false);
+        }
 
 
 

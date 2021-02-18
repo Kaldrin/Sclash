@@ -197,7 +197,7 @@ public class MenuManager : MonoBehaviour
             for (int i = 0; i < gameManager.playersList.Count; i++)
             {
                 // ONLINE
-                if (ConnectManager.Instance.connectedToMaster && i > 0)
+                if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster && i > 0)
                     break;
 
                 gameManager.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
@@ -207,10 +207,9 @@ public class MenuManager : MonoBehaviour
         }
         // Display in game help key indication
         if (!playerDead && gameManager.gameState == GameManager.GAMESTATE.game)
-        {
             for (int i = 0; i < gameManager.playersList.Count; i++)
-                gameManager.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
-        }
+                if (gameManager != null && gameManager.playerKeysIndicators[i] != null && inputManager.playerInputs.Length > i)
+                    gameManager.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
     }
     # endregion
 
@@ -273,8 +272,9 @@ public class MenuManager : MonoBehaviour
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
             gameManager.SwitchState(GameManager.GAMESTATE.paused);
 
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-                gameManager.playersList[i].GetComponent<Animator>().enabled = false;
+            if (ConnectManager.Instance != null && !ConnectManager.Instance.enableMultiplayer)
+                for (int i = 0; i < gameManager.playersList.Count; i++)
+                    gameManager.playersList[i].GetComponent<Animator>().enabled = false;
         }
         else
         {

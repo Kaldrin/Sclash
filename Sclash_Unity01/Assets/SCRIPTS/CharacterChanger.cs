@@ -186,7 +186,8 @@ public class CharacterChanger : MonoBehaviour
     {
         if (enabled & isActiveAndEnabled)
         {
-            verticalMenu.GetComponent<Animator>().SetBool("On", true);
+            if (verticalMenu != null && verticalMenu.GetComponent<Animator>())
+                verticalMenu.GetComponent<Animator>().SetBool("On", true);
             ManageVerticalSelectionChange();
             ManageHorizontalSwitch();
         }
@@ -201,7 +202,7 @@ public class CharacterChanger : MonoBehaviour
     // ANIMATION
     public void EnableVisuals(bool state)
     {
-        if (fullObjectsAnimators.Count > 0 && fullObjectsAnimators[playerScript.playerNum])
+        if (fullObjectsAnimators != null && fullObjectsAnimators.Count > playerScript.playerNum && fullObjectsAnimators[playerScript.playerNum])
             fullObjectsAnimators[playerScript.playerNum].SetBool("On", state);
         if (characterChangeAnimator)
             characterChangeAnimator.enabled = state;
@@ -222,30 +223,35 @@ public class CharacterChanger : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            fullObjectsAnimators.Add(GameObject.Find(fullObjectName + i).GetComponent<Animator>());
-            illustrationsUIObjects.Add(GameObject.Find(illustrationName + i).GetComponent<Image>());
-            UICharacternames.Add(GameObject.Find(nameName + i).GetComponent<TextMeshProUGUI>());
+            if (GameObject.Find(fullObjectName + i))
+                fullObjectsAnimators.Add(GameObject.Find(fullObjectName + i).GetComponent<Animator>());
+            if (GameObject.Find(illustrationName + i))
+                illustrationsUIObjects.Add(GameObject.Find(illustrationName + i).GetComponent<Image>());
+            if (GameObject.Find(nameName + i))
+                UICharacternames.Add(GameObject.Find(nameName + i).GetComponent<TextMeshProUGUI>());
         }
 
 
         // VERTICAL SELECTION
         verticalElements.Clear();
-        verticalMenu = GameObject.Find(charaSelecMenuName + playerScript.playerNum);
+        if (GameObject.Find(charaSelecMenuName + playerScript.playerNum))
+            verticalMenu = GameObject.Find(charaSelecMenuName + playerScript.playerNum);
     
 
-        for (int i = 0; i < verticalMenu.transform.childCount; i++)
-        {
-             verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
-             verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().characterChanger = gameObject.GetComponent<CharacterChanger>();
-             verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
-        }
+        if (verticalMenu != null && verticalMenu.transform.childCount > 0)
+            for (int i = 0; i < verticalMenu.transform.childCount; i++)
+            {
+                 verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
+                 verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().characterChanger = gameObject.GetComponent<CharacterChanger>();
+                 verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
+            }
 
 
         // ONLINE
-        if (ConnectManager.Instance.enableMultiplayer && playerScript.playerNum == 0)
+        if (ConnectManager.Instance.enableMultiplayer && playerScript.playerNum == 0 && verticalMenu != null)
             currentMaxVerticalIndex = verticalMenu.transform.childCount - 3;
         // OFFLINE
-        else
+        else if (verticalMenu != null)
             currentMaxVerticalIndex = verticalMenu.transform.childCount - 1;
     }
 
@@ -341,18 +347,22 @@ public class CharacterChanger : MonoBehaviour
         {
             changeDirection = 1;
             // ANIMATION
-            verticalElements[verticalIndex].SetTrigger("Right");
+            if (verticalElements.Count > verticalIndex)
+                verticalElements[verticalIndex].SetTrigger("Right");
         }
         else if (direction <= -1)
         {
             changeDirection = -1;
             // ANIMATION
-            verticalElements[verticalIndex].SetTrigger("Left");
+            if (verticalElements.Count > verticalIndex)
+                verticalElements[verticalIndex].SetTrigger("Left");
         }
 
 
         // CHECK WHAT TYPE OF ELEMENT
-        string nameOfElement = verticalElements[verticalIndex].gameObject.name;
+        string nameOfElement = "";
+        if (verticalElements != null && verticalElements.Count > verticalIndex)
+            nameOfElement = verticalElements[verticalIndex].gameObject.name;
 
 
         // CHARACTER
@@ -393,7 +403,9 @@ public class CharacterChanger : MonoBehaviour
     public IEnumerator ApplyCharacterChange(int direction)
     {
         // Get the script with the references to the displays of this element
-        CharaSelecMenuElement elementScript = verticalElements[verticalIndex].GetComponent<CharaSelecMenuElement>();
+        CharaSelecMenuElement elementScript = null;
+        if (verticalElements != null && verticalElements.Count > verticalIndex)
+            elementScript = verticalElements[verticalIndex].GetComponent<CharaSelecMenuElement>();
 
 
         // INDEX
@@ -442,7 +454,8 @@ public class CharacterChanger : MonoBehaviour
 
 
         // NAME
-        elementScript.text1.text = charactersDatabase.charactersList[currentCharacterIndex].name;
+        if (elementScript != null)
+            elementScript.text1.text = charactersDatabase.charactersList[currentCharacterIndex].name;
 
 
         // WAIT FOR CHANGE ANIM 2
@@ -470,8 +483,13 @@ public class CharacterChanger : MonoBehaviour
         mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
         weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
         sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
-        verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
-        verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
+
+
+        if (verticalElements != null && verticalElements.Count > 0)
+        {
+            verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
+            verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
+        }
 
 
 
@@ -591,7 +609,9 @@ public class CharacterChanger : MonoBehaviour
     public IEnumerator ApplyPlayerChange(int direction)
     {
         // Get the script with the references to the displays of this element
-        CharaSelecMenuElement elementScript = verticalElements[verticalIndex].GetComponent<CharaSelecMenuElement>();
+        CharaSelecMenuElement elementScript = null;
+        if (verticalElements.Count > verticalIndex)
+            elementScript = verticalElements[verticalIndex].GetComponent<CharaSelecMenuElement>();
 
 
         // INDEX
@@ -608,11 +628,14 @@ public class CharacterChanger : MonoBehaviour
 
 
         // NAMES
-        elementScript.text1.text = player2ModesDatabase.player2modes[currentAI_Index].name;
-        verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().text1.text = charactersDatabase.charactersList[playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.currentCharacterIndex].name;
+        if (elementScript != null)
+            elementScript.text1.text = player2ModesDatabase.player2modes[currentAI_Index].name;
+        if (verticalElements != null && verticalElements.Count > 0 && verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>())
+            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().text1.text = charactersDatabase.charactersList[playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.currentCharacterIndex].name;
 
         // ENABLE CHARACTER CHANGE
-        verticalElements[verticalElements.Count - 1].SetBool("Disabled", !player2ModesDatabase.player2modes[currentAI_Index].AI);
+        if (verticalElements != null && verticalElements.Count > 0)
+            verticalElements[verticalElements.Count - 1].SetBool("Disabled", !player2ModesDatabase.player2modes[currentAI_Index].AI);
         playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
         playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
         playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().iaScript.enabled = player2ModesDatabase.player2modes[currentAI_Index].AI;
@@ -622,7 +645,8 @@ public class CharacterChanger : MonoBehaviour
         // ONLINE, NO IA CHOICE
         if (ConnectManager.Instance.enableMultiplayer)
         {
-            verticalElements[verticalElements.Count - 2].SetBool("Disabled", true);
+            if (verticalElements != null && verticalElements.Count > 0)
+                verticalElements[verticalElements.Count - 2].SetBool("Disabled", true);
         }
         else
         {

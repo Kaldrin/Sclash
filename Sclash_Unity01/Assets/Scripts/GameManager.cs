@@ -481,12 +481,22 @@ public class GameManager : MonoBehaviourPun
                 break;
 
             case GAMESTATE.paused:                                                      // PAUSED
-                for (int i = 0; i < playersList.Count; i++)
-                    if (playersList[i] != null)
-                    {
-                        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
-                    }
+                if (playersList != null && playersList.Count > 0)
+                    for (int i = 0; i < playersList.Count; i++)
+                        if (playersList[i] != null)
+                        {
+                            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer && i == ConnectManager.Instance.localPlayerNum)
+                            {
+                                playersList[i].GetComponent<Player>().SwitchState(Player.STATE.onlinefrozen);
+                                Debug.Log("Online freeze");
+                            }
+                            else
+                            {
+                                playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
+                                playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+                                Debug.Log("normal");
+                            }    
+                        }
                 break;
 
             case GAMESTATE.finished:                                                // FINISHED
