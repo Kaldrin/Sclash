@@ -177,7 +177,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         // INSTANTIATE PLAYER //
         ///Get player spawns
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
-        GameObject newPlayer = PhotonNetwork.Instantiate("Prefabs/PlayerNetwork", spawnPos, Quaternion.identity);
+        GameObject newPlayer = null;
+        try
+        {
+            newPlayer = PhotonNetwork.Instantiate("Prefabs/PlayerNetwork", spawnPos, Quaternion.identity);
+        }
+        catch
+        {
+            Debug.Log("Error");
+        }
 
 
         if (SteamManager.Initialized)

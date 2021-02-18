@@ -981,8 +981,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             case STATE.onlinefrozen:
                 SetStaminaBarsOpacity(0);
-                characterChanger.enabled = false;
-                characterChanger.EnableVisuals(false);
+
+                // ONLINE
+                if (ConnectManager.Instance != null)
+                {
+                    if (GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                    {
+                        characterChanger.enabled = false;
+                        characterChanger.EnableVisuals(false);
+                    }
+                }
+                else
+                {
+                    characterChanger.enabled = false;
+                    characterChanger.EnableVisuals(false);
+                }
                 break;
 
             case STATE.frozen:                                    // FROZEN
@@ -1006,7 +1019,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 rb.simulated = true;
 
                 if (characterType == CharacterType.duel)
-                    characterChanger.enabled = true;
+                        characterChanger.enabled = true;
                 break;
 
             case STATE.drawing:                                         // DRAWING

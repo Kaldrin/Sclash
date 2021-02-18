@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviourPun
     //[SerializeField] GameObject playerAI = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
     [SerializeField] public GameObject[] playerSpawns = { null, null };
-    public List<GameObject> playersList = new List<GameObject>(2);
+    [SerializeField] public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
     [SerializeField] public Color[] playersColors = { Color.red, Color.yellow },
@@ -468,10 +468,18 @@ public class GameManager : MonoBehaviourPun
             case GAMESTATE.game:                                                    // GAME
                 if (oldState == GAMESTATE.paused)
                     for (int i = 0; i < playersList.Count; i++)
-                    {
-                        playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
-                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
-                    }
+                        if (playersList[i] != null)
+                        {
+                            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+                            {
+                                if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
+                                    playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                            }
+                            else
+                                playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+
+                            playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
+                        }
 
                 cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
                 mainMenu.SetActive(false);
@@ -485,10 +493,14 @@ public class GameManager : MonoBehaviourPun
                     for (int i = 0; i < playersList.Count; i++)
                         if (playersList[i] != null)
                         {
-                            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer && i == ConnectManager.Instance.localPlayerNum)
+                            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                             {
-                                playersList[i].GetComponent<Player>().SwitchState(Player.STATE.onlinefrozen);
-                                Debug.Log("Online freeze");
+                                if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
+                                {
+                                    playersList[i].GetComponent<Player>().SwitchState(Player.STATE.onlinefrozen);
+                                    Debug.Log("Online freeze");
+                                    Debug.Log(ConnectManager.Instance.localPlayerNum);
+                                }
                             }
                             else
                             {
