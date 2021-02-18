@@ -280,8 +280,10 @@ public class MenuManager : MonoBehaviour
         {
             backIndicator.SetActive(false);
 
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-                gameManager.playersList[i].GetComponent<Player>().canParry = false;
+            if (gameManager.playersList != null && gameManager.playersList.Count > 0)
+                for (int i = 0; i < gameManager.playersList.Count; i++)
+                    if (gameManager.playersList[i] != null && gameManager.playersList[i].GetComponent<Player>())
+                        gameManager.playersList[i].GetComponent<Player>().canParry = false;
 
             canPauseOn = false;
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
@@ -290,8 +292,10 @@ public class MenuManager : MonoBehaviour
                 gameManager.SwitchState(GameManager.GAMESTATE.game);
 
 
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-                gameManager.playersList[i].GetComponent<Animator>().enabled = true;
+            if (gameManager.playersList != null && gameManager.playersList.Count > 0)
+                for (int i = 0; i < gameManager.playersList.Count; i++)
+                    if (gameManager.playersList.Count > i && gameManager.playersList[i] != null)
+                        gameManager.playersList[i].GetComponent<Animator>().enabled = true;
 
             Invoke("RestoreCanPauseOn", 0.2f);
         }
@@ -303,12 +307,18 @@ public class MenuManager : MonoBehaviour
         gameManager.scoreObject.GetComponent<Animator>().SetBool("On", state);
 
 
-        for (int i = 0; i < gameManager.playersList.Count; i++)
-        {
-            gameManager.inGameHelp[i].SetBool("On", state);
-            gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
-            gameManager.playerKeysIndicators[i].SetBool("On", !state);
-        }
+        if (gameManager.playersList != null && gameManager.playersList.Count > 0)
+            for (int i = 0; i < gameManager.playersList.Count; i++)
+            {
+                if (gameManager.inGameHelp.Length > i && gameManager.inGameHelp[i] != null)
+                    gameManager.inGameHelp[i].SetBool("On", state);
+                
+                if (gameManager.playersList[i] != null)
+                    gameManager.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+
+                if (gameManager.playerKeysIndicators.Count > i && gameManager.playerKeysIndicators[i] != null)
+                    gameManager.playerKeysIndicators[i].SetBool("On", !state);
+            }
 
 
         Cursor.visible = state;

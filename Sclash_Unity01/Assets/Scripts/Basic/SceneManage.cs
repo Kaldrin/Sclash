@@ -29,6 +29,7 @@ public class SceneManage : MonoBehaviour
 
 
     [Header("RESTART SCENE")]
+    [SerializeField] bool allowSceneRestartInBuild = false;
     [Tooltip("Choose which keys should be pressed to restart the scene")]
     [SerializeField] KeyCode[] pressSimultaneousKeysToRestart = null;
 
@@ -50,7 +51,6 @@ public class SceneManage : MonoBehaviour
     }
 
 
-    // Use this for initialization
     void Start()                                                                // START
     {
         // If chosen, starts the coroutine that will load the indicated scene after the indicated duration
@@ -59,14 +59,14 @@ public class SceneManage : MonoBehaviour
     }
 
 
-    // FixedUpdate is called 50 times per second
     void Update()                                                                   // UPDATE
     {
         if (isActiveAndEnabled && enabled)
         {
             // Checks if the inputs to restart the scene were pressed
-            if (CheckIfAllKeysPressed(pressSimultaneousKeysToRestart))
-                Restart();
+            if (Application.isEditor || allowSceneRestartInBuild)
+                if (CheckIfAllKeysPressed(pressSimultaneousKeysToRestart))
+                        Restart();
 
 
             // Is called when the scene switch screen finished fading on
@@ -172,10 +172,8 @@ public class SceneManage : MonoBehaviour
 
 
         for (int i = 0; i < keys.Length; i++)
-        {
             if (!Input.GetKey(keys[i]))
                 notPressed = true;
-        }
 
 
         return !notPressed;

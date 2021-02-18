@@ -46,7 +46,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject serverListBrowser = null;
     [SerializeField] MenuBrowser multiplayerBrowser = null;
     [SerializeField] GameObject backBrowser = null;
-    [SerializeField] GameObject timeoutWindow = null;
     [SerializeField] GameObject rightPart = null;
     [SerializeField] GameObject leftPart = null;
     [SerializeField] GameObject screenTitle = null;
@@ -55,6 +54,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     [Header("CHARACTER CHANGE")]
     [SerializeField] List<GameObject> characterChangeDisplays = new List<GameObject>(2);
+
+
+    [Header("ONLINE MESSAGES")]
+    [SerializeField] GameObject waitingForPlayerMessage = null;
+    [SerializeField] GameObject playerDisconnectedMessage = null;
+    [SerializeField] GameObject timeoutWindow = null;
 
 
 
@@ -68,6 +73,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         audioManager = FindObjectOfType<AudioManager>();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.NetworkingClient.EnableLobbyStatistics = true;
+
+
+        // MESSAGES
+        if (waitingForPlayerMessage != null)
+            waitingForPlayerMessage.SetActive(false);
+        if (playerDisconnectedMessage != null)
+            playerDisconnectedMessage.SetActive(false);
+        if (timeoutWindow != null)
+            timeoutWindow.SetActive(false);
+            
     }
 
     void Start()                                                                                // START
@@ -246,8 +261,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
         attackSignParticlesMain.startColor = GameManager.Instance.attackSignColors[stats.playerNum];
 
+        
         if (!GameManager.Instance.playersList.Contains(newPlayer))
             GameManager.Instance.playersList.Add(newPlayer);
+            
 
 
 
@@ -302,8 +319,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.Log("PUN : OnJoinedRoom() called by PUN. Player is now in a room");
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
-
         
+        if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && waitingForPlayerMessage != null)
+            waitingForPlayerMessage.SetActive(true);
+            
+            
+
+
+
 
 
         // RESET MENU
@@ -405,6 +428,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         SetMultiplayer(false);
 
 
+        // MESSAGE
+        
+        if (waitingForPlayerMessage != null)
+            waitingForPlayerMessage.SetActive(false);
+        if (playerDisconnectedMessage != null)
+            playerDisconnectedMessage.SetActive(false);
+            
+
+
         // TIME OUT DISPLAY
         if (cause == DisconnectCause.ClientTimeout)
             if (timeoutWindow != null)
@@ -494,6 +526,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
                 Debug.Log("All players are here");
+                
+                if (waitingForPlayerMessage != null)
+                    waitingForPlayerMessage.SetActive(false);
+                    
                 CameraManager.Instance.FindPlayers();
             }
         }
@@ -573,8 +609,25 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             //GameManager.Instance.
             Debug.LogWarning("Player Left in the middle of the game");
+            
             //SceneManage.Instance.Restart();
             GameManager.Instance.APlayerLeft();
+
+
+            // MESSAGE
+            if (playerDisconnectedMessage != null)
+                playerDisconnectedMessage.SetActive(true);
+
+            if (characterChangeDisplays != null && characterChangeDisplays.Count > 0)
+                for (int i = 0; i < characterChangeDisplays.Count; i++)
+                    if (characterChangeDisplays[i] != null)
+                    {
+                        characterChangeDisplays[i].SetActive(true);
+                        if (characterChangeDisplays[i].GetComponent<Animator>())
+                            characterChangeDisplays[i].GetComponent<Animator>().SetBool("On", false);
+                        //characterChangeDisplays[i].SetActive(false);
+                        
+                    }
         }
         else
             Debug.Log("Player left room");

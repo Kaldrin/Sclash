@@ -777,7 +777,8 @@ public class GameManager : MonoBehaviourPun
             PlayerAnimations playerAnimations;
             Player playerScript = null;
 
-            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+            if (player != null && playerSpawns != null && playerSpawns.Length > 0 && playerSpawns[i] != null)
+                playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
             //IAScript ia = null;
             /*
 #if UNITY_EDITOR
@@ -1109,12 +1110,19 @@ public class GameManager : MonoBehaviourPun
         drawTextAnimator.ResetTrigger("FadeOut");
         drawTextAnimator.SetTrigger("FadeOut");
         drawTextAnimator.ResetTrigger("FadeIn");
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
-            inGameHelp[i].SetBool("On", false);
-            playerKeysIndicators[i].SetBool("On", false);
-        }
+
+        if (playersList != null && playersList.Count > 0)
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                if (playersList[i] != null)
+                    playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+
+                if (inGameHelp != null && inGameHelp.Length > i && inGameHelp[i] != null)
+                    inGameHelp[i].SetBool("On", false);
+
+                if (playerKeysIndicators != null && playerKeysIndicators.Count > i && playerKeysIndicators[i] != null)
+                    playerKeysIndicators[i].SetBool("On", false);
+            }
 
 
         // FX

@@ -976,7 +976,7 @@ namespace Photon.Pun
                 }
             }
 
-            bool wasActive = res.activeSelf;
+im
             if (wasActive) res.SetActive(false);
 
             GameObject instance =GameObject.Instantiate(res, position, rotation) as GameObject;
