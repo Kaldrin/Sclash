@@ -149,12 +149,12 @@ public class InputManager : MonoBehaviour
     //TODO finish new controller 
     private void NewController()
     {
-        Debug.Log("Controller plugged in");
         var Gamepads = Gamepad.all;
         foreach (Gamepad g in Gamepads)
         {
             if (!gamepads.Contains(g))
             {
+                Debug.Log("Controller plugged in");
                 gamepads.Add(g);
             }
         }

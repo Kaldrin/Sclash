@@ -20,7 +20,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: -4818095841673420486}
-  - {fileID: 0}
+  - {fileID: 6490631645670030080}
   - {fileID: 8125919142218603236}
   viewIdField: 0
   InstantiationId: 0
@@ -392,6 +392,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4225643809597695496, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1250708261086219519, guid: 3f5effdde23e47744a2f4942c91916c7,
         type: 3}
       propertyPath: playerScript

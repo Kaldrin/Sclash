@@ -10,41 +10,54 @@ using Photon.Realtime;
 
 public class Player_Online : Player, IPunObservable
 {
+    private bool releasedAttack = false;
+
     public override void Update()
     {
-        if (enabled && isActiveAndEnabled)
+        if (!photonView.IsMine)
         {
             UpdateStaminaSlidersValue();
             UpdateStaminaColor();
 
+
             SetStaminaBarsOpacity(staminaBarsOpacity);
+
+            return;
         }
+
+        base.Update();
     }
 
     public override void FixedUpdate()
     {
         if (enabled && isActiveAndEnabled)
         {
-            Vector2 lagDistance = netTargetPos - rb.position;
+            if (!photonView.IsMine)
+            {
+                Vector2 lagDistance = netTargetPos - rb.position;
 
-            if (lagDistance.magnitude > 3f)
-            {
-                rb.position = netTargetPos;
-                lagDistance = Vector2.zero;
-            }
+                if (lagDistance.magnitude > 3f)
+                {
+                    rb.position = netTargetPos;
+                    lagDistance = Vector2.zero;
+                }
 
-            if (lagDistance.magnitude < 0.11f)
-            {
-                rb.velocity = Vector2.zero;
-            }
-            else
-            {
-                if (playerState != STATE.dashing)
-                    rb.velocity = new Vector2(lagDistance.normalized.x * baseMovementsSpeed, rb.velocity.y);
+                if (lagDistance.magnitude < 0.11f)
+                {
+                    rb.velocity = Vector2.zero;
+                }
                 else
-                    rb.velocity = new Vector2(lagDistance.normalized.x * 15, rb.velocity.y);
+                {
+                    if (playerState != STATE.dashing)
+                        rb.velocity = new Vector2(lagDistance.normalized.x * baseMovementsSpeed, rb.velocity.y);
+                    else
+                        rb.velocity = new Vector2(lagDistance.normalized.x * 15, rb.velocity.y);
+                }
+                return;
             }
         }
+
+        base.FixedUpdate();
     }
 
     public override bool TakeDamage(GameObject instigator, int hitStrength = 1)
@@ -142,23 +155,28 @@ public class Player_Online : Player, IPunObservable
 
     protected override void ManageDraw()
     {
+        Debug.Log("Manage Draw");
         if (InputManager.Instance.playerInputs[0].anyKey)
             photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
     }
 
     protected override void ManageCharging()
     {
-        if (!InputManager.Instance.playerInputs[0].attack)
+        if (!InputManager.Instance.playerInputs[0].attack && !releasedAttack)
         {
             photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
+            releasedAttack = true;
             return;
         }
+
 
         if (chargeLevel >= maxChargeLevel)
         {
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
                 photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
+                releasedAttack = true;
+                return;
             }
         }
         else if (Time.time - chargeStartTime >= durationToNextChargeLevel)
@@ -254,6 +272,7 @@ public class Player_Online : Player, IPunObservable
         }
     }
 
+    [PunRPC]
     public override void Pommeled()
     {
         if (!kickFrame)
@@ -389,6 +408,82 @@ public class Player_Online : Player, IPunObservable
             }
         }
     }
+
+    #region RPC Methods
+    [PunRPC]
+    public override void ResetAllPlayerValuesForNextRound()
+    {
+        base.ResetAllPlayerValuesForNextRound();
+    }
+
+    [PunRPC]
+    public override void CheckDeath(int i)
+    {
+        base.CheckDeath(i);
+    }
+
+    [PunRPC]
+    protected override void TriggerHit()
+    {
+        base.TriggerHit();
+    }
+
+    [PunRPC]
+    protected override void N_TriggerStaminaRecupAnim()
+    {
+        base.N_TriggerStaminaRecupAnim();
+    }
+
+    [PunRPC]
+    protected override void InitStaminaBreak()
+    {
+        base.InitStaminaBreak();
+    }
+
+    [PunRPC]
+    public override void TriggerDraw()
+    {
+        base.TriggerDraw();
+    }
+
+    [PunRPC]
+    protected override void ReleaseAttack()
+    {
+        base.ReleaseAttack();
+        releasedAttack = false;
+    }
+
+    [PunRPC]
+    protected override void TriggerParry()
+    {
+        base.TriggerParry();
+    }
+
+    [PunRPC]
+    protected override void TriggerPommel()
+    {
+        base.TriggerPommel();
+    }
+
+    [PunRPC]
+    protected override void TriggerClash()
+    {
+        base.TriggerClash();
+    }
+
+    [PunRPC]
+    public override void ResetPos()
+    {
+        base.ResetPos();
+    }
+
+    [PunRPC]
+    protected override void TriggerBasicDash()
+    {
+        base.TriggerBasicDash();
+    }
+    #endregion
+
 
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

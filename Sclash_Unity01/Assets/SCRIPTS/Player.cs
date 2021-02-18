@@ -560,10 +560,8 @@ public class Player : MonoBehaviourPunCallbacks
 
                 SetStaminaBarsOpacity(staminaBarsOpacity);
 
-
                 return;
             }
-
 
             if (opponent == null)
                 FindOpponent();
@@ -703,7 +701,7 @@ public class Player : MonoBehaviourPunCallbacks
         if (enabled && isActiveAndEnabled)
         {
             // ONLINE
-            if (photonView != null && !photonView.IsMine)
+            /*if (photonView != null && !photonView.IsMine)
             {
                 Vector2 lagDistance = netTargetPos - rb.position;
                 //Debug.Log(lagDistance);
@@ -731,7 +729,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
                 return;
-            }
+            }*/
 
 
 
@@ -1261,7 +1259,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     [PunRPC]
-    public void ResetAllPlayerValuesForNextRound()
+    public virtual void ResetAllPlayerValuesForNextRound()
     {
         SwitchState(STATE.normal);
 
@@ -1510,7 +1508,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     // Hit
     [PunRPC]
-    protected void TriggerHit()
+    protected virtual void TriggerHit()
     {
         currentHealth -= 1;
 
@@ -1807,7 +1805,7 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void N_TriggerStaminaRecupAnim()
+    protected virtual void N_TriggerStaminaRecupAnim()
     {
         StartCoroutine("TriggerStaminaRecupAnim");
     }
@@ -1867,7 +1865,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     // Stamina break 
     [PunRPC]
-    void InitStaminaBreak()
+    protected virtual void InitStaminaBreak()
     {
         for (int i = 0; i < staminaSliders.Count; i++)
             staminaSliders[i].fillRect.gameObject.GetComponent<Image>().color = staminaBreakColor;
@@ -2032,7 +2030,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     // Triggers saber draw and informs the game manager
     [PunRPC]
-    public void TriggerDraw()
+    public virtual void TriggerDraw()
     {
         if (DrawnEvent != null)
         {
@@ -2348,7 +2346,7 @@ public class Player : MonoBehaviourPunCallbacks
     #region ATTACK
     // Triggers the attack
     [PunRPC]
-    void ReleaseAttack()
+    protected virtual void ReleaseAttack()
     {
         // STATS
         int saveChargeLevelForStats = chargeLevel;
@@ -2676,7 +2674,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     // Parry coroutine
     [PunRPC]
-    protected void TriggerParry()
+    protected virtual void TriggerParry()
     {
         // ANIMATION
         playerAnimations.TriggerParry();
@@ -2737,7 +2735,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     // Pommel coroutine
     [PunRPC]
-    protected void TriggerPommel()
+    protected virtual void TriggerPommel()
     {
         // ANIMATION
         playerAnimations.TriggerPommel();
@@ -2897,7 +2895,7 @@ public class Player : MonoBehaviourPunCallbacks
     #region CLASHED
     // The player have been clashed / parried
     [PunRPC]
-    protected void TriggerClash()
+    protected virtual void TriggerClash()
     {
         // STATE
         SwitchState(STATE.clashed);
@@ -3084,7 +3082,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     // Triggers the dash (Not the clash or attack dash) for it to run
     [PunRPC]
-    protected void TriggerBasicDash()
+    protected virtual void TriggerBasicDash()
     {
         // Triggers dash if enough stamina
         if (stamina >= staminaCostForMoves)
@@ -3442,7 +3440,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     #region Network
     [PunRPC]
-    public void ResetPos()
+    public virtual void ResetPos()
     {
         netTargetPos = rb.position;
     }
