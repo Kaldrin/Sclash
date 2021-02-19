@@ -49,6 +49,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject rightPart = null;
     [SerializeField] GameObject leftPart = null;
     [SerializeField] GameObject screenTitle = null;
+    [SerializeField] GameObject backIndicator = null;
 
 
 
@@ -56,10 +57,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] List<GameObject> characterChangeDisplays = new List<GameObject>(2);
 
 
+
     [Header("ONLINE MESSAGES")]
     [SerializeField] GameObject waitingForPlayerMessage = null;
     [SerializeField] GameObject playerDisconnectedMessage = null;
     [SerializeField] GameObject timeoutWindow = null;
+    [SerializeField] GameObject serverErrorMessage = null;
 
 
 
@@ -200,6 +203,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         catch
         {
             Debug.Log("Error");
+
+            // MENU
+            if (backIndicator != null)
+                backIndicator.SetActive(true);
+            if (serverErrorMessage != null)
+                serverErrorMessage.SetActive(true);
         }
 
 
@@ -617,6 +626,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             // MESSAGE
             if (playerDisconnectedMessage != null)
                 playerDisconnectedMessage.SetActive(true);
+            if (backIndicator != null)
+                backIndicator.SetActive(true);
 
             if (characterChangeDisplays != null && characterChangeDisplays.Count > 0)
                 for (int i = 0; i < characterChangeDisplays.Count; i++)

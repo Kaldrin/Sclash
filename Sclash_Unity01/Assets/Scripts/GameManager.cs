@@ -449,10 +449,10 @@ public class GameManager : MonoBehaviourPun
 
         switch (gameState)
         {
-            case GAMESTATE.menu:                                        // MENU
+            case GAMESTATE.menu:                                                                      // MENU
                 break;
 
-            case GAMESTATE.loading:                                                 // LOADING
+            case GAMESTATE.loading:                                                                                // LOADING
                 playerDead = false;
                 menuManager.TriggerPause(false);
                 menuManager.winScreen.SetActive(false);
@@ -462,10 +462,10 @@ public class GameManager : MonoBehaviourPun
                 Cursor.visible = false;
                 break;
 
-            case GAMESTATE.intro:                                           // INTRO
+            case GAMESTATE.intro:                                                                                        // INTRO
                 break;
 
-            case GAMESTATE.game:                                                    // GAME
+            case GAMESTATE.game:                                                                                // GAME
                 if (oldState == GAMESTATE.paused)
                     for (int i = 0; i < playersList.Count; i++)
                         if (playersList[i] != null)
@@ -488,7 +488,7 @@ public class GameManager : MonoBehaviourPun
                 Cursor.visible = false;
                 break;
 
-            case GAMESTATE.paused:                                                      // PAUSED
+            case GAMESTATE.paused:                                                                                     // PAUSED
                 if (playersList != null && playersList.Count > 0)
                     for (int i = 0; i < playersList.Count; i++)
                         if (playersList[i] != null)
@@ -496,22 +496,17 @@ public class GameManager : MonoBehaviourPun
                             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                             {
                                 if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
-                                {
                                     playersList[i].GetComponent<Player>().SwitchState(Player.STATE.onlinefrozen);
-                                    Debug.Log("Online freeze");
-                                    Debug.Log(ConnectManager.Instance.localPlayerNum);
-                                }
                             }
                             else
                             {
                                 playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
                                 playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-                                Debug.Log("normal");
                             }    
                         }
                 break;
 
-            case GAMESTATE.finished:                                                // FINISHED
+            case GAMESTATE.finished:                                                                                          // FINISHED
                 menuManager.winMessage.SetActive(true);
                 if (oldState == GAMESTATE.paused)
                     menuManager.SwitchPause();

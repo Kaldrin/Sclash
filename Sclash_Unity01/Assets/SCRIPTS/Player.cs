@@ -979,7 +979,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         switch (newState)
         {
-            case STATE.onlinefrozen:
+            case STATE.onlinefrozen:                                                                    // ONLINE FROZEN
                 SetStaminaBarsOpacity(0);
 
                 // ONLINE
@@ -998,7 +998,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
                 break;
 
-            case STATE.frozen:                                    // FROZEN
+            case STATE.frozen:                                                                            // FROZEN
                 SetStaminaBarsOpacity(0);
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
@@ -1008,12 +1008,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 characterChanger.EnableVisuals(false);
                 break;
 
-            case STATE.sneathing:                                       // SNEATHING
+            case STATE.sneathing:                                                                                 // SNEATHING
                 rb.velocity = Vector3.zero;
                 playerAnimations.TriggerSneath();
                 break;
 
-            case STATE.sneathed:                                        // SNEATHED
+            case STATE.sneathed:                                                                                  // SNEATHED
                 staminaBarsOpacity = 0;
                 actualMovementsSpeed = sneathedMovementsSpeed;
                 rb.simulated = true;
@@ -1022,26 +1022,36 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                         characterChanger.enabled = true;
                 break;
 
-            case STATE.drawing:                                         // DRAWING
+            case STATE.drawing:                                                                                          // DRAWING
                 rb.velocity = Vector3.zero;
-                characterChanger.EnableVisuals(false);
-                characterChanger.enabled = false;
+                // ONLINE
+                if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+                {
+                    if (GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                        characterChanger.EnableVisuals(false);
+                    characterChanger.enabled = false;
+                }
+                else
+                {
+                    characterChanger.EnableVisuals(false);
+                    characterChanger.enabled = false;
+                }
 
                 if (playerNum == 0)
                     if (ConnectManager.Instance != null && !ConnectManager.Instance.connectedToMaster)
                         gameManager.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
 
-            case STATE.battleDrawing:                                             // BATTLE DRAWING
+            case STATE.battleDrawing:                                                                                          // BATTLE DRAWING
                 break;
 
-            case STATE.battleSneathing:                                             // BATTLE SNEATHING
+            case STATE.battleSneathing:                                                                                  // BATTLE SNEATHING
                 break;
 
-            case STATE.battleSneathedNormal:                                        // BATTLE SNEATHED NORMAL
+            case STATE.battleSneathedNormal:                                                                              // BATTLE SNEATHED NORMAL
                 break;
 
-            case STATE.normal:                                                      // NORMAL
+            case STATE.normal:                                                                                         // NORMAL
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
@@ -2011,6 +2021,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     void TriggerBattleSneath()
     {
+        Debug.Log("Battle sneath");
+
         // If players haven't all drawn, go back to chara selec state
         if (!gameManager.allPlayersHaveDrawn)
             // STATE
