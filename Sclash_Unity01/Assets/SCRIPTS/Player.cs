@@ -69,6 +69,7 @@ public class Player : MonoBehaviourPunCallbacks
     public enum STATE
     {
         frozen,
+        onlinefrozen,
         sneathing,
         sneathed,
         drawing,
@@ -570,6 +571,15 @@ public class Player : MonoBehaviourPunCallbacks
             // Action depending on state
             switch (playerState)
             {
+                case STATE.onlinefrozen:                    // ONLINE FROZEN
+                    UpdateStaminaSlidersValue();
+                    UpdateStaminaColor();
+
+                    UpdateChargeShadowSize();
+                    ManageOrientation();
+                    RunDash();
+                    break;
+
                 case STATE.frozen:                          // FROZEN                         
                     break;
 
@@ -772,6 +782,14 @@ public class Player : MonoBehaviourPunCallbacks
             // Behaviour depending on state
             switch (playerState)
             {
+                case STATE.onlinefrozen:                                                      // FROZEN
+                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    rb.velocity = Vector2.zero;
+                    UpdateStaminaSlidersValue();
+                    ManageStaminaRegen();
+                    playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
+                    break;
+
                 case STATE.frozen:                                                      // FROZEN
                     SetStaminaBarsOpacity(0);
                     rb.velocity = Vector2.zero;
@@ -992,6 +1010,25 @@ public class Player : MonoBehaviourPunCallbacks
 
         switch (newState)
         {
+            case STATE.onlinefrozen:
+                SetStaminaBarsOpacity(0);
+
+                // ONLINE
+                if (ConnectManager.Instance != null)
+                {
+                    if (GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                    {
+                        characterChanger.enabled = false;
+                        characterChanger.EnableVisuals(false);
+                    }
+                }
+                else
+                {
+                    characterChanger.enabled = false;
+                    characterChanger.EnableVisuals(false);
+                }
+                break;
+
             case STATE.frozen:                                    // FROZEN
                 SetStaminaBarsOpacity(0);
                 attackDashFXFront.Stop();
@@ -1016,7 +1053,7 @@ public class Player : MonoBehaviourPunCallbacks
                 rb.simulated = true;
 
                 if (characterType == CharacterType.duel)
-                    characterChanger.enabled = true;
+                        characterChanger.enabled = true;
                 break;
 
             case STATE.drawing:                                         // DRAWING
@@ -2057,7 +2094,7 @@ public class Player : MonoBehaviourPunCallbacks
     void ManageBattleSneath()
     {
         if (canBattleSneath)
-            if (InputManager.Instance.playerInputs[playerNum].battleSneathDraw)
+            if (InputManager.Instance.playerInputs.Length > playerNum && InputManager.Instance.playerInputs[playerNum].battleSneathDraw)
                 TriggerBattleSneath();
     }
 
@@ -3170,7 +3207,7 @@ public class Player : MonoBehaviourPunCallbacks
     void EndDash()
     {
         // CHANGE STATE
-        if (playerState != STATE.attacking && playerState != STATE.recovering)
+        if (playerState != STATE.attacking && playerState != STATE.recovering && playerState != STATE.onlinefrozen)
             SwitchState(STATE.normal);
 
 

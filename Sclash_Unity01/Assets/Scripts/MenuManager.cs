@@ -152,7 +152,7 @@ public class MenuManager : MonoBehaviour
     {
         if (enabled && isActiveAndEnabled)
         {
-            switch (gameManager.gameState)
+            switch (GameManager.Instance.gameState)
             {
                 case GameManager.GAMESTATE.game:                        // GAME
                     if (canPauseOn)
@@ -199,7 +199,7 @@ public class MenuManager : MonoBehaviour
             for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
             {
                 // ONLINE
-                if (ConnectManager.Instance.connectedToMaster && i > 0)
+                if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster && i > 0)
                     break;
 
                 GameManager.Instance.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
@@ -209,10 +209,9 @@ public class MenuManager : MonoBehaviour
         }
         // Display in game help key indication
         if (!playerDead && GameManager.Instance.gameState == GameManager.GAMESTATE.game)
-        {
             for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
-                GameManager.Instance.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
-        }
+                if (GameManager.Instance.playerKeysIndicators[i] != null && inputManager.playerInputs.Length > i)
+                    GameManager.Instance.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
     }
     # endregion
 
@@ -275,15 +274,18 @@ public class MenuManager : MonoBehaviour
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
             GameManager.Instance.SwitchState(GameManager.GAMESTATE.paused);
 
-            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
-                GameManager.Instance.playersList[i].GetComponent<Animator>().enabled = false;
+            if (!ConnectManager.Instance.enableMultiplayer)
+                for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                    GameManager.Instance.playersList[i].GetComponent<Animator>().enabled = false;
         }
         else
         {
             backIndicator.SetActive(false);
 
-            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
-                GameManager.Instance.playersList[i].GetComponent<Player>().canParry = false;
+            if (GameManager.Instance.playersList != null && GameManager.Instance.playersList.Count > 0)
+                for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                    if (GameManager.Instance.playersList[i] != null && GameManager.Instance.playersList[i].GetComponent<Player>())
+                        GameManager.Instance.playersList[i].GetComponent<Player>().canParry = false;
 
             canPauseOn = false;
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
@@ -292,8 +294,10 @@ public class MenuManager : MonoBehaviour
                 GameManager.Instance.SwitchState(GameManager.GAMESTATE.game);
 
 
-            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
-                GameManager.Instance.playersList[i].GetComponent<Animator>().enabled = true;
+            if (GameManager.Instance.playersList != null && GameManager.Instance.playersList.Count > 0)
+                for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                    if (GameManager.Instance.playersList.Count > i && GameManager.Instance.playersList[i] != null)
+                        GameManager.Instance.playersList[i].GetComponent<Animator>().enabled = true;
 
             Invoke("RestoreCanPauseOn", 0.2f);
         }
@@ -304,13 +308,18 @@ public class MenuManager : MonoBehaviour
 
         GameManager.Instance.scoreObject.GetComponent<Animator>().SetBool("On", state);
 
+        if (GameManager.Instance.playersList != null && GameManager.Instance.playersList.Count > 0)
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+            {
+                if (GameManager.Instance.inGameHelp.Length > i && GameManager.Instance.inGameHelp[i] != null)
+                    GameManager.Instance.inGameHelp[i].SetBool("On", state);
+                
+                if (GameManager.Instance.playersList[i] != null)
+                    GameManager.Instance.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
 
-        for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
-        {
-            GameManager.Instance.inGameHelp[i].SetBool("On", state);
-            GameManager.Instance.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
-            GameManager.Instance.playerKeysIndicators[i].SetBool("On", !state);
-        }
+                if (GameManager.Instance.playerKeysIndicators.Count > i && GameManager.Instance.playerKeysIndicators[i] != null)
+                    GameManager.Instance.playerKeysIndicators[i].SetBool("On", !state);
+            }
 
 
         Cursor.visible = state;

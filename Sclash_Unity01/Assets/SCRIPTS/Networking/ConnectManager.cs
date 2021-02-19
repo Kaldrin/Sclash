@@ -41,6 +41,28 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
+    [Header("ONLINE MENU")]
+    [SerializeField] GameObject connectionWindow = null;
+    [SerializeField] GameObject serverListBrowser = null;
+    [SerializeField] MenuBrowser multiplayerBrowser = null;
+    [SerializeField] GameObject backBrowser = null;
+    [SerializeField] GameObject rightPart = null;
+    [SerializeField] GameObject leftPart = null;
+    [SerializeField] GameObject screenTitle = null;
+
+
+
+    [Header("CHARACTER CHANGE")]
+    [SerializeField] List<GameObject> characterChangeDisplays = new List<GameObject>(2);
+
+
+    [Header("ONLINE MESSAGES")]
+    [SerializeField] GameObject waitingForPlayerMessage = null;
+    [SerializeField] GameObject playerDisconnectedMessage = null;
+    [SerializeField] GameObject timeoutWindow = null;
+
+
+
 
 
 
@@ -51,6 +73,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         audioManager = FindObjectOfType<AudioManager>();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.NetworkingClient.EnableLobbyStatistics = true;
+
+
+        // MESSAGES
+        if (waitingForPlayerMessage != null)
+            waitingForPlayerMessage.SetActive(false);
+        if (playerDisconnectedMessage != null)
+            playerDisconnectedMessage.SetActive(false);
+        if (timeoutWindow != null)
+            timeoutWindow.SetActive(false);
+            
     }
 
     void Start()                                                                                // START
@@ -83,6 +115,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             PhotonNetwork.ConnectUsingSettings();
             isConnecting = true;
         }
+
+
+        // CONNEXION WAIT
+        ConnexionWaitDisplay(true);
     }
 
 
@@ -155,7 +191,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         // INSTANTIATE PLAYER //
         ///Get player spawns
         Vector3 spawnPos = spawners[PhotonNetwork.CurrentRoom.PlayerCount - 1].transform.position;
-        GameObject newPlayer = PhotonNetwork.Instantiate("Prefabs/PlayerNetwork", spawnPos, Quaternion.identity);
+        GameObject newPlayer = null;
+        try
+        {
+            newPlayer = PhotonNetwork.Instantiate("Prefabs/PlayerNetwork", spawnPos, Quaternion.identity);
+        }
+        catch
+        {
+            Debug.Log("Error");
+        }
 
 
         if (SteamManager.Initialized)
@@ -180,6 +224,27 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         stats.ResetAllPlayerValuesForNextMatch();
 
 
+
+
+        // CHARACTER CHANGE
+        if (stats.playerNum > 0)
+        {
+            if (characterChangeDisplays[0] != null)
+                characterChangeDisplays[0].SetActive(false);
+            if (characterChangeDisplays[1] != null)
+                characterChangeDisplays[1].SetActive(true);
+        }
+        else if (stats.playerNum == 0)
+        {
+            if (characterChangeDisplays[0] != null)
+                characterChangeDisplays[0].SetActive(true);
+            if (characterChangeDisplays[1] != null)
+                characterChangeDisplays[1].SetActive(false);
+        }
+
+
+
+
         ///Animation setup
         //playerAnimations.spriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
         //splayerAnimations.legsSpriteRenderer.color = GameManager.Instance.playersColors[stats.playerNum];
@@ -195,8 +260,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
         attackSignParticlesMain.startColor = GameManager.Instance.attackSignColors[stats.playerNum];
 
+        
         if (!GameManager.Instance.playersList.Contains(newPlayer))
             GameManager.Instance.playersList.Add(newPlayer);
+            
+
+
+
+
 
         stats.characterNameDisplay.text = GameManager.Instance.charactersData.charactersList[0].name;
         stats.characterNameDisplay.color = GameManager.Instance.playersColors[stats.playerNum];
@@ -210,12 +281,29 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
         /// Wait 0.1 seconds
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(1f);
+
+
+        // SLIDE ANIM
+        WaitScene();
 
 
         GameManager.Instance.SwitchState(GameManager.GAMESTATE.game);
+        AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
         CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.battle);
 
+
+        // AUDIO
+        audioManager.matchBeginsRandomSoundSource.Play();
+
+
+
+        // STAGE
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("SyncMap", RpcTarget.AllBuffered, MapLoader.Instance.currentMapIndex);
+            photonView.RPC("SyncRoundCount", RpcTarget.AllBuffered, GameManager.Instance.scoreToWin);
+        }
 
         //audioManager.ActivateWind();
 
@@ -224,23 +312,33 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         yield return new WaitForSeconds(0.5f);
 
 
-        audioManager.matchBeginsRandomSoundSource.Play();
+        
 
 
         Debug.Log("PUN : OnJoinedRoom() called by PUN. Player is now in a room");
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
+        
+        if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && waitingForPlayerMessage != null)
+            waitingForPlayerMessage.SetActive(true);
+            
+            
+
+
+
+
+
+        // RESET MENU
+        multiplayerBrowser.enabled = true;
+
+
+        yield return new WaitForSeconds(GameManager.Instance.timeBeforeBattleCameraActivationWhenGameStarts);
+
+
 
         CameraManager.Instance.actualXSmoothMovementsMultiplier = CameraManager.Instance.battleXSmoothMovementsMultiplier;
         CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
         CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
-
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC("SyncMap", RpcTarget.AllBuffered, MapLoader.Instance.currentMapIndex);
-            photonView.RPC("SyncRoundCount", RpcTarget.AllBuffered, GameManager.Instance.scoreToWin);
-        }
     }
     #endregion
 
@@ -255,6 +353,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         connectedToMaster = true;
         Debug.Log("PUN : OnConnectedToMaster() was called by PUN");
         PhotonNetwork.JoinLobby();
+
+
+        // CONNEXION WINDOW
+        ConnexionWaitDisplay(false);
     }
 
     public override void OnJoinedLobby()
@@ -311,6 +413,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         Debug.Log("Leave Lobby called");
         PhotonNetwork.Disconnect();
+
+        // CONNEXION WINDOW
+        ConnexionWaitDisplay(false);
     }
 
 
@@ -318,6 +423,25 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         connectedToMaster = false;
         Debug.LogWarning(cause);
+
+        SetMultiplayer(false);
+
+
+        // MESSAGE
+        
+        if (waitingForPlayerMessage != null)
+            waitingForPlayerMessage.SetActive(false);
+        if (playerDisconnectedMessage != null)
+            playerDisconnectedMessage.SetActive(false);
+            
+
+
+        // TIME OUT DISPLAY
+        if (cause == DisconnectCause.ClientTimeout)
+            if (timeoutWindow != null)
+                timeoutWindow.SetActive(true);
+            else
+                Debug.Log("Can't find timeout window, ignoring");
     }
 
 
@@ -325,6 +449,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         StartCoroutine(JoinRoomCoroutine());
     }
+
+
+
+
 
 
     [PunRPC]
@@ -397,10 +525,17 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
                 Debug.Log("All players are here");
+                
+                if (waitingForPlayerMessage != null)
+                    waitingForPlayerMessage.SetActive(false);
+                    
                 CameraManager.Instance.FindPlayers();
             }
         }
     }
+
+
+
 
 
 
@@ -473,8 +608,25 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             //GameManager.Instance.
             Debug.LogWarning("Player Left in the middle of the game");
+            
             //SceneManage.Instance.Restart();
             GameManager.Instance.APlayerLeft();
+
+
+            // MESSAGE
+            if (playerDisconnectedMessage != null)
+                playerDisconnectedMessage.SetActive(true);
+
+            if (characterChangeDisplays != null && characterChangeDisplays.Count > 0)
+                for (int i = 0; i < characterChangeDisplays.Count; i++)
+                    if (characterChangeDisplays[i] != null)
+                    {
+                        characterChangeDisplays[i].SetActive(true);
+                        if (characterChangeDisplays[i].GetComponent<Animator>())
+                            characterChangeDisplays[i].GetComponent<Animator>().SetBool("On", false);
+                        //characterChangeDisplays[i].SetActive(false);
+                        
+                    }
         }
         else
             Debug.Log("Player left room");
@@ -523,7 +675,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public void WaitSceneLoading()
     {
-        Invoke("WaitScene", 2f);
+        //Invoke("WaitScene", 0.5f);
     }
 
 
@@ -542,6 +694,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         RightPanel.Play("SlideOut");
         LeftPanel.Play("SlideOut");
+
+
+        // DISABLE MENU
+        if (rightPart != null)
+            rightPart.SetActive(false);
+        if (leftPart != null)
+            leftPart.SetActive(false);
+        if (screenTitle != null)
+            screenTitle.SetActive(false);
+
 
         Invoke("DisableMenu", 0.25f);
     }
@@ -574,6 +736,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
     [PunRPC]
+    // SYNC STAGE OF THE JOINING PLAYER
     void SyncMap(int targetMapIndex)
     {
         Debug.Log("SyncMap called");
@@ -585,6 +748,40 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     void SyncRoundCount(int targetScoreWin)
     {
         GameManager.Instance.scoreToWin = targetScoreWin;
+    }
+
+
+
+
+
+
+    // MENU
+    void ConnexionWaitDisplay(bool state = false)
+    {
+        if (connectionWindow != null)
+            connectionWindow.SetActive(state);
+        else
+            Debug.Log("Can't find connection window, ignoring");
+
+        if (serverListBrowser != null)
+            serverListBrowser.SetActive(!state);
+        else
+            Debug.Log("Can't find server list browser, ignoring");
+
+        if (multiplayerBrowser != null)
+            multiplayerBrowser.gameObject.SetActive(!state);
+        else
+            Debug.Log("Can't find multiplayer browser, ignoring");
+
+        if (backBrowser != null)
+            backBrowser.SetActive(state);
+        else
+            Debug.Log("Can't find multiplayer browser, ignoring");
+
+        if (timeoutWindow != null)
+            timeoutWindow.SetActive(false);
+        else
+            Debug.Log("Can't find timeout window, ignoring");
     }
     #endregion
 }

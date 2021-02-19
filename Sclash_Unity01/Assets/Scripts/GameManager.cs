@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviourPun
     #region START
     [Header("START")]
     [Tooltip("The delay before the battle camera values are entered in the camera parameters to make it reactive for battle once the game started, because the smooth camera values stay some time to smooth the zoom towards the scene")]
-    [SerializeField] float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
+    [SerializeField] public float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
     [SerializeField] Animator drawTextAnimator = null;
     bool drawTextVisible = false;
     # endregion
@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviourPun
     //[SerializeField] GameObject playerAI = null;
     [Tooltip("The references to the spawn objects of the players in the scene")]
     [SerializeField] public GameObject[] playerSpawns = { null, null };
-    public List<GameObject> playersList = new List<GameObject>(2);
+    [SerializeField] public List<GameObject> playersList = new List<GameObject>(2);
 
     [Tooltip("The colors to identify the players")]
     [SerializeField]
@@ -486,33 +486,47 @@ public class GameManager : MonoBehaviourPun
                 if (oldState == GAMESTATE.paused)
                 {
                     for (int i = 0; i < playersList.Count; i++)
-                    {
-                        playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
-                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
-                    }
-                }
+                        if (playersList[i] != null)
+                        {
+                            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+                            {
+                                if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
+                                    playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                            }
+                            else
+                                playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
 
-                try
-                {
-                    cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
-                    mainMenu.SetActive(false);
-                    blurPanel.SetActive(false);
-                }
-                catch
-                {
+                            playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
+                        }
 
-                }
+                cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+                mainMenu.SetActive(false);
 
+                blurPanel.SetActive(false);
                 Cursor.visible = false;
                 break;
 
             case GAMESTATE.paused:                                                      // PAUSED
-                for (int i = 0; i < playersList.Count; i++)
-                    if (playersList[i] != null)
-                    {
-                        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-                        playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
-                    }
+                if (playersList != null && playersList.Count > 0)
+                    for (int i = 0; i < playersList.Count; i++)
+                        if (playersList[i] != null)
+                        {
+                            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+                            {
+                                if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
+                                {
+                                    playersList[i].GetComponent<Player>().SwitchState(Player.STATE.onlinefrozen);
+                                    Debug.Log("Online freeze");
+                                    Debug.Log(ConnectManager.Instance.localPlayerNum);
+                                }
+                            }
+                            else
+                            {
+                                playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
+                                playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+                                Debug.Log("normal");
+                            }    
+                        }
                 break;
 
             case GAMESTATE.finished:                                                // FINISHED
@@ -684,9 +698,13 @@ public class GameManager : MonoBehaviourPun
         {
             allPlayersHaveDrawn = true;
 
-            for (int i = 0; i < playersList.Count; i++)
-                if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
-                    allPlayersHaveDrawn = false;
+            if (playersList.Count < 2)
+                allPlayersHaveDrawn = false;
+            else
+                for (int i = 0; i < playersList.Count; i++)
+                    if (playersList[i].GetComponent<Player>().playerState == Player.STATE.sneathed || playersList[i].GetComponent<Player>().playerState == Player.STATE.drawing)
+                        allPlayersHaveDrawn = false;
+
 
 
             if (allPlayersHaveDrawn)
@@ -766,6 +784,9 @@ public class GameManager : MonoBehaviourPun
     }
 
     #region PLAYERS
+    /// <summary>
+    /// Instantiates the players in the duel scene
+    /// </summary>
     // Spawns the players
     void SpawnPlayers()
     {
@@ -774,8 +795,9 @@ public class GameManager : MonoBehaviourPun
             PlayerAnimations playerAnimations;
             Player playerScript = null;
 
-            playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-            playersList[i].gameObject.name = "Player" + (i + 1);
+            if (player != null && playerSpawns != null && playerSpawns.Length > 0 && playerSpawns[i] != null)
+                playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
+                
             //IAScript ia = null;
             /*
     #if UNITY_EDITOR
@@ -1113,12 +1135,19 @@ public class GameManager : MonoBehaviourPun
         drawTextAnimator.ResetTrigger("FadeOut");
         drawTextAnimator.SetTrigger("FadeOut");
         drawTextAnimator.ResetTrigger("FadeIn");
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
-            inGameHelp[i].SetBool("On", false);
-            playerKeysIndicators[i].SetBool("On", false);
-        }
+
+        if (playersList != null && playersList.Count > 0)
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                if (playersList[i] != null)
+                    playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+
+                if (inGameHelp != null && inGameHelp.Length > i && inGameHelp[i] != null)
+                    inGameHelp[i].SetBool("On", false);
+
+                if (playerKeysIndicators != null && playerKeysIndicators.Count > i && playerKeysIndicators[i] != null)
+                    playerKeysIndicators[i].SetBool("On", false);
+            }
 
 
         // FX

@@ -116,7 +116,7 @@ public class MenuBrowser2D : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    void Awake()
+    void Awake()                                                                // AWAKE
     {
         controls = GameManager.Instance.Controls;
 
@@ -141,8 +141,8 @@ public class MenuBrowser2D : MonoBehaviour
         }
     }
 
-    void Start()
-    {
+    void Start()                                                                                        // START
+   {
         VerticalBrowse(0);
         Select(false);
         Select(true);
@@ -152,7 +152,7 @@ public class MenuBrowser2D : MonoBehaviour
 
 
     // Update is called once per graphic frame
-    void Update()
+    void Update()                                                                                       // UPDATE
     {
         if (enabled && isActiveAndEnabled)
         {
@@ -219,7 +219,7 @@ public class MenuBrowser2D : MonoBehaviour
 
 
     // OnEnable is called each time the object is set from inactive to active
-    void OnEnable()
+    void OnEnable()                                                                                         // ON ENABLE
     {
         if (callSpecialElementWhenEnabled && enabledSpecialElement != null)
             enabledSpecialElement.onClick.Invoke();
