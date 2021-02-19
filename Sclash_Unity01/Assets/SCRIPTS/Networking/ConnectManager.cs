@@ -558,6 +558,20 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         multiplayerMenu.SetActive(false);
     }
 
+    void ResetGame()
+    {
+        Debug.Log("PUN : OnLeftRoom() was called by PUN");
+        if (PhotonNetwork.IsConnected)
+            PhotonNetwork.Disconnect();
+
+        CameraManager.Instance.FindPlayers();
+        GameManager.Instance.playersList = new List<GameObject>(2);
+
+        GameManager.Instance.Start();
+
+        InputManager.Instance.playerInputs = new InputManager.PlayerInputs[2];
+    }
+
 
     [PunRPC]
     void SyncMap(int targetMapIndex)

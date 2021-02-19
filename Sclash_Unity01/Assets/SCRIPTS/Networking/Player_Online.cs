@@ -155,7 +155,6 @@ public class Player_Online : Player, IPunObservable
 
     protected override void ManageDraw()
     {
-        Debug.Log("Manage Draw");
         if (InputManager.Instance.playerInputs[0].anyKey)
             photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
     }

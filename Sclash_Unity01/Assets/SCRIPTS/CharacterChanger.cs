@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 
 // This script, placed on the character, allows for changing the character before the battle, and also affects the UI elements that display the characters
 // OPTIMIZED
-public class CharacterChanger : MonoBehaviour
+public class CharacterChanger : MonoBehaviourPunCallbacks
 {
     #region VARIABLES
     [Header("PLAYER COMPONENTS")]
@@ -67,14 +70,14 @@ public class CharacterChanger : MonoBehaviour
     [HideInInspector] public List<Animator> fullObjectsAnimators = new List<Animator>();
     [HideInInspector] public List<Image> illustrationsUIObjects = new List<Image>();
     [HideInInspector] public List<TextMeshProUGUI> UICharacternames = new List<TextMeshProUGUI>();
-    
-    
+
+
 
     [Header("AUDIO")]
     [SerializeField] AudioSource wooshAudioSource = null;
     #endregion
 
-
+    public const byte ApplyCosmeticChanges = 1;
 
 
 
@@ -92,6 +95,8 @@ public class CharacterChanger : MonoBehaviour
 
     void OnEnable()                                                                             // ONE ENABLE
     {
+        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
+
         //IAChanger iachanger = GetComponent<IAChanger>();
         //iachanger.SwitchIAMode(false);
         //iachanger.enabled = false;
@@ -106,7 +111,7 @@ public class CharacterChanger : MonoBehaviour
         currentMaskIndex = lastChosenMaskIndex;
         currentWeaponIndex = lastWeaponIndex;
         currentAI_Index = lastAI_Index;
-        
+
         /*
         if (characterChangeAnimator != null)
             characterChangeAnimator.enabled = true;
@@ -166,13 +171,14 @@ public class CharacterChanger : MonoBehaviour
 
     private void OnDisable()
     {
+        PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
         /*
         if (fullObjectsAnimators[playerScript.playerNum])
             fullObjectsAnimators[playerScript.playerNum].SetBool("On", false);
         if (characterChangeAnimator)
             characterChangeAnimator.enabled = false;
             */
-        
+
         if (verticalMenu != null)
             verticalMenu.GetComponent<Animator>().SetBool("On", false);
     }
@@ -223,13 +229,13 @@ public class CharacterChanger : MonoBehaviour
         // VERTICAL SELECTION
         verticalElements.Clear();
         verticalMenu = GameObject.Find(charaSelecMenuName + playerScript.playerNum);
-    
+
 
         for (int i = 0; i < verticalMenu.transform.childCount; i++)
         {
-             verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
-             verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().characterChanger = gameObject.GetComponent<CharacterChanger>();
-             verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
+            verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
+            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().characterChanger = gameObject.GetComponent<CharacterChanger>();
+            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
         }
 
         currentMaxVerticalIndex = verticalMenu.transform.childCount - 1;
@@ -244,9 +250,9 @@ public class CharacterChanger : MonoBehaviour
             canChangeVertical = false;
         }
         else if (!canChangeVertical && Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].vertical) < 0.5f)
-            canChangeVertical = true;     
+            canChangeVertical = true;
     }
-   
+
 
     public void VerticalSelectionChange()
     {
@@ -284,7 +290,7 @@ public class CharacterChanger : MonoBehaviour
                 HorizontalSwitch(1);
             else if (InputManager.Instance.playerInputs[playerScript.playerNum].horizontal < -0.5f)
                 HorizontalSwitch(-1);
-            
+
 
             canChangeHorizontal = false;
         }
@@ -391,8 +397,8 @@ public class CharacterChanger : MonoBehaviour
                 characterChangeAnimator.SetTrigger("Left");
         }
 
-        
-        
+
+
         // MASK & WEAPON MENU CHANGE ANIM
         if (direction >= 1)
         {
@@ -459,7 +465,7 @@ public class CharacterChanger : MonoBehaviour
         if (UICharacternames.Count > 0)
             UICharacternames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
 
-        
+
         // SCRIPT VALUES
         playerScript.characterNameDisplay.text = charactersDatabase.charactersList[currentCharacterIndex].name;
         playerScript.characterIndex = currentCharacterIndex;
@@ -482,7 +488,7 @@ public class CharacterChanger : MonoBehaviour
             currentMaskIndex = masksDatabase.masksList.Count - 1;
         lastChosenMaskIndex = currentMaskIndex;
 
-        
+
         // ANIMATION
         if (direction >= 1) // RIGHT
         {
@@ -527,7 +533,7 @@ public class CharacterChanger : MonoBehaviour
             currentWeaponIndex = weaponsDatabase.weaponsList.Count - 1;
         lastWeaponIndex = currentWeaponIndex;
 
-        
+
         // ANIMATION
         if (direction >= 1)
         {
@@ -610,5 +616,31 @@ public class CharacterChanger : MonoBehaviour
         elementScript.text1.text = charactersDatabase.charactersList[otherCharacterChanger.currentCharacterIndex].name;
     }
     #endregion
+
+    #region Photon
+    private void SendCosmetics()
+    {
+        int[] content = new int[] { currentMaskIndex, currentCharacterIndex, currentWeaponIndex };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.Others };
+
+        PhotonNetwork.RaiseEvent(ApplyCosmeticChanges, content, raiseEventOptions, SendOptions.SendReliable);
+    }
+
+    private void OnEvent(EventData photonEvent)
+    {
+        byte eventCode = photonEvent.Code;
+        if (eventCode == ApplyCosmeticChanges)
+        {
+            int[] data = (int[])photonEvent.CustomData;
+            currentMaskIndex = data[0];
+            currentCharacterIndex = data[1];
+            currentWeaponIndex = data[2];
+        }
+    }
     #endregion
+
+
+    #endregion
+
+
 }
