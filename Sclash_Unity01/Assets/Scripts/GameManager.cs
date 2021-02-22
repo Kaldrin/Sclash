@@ -486,6 +486,7 @@ public class GameManager : MonoBehaviourPun
                 if (oldState == GAMESTATE.paused)
                 {
                     for (int i = 0; i < playersList.Count; i++)
+                    {
                         if (playersList[i] != null)
                         {
                             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
@@ -498,7 +499,8 @@ public class GameManager : MonoBehaviourPun
 
                             playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
                         }
-
+                    }
+                }
                 cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
                 mainMenu.SetActive(false);
 
@@ -525,7 +527,7 @@ public class GameManager : MonoBehaviourPun
                                 playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
                                 playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
                                 Debug.Log("normal");
-                            }    
+                            }
                         }
                 break;
 
@@ -797,7 +799,7 @@ public class GameManager : MonoBehaviourPun
 
             if (player != null && playerSpawns != null && playerSpawns.Length > 0 && playerSpawns[i] != null)
                 playersList.Add(Instantiate(player, playerSpawns[i].transform.position, playerSpawns[i].transform.rotation));
-                
+
             //IAScript ia = null;
             /*
     #if UNITY_EDITOR

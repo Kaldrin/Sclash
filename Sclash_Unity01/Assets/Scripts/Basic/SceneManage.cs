@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using UnityEngine.InputSystem;
 
 // Created for Unity 2019.1.1f1
 // This script manages scene transitions and scene loading
@@ -26,8 +27,6 @@ public class SceneManage : MonoBehaviour
     bool canLoadScene = true;
     bool loadWithIndex = false;
 
-
-
     [Header("RESTART SCENE")]
     [SerializeField] bool allowSceneRestartInBuild = false;
     [Tooltip("Choose which keys should be pressed to restart the scene")]
@@ -39,9 +38,7 @@ public class SceneManage : MonoBehaviour
 
 
 
-
-
-
+    PlayerControls controls;
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
@@ -53,6 +50,7 @@ public class SceneManage : MonoBehaviour
 
     void Start()                                                                // START
     {
+        controls = GameManager.Instance.Controls;
         // If chosen, starts the coroutine that will load the indicated scene after the indicated duration
         if (autoLoadSceneAfterDuration)
             StartCoroutine(AutoLoadSceneAfterDuration());
@@ -65,8 +63,8 @@ public class SceneManage : MonoBehaviour
         {
             // Checks if the inputs to restart the scene were pressed
             if (Application.isEditor || allowSceneRestartInBuild)
-                if (CheckIfAllKeysPressed(pressSimultaneousKeysToRestart))
-                        Restart();
+                if (controls.Menu.Restart.triggered)
+                    Restart();
 
 
             // Is called when the scene switch screen finished fading on
@@ -168,14 +166,15 @@ public class SceneManage : MonoBehaviour
     // Checks if the given keys are being pressed
     bool CheckIfAllKeysPressed(KeyCode[] keys)
     {
-        bool notPressed = false;
+        //bool notPressed = false;
 
 
-        for (int i = 0; i < keys.Length; i++)
-            if (!Input.GetKey(keys[i]))
-                notPressed = true;
+        /* for (int i = 0; i < keys.Length; i++)
+             if (!Input.GetKey(keys[i]))
+                 notPressed = true;
+        */
 
-
+        bool notPressed = true;
         return !notPressed;
     }
 
@@ -184,7 +183,7 @@ public class SceneManage : MonoBehaviour
     private static string NameFromIndex(int index)
     {
         string scenePath = SceneUtility.GetScenePathByBuildIndex(index);
-        
+
         string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
         return sceneName;
     }

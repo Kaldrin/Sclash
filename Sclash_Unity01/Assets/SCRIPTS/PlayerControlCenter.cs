@@ -172,6 +172,11 @@ public class PlayerControlCenter : MonoBehaviour
         }
     }
 
+    public void OnRestart(InputAction.CallbackContext ctx)
+    {
+        Debug.Log("Restart");
+    }
+
     public void OnDeviceLost(PlayerInput input)
     {
         InputManager.Instance.LostDevice(input);
@@ -181,4 +186,5 @@ public class PlayerControlCenter : MonoBehaviour
     {
         InputManager.Instance.RegainedDevice(input);
     }
+
 }

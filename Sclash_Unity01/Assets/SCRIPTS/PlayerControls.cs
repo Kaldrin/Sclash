@@ -777,6 +777,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Restart"",
+                    ""type"": ""Button"",
+                    ""id"": ""bcb6704a-2d33-4c88-b2ac-b40da28a54fb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -1175,6 +1183,39 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Menu secondary"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""2cdf21da-3426-4303-bab8-da2a28b7a2cb"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""89ef0895-2776-4437-a954-f9047bad773d"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""WASDScheme;ArrowScheme"",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""330d4d15-a105-45a1-86fe-c1572e240806"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""ArrowScheme;WASDScheme"",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -1786,6 +1827,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Menu_Navigate = m_Menu.FindAction("Navigate", throwIfNotFound: true);
         m_Menu_Menutriggers = m_Menu.FindAction("Menu triggers", throwIfNotFound: true);
         m_Menu_Menusecondary = m_Menu.FindAction("Menu secondary", throwIfNotFound: true);
+        m_Menu_Restart = m_Menu.FindAction("Restart", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1966,6 +2008,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Menu_Navigate;
     private readonly InputAction m_Menu_Menutriggers;
     private readonly InputAction m_Menu_Menusecondary;
+    private readonly InputAction m_Menu_Restart;
     public struct MenuActions
     {
         private @PlayerControls m_Wrapper;
@@ -1976,6 +2019,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Navigate => m_Wrapper.m_Menu_Navigate;
         public InputAction @Menutriggers => m_Wrapper.m_Menu_Menutriggers;
         public InputAction @Menusecondary => m_Wrapper.m_Menu_Menusecondary;
+        public InputAction @Restart => m_Wrapper.m_Menu_Restart;
         public InputActionMap Get() { return m_Wrapper.m_Menu; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2003,6 +2047,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Menusecondary.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnMenusecondary;
                 @Menusecondary.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnMenusecondary;
                 @Menusecondary.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnMenusecondary;
+                @Restart.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnRestart;
+                @Restart.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnRestart;
+                @Restart.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnRestart;
             }
             m_Wrapper.m_MenuActionsCallbackInterface = instance;
             if (instance != null)
@@ -2025,6 +2072,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Menusecondary.started += instance.OnMenusecondary;
                 @Menusecondary.performed += instance.OnMenusecondary;
                 @Menusecondary.canceled += instance.OnMenusecondary;
+                @Restart.started += instance.OnRestart;
+                @Restart.performed += instance.OnRestart;
+                @Restart.canceled += instance.OnRestart;
             }
         }
     }
@@ -2183,6 +2233,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnNavigate(InputAction.CallbackContext context);
         void OnMenutriggers(InputAction.CallbackContext context);
         void OnMenusecondary(InputAction.CallbackContext context);
+        void OnRestart(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
