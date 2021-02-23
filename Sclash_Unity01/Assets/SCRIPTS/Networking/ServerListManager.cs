@@ -90,7 +90,10 @@ public class ServerListManager : MonoBehaviourPunCallbacks
         {
             // If there's no servers, just don't do anything
             if (roomInfosList == null)
+            {
+                Debug.Log("No server found");
                 return;
+            }
 
 
             if (roomInfosList.Count == 0)
@@ -155,10 +158,10 @@ public class ServerListManager : MonoBehaviourPunCallbacks
         // DESTROY ELEMENTS
         for (int i = 0; i < serverItemsList.Count; i++)
             Destroy(serverItemsList[i].gameObject);
-        
+
         foreach (Transform c in transform)
             Destroy(c.gameObject);
-            
+
 
         // Clear list of elements
         serverItemsList.Clear();
@@ -244,7 +247,7 @@ public class ServerListManager : MonoBehaviourPunCallbacks
         // ???
         int.TryParse((string)roomInfosList[i].CustomProperties["rc"], out serverItem.GetComponent<ServerItemInfos>().roundCount);
         //serverItem.GetComponent<ServerItemInfos>().roomMaxPlayerCount = int.Parse((string)roomInfosList[i].CustomProperties["pc"]);
-        
+
 
 
 

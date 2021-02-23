@@ -18,6 +18,7 @@ public class ServerFinder : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        Debug.Log("OnRoomListUpdate() Called by PUN");
         ServerListManager.Instance.roomInfosList = roomList;
 
 

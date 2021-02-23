@@ -82,7 +82,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             playerDisconnectedMessage.SetActive(false);
         if (timeoutWindow != null)
             timeoutWindow.SetActive(false);
-            
+
     }
 
     void Start()                                                                                // START
@@ -260,10 +260,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
         attackSignParticlesMain.startColor = GameManager.Instance.attackSignColors[stats.playerNum];
 
-        
+
         if (!GameManager.Instance.playersList.Contains(newPlayer))
             GameManager.Instance.playersList.Add(newPlayer);
-            
+
 
 
 
@@ -312,17 +312,17 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         yield return new WaitForSeconds(0.5f);
 
 
-        
+
 
 
         Debug.Log("PUN : OnJoinedRoom() called by PUN. Player is now in a room");
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
-        
+
         if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && waitingForPlayerMessage != null)
             waitingForPlayerMessage.SetActive(true);
-            
-            
+
+
 
 
 
@@ -408,6 +408,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         PhotonNetwork.CreateRoom(randRoomName, options);
     }
 
+    public override void OnCreatedRoom()
+    {
+        Debug.Log("Room successfully created");
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("Room creation failed : " + message);
+    }
+
 
     public void LeaveLobby()
     {
@@ -428,12 +438,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
         // MESSAGE
-        
+
         if (waitingForPlayerMessage != null)
             waitingForPlayerMessage.SetActive(false);
         if (playerDisconnectedMessage != null)
             playerDisconnectedMessage.SetActive(false);
-            
+
 
 
         // TIME OUT DISPLAY
@@ -525,10 +535,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
                 Debug.Log("All players are here");
-                
+
                 if (waitingForPlayerMessage != null)
                     waitingForPlayerMessage.SetActive(false);
-                    
+
                 CameraManager.Instance.FindPlayers();
             }
         }
@@ -608,7 +618,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             //GameManager.Instance.
             Debug.LogWarning("Player Left in the middle of the game");
-            
+
             //SceneManage.Instance.Restart();
             GameManager.Instance.APlayerLeft();
 
@@ -625,7 +635,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                         if (characterChangeDisplays[i].GetComponent<Animator>())
                             characterChangeDisplays[i].GetComponent<Animator>().SetBool("On", false);
                         //characterChangeDisplays[i].SetActive(false);
-                        
+
                     }
         }
         else

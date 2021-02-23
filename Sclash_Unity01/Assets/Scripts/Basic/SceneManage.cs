@@ -50,7 +50,7 @@ public class SceneManage : MonoBehaviour
 
     void Start()                                                                // START
     {
-        controls = GameManager.Instance.Controls;
+        controls = new PlayerControls();
         // If chosen, starts the coroutine that will load the indicated scene after the indicated duration
         if (autoLoadSceneAfterDuration)
             StartCoroutine(AutoLoadSceneAfterDuration());
@@ -95,10 +95,9 @@ public class SceneManage : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(durationBeforeAutoLoadScene);
 
-
         SceneManager.LoadSceneAsync(sceneToAutoLoadIndex);
 
-        Invoke("SceneManager.LoadSceneAsync()", durationBeforeAutoLoadScene);
+        //Invoke("SceneManager.LoadSceneAsync()", durationBeforeAutoLoadScene);
     }
 
     void LoadScene(Scene scene)
