@@ -365,6 +365,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         //InitMultiplayerMatch();
     }
 
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        ServerListManager.Instance.roomInfosList = roomList;
+        ServerListManager.Instance.DisplayServerList();
+    }
+
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.LogWarningFormat("PUN : Failed to join a room");
