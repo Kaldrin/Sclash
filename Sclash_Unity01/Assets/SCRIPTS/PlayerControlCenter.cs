@@ -10,8 +10,6 @@ public class PlayerControlCenter : MonoBehaviour
     int m_playerIndex;
     float m_DashOrientation = 0f;
 
-    bool horizontalInput = false;
-
     PlayerControls controls;
 
     Player attachedPlayer;

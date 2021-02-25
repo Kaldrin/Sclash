@@ -13,13 +13,6 @@ public class InputManager : MonoBehaviour
     #endregion  
 
 
-    #region Event
-    [HideInInspector] public delegate void OnPlayerInput();
-    [HideInInspector] public event OnPlayerInput P2Input;
-    //[HideInInspector] public event OnPlayerInput SwitchChar;
-    #endregion
-
-
     #region VARIABLES
     // Struct for each player's inputs
     [System.Serializable]
@@ -57,7 +50,7 @@ public class InputManager : MonoBehaviour
 
 
     [Header("INPUT AXIS NAMES")]
-    [SerializeField] string pauseAxis = "Pause";
+    /*[SerializeField] string pauseAxis = "Pause";
     [SerializeField]
     string
         battleSneathDrawAxis = "SneathDraw",
@@ -69,7 +62,7 @@ public class InputManager : MonoBehaviour
         parryAxis = "Parry",
         jumpAxis = "Jump",
         scoreAxis = "Score",
-        selectcharAxis = "SelectChar";
+        selectcharAxis = "SelectChar";*/
     #endregion
 
 

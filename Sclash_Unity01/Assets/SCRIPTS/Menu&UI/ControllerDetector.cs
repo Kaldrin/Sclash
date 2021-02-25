@@ -8,9 +8,9 @@ using UnityEngine;
 public class ControllerDetector : MonoBehaviour
 {
     [SerializeField] List<string> controllerAxisToCheck = new List<string>();
-    [SerializeField] float controllerDeadZone = 0.3f;
+    // [SerializeField] float controllerDeadZone = 0.3f;
     [SerializeField] List<string> mouseAxisToCheck = new List<string>();
-    [SerializeField] float mouseDeadZone = 0.3f;
+    // [SerializeField] float mouseDeadZone = 0.3f;
     [SerializeField] bool doDetectController = true;
 
 

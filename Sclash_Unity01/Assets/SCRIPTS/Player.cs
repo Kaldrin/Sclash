@@ -25,12 +25,8 @@ public class Player : MonoBehaviourPunCallbacks
 
     // Input manager
     [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
-    [SerializeField] string inputManagerName = "GlobalManager";
 
     protected InputManager inputManager = null;
-
-    // Stats manager
-    [SerializeField] string statsManagerName = "GlobalManager";
 
     protected StatsManager statsManager = null;
     #endregion
@@ -393,8 +389,8 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] GameObject attackSlashFXParent = null;
     [SerializeField]
     float
-        lightAttackSwordTrailWidth = 20f,
-        heavyAttackSwordTrailWidth = 65f,
+        //lightAttackSwordTrailWidth = 20f,
+        //heavyAttackSwordTrailWidth = 65f,
         lightAttackSwordTrailScale = 1,
         heavyAttackSwordTrailScale = 3;
     [Tooltip("The minimum speed required for the walk fx to trigger")]

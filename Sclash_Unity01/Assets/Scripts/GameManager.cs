@@ -322,7 +322,6 @@ public class GameManager : MonoBehaviourPun
     // Start is called before the first frame update
     public virtual void Start()
     {
-        InputManager.Instance.P2Input += ConnectPlayer2;
 
         // Set variables
         score = new Vector2(0, 0);
@@ -591,7 +590,6 @@ public class GameManager : MonoBehaviourPun
             Destroy(playersList[1].GetComponent<IAScript>());
         }
 
-        InputManager.Instance.P2Input -= ConnectPlayer2;
     }
 
     // Begins the StartMatch coroutine, this function is called by the menu button Sclash

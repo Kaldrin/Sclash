@@ -14,7 +14,6 @@ public class UIManager : MonoBehaviour
 
     // ACTIVATING
     [Header("ACTIVATING")]
-    [SerializeField] KeyCode pauseKey = KeyCode.Escape;
     [SerializeField] GameObject[] objectsToFreezeOnPause = null;
     [SerializeField] MonoBehaviour[] scriptsToFreezeOnPause = null;
     [SerializeField] MonoBehaviour[] scriptsToCallOnPause = null;

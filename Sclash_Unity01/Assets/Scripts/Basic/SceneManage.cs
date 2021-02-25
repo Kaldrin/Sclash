@@ -30,8 +30,6 @@ public class SceneManage : MonoBehaviour
     [Header("RESTART SCENE")]
     [SerializeField] bool allowSceneRestartInBuild = false;
     [Tooltip("Choose which keys should be pressed to restart the scene")]
-    [SerializeField] KeyCode[] pressSimultaneousKeysToRestart = null;
-
 
 
 

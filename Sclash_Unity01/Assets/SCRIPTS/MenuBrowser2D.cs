@@ -61,7 +61,7 @@ public class MenuBrowser2D : MonoBehaviour
     [Tooltip("Names of the inputs axis created in the input settings")]
     [SerializeField] string horizontalAxis = "Horizontal";
     [SerializeField] string verticalAxis = "Vertical";
-    [SerializeField] string backButton = "Back";
+    //[SerializeField] string backButton = "Back";
     [SerializeField] bool vAxisInUse = false;
     [SerializeField] bool hAxisInUse = true;
 
@@ -142,7 +142,7 @@ public class MenuBrowser2D : MonoBehaviour
     }
 
     void Start()                                                                                        // START
-   {
+    {
         VerticalBrowse(0);
         Select(false);
         Select(true);

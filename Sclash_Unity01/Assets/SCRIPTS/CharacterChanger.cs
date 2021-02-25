@@ -93,7 +93,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // GameManager.Instance.ResetGameEvent +=
     }
 
-    void OnEnable()                                                                             // ONE ENABLE
+    new void OnEnable()                                                                             // ONE ENABLE
     {
         PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
 
@@ -172,7 +172,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
-    private void OnDisable()
+    new private void OnDisable()
     {
         PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
         /*
