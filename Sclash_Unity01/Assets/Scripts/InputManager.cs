@@ -49,8 +49,8 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public bool submitInputUp = false;
 
 
-    [Header("INPUT AXIS NAMES")]
-    /*[SerializeField] string pauseAxis = "Pause";
+    /*[Header("INPUT AXIS NAMES")]
+    [SerializeField] string pauseAxis = "Pause";
     [SerializeField]
     string
         battleSneathDrawAxis = "SneathDraw",
@@ -121,18 +121,18 @@ public class InputManager : MonoBehaviour
         GamepadCount = Gamepad.all.Count;
         ManageControllers();
 
-        if (enabled && isActiveAndEnabled)
+        if (!enabled || !isActiveAndEnabled)
+            return;
+
+        // Players inputs
+        for (int i = 0; i < playerInputs.Length; i++)
         {
-            // Players inputs
-            for (int i = 0; i < playerInputs.Length; i++)
+            if (GameManager.Instance.playersList.Count > 0)
             {
-                if (GameManager.Instance.playersList.Count > 0)
+                if (GameManager.Instance.playersList[i] != null)
                 {
-                    if (GameManager.Instance.playersList[i] != null)
-                    {
-                        if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
-                            return;
-                    }
+                    if (GameManager.Instance.playersList[i].GetComponent<Player>().playerIsAI)
+                        return;
                 }
             }
         }

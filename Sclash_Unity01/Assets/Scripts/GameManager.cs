@@ -312,11 +312,13 @@ public class GameManager : MonoBehaviourPun
     private void OnEnable()
     {
         _controls.Enable();
+        _controls.UI.Enable();
     }
 
     private void OnDisable()
     {
         _controls.Disable();
+        _controls.UI.Disable();
     }
 
     // Start is called before the first frame update

@@ -16,7 +16,38 @@ MonoBehaviour:
   - {fileID: 4578191956538955213}
   - {fileID: 3160283177183473209}
   - {fileID: 4044784964581014341}
-  - {fileID: 4854791536274748582}
+  - {fileID: 330227749277820182}
+--- !u!114 &330227749277820182
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a990209243e82d4393cd4bfa4290b2a, type: 3}
+  m_Name: Kuwahara
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  blend:
+    overrideState: 0
+    value: 0.5
+  kernelSize:
+    overrideState: 1
+    value: 7
+  powX:
+    overrideState: 1
+    value: 11
+  powY:
+    overrideState: 1
+    value: 6
+  spread:
+    overrideState: 1
+    value: 8.63
 --- !u!114 &3160283177183473209
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -142,34 +173,3 @@ MonoBehaviour:
   dirtIntensity:
     overrideState: 1
     value: 40
---- !u!114 &4854791536274748582
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a990209243e82d4393cd4bfa4290b2a, type: 3}
-  m_Name: Kuwahara
-  m_EditorClassIdentifier: 
-  active: 1
-  enabled:
-    overrideState: 1
-    value: 1
-  blend:
-    overrideState: 0
-    value: 0.5
-  kernelSize:
-    overrideState: 1
-    value: 7
-  powX:
-    overrideState: 1
-    value: 11
-  powY:
-    overrideState: 1
-    value: 6
-  spread:
-    overrideState: 1
-    value: 8.63

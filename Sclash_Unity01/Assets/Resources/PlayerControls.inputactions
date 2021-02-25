@@ -772,6 +772,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Point",
+                    "type": "PassThrough",
+                    "id": "03e2c752-f367-4ada-aa82-860072c36f4b",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -1203,6 +1211,39 @@
                     "action": "Restart",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "9b1fee78-8141-4193-8d2c-6eb36a934612",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fb2c82cc-0c27-49df-a5e4-6c875759adb4",
+                    "path": "<Pen>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ffe37fdc-91d1-4d69-80b3-4c64b5d41c5f",
+                    "path": "<Touchscreen>/touch*/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -1212,11 +1253,11 @@
             "actions": [
                 {
                     "name": "Navigate",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "6e271858-3297-4465-9b85-13cf1132a5e9",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "SlowTap"
                 },
                 {
                     "name": "Submit",
@@ -1227,49 +1268,9 @@
                     "interactions": ""
                 },
                 {
-                    "name": "TrackedDeviceOrientation",
-                    "type": "PassThrough",
-                    "id": "47c4e2c0-c094-4c8d-a18c-ce7bcb70fd58",
-                    "expectedControlType": "Quaternion",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "TrackedDevicePosition",
-                    "type": "PassThrough",
-                    "id": "b168dd0e-2851-406d-bc3c-a30c9794a829",
-                    "expectedControlType": "Vector3",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "RightClick",
-                    "type": "PassThrough",
-                    "id": "2e2cd4c2-ba2b-4e6a-bbf9-6f596d4bafb3",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "MiddleClick",
-                    "type": "PassThrough",
-                    "id": "47ce7a8b-54d7-42ef-ac0c-b4bb59aef897",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "ScrollWheel",
-                    "type": "PassThrough",
-                    "id": "8506a4fd-8405-4a08-966a-9227f3474704",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Click",
-                    "type": "PassThrough",
-                    "id": "e50dfb0c-6d21-4374-983f-fe6243aab588",
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "e849f829-cea2-4975-824d-82b26b3dbb6e",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -1283,10 +1284,50 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Cancel",
-                    "type": "Button",
-                    "id": "e849f829-cea2-4975-824d-82b26b3dbb6e",
+                    "name": "Click",
+                    "type": "PassThrough",
+                    "id": "e50dfb0c-6d21-4374-983f-fe6243aab588",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "ScrollWheel",
+                    "type": "PassThrough",
+                    "id": "8506a4fd-8405-4a08-966a-9227f3474704",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MiddleClick",
+                    "type": "PassThrough",
+                    "id": "47ce7a8b-54d7-42ef-ac0c-b4bb59aef897",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "RightClick",
+                    "type": "PassThrough",
+                    "id": "2e2cd4c2-ba2b-4e6a-bbf9-6f596d4bafb3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "TrackedDevicePosition",
+                    "type": "PassThrough",
+                    "id": "b168dd0e-2851-406d-bc3c-a30c9794a829",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "TrackedDeviceOrientation",
+                    "type": "PassThrough",
+                    "id": "47c4e2c0-c094-4c8d-a18c-ce7bcb70fd58",
+                    "expectedControlType": "Quaternion",
                     "processors": "",
                     "interactions": ""
                 }
@@ -1613,6 +1654,17 @@
                 },
                 {
                     "name": "",
+                    "id": "3779b4ad-8487-41ef-a17c-58414bd72ac6",
+                    "path": "<XRController>/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "TrackedDevicePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "be07d2a9-4b9d-469c-a33c-c0b9351e8be5",
                     "path": "*/{Cancel}",
                     "interactions": "",
@@ -1729,17 +1781,6 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "RightClick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3779b4ad-8487-41ef-a17c-58414bd72ac6",
-                    "path": "<XRController>/devicePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "XR",
-                    "action": "TrackedDevicePosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
