@@ -1019,7 +1019,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 rb.simulated = true;
 
                 if (characterType == CharacterType.duel)
+                {
+                    // ONLINE
+                    if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+                    {
+                        if (GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                            characterChanger.enabled = true;
+                    }
+                    else
                         characterChanger.enabled = true;
+                }
                 break;
 
             case STATE.drawing:                                                                                          // DRAWING
@@ -2009,8 +2018,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void ManageBattleSneath()
     {
         if (canBattleSneath)
-            if (inputManager.playerInputs.Length > playerNum && inputManager.playerInputs[playerNum].battleSneathDraw)
+        {
+            Debug.Log(inputManager.playerInputs[0].battleSneathDraw);
+
+            // ONLINE
+            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+            {
+                if (inputManager.playerInputs != null && inputManager.playerInputs.Length > 0 && inputManager.playerInputs[0].battleSneathDraw)
+                    TriggerBattleSneath();
+            }
+            else if (inputManager.playerInputs.Length > playerNum && inputManager.playerInputs[playerNum].battleSneathDraw)
                 TriggerBattleSneath();
+        }
     }
 
     void ManageBattleDraw()
@@ -2095,6 +2114,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     // Manages the detection of attack charge inputs
     void ManageChargeInput()
     {
+        // ONLINE
         if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
         {
             // Player presses attack button

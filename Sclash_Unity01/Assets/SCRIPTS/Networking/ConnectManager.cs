@@ -623,12 +623,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             GameManager.Instance.APlayerLeft();
 
 
-            // MESSAGE
-            if (playerDisconnectedMessage != null)
-                playerDisconnectedMessage.SetActive(true);
-            if (backIndicator != null)
-                backIndicator.SetActive(true);
-
             if (characterChangeDisplays != null && characterChangeDisplays.Count > 0)
                 for (int i = 0; i < characterChangeDisplays.Count; i++)
                     if (characterChangeDisplays[i] != null)
@@ -643,6 +637,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         else
             Debug.Log("Player left room");
 
+
+        // MESSAGE
+        if (playerDisconnectedMessage != null)
+            playerDisconnectedMessage.SetActive(true);
+        if (backIndicator != null)
+            backIndicator.SetActive(true);
 
         base.OnPlayerLeftRoom(otherPlayer);
     }
