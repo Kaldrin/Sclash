@@ -77,8 +77,6 @@ public class InputManager : MonoBehaviour
 
 
     protected PlayerControls controls;
-    bool WASDjoined = false;
-    bool Arrowjoined = false;
 
     [SerializeField]
     List<Gamepad> gamepads;
@@ -105,7 +103,37 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         gamepads = new List<Gamepad>();
-        NewController();
+        inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "WASDScheme", Keyboard.current));
+        inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
+    }
+
+    private void OnEnable()
+    {
+        InputSystem.onDeviceChange += (device, change) =>
+        {
+            switch (change)
+            {
+                case InputDeviceChange.Added:
+                    Gamepad g = null;
+                    g = (Gamepad)device;
+                    if (g != null)
+                    {
+                        foreach (PlayerInput pI in inputs)
+                        {
+                            if (pI.devices[0] as Keyboard != null)
+                            {
+                                pI.SwitchCurrentControlScheme("Gamepad Scheme", g);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        };
+
     }
 
     protected void Awake()
@@ -115,17 +143,14 @@ public class InputManager : MonoBehaviour
         controls = GameManager.Instance.Controls;
     }
 
+
     // Update is called once per graphic frame
     public virtual void Update()
     {
         GamepadCount = Gamepad.all.Count;
-        ManageControllers();
-
-        if (!enabled || !isActiveAndEnabled)
-            return;
 
         // Players inputs
-        for (int i = 0; i < playerInputs.Length; i++)
+        /*for (int i = 0; i < playerInputs.Length; i++)
         {
             if (GameManager.Instance.playersList.Count > 0)
             {
@@ -135,7 +160,7 @@ public class InputManager : MonoBehaviour
                         return;
                 }
             }
-        }
+        }*/
     }
     #endregion
 
@@ -148,13 +173,12 @@ public class InputManager : MonoBehaviour
             if (!gamepads.Contains(g))
             {
                 Debug.Log("Controller plugged in");
-                gamepads.Add(g);
             }
         }
     }
 
     private void ManageControllers()
-    {
+    {        /*
         PlayerInput p = null;
 
         switch (inputs.Count)
@@ -214,7 +238,7 @@ public class InputManager : MonoBehaviour
         }
 
         if (p != null)
-            inputs.Add(p);
+            inputs.Add(p);*/
     }
 
     public void LostDevice(PlayerInput input)

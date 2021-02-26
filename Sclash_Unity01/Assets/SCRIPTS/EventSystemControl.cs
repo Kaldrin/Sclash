@@ -399,6 +399,17 @@ public class @EventSystemControl : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""098fb46b-4450-4962-9712-aab7dd12246f"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""4d2d0c7a-86d0-4be1-880f-65f30d0ad95b"",
                     ""path"": ""*/{Cancel}"",
                     ""interactions"": """",
