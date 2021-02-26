@@ -52,6 +52,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject backIndicator = null;
 
 
+    [Header("OTHER MENUS")]
+    [SerializeField] MenuBrowser pauseBrowser = null;
+    [SerializeField] MenuBrowser winBrowser = null;
+
+
 
     [Header("CHARACTER CHANGE")]
     [SerializeField] List<GameObject> characterChangeDisplays = new List<GameObject>(2);
@@ -209,6 +214,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 backIndicator.SetActive(true);
             if (serverErrorMessage != null)
                 serverErrorMessage.SetActive(true);
+            if (winBrowser != null)
+                winBrowser.enabled = false;
+            if (pauseBrowser != null)
+                pauseBrowser.enabled = false;
         }
 
 
@@ -643,9 +652,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             playerDisconnectedMessage.SetActive(true);
         if (backIndicator != null)
             backIndicator.SetActive(true);
+        if (winBrowser != null)
+            winBrowser.enabled = false;
+        if (pauseBrowser != null)
+            pauseBrowser.enabled = false;
 
         base.OnPlayerLeftRoom(otherPlayer);
     }
+
 
     public void CreateCustomRoom()
     {
