@@ -55,8 +55,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  inputManagerName: GlobalManager
-  statsManagerName: GlobalManager
   rb: {fileID: 238869340270405451}
   playerAnimations: {fileID: 8302967749356714203}
   characterChanger: {fileID: 3067542047374774361}
@@ -171,8 +169,6 @@ MonoBehaviour:
   attackSignDisjoint: 0.4
   deathBloodFXRotationForDirectionChange: 240
   attackSlashFXParent: {fileID: 705372805878199537}
-  lightAttackSwordTrailWidth: 20
-  heavyAttackSwordTrailWidth: 65
   lightAttackSwordTrailScale: 0.95
   heavyAttackSwordTrailScale: 1.44
   minSpeedForWalkFX: 0.05

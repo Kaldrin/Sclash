@@ -241,14 +241,15 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // VERTICAL SELECTION
         verticalElements.Clear();
         verticalMenu = GameObject.Find(charaSelecMenuName + playerScript.playerNum);
-    
 
-        if (verticalMenu != null && verticalMenu.transform.childCount > 0){
+
+        if (verticalMenu != null && verticalMenu.transform.childCount > 0)
+        {
             for (int i = 0; i < verticalMenu.transform.childCount; i++)
             {
-                 verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
-                 verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().characterChanger = gameObject.GetComponent<CharacterChanger>();
-                 verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
+                verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
+                verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().characterChanger = gameObject.GetComponent<CharacterChanger>();
+                verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
             }
         }
 
@@ -271,7 +272,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         if (ConnectManager.Instance.enableMultiplayer)
             inputPlayernUm = 0;
 
-       
+
         if (canChangeVertical && (Mathf.Abs(InputManager.Instance.playerInputs[inputPlayernUm].vertical) > 0.5f))
         {
             VerticalSelectionChange(inputPlayernUm);
@@ -382,6 +383,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             StartCoroutine(ApplyPlayerChange(changeDirection));
         else if (nameOfElement == character2ElementName)
             StartCoroutine(ApplyCharacter2Change(changeDirection));
+
+        SendCosmetics();
     }
 
 
@@ -682,6 +685,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     #region Photon
     private void SendCosmetics()
     {
+        Debug.Log("Send Cosmetics");
         int[] content = new int[] { currentMaskIndex, currentCharacterIndex, currentWeaponIndex };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.Others };
 
@@ -690,6 +694,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
     private void OnEvent(EventData photonEvent)
     {
+        Debug.Log("Event received");
         byte eventCode = photonEvent.Code;
         if (eventCode == ApplyCosmeticChanges)
         {
