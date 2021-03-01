@@ -12,6 +12,10 @@ using TMPro;
 public class MenuManager : MonoBehaviour
 {
     # region VARIABLES
+    // SINGLETON    
+    public static MenuManager Instance = null;
+
+
     # region MANAGERS
     [Header("MANAGERS")]
     [Tooltip("The references to the GameManager script instance component")]
@@ -129,8 +133,13 @@ public class MenuManager : MonoBehaviour
 
     # region FUNCTIONS
     # region BASE FUNCTIONS
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()                                                                                // AWAKE
+    {
+        Instance = this;
+    }
+
+
+    void Start()                                                                                        // START
     {
         // FILLS SCRIPTABLE OBJECTS
         LoadAudioSaveInScriptableObject();
@@ -145,8 +154,8 @@ public class MenuManager : MonoBehaviour
         Cursor.visible = true;
     }
 
-    // Update is called once per grahic frame
-    void Update()
+
+    void Update()                                                                                                   // UPDATE
     {
         if (enabled && isActiveAndEnabled)
         {

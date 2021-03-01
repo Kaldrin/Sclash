@@ -90,7 +90,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             playerDisconnectedMessage.SetActive(false);
         if (timeoutWindow != null)
             timeoutWindow.SetActive(false);
-            
     }
 
     void Start()                                                                                // START
@@ -390,7 +389,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.Log("PUN : CreateRoom called");
 
 
-        string randRoomName = Time.time.ToString();
+
+        // Room name
+        string randRoomName = "Matchmaking " + Time.time.ToString();
+
 
 
         if (SteamManager.Initialized)

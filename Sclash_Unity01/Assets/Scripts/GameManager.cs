@@ -470,10 +470,16 @@ public class GameManager : MonoBehaviourPun
                     for (int i = 0; i < playersList.Count; i++)
                         if (playersList[i] != null)
                         {
+                            // ONLINE
                             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                             {
                                 if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
-                                    playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                                {
+                                    if (playersList[i].GetComponent<Player>().oldState != Player.STATE.clashed)
+                                        playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                                    else
+                                        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.normal);
+                                }
                             }
                             else
                                 playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
@@ -493,6 +499,7 @@ public class GameManager : MonoBehaviourPun
                     for (int i = 0; i < playersList.Count; i++)
                         if (playersList[i] != null)
                         {
+                            // ONLINE
                             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                             {
                                 if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
@@ -932,7 +939,22 @@ public class GameManager : MonoBehaviourPun
 
         playerDead = true;
         UpdatePlayersScoreValues();
+
+
+        // ONLINE
+        if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+        {
+            if (gameState == GAMESTATE.paused)
+                MenuManager.Instance.TriggerPause(false);
+        }
+
+
+
         SwitchState(GAMESTATE.roundFinished);
+
+
+        
+        
 
 
         if (CheckIfThePlayerWon())

@@ -3126,7 +3126,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         // CHANGE STATE
         if (playerState != STATE.attacking && playerState != STATE.recovering && playerState != STATE.onlinefrozen)
-            SwitchState(STATE.normal);
+        {
+            // ONLINE
+            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+            {
+                if (playerState == STATE.clashed && oldState == STATE.onlinefrozen)
+                    SwitchState(STATE.onlinefrozen);
+                else
+                    SwitchState(STATE.normal);
+            }
+            else
+                SwitchState(STATE.normal);
+        }
 
 
         isDashing = false;

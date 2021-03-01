@@ -193,7 +193,7 @@ public class ServerItemInfos : MonoBehaviour
         for (int i = 0; i < serverListManager.serverItemsList.Count; i++)
             serverListManager.serverItemsList[i].UnSelect();
 
-
+        serverListManager.DisplayJoinRoomButton(true);
 
         selected = true;
 
