@@ -688,11 +688,12 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     #region Photon
     private void SendCosmetics()
     {
-        Debug.Log("Send Cosmetics");
         int[] content = new int[] { currentMaskIndex, currentCharacterIndex, currentWeaponIndex };
+
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.Others };
 
         PhotonNetwork.RaiseEvent(ApplyCosmeticChanges, content, raiseEventOptions, SendOptions.SendReliable);
+        Debug.LogFormat("Sent {0} {1} {2}", content[0], content[1], content[2]);
     }
 
     private void OnEvent(EventData photonEvent)
@@ -700,12 +701,12 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         byte eventCode = photonEvent.Code;
         if (eventCode == ApplyCosmeticChanges)
         {
-            Debug.Log("Event received");
             int[] data = (int[])photonEvent.CustomData;
+            Debug.LogFormat("Received {0} {1} {2}", data[0], data[1], data[2]);
+
             currentMaskIndex = data[0];
             ApplyMaskChange(0);
             currentCharacterIndex = data[1];
-            Debug.LogFormat($"New Character index : {0}", data[1]);
             ApplyCharacterChange(0);
             currentWeaponIndex = data[2];
             ApplyWeaponChange(0);
