@@ -383,8 +383,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             StartCoroutine(ApplyPlayerChange(changeDirection));
         else if (nameOfElement == character2ElementName)
             StartCoroutine(ApplyCharacter2Change(changeDirection));
-
-        SendCosmetics();
     }
 
 
@@ -566,6 +564,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         // SPRITE
         mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
+        SendCosmetics();
     }
 
 
@@ -611,6 +610,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         // SPRITE
         weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
+
+        SendCosmetics();
     }
 
 
@@ -664,6 +665,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             else
                 currentMaxVerticalIndex = verticalElements.Count - 1;
         }
+
+        SendCosmetics();
     }
 
 
@@ -694,14 +697,18 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
     private void OnEvent(EventData photonEvent)
     {
-        Debug.Log("Event received");
         byte eventCode = photonEvent.Code;
         if (eventCode == ApplyCosmeticChanges)
         {
+            Debug.Log("Event received");
             int[] data = (int[])photonEvent.CustomData;
             currentMaskIndex = data[0];
+            ApplyMaskChange(0);
             currentCharacterIndex = data[1];
+            Debug.LogFormat($"New Character index : {0}", data[1]);
+            ApplyCharacterChange(0);
             currentWeaponIndex = data[2];
+            ApplyWeaponChange(0);
         }
     }
     #endregion
