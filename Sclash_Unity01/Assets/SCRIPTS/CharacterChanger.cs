@@ -704,12 +704,65 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             int[] data = (int[])photonEvent.CustomData;
             Debug.LogFormat("Received {0} {1} {2}", data[0], data[1], data[2]);
 
+
             currentMaskIndex = data[0];
-            ApplyMaskChange(0);
+            mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
+
+
             currentCharacterIndex = data[1];
-            ApplyCharacterChange(0);
+            if (playerAnimator != null)
+                playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacterIndex].animator;
+            if (legsAnimator != null)
+                legsAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacterIndex].legsAnimator;
+
+
+            // CHANGE MASK & WEAPON INDEX
+            if (playerScript.gameManager.mapLoader.halloween) // Halloween
+            {
+                currentMaskIndex = 6;
+                currentWeaponIndex = 1;
+            }
+            else // Default
+            {
+                currentMaskIndex = charactersDatabase.charactersList[currentCharacterIndex].defaultMask;
+                currentWeaponIndex = charactersDatabase.charactersList[currentCharacterIndex].defaultWeapon;
+            }
+            mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
+            weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
+            sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
+
+
+            if (verticalElements != null && verticalElements.Count > 0)
+            {
+                verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
+                verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
+            }
+
+
+
+            // SCARF
+            if (scarf != null)
+                scarf.SetActive(charactersDatabase.charactersList[currentCharacterIndex].scarf);
+            else
+                Debug.Log("Couldn't find character scarf, ignoring");
+
+
+
+            // UI DISPLAY
+            if (illustrationsUIObjects.Count > 0)
+                illustrationsUIObjects[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacterIndex].illustration;
+            if (UICharacternames.Count > 0)
+                UICharacternames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+
+
+            // SCRIPT VALUES
+            playerScript.characterNameDisplay.text = charactersDatabase.charactersList[currentCharacterIndex].name;
+            playerScript.characterIndex = currentCharacterIndex;
+            playerScript.gameManager.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+
+
             currentWeaponIndex = data[2];
-            ApplyWeaponChange(0);
+            weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
         }
     }
     #endregion
