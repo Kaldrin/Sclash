@@ -519,6 +519,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         playerScript.characterNameDisplay.text = charactersDatabase.charactersList[currentCharacterIndex].name;
         playerScript.characterIndex = currentCharacterIndex;
         playerScript.gameManager.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+
+        SendCosmetics();
     }
 
 
@@ -665,8 +667,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             else
                 currentMaxVerticalIndex = verticalElements.Count - 1;
         }
-
-        SendCosmetics();
     }
 
 
