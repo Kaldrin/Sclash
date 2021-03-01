@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 // This script allows for activating a designated button depending on an axis input, independently of any menu browser
 // OPTIMIZED
 public class ActivateButtonOnInputDetect : MonoBehaviour
 {
     [SerializeField] string axisToCheck = "MenuSecondary";
+    [SerializeField] InputAction action;
     [SerializeField] Button buttonToActivate = null;
     [SerializeField] float valueToCheck = 0.5f;
     [SerializeField] bool superiorOrInferior = false;
@@ -18,21 +20,27 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
     private void Start()
     {
         controls = GameManager.Instance.Controls;
+
+        action.started += (ctx) =>
+        {
+            Debug.Log("Started");
+            buttonToActivate.onClick.Invoke();
+        };
     }
 
 
     // Update is called once per frame
     void Update()
-    {
-        if (enabled && isActiveAndEnabled && Mathf.Abs(controls.Menu.Menusecondary.ReadValue<float>()) > 0.1f)
+    {/*
+        if (enabled && isActiveAndEnabled && controls.Menu.Menusecondary.triggered)
         {
             if (superiorOrInferior)
             {
-                if (controls.Menu.Menusecondary.ReadValue<float>() < valueToCheck)
+                if (controls.Menu.Menusecondary.triggered)
                     hasBeenChecked = false;
 
 
-                if (controls.Menu.Menusecondary.ReadValue<float>() > valueToCheck && !hasBeenChecked)
+                if (controls.Menu.Menusecondary.triggered && !hasBeenChecked)
                 {
                     hasBeenChecked = true;
                     buttonToActivate.onClick.Invoke();
@@ -40,16 +48,16 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
             }
             else
             {
-                if (controls.Menu.Menusecondary.ReadValue<float>() > valueToCheck)
+                if (controls.Menu.Menusecondary.triggered)
                     hasBeenChecked = false;
 
 
-                if (controls.Menu.Menusecondary.ReadValue<float>() < valueToCheck && !hasBeenChecked)
+                if (controls.Menu.Menusecondary.triggered && !hasBeenChecked)
                 {
                     hasBeenChecked = true;
                     buttonToActivate.onClick.Invoke();
                 }
             }
-        }
+        }*/
     }
 }

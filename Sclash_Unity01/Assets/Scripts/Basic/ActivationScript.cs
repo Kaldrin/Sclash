@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
 // This script allows to access more activation functions for an object
-public class ActivationScript : MonoBehaviour {
+public class ActivationScript : MonoBehaviour
+{
 
 
     public void SetActive(bool state)
@@ -11,6 +12,7 @@ public class ActivationScript : MonoBehaviour {
 
     public void Switch()
     {
+        Debug.Log("Switch favorite");
         gameObject.SetActive(!isActiveAndEnabled);
     }
 }

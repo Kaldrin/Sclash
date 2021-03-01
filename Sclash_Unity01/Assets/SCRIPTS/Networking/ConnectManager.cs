@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.Events;
 
+using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -61,10 +62,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject playerDisconnectedMessage = null;
     [SerializeField] GameObject timeoutWindow = null;
 
-
-
-
-
+    #region Events
+    public delegate void Disconnected();
+    public static event Disconnected PlayerDisconnected;
+    public delegate void Connected();
+    public static event Connected PlayerConnected;
+    #endregion
 
     #region BASE FUNCTIONS
     void Awake()                                                                                // AWAKE
@@ -349,6 +352,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     #region Monobehaviour Callbacks
     public override void OnConnectedToMaster()
     {
+        PlayerConnected.Invoke();
+
         isConnecting = false;
         connectedToMaster = true;
         Debug.Log("PUN : OnConnectedToMaster() was called by PUN");
@@ -395,7 +400,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             {"rn", randRoomName },
             {"pc", "2" },
-            {"rc", "10"}
+            {"rc", "5"}
         };
 
 
@@ -441,7 +446,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.LogWarning(cause);
 
         SetMultiplayer(false);
-
+        PlayerDisconnected.Invoke();
 
         // MESSAGE
 
@@ -511,8 +516,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 ParticleSystem attackSignParticles = p2.attackRangeFX.GetComponent<ParticleSystem>();
                 ParticleSystem.MainModule attackSignParticlesMain = attackSignParticles.main;
                 attackSignParticlesMain.startColor = GameManager.Instance.attackSignColors[p2.playerNum];
-
-                p2.playerLight.color = GameManager.Instance.playerLightsColors[p2.playerNum];
             }
 
 

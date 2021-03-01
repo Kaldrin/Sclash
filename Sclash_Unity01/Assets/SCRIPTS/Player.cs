@@ -1686,7 +1686,6 @@ public class Player : MonoBehaviourPunCallbacks
     // Function to decrement to stamina
     public void StaminaCost(float cost, bool playFX)
     {
-        Debug.Log("Losing stamine");
         if (!cheatSettings.infiniteStamina)
         {
             stamina -= cost;

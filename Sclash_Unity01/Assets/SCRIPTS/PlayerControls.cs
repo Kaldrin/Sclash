@@ -1187,7 +1187,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad Scheme"",
                     ""action"": ""Menu secondary"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

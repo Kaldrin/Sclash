@@ -109,6 +109,9 @@ public class InputManager : MonoBehaviour
 
     private void OnEnable()
     {
+        ConnectManager.PlayerDisconnected += DisconnectedPlayer;
+        ConnectManager.PlayerConnected += OnConnectedPlayer;
+
         InputSystem.onDeviceChange += (device, change) =>
         {
             switch (change)
@@ -133,7 +136,24 @@ public class InputManager : MonoBehaviour
                     break;
             }
         };
+    }
 
+    private void OnDisable()
+    {
+        ConnectManager.PlayerDisconnected -= DisconnectedPlayer;
+        ConnectManager.PlayerConnected -= OnConnectedPlayer;
+    }
+
+    private void OnConnectedPlayer()
+    {
+        Destroy(inputs[1].gameObject);
+        inputs.RemoveAt(1);
+    }
+
+    private void DisconnectedPlayer()
+    {
+        Debug.Log("Player Disconnected, rebuilding input for P2");
+        inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
     }
 
     protected void Awake()
@@ -148,6 +168,7 @@ public class InputManager : MonoBehaviour
     public virtual void Update()
     {
         GamepadCount = Gamepad.all.Count;
+
 
         // Players inputs
         /*for (int i = 0; i < playerInputs.Length; i++)

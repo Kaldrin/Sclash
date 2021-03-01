@@ -362,23 +362,26 @@ public class MenuBrowser2D : MonoBehaviour
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         else
         {
-            // If index out of range
-            if (YIndex >= elements2D.Length)
-                YIndex = elements2D.Length - 1;
-            if (XIndex >= elements2D[YIndex].line.Length)
-                XIndex = elements2D[YIndex].line.Length - 1;
-
-
-            if (elements2D[YIndex].line[XIndex])
+            if (elements2D.Length > 0)
             {
-                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements2D[YIndex].line[XIndex]);
+                // If index out of range
+                if (YIndex >= elements2D.Length)
+                    YIndex = elements2D.Length - 1;
+                if (XIndex >= elements2D[YIndex].line.Length)
+                    XIndex = elements2D[YIndex].line.Length - 1;
 
 
-                if (elements2D[YIndex].line[XIndex].GetComponent<Button>())
-                    elements2D[YIndex].line[XIndex].GetComponent<Button>().Select();
-                else if (elements2D[YIndex].line[XIndex].GetComponent<TMP_InputField>())
-                    elements2D[YIndex].line[XIndex].GetComponent<TMP_InputField>().Select();
-                else if (elements2D[YIndex].line[XIndex].GetComponent<EventTrigger>()) { }
+                if (elements2D[YIndex].line[XIndex])
+                {
+                    GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements2D[YIndex].line[XIndex]);
+
+
+                    if (elements2D[YIndex].line[XIndex].GetComponent<Button>())
+                        elements2D[YIndex].line[XIndex].GetComponent<Button>().Select();
+                    else if (elements2D[YIndex].line[XIndex].GetComponent<TMP_InputField>())
+                        elements2D[YIndex].line[XIndex].GetComponent<TMP_InputField>().Select();
+                    else if (elements2D[YIndex].line[XIndex].GetComponent<EventTrigger>()) { }
+                }
             }
         }
 
