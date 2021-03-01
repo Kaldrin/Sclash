@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The score display text mesh pro component reference")]
     [SerializeField] public List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
     [SerializeField] List<Text> scoresDisplays = new List<Text>(2);
-    [SerializeField] TextMeshProUGUI maxScoreTextDisplay = null;
+    [SerializeField] public TextMeshProUGUI maxScoreTextDisplay = null;
     #endregion
 
     #region SCORE CALCULATION
@@ -1083,8 +1083,14 @@ public class GameManager : MonoBehaviourPun
     // Calls ResetGame coroutine, called by main menu button at the end of the match
     public void ResetGameAndRematch()
     {
-        ResetGameEvent();
-        StartCoroutine(ResetGameCoroutine(true));
+        // ONLINE
+        if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+            OnlineRestartCall();
+        else
+        {
+            ResetGameEvent();
+            StartCoroutine(ResetGameCoroutine(true));
+        }
     }
 
     // Resets the match settings and values for a next match
@@ -1203,6 +1209,14 @@ public class GameManager : MonoBehaviourPun
             // AUDIO
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
         }
+    }
+
+
+    // ONLINE
+    void OnlineRestartCall()
+    {
+        if (ConnectManager.Instance != null)
+            ConnectManager.Instance.RestartCall();
     }
     #endregion
 

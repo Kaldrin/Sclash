@@ -257,12 +257,15 @@ public class MenuManager : MonoBehaviour
 
 
     // SWITCH PAUSED
-    public void SwitchPause()
+    public void SwitchPause(bool actuallyDoSomething = true)
     {
-        if (gameManager.gameState == GameManager.GAMESTATE.paused)
-            TriggerPause(false);
-        else
-            TriggerPause(true);
+        if (actuallyDoSomething)
+        {
+            if (gameManager.gameState == GameManager.GAMESTATE.paused)
+                TriggerPause(false);
+            else
+                TriggerPause(true);
+        }
     }
     // PAUSE OFF
     public void PauseOff()

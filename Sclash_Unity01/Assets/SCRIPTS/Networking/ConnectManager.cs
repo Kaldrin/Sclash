@@ -23,6 +23,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public GameObject localPlayer;
     public int localPlayerNum;
     GameObject[] spawners;
+    bool twoPlayersInRoom = false;
 
     [SerializeField]
     private Animator RightPanel;
@@ -38,6 +39,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     string[] newRoomParameters = { "rn", "pc", "rc" };
     ExitGames.Client.Photon.Hashtable customRoomProperties;
     readonly string DefaultRoomName = "ROOM NAME";
+
+
+
+    bool localWantToRestart = false;
+    bool remoteWantsToRestart = false;
 
 
 
@@ -68,6 +74,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject playerDisconnectedMessage = null;
     [SerializeField] GameObject timeoutWindow = null;
     [SerializeField] GameObject serverErrorMessage = null;
+    [SerializeField] GameObject restartSentMessage = null;
+    [SerializeField] GameObject restartReceivedMessage = null;
+    [SerializeField] GameObject cantRestartMessage = null;
+    [SerializeField] GameObject restartAcceptedMessage = null;
 
 
 
@@ -83,13 +93,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         PhotonNetwork.NetworkingClient.EnableLobbyStatistics = true;
 
 
-        // MESSAGES
-        if (waitingForPlayerMessage != null)
-            waitingForPlayerMessage.SetActive(false);
-        if (playerDisconnectedMessage != null)
-            playerDisconnectedMessage.SetActive(false);
-        if (timeoutWindow != null)
-            timeoutWindow.SetActive(false);
+        // SET UP MESSAGES
+        SetUpMessages();
     }
 
     void Start()                                                                                // START
@@ -109,6 +114,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 Connect();
     }
     #endregion
+
+
+
+
+
 
 
 
@@ -172,6 +182,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
+
+
+
+
     #region Init room
     /// <summary>
     /// Initialise tous les paramètres pour se connecter au mode en ligne.
@@ -191,6 +205,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         //  JOIN OR CREATE ROOM  //
         if (isJoining)
             JoinRoom();
+
+
+
+        twoPlayersInRoom = false;
     }
 
 
@@ -364,6 +382,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
+
+
+
     #region Monobehaviour Callbacks
     public override void OnConnectedToMaster()
     {
@@ -371,6 +392,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         connectedToMaster = true;
         Debug.Log("PUN : OnConnectedToMaster() was called by PUN");
         PhotonNetwork.JoinLobby();
+
+
+
+        twoPlayersInRoom = false;
 
 
         // CONNEXION WINDOW
@@ -410,9 +435,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         {
             {"rn", randRoomName },
             {"pc", "2" },
-            {"rc", "10"}
+            {"rc", "5"}
         };
-
 
         options.CustomRoomProperties = customRoomProperties;
 
@@ -435,6 +459,11 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.Log("Leave Lobby called");
         PhotonNetwork.Disconnect();
 
+
+        twoPlayersInRoom = false;
+
+
+
         // CONNEXION WINDOW
         ConnexionWaitDisplay(false);
     }
@@ -446,10 +475,18 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.LogWarning(cause);
 
         SetMultiplayer(false);
+        twoPlayersInRoom = false;
+
+
+        // CHARACTER CHANGERS
+        if (characterChangeDisplays != null && characterChangeDisplays.Count > 0)
+            for (int i = 0; i < characterChangeDisplays.Count; i++)
+                if (characterChangeDisplays[i] != null && !characterChangeDisplays[i].activeInHierarchy)
+                    characterChangeDisplays[i].SetActive(true);
+
 
 
         // MESSAGE
-        
         if (waitingForPlayerMessage != null)
             waitingForPlayerMessage.SetActive(false);
         if (playerDisconnectedMessage != null)
@@ -762,14 +799,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     void SyncRoundCount(int targetScoreWin)
     {
         GameManager.Instance.scoreToWin = targetScoreWin;
+        GameManager.Instance.maxScoreTextDisplay.text = targetScoreWin.ToString();
     }
+    #endregion
 
 
 
 
 
 
-    // MENU
+    // MENUS
     void ConnexionWaitDisplay(bool state = false)
     {
         if (connectionWindow != null)
@@ -797,5 +836,92 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         else
             Debug.Log("Can't find timeout window, ignoring");
     }
-    #endregion
+
+    void SetUpMessages()
+    {
+        if (waitingForPlayerMessage != null)
+            waitingForPlayerMessage.SetActive(false);
+        if (playerDisconnectedMessage != null)
+            playerDisconnectedMessage.SetActive(false);
+        if (timeoutWindow != null)
+            timeoutWindow.SetActive(false);
+        if (restartSentMessage != null)
+            restartSentMessage.SetActive(false);
+        if (restartReceivedMessage != null)
+            restartReceivedMessage.SetActive(false);
+        if (cantRestartMessage != null)
+            cantRestartMessage.SetActive(false);
+        if (restartAcceptedMessage != null)
+            restartAcceptedMessage.SetActive(false);
+    }
+
+
+
+
+
+
+
+
+    // RESTART
+    public void RestartCall()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.playersList.Count < 2)
+        {
+            // MESSAGE
+            if (cantRestartMessage != null)
+                cantRestartMessage.SetActive(true);
+        }
+        else
+        {
+            if (!localWantToRestart)
+                localWantToRestart = true;
+
+
+            if (remoteWantsToRestart)
+            {
+                //RestartOnlineDuel();
+            }
+            else
+            {
+                // MESSAGE
+                if (restartSentMessage != null)
+                    restartSentMessage.SetActive(true);
+
+                // SEND RESTART REQUEST HERE
+                // RestartRequestReceived();
+            }
+        }
+    }
+
+    public void RestartRequestReceived()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.playersList.Count < 2)
+        {
+            if (!remoteWantsToRestart)
+                remoteWantsToRestart = true;
+
+            if (localWantToRestart)
+            {
+                RestartOnlineDuel();
+                // SEND RESTART HERE
+                // RestartOnlineDuel();
+            }
+            else
+            {
+                // MESSAGE
+                if (restartReceivedMessage != null)
+                    restartReceivedMessage.SetActive(true);
+            }
+        }
+    }
+
+    void RestartOnlineDuel()
+    {
+        // Initiator starts restart process
+        // Receives the remote confirmation
+        // Restarts locally and  calls the remote restart
+
+        if (restartAcceptedMessage != null)
+            restartAcceptedMessage.SetActive(true);
+    }
 }
