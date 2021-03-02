@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -343,10 +342,20 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // AUDIO
-        if (wooshAudioSource)
-            wooshAudioSource.Play();
+        // ONLINE
+        if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+        {
+            if (GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                if (wooshAudioSource)
+                    wooshAudioSource.Play();
+        }
         else
-            Debug.Log("Warning, character change woosh audio source not found, can't play the sound, continuing anyway");
+        {
+            if (wooshAudioSource)
+                wooshAudioSource.Play();
+            else
+                Debug.Log("Warning, character change woosh audio source not found, can't play the sound, continuing anyway");
+        }
 
 
         // Change direction

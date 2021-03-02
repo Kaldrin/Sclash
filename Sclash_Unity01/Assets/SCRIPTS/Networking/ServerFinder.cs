@@ -26,12 +26,12 @@ public class ServerFinder : MonoBehaviourPunCallbacks, IConnectionCallbacks
         ServerListManager.Instance.DisplayServerList();
     }
 
-    new void OnDisable()
+
+    new void OnDisable()                                                            // On disable
     {
         if (PhotonNetwork.InRoom)
             return;
 
         ConnectManager.Instance.LeaveLobby();
     }
-
 }

@@ -2,36 +2,116 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LastAndDestroy : MonoBehaviour {
 
 
-    //Wait amount
-    public float
-       lastDuration;
-    float
-        spawnTimecode;
+// Allow to give  gameobject a max life duration
+// OPTIMIZED
+public class LastAndDestroy : MonoBehaviour
+{
+    [Header("ANIMATION")]
+    [SerializeField] Animation animationComponent = null;
+    [SerializeField] string animationName = "animationName";
+    [SerializeField] float animationStartTime = 2f;
+    bool animationTriggered = false;
 
 
-    //Parameters
-    public bool
-        onDestroySpawnObject;
+    [Header("DESTROY / DEACTIVATE")]
+    [SerializeField] bool deactivateInsteadOfDestroy = false;
+    [SerializeField] public float lastDuration;
+    [SerializeField] bool activate = true;
+    float spawnTimecode;
 
     //Game object to spawn
-    public GameObject 
-        gameObjectToSpawn;
+    [SerializeField] public List<GameObject> gameObjectsToSpawnOnDestroy = new List<GameObject>();
 
-	// Use this for initialization
-	void Start () {
+
+
+
+
+
+
+
+
+
+    #region FUNCTIONS
+    void Start()                                               // START
+    {
         spawnTimecode = Time.time;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (Time.time >= spawnTimecode + lastDuration)
+        GetComponents();
+    }
+
+    void Update()                                                      // UPDATE
+    {
+        if (enabled && isActiveAndEnabled)
         {
-            if (onDestroySpawnObject)
-                Instantiate(gameObjectToSpawn, gameObject.transform.position, gameObject.transform.rotation);
-            Destroy(gameObject);
+            if (activate && Time.time >= spawnTimecode + lastDuration)
+                End();
+
+            if (activate && !animationTriggered && Time.time >= spawnTimecode + animationStartTime)
+                TriggerAnimation();
         }
-	}
+    }
+
+    private void OnEnable()
+    {
+        spawnTimecode = Time.time;
+        animationTriggered = false;
+    }
+
+
+
+
+    // ANIMATION
+    void TriggerAnimation()
+    {
+        animationTriggered = true;
+
+        if (animationComponent != null && animationName != null && animationName != "")
+            animationComponent.Play(animationName, PlayMode.StopAll);
+    }
+
+
+    // END
+    void End()
+    {
+        // SPAWN
+        if (gameObjectsToSpawnOnDestroy != null && gameObjectsToSpawnOnDestroy.Count > 0)
+            for (int i = 0; i < gameObjectsToSpawnOnDestroy.Count; i++)
+                if (gameObjectsToSpawnOnDestroy[i] != null)
+                    Instantiate(gameObjectsToSpawnOnDestroy[i], gameObject.transform.position, gameObject.transform.rotation);
+
+
+        // END
+        if (deactivateInsteadOfDestroy)
+            gameObject.SetActive(false);
+        else
+            Destroy(gameObject);  
+    }
+
+
+
+
+
+
+
+
+    // GET COMPONENTS
+    void GetComponents()
+    {
+        if (animationComponent == null)
+            if (GetComponent<Animation>())
+                animationComponent = GetComponent<Animation>();
+    }
+
+
+
+
+
+
+    // EDITOR ONLY
+    private void OnDrawGizmosSelected()
+    {
+        GetComponents();
+    }
+    #endregion
 }

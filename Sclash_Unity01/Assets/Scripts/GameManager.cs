@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("The score display text mesh pro component reference")]
     [SerializeField] public List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
     [SerializeField] List<Text> scoresDisplays = new List<Text>(2);
-    [SerializeField] TextMeshProUGUI maxScoreTextDisplay = null;
+    [SerializeField] public TextMeshProUGUI maxScoreTextDisplay = null;
     #endregion
 
     #region SCORE CALCULATION
@@ -465,10 +465,10 @@ public class GameManager : MonoBehaviourPun
 
         switch (gameState)
         {
-            case GAMESTATE.menu:                                        // MENU
+            case GAMESTATE.menu:                                                                      // MENU
                 break;
 
-            case GAMESTATE.loading:                                                 // LOADING
+            case GAMESTATE.loading:                                                                                // LOADING
                 playerDead = false;
                 menuManager.TriggerPause(false);
                 menuManager.winScreen.SetActive(false);
@@ -478,20 +478,26 @@ public class GameManager : MonoBehaviourPun
                 Cursor.visible = false;
                 break;
 
-            case GAMESTATE.intro:                                           // INTRO
+            case GAMESTATE.intro:                                                                                        // INTRO
                 break;
 
-            case GAMESTATE.game:                                                    // GAME
+            case GAMESTATE.game:                                                                                // GAME
                 if (oldState == GAMESTATE.paused)
                 {
                     for (int i = 0; i < playersList.Count; i++)
                     {
                         if (playersList[i] != null)
                         {
+                            // ONLINE
                             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                             {
                                 if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
-                                    playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                                {
+                                    if (playersList[i].GetComponent<Player>().oldState != Player.STATE.clashed)
+                                        playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                                    else
+                                        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.normal);
+                                }
                             }
                             else
                                 playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
@@ -507,30 +513,26 @@ public class GameManager : MonoBehaviourPun
                 Cursor.visible = false;
                 break;
 
-            case GAMESTATE.paused:                                                      // PAUSED
+            case GAMESTATE.paused:                                                                                     // PAUSED
                 if (playersList != null && playersList.Count > 0)
                     for (int i = 0; i < playersList.Count; i++)
                         if (playersList[i] != null)
                         {
+                            // ONLINE
                             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                             {
                                 if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
-                                {
                                     playersList[i].GetComponent<Player>().SwitchState(Player.STATE.onlinefrozen);
-                                    Debug.Log("Online freeze");
-                                    Debug.Log(ConnectManager.Instance.localPlayerNum);
-                                }
                             }
                             else
                             {
                                 playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
                                 playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-                                Debug.Log("normal");
-                            }
+                            }    
                         }
                 break;
 
-            case GAMESTATE.finished:                                                // FINISHED
+            case GAMESTATE.finished:                                                                                          // FINISHED
                 menuManager.winMessage.SetActive(true);
                 if (oldState == GAMESTATE.paused)
                     menuManager.SwitchPause();
@@ -958,7 +960,22 @@ public class GameManager : MonoBehaviourPun
 
         playerDead = true;
         UpdatePlayersScoreValues();
+
+
+        // ONLINE
+        if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+        {
+            if (gameState == GAMESTATE.paused)
+                MenuManager.Instance.TriggerPause(false);
+        }
+
+
+
         SwitchState(GAMESTATE.roundFinished);
+
+
+        
+        
 
 
         if (CheckIfThePlayerWon())
@@ -1089,8 +1106,14 @@ public class GameManager : MonoBehaviourPun
     // Calls ResetGame coroutine, called by main menu button at the end of the match
     public void ResetGameAndRematch()
     {
-        ResetGameEvent();
-        StartCoroutine(ResetGameCoroutine(true));
+        // ONLINE
+        if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+            OnlineRestartCall();
+        else
+        {
+            ResetGameEvent();
+            StartCoroutine(ResetGameCoroutine(true));
+        }
     }
 
     // Resets the match settings and values for a next match
@@ -1211,6 +1234,14 @@ public class GameManager : MonoBehaviourPun
             // AUDIO
             audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
         }
+    }
+
+
+    // ONLINE
+    void OnlineRestartCall()
+    {
+        if (ConnectManager.Instance != null)
+            ConnectManager.Instance.RestartCall();
     }
     #endregion
 

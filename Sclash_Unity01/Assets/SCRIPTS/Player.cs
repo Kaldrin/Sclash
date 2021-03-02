@@ -1006,7 +1006,7 @@ public class Player : MonoBehaviourPunCallbacks
 
         switch (newState)
         {
-            case STATE.onlinefrozen:
+            case STATE.onlinefrozen:                                                                    // ONLINE FROZEN
                 SetStaminaBarsOpacity(0);
 
                 // ONLINE
@@ -1025,7 +1025,7 @@ public class Player : MonoBehaviourPunCallbacks
                 }
                 break;
 
-            case STATE.frozen:                                    // FROZEN
+            case STATE.frozen:                                                                            // FROZEN
                 SetStaminaBarsOpacity(0);
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
@@ -1038,26 +1038,42 @@ public class Player : MonoBehaviourPunCallbacks
                 }
                 break;
 
-            case STATE.sneathing:                                       // SNEATHING
+            case STATE.sneathing:                                                                                 // SNEATHING
                 rb.velocity = Vector3.zero;
                 playerAnimations.TriggerSneath();
                 break;
 
-            case STATE.sneathed:                                        // SNEATHED
+            case STATE.sneathed:                                                                                  // SNEATHED
                 staminaBarsOpacity = 0;
                 actualMovementsSpeed = sneathedMovementsSpeed;
                 rb.simulated = true;
 
                 if (characterType == CharacterType.duel)
-                    characterChanger.enabled = true;
+                {
+                    // ONLINE
+                    if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+                    {
+                        if (GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                            characterChanger.enabled = true;
+                    }
+                    else
+                        characterChanger.enabled = true;
+                }
                 break;
 
-            case STATE.drawing:                                         // DRAWING
+            case STATE.drawing:                                                                                          // DRAWING
                 rb.velocity = Vector3.zero;
-                if (characterChanger != null)
+                // ONLINE
+                if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                 {
+                    if (GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                        characterChanger.EnableVisuals(false);
                     characterChanger.enabled = false;
+                }
+                else
+                {
                     characterChanger.EnableVisuals(false);
+                    characterChanger.enabled = false;
                 }
 
                 if (playerNum == 0)
@@ -1066,16 +1082,16 @@ public class Player : MonoBehaviourPunCallbacks
                             GameManager.Instance.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
 
-            case STATE.battleDrawing:                                             // BATTLE DRAWING
+            case STATE.battleDrawing:                                                                                          // BATTLE DRAWING
                 break;
 
-            case STATE.battleSneathing:                                             // BATTLE SNEATHING
+            case STATE.battleSneathing:                                                                                  // BATTLE SNEATHING
                 break;
 
-            case STATE.battleSneathedNormal:                                        // BATTLE SNEATHED NORMAL
+            case STATE.battleSneathedNormal:                                                                              // BATTLE SNEATHED NORMAL
                 break;
 
-            case STATE.normal:                                                      // NORMAL
+            case STATE.normal:                                                                                         // NORMAL
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
@@ -2089,18 +2105,30 @@ public class Player : MonoBehaviourPunCallbacks
     void ManageBattleSneath()
     {
         if (canBattleSneath)
-            if (InputManager.Instance.playerInputs.Length > playerNum && InputManager.Instance.playerInputs[playerNum].battleSneathDraw)
+        {
+            Debug.Log(InputManager.Instance.playerInputs[0].battleSneathDraw);
+
+            // ONLINE
+            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+            {
+                if (InputManager.Instance.playerInputs != null && InputManager.Instance.playerInputs.Length > 0 && InputManager.Instance.playerInputs[0].battleSneathDraw)
+                    TriggerBattleSneath();
+            }
+            else if (InputManager.Instance.playerInputs.Length > playerNum && InputManager.Instance.playerInputs[playerNum].battleSneathDraw)
                 TriggerBattleSneath();
+        }
     }
 
     void ManageBattleDraw()
     {
-        if (inputManager.playerInputs[playerNum].battleSneathDraw)
+        if (InputManager.Instance.playerInputs[playerNum].battleSneathDraw)
             TriggerBattleDraw();
     }
 
     void TriggerBattleSneath()
     {
+        Debug.Log("Battle sneath");
+
         // If players haven't all drawn, go back to chara selec state
         if (!GameManager.Instance.allPlayersHaveDrawn)
             // STATE
@@ -2179,6 +2207,7 @@ public class Player : MonoBehaviourPunCallbacks
     // Manages the detection of attack charge inputs
     public virtual void ManageChargeInput()
     {
+        // ONLINE
         if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
         {
             // Player presses attack button
@@ -3203,7 +3232,18 @@ public class Player : MonoBehaviourPunCallbacks
     {
         // CHANGE STATE
         if (playerState != STATE.attacking && playerState != STATE.recovering && playerState != STATE.onlinefrozen)
-            SwitchState(STATE.normal);
+        {
+            // ONLINE
+            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+            {
+                if (playerState == STATE.clashed && oldState == STATE.onlinefrozen)
+                    SwitchState(STATE.onlinefrozen);
+                else
+                    SwitchState(STATE.normal);
+            }
+            else
+                SwitchState(STATE.normal);
+        }
 
 
         isDashing = false;

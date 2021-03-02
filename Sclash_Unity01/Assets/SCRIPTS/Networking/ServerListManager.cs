@@ -24,8 +24,11 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     [Header("BROWSER ELEMENTS")]
     [SerializeField] MenuBrowser serversListMenuBrowser = null;
     [SerializeField] MenuBrowser multiplayerButtonsBrowser = null;
+    /// <summary>
+    /// The reference to the input field the player can fill to search servers
+    /// </summary>
     [SerializeField] TMP_InputField serverParameters = null;
-    [SerializeField] TextMeshProUGUI placeholderText = null;
+    [SerializeField] GameObject placeholderText = null;
 
 
 
@@ -48,8 +51,15 @@ public class ServerListManager : MonoBehaviourPunCallbacks
 
 
 
+    [Header("MENU")]
+    [SerializeField] TextMeshProUGUI joinRoomText = null;
+    [SerializeField] string matchmakingButtonName = "Matchmaking";
+    [SerializeField] string joinServerButtonName = "Join room";
 
-    [Header("DISPLAY ERROR PLACEHOLDERS")]
+
+
+
+    [Header("SERVER DISPLAY ERROR PLACEHOLDERS")]
     [SerializeField] public string namePlaceholder = "Error displaying info";
     [SerializeField] public string currentPlayersPlaceholder = "?";
     [SerializeField] public string maxPlayersPlaceholder = "?";
@@ -96,15 +106,19 @@ public class ServerListManager : MonoBehaviourPunCallbacks
             }
 
 
+
             if (roomInfosList.Count == 0)
             {
                 if (placeholderText != null)
-                    placeholderText.enabled = true;
+                {
+                    if (!placeholderText.activeInHierarchy)
+                        placeholderText.SetActive(true);
+                }
                 else
                     Debug.Log("Placeholder text not found, ignoring");
             }
-            else
-                placeholderText.enabled = false;
+            else if (placeholderText.activeInHierarchy)
+                placeholderText.SetActive(false);
         }
     }
 
@@ -113,6 +127,9 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     {
         DisplayServerList();
         FillPlaceholderInfos();
+
+        // Set up join button
+        DisplayJoinRoomButton(false);
     }
 
 
@@ -166,6 +183,10 @@ public class ServerListManager : MonoBehaviourPunCallbacks
         // Clear list of elements
         serverItemsList.Clear();
     }
+
+
+
+
 
 
     // DISPLAY
@@ -281,6 +302,20 @@ public class ServerListManager : MonoBehaviourPunCallbacks
 
         // Add element to list of items
         serverItemsList.Add(serverItemScript);
+    }
+
+
+    public void DisplayJoinRoomButton(bool on = false)
+    {
+        if (joinRoomText != null)
+        {
+            if (!on)
+                joinRoomText.text = matchmakingButtonName;
+            else
+                joinRoomText.text = joinServerButtonName;
+        }
+        else
+            Debug.Log("Can't find join room button, ignoring");
     }
     #endregion
 }
