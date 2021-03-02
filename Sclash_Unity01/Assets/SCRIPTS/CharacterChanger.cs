@@ -95,7 +95,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
     new void OnEnable()                                                                             // ONE ENABLE
     {
-        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
         ConnectManager.PlayerJoined += FetchChanger;
 
         //IAChanger iachanger = GetComponent<IAChanger>();
@@ -175,7 +174,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
     new private void OnDisable()
     {
-        PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
         ConnectManager.PlayerJoined -= FetchChanger;
 
         /*
@@ -743,26 +741,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             ReceiveCosmetics(data[0], data[1], data[2]);
         }
     }
-
-    /*private void OnEvent(EventData photonEvent)
-    {
-        byte eventCode = photonEvent.Code;
-        if (eventCode == ApplyCosmeticChanges)
-        {
-            int[] data = (int[])photonEvent.CustomData;
-            Debug.LogFormat("Received {0} {1} {2}", data[0], data[1], data[2]);
-
-            if (o_CharacterChanger != null)
-            {
-                o_CharacterChanger.ReceiveCosmetics(data[0], data[1], data[2]);
-            }
-            else
-            {
-                bufferedValues = data;
-                FetchChanger();
-            }
-        }
-    }*/
 
     public void ReceiveCosmetics(int m, int c, int w)
     {
