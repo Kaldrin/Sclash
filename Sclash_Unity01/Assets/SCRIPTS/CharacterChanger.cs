@@ -78,8 +78,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     #endregion
 
     CharacterChanger o_CharacterChanger = null;
+    int[] bufferedValues;
     public const byte ApplyCosmeticChanges = 1;
-
 
 
 
@@ -719,11 +719,18 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             {
                 o_CharacterChanger = c;
                 Debug.Log("Character changer found!");
+                if (bufferedValues.Length > 1)
+                {
+                    o_CharacterChanger.ReceiveCosmetics(bufferedValues[0], bufferedValues[1], bufferedValues[2]);
+                }
                 break;
             }
         }
         if (o_CharacterChanger == null)
-            Debug.LogWarning("Character changer not found");
+        {
+            Invoke("FetchChanger", 0.5f);
+            Debug.LogWarning("Character changer not found, still researching");
+        }
     }
 
     private void OnEvent(EventData photonEvent)
@@ -740,7 +747,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             }
             else
             {
-                Debug.LogWarning("Adversary character changer not found");
+                bufferedValues = data;
+                FetchChanger();
             }
         }
     }
