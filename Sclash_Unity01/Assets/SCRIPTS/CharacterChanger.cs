@@ -732,7 +732,12 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             int[] data = (int[])photonEvent.CustomData;
             Debug.LogFormat("Received {0} {1} {2}", data[0], data[1], data[2]);
 
-            o_CharacterChanger.ReceiveCosmetics(data[0], data[1], data[2]);
+            if (o_CharacterChanger != null)
+                o_CharacterChanger.ReceiveCosmetics(data[0], data[1], data[2]);
+            else
+            {
+                Debug.LogWarning("Adversary character changer not found");
+            }
         }
     }
 

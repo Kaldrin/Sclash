@@ -531,6 +531,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnJoinedRoom()
     {
+        PlayerJoined.Invoke();
         StartCoroutine(JoinRoomCoroutine());
     }
 
