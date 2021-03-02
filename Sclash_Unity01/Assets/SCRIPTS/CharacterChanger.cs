@@ -89,9 +89,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     #region FUNCTIONS
-    void Awake()                                                                                // AWAKE
+    void Start()
     {
-        // GameManager.Instance.ResetGameEvent +=
     }
 
     new void OnEnable()                                                                             // ONE ENABLE
@@ -719,9 +718,12 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             if (c != this)
             {
                 o_CharacterChanger = c;
+                Debug.Log("Character changer found!");
                 break;
             }
         }
+        if (o_CharacterChanger == null)
+            Debug.LogWarning("Character changer not found");
     }
 
     private void OnEvent(EventData photonEvent)
@@ -733,7 +735,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             Debug.LogFormat("Received {0} {1} {2}", data[0], data[1], data[2]);
 
             if (o_CharacterChanger != null)
+            {
                 o_CharacterChanger.ReceiveCosmetics(data[0], data[1], data[2]);
+            }
             else
             {
                 Debug.LogWarning("Adversary character changer not found");

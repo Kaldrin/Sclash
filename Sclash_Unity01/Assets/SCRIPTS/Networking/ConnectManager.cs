@@ -531,7 +531,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnJoinedRoom()
     {
-        PlayerJoined.Invoke();
         StartCoroutine(JoinRoomCoroutine());
     }
 
@@ -614,6 +613,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
                 CameraManager.Instance.FindPlayers();
             }
+
+            PlayerJoined.Invoke();
         }
     }
 
@@ -641,7 +642,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player other)
     {
-        PlayerJoined.Invoke();
         if (PhotonNetwork.IsMasterClient)
         {
             if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
@@ -684,6 +684,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 p.GetComponent<PhotonView>().RPC("ResetPos", RpcTarget.AllViaServer);
             }
         }
+        PlayerJoined.Invoke();
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
