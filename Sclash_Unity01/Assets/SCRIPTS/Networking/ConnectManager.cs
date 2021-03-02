@@ -85,6 +85,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public static event Disconnected PlayerDisconnected;
     public delegate void Connected();
     public static event Connected PlayerConnected;
+    public delegate void Joined();
+    public static event Joined PlayerJoined;
+
     #endregion
 
     #region BASE FUNCTIONS
@@ -387,6 +390,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
     #region Monobehaviour Callbacks
+
     public override void OnConnectedToMaster()
     {
         PlayerConnected.Invoke();
@@ -636,6 +640,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player other)
     {
+        PlayerJoined.Invoke();
         if (PhotonNetwork.IsMasterClient)
         {
             if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
