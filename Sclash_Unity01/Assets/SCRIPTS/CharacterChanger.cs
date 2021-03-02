@@ -705,7 +705,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { CachingOption = EventCaching.AddToRoomCache, Receivers = ReceiverGroup.Others };
 
-        PhotonNetwork.RaiseEvent(ApplyCosmeticChanges, content, raiseEventOptions, SendOptions.SendReliable);
+        //PhotonNetwork.RaiseEvent(ApplyCosmeticChanges, content, raiseEventOptions, SendOptions.SendUnreliable);
+        photonView.RPC("ApplyCosmetics", RpcTarget.OthersBuffered, content);
         Debug.LogFormat("Sent {0} {1} {2}", content[0], content[1], content[2]);
     }
 
@@ -733,7 +734,17 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         }
     }
 
-    private void OnEvent(EventData photonEvent)
+    [PunRPC]
+    private void ApplyCosmetics(int[] data)
+    {
+        if (!photonView.IsMine)
+        {
+            Debug.LogFormat("Received {0} {1} {2}", data[0], data[1], data[2]);
+            ReceiveCosmetics(data[0], data[1], data[2]);
+        }
+    }
+
+    /*private void OnEvent(EventData photonEvent)
     {
         byte eventCode = photonEvent.Code;
         if (eventCode == ApplyCosmeticChanges)
@@ -751,7 +762,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
                 FetchChanger();
             }
         }
-    }
+    }*/
 
     public void ReceiveCosmetics(int m, int c, int w)
     {
