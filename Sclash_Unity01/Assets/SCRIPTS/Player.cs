@@ -345,7 +345,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     [Header("PARRY")]
-    [HideInInspector] public bool canParry = true;
+    public bool canParry = true;
     protected int currentParryFramesPressed = 0;
 
 

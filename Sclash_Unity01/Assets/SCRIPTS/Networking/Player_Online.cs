@@ -12,6 +12,8 @@ public class Player_Online : Player, IPunObservable
 {
     private bool releasedAttack = false;
 
+
+
     public override void Update()
     {
         if (!photonView.IsMine)
@@ -225,9 +227,10 @@ public class Player_Online : Player, IPunObservable
 
                 currentParryFramesPressed = 0;
 
-                if (!InputManager.Instance.playerInputs[0].parry)
-                    canParry = true;
             }
+
+            if (!InputManager.Instance.playerInputs[0].parry)
+                canParry = true;
         }
     }
 

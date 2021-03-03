@@ -528,7 +528,7 @@ public class GameManager : MonoBehaviourPun
                             {
                                 playersList[i].GetComponent<PlayerAnimations>().animator.speed = 0;
                                 playersList[i].GetComponent<Player>().SwitchState(Player.STATE.frozen);
-                            }    
+                            }
                         }
                 break;
 
@@ -974,8 +974,8 @@ public class GameManager : MonoBehaviourPun
         SwitchState(GAMESTATE.roundFinished);
 
 
-        
-        
+
+
 
 
         if (CheckIfThePlayerWon())

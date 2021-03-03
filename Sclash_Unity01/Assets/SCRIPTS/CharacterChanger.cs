@@ -699,11 +699,13 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     #region Photon
     private void SendCosmetics()
     {
+        if (!ConnectManager.Instance.connectedToMaster)
+            return;
+
         int[] content = new int[] { currentMaskIndex, currentCharacterIndex, currentWeaponIndex };
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { CachingOption = EventCaching.AddToRoomCache, Receivers = ReceiverGroup.Others };
 
-        //PhotonNetwork.RaiseEvent(ApplyCosmeticChanges, content, raiseEventOptions, SendOptions.SendUnreliable);
         photonView.RPC("ApplyCosmetics", RpcTarget.OthersBuffered, content);
         Debug.LogFormat("Sent {0} {1} {2}", content[0], content[1], content[2]);
     }
