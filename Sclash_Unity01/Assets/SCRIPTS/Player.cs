@@ -2106,8 +2106,6 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (canBattleSneath)
         {
-            Debug.Log(InputManager.Instance.playerInputs[0].battleSneathDraw);
-
             // ONLINE
             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
             {
