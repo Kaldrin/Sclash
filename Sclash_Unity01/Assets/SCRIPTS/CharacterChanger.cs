@@ -707,7 +707,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { CachingOption = EventCaching.AddToRoomCache, Receivers = ReceiverGroup.Others };
 
         photonView.RPC("ApplyCosmetics", RpcTarget.OthersBuffered, content);
-        Debug.LogFormat("Sent {0} {1} {2}", content[0], content[1], content[2]);
+        // Debug.LogFormat("Sent {0} {1} {2}", content[0], content[1], content[2]);
     }
 
     private void FetchChanger()
