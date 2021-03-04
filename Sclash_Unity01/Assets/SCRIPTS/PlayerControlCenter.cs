@@ -11,20 +11,32 @@ public class PlayerControlCenter : MonoBehaviour
     float m_DashOrientation = 0f;
 
     PlayerControls controls;
+    EventSystemControl UIcontrols;
 
     Player attachedPlayer;
+
+    private void Awake()
+    {
+        UIcontrols = new EventSystemControl();
+        UIcontrols.UI.Enable();
+    }
 
     private void Start()
     {
         m_playerInput = GetComponent<PlayerInput>();
         m_playerIndex = m_playerInput.playerIndex;
         attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
+
+        UIcontrols.UI.Submit.started += (ctx) => OnSubmit(ctx);
+        UIcontrols.UI.Submit.canceled += (ctx) => OnSubmit(ctx);
     }
 
     private void Update()
     {
         InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
     }
+
+
 
     public void OnHorizontal(InputAction.CallbackContext ctx)
     {
@@ -157,6 +169,7 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnSubmit(InputAction.CallbackContext ctx)
     {
+        Debug.Log("Submit");
         if (ctx.started)
         {
             InputManager.Instance.submitInput = true;
