@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviourPun
 
     [Tooltip("The score display text mesh pro component reference")]
     [SerializeField] public List<TextMeshProUGUI> scoresNames = new List<TextMeshProUGUI>(2);
-    [SerializeField] List<Text> scoresDisplays = new List<Text>(2);
+    [SerializeField] public List<Text> scoresDisplays = new List<Text>(2);
     [SerializeField] public TextMeshProUGUI maxScoreTextDisplay = null;
     #endregion
 
@@ -1088,6 +1088,11 @@ public class GameManager : MonoBehaviourPun
             OnlineRestartCall();
         else
         {
+            // Disable win screen
+            if (MenuManager.Instance != null && MenuManager.Instance.winScreen.activeInHierarchy)
+                MenuManager.Instance.winScreen.SetActive(false);
+
+
             ResetGameEvent();
             StartCoroutine(ResetGameCoroutine(true));
         }
@@ -1607,7 +1612,7 @@ public class GameManager : MonoBehaviourPun
 
     # region SECONDARY FUNCTIONS
     // STAGE INDEX
-    int CalculateNextStageIndex()
+    public int CalculateNextStageIndex()
     {
         int nextStageIndex = mapLoader.currentMapIndex;
         int loopCount = 0;

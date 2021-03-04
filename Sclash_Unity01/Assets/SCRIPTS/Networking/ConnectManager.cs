@@ -8,6 +8,10 @@ using Photon.Realtime;
 
 using Steamworks;
 
+
+
+// Script that handles main network stuff
+[DisallowMultipleComponent]
 [RequireComponent(typeof(PhotonView))]
 public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 {
@@ -25,15 +29,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     GameObject[] spawners;
     bool twoPlayersInRoom = false;
 
-    [SerializeField]
-    private Animator RightPanel;
-    [SerializeField]
-    private Animator LeftPanel;
-    [SerializeField]
-    private GameObject multiplayerMenu;
+    [SerializeField] private Animator RightPanel;
+    [SerializeField] private Animator LeftPanel;
+    [SerializeField] private GameObject multiplayerMenu;
 
     [SerializeField] GameObject[] spawnlist;
     [SerializeField] TMP_InputField[] parametersInputs = null;
+    int localPlayerSide = 1;
 
 
     string[] newRoomParameters = { "rn", "pc", "rc" };
@@ -41,7 +43,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     readonly string DefaultRoomName = "ROOM NAME";
 
 
-
+    // RESTART
     bool localWantToRestart = false;
     bool remoteWantsToRestart = false;
 
@@ -91,6 +93,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         audioManager = FindObjectOfType<AudioManager>();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.NetworkingClient.EnableLobbyStatistics = true;
+        gameVersion = Application.version;
 
 
         // SET UP MESSAGES
@@ -382,9 +385,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
-
-
-
     #region Monobehaviour Callbacks
     public override void OnConnectedToMaster()
     {
@@ -450,6 +450,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
 
 
+        localPlayerSide = 0;
         PhotonNetwork.CreateRoom(randRoomName, options);
     }
 
@@ -458,7 +459,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         Debug.Log("Leave Lobby called");
         PhotonNetwork.Disconnect();
-
+        localPlayerSide = 1;
 
         twoPlayersInRoom = false;
 
@@ -476,6 +477,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         SetMultiplayer(false);
         twoPlayersInRoom = false;
+
+        localPlayerSide = 1;
 
 
         // CHARACTER CHANGERS
@@ -608,9 +611,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         PhotonNetwork.Disconnect();
         CameraManager.Instance.FindPlayers();
         GameManager.Instance.playersList = new List<GameObject>(2);
+        localPlayerSide = 1;
 
         GameManager.Instance.Start();
-
         InputManager.Instance.playerInputs = new InputManager.PlayerInputs[2];
     }
 
@@ -703,7 +706,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public void CreateCustomRoom()
     {
         InitMultiplayerMatch(false);
-
+        localPlayerSide = 0;
 
         RoomOptions options = new RoomOptions();
         options.CustomRoomPropertiesForLobby = newRoomParameters;
@@ -862,7 +865,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
-    // RESTART
+
+
+
+    #region RESTART
     public void RestartCall()
     {
         if (GameManager.Instance != null && GameManager.Instance.playersList.Count < 2)
@@ -877,34 +883,34 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 localWantToRestart = true;
 
 
-            if (remoteWantsToRestart)
-            {
-                //RestartOnlineDuel();
-            }
-            else
+            if (!remoteWantsToRestart)
             {
                 // MESSAGE
                 if (restartSentMessage != null)
                     restartSentMessage.SetActive(true);
-
-                // SEND RESTART REQUEST HERE
-                // RestartRequestReceived();
             }
+
+            // SEND
+            Debug.Log("Sent restart request");
+            photonView.RPC("RestartRequestReceived", RpcTarget.Others);
         }
     }
 
+
+    [PunRPC]
     public void RestartRequestReceived()
     {
-        if (GameManager.Instance != null && GameManager.Instance.playersList.Count < 2)
+        if (GameManager.Instance != null && GameManager.Instance.playersList.Count > 1)
         {
             if (!remoteWantsToRestart)
                 remoteWantsToRestart = true;
 
+            Debug.Log("Restart request received");
             if (localWantToRestart)
             {
+                // CONFIRM SEND
                 RestartOnlineDuel();
-                // SEND RESTART HERE
-                // RestartOnlineDuel();
+                photonView.RPC("RestartOnlineDuel", RpcTarget.Others);
             }
             else
             {
@@ -915,7 +921,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
     }
 
-    void RestartOnlineDuel()
+
+    [PunRPC]
+    public void RestartOnlineDuel()
     {
         // Initiator starts restart process
         // Receives the remote confirmation
@@ -923,5 +931,100 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         if (restartAcceptedMessage != null)
             restartAcceptedMessage.SetActive(true);
+
+        Debug.Log("Restart confirmed");
+
+
+        // PAUSE
+        MenuManager.Instance.PauseOff();
+        MenuManager.Instance.winScreen.SetActive(false);
+
+
+        Invoke("FXRestartOnlineDuel", 2f);
+        Invoke("ActuallyRestartOnlineDuel", 3.5f);
     }
+
+
+    void FXRestartOnlineDuel()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.roundTransitionLeavesFX.Play();
+    }
+
+
+    void ActuallyRestartOnlineDuel()
+    {
+        Debug.Log("Restart!");
+        // SCORE
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.score = new Vector2(0, 0);
+            for (int i = 0; i < GameManager.Instance.scoresDisplays.Count; i++)
+                GameManager.Instance.scoresDisplays[i].text = "0";
+        }
+
+
+
+        // PLAYERS
+        if (GameManager.Instance != null)
+        {
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+            {
+                // Reset
+                Player playerScript = GameManager.Instance.playersList[i].GetComponent<Player>();
+                playerScript.ResetAllPlayerValuesForNextMatch();
+                playerScript.SwitchState(Player.STATE.sneathed);
+
+
+                // Position
+                if (playerScript.GetComponent<PhotonView>() && playerScript.GetComponent<PhotonView>().IsMine)
+                    playerScript.transform.position = spawners[localPlayerSide].transform.position;
+
+                Debug.Log(localPlayerSide);
+            }
+            GameManager.Instance.allPlayersHaveDrawn = false;
+        }
+
+        localWantToRestart = false;
+        remoteWantsToRestart = false;
+        
+
+
+
+
+        // AUDIO
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
+
+
+        // FILTER
+        if (GameManager.Instance != null)
+            if (GameManager.Instance.gameState == GameManager.GAMESTATE.finished)
+                GameManager.Instance.TriggerMatchEndFilterEffect(false);
+
+
+        // STAGE
+        if (GameManager.Instance != null && MapLoader.Instance != null)
+        {
+            if (GameManager.Instance.gameState == GameManager.GAMESTATE.finished)
+            {
+                if (localPlayerSide == 0)
+                {
+                    int nextStageIndex = GameManager.Instance.CalculateNextStageIndex();
+                    MapLoader.Instance.SetMap(nextStageIndex, false);
+                    photonView.RPC("RestartSyncStage", RpcTarget.Others, nextStageIndex);
+                }
+            }
+            else
+                MapLoader.Instance.SetMap(MapLoader.Instance.currentMapIndex, false);
+        }
+    }
+
+
+    [PunRPC]
+    void RestartSyncStage(int stageIndex)
+    {
+        MapLoader.Instance.SetMap(stageIndex, false);
+    }
+    #endregion
 }

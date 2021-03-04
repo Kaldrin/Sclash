@@ -2019,8 +2019,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (canBattleSneath)
         {
-            Debug.Log(inputManager.playerInputs[0].battleSneathDraw);
-
             // ONLINE
             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
             {

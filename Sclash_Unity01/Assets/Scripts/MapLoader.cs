@@ -262,7 +262,12 @@ public class MapLoader : MonoBehaviour
     }
 
 
-    // Immediatly changes the map
+
+    /// <summary>
+    /// Immediatly changes the stage, affects corresponding music and fx, and saves its index
+    /// </summary>
+    /// <param name="mapIndex"></param>
+    /// <param name="special"></param>
     public void SetMap(int mapIndex, bool special)
     {
         // IF THERE IS ALREADY A STAGE, DESTROY IT
