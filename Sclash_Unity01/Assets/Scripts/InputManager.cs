@@ -153,7 +153,10 @@ public class InputManager : MonoBehaviour
     private void DisconnectedPlayer()
     {
         Debug.Log("Player Disconnected, rebuilding input for P2");
-        inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
+        if (gamepads.Count == 2)
+            inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "Gamepad Scheme", gamepads[1]));
+        else
+            inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
     }
 
     protected void Awake()
