@@ -997,7 +997,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     #region STATE SWITCH
-    public void SwitchState(STATE newState)
+    public virtual void SwitchState(STATE newState)
     {
         if (playerState != STATE.frozen)
             oldState = playerState;
@@ -1464,7 +1464,7 @@ public class Player : MonoBehaviourPunCallbacks
             else
                 CheckDeath(instigator.GetComponent<Player>().playerNum);
         }
-
+         
 
         // FX
         attackRangeFX.gameObject.SetActive(false);

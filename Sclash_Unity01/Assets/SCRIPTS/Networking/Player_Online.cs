@@ -12,12 +12,12 @@ public class Player_Online : Player, IPunObservable
 {
     private bool releasedAttack = false;
 
-    private void OnEnable()
+    public override void OnEnable()
     {
         ConnectManager.PlayerJoined += SendInfos;
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
         ConnectManager.PlayerJoined -= SendInfos;
     }
@@ -419,7 +419,27 @@ public class Player_Online : Player, IPunObservable
         }
     }
 
+    public override void SwitchState(STATE newState)
+    {
+        base.SwitchState(newState);
+        SendState(newState);   
+    }
+
+
+    private void SendState(STATE s)
+    {
+        if (photonView.IsMine)
+            photonView.RPC("ReceiveState", RpcTarget.Others, s);
+    }
+
+    private void ReceiveState(STATE s)
+    {
+        SwitchState(s);
+    }
+
     #region RPC Methods
+
+
     [PunRPC]
     public override void ResetAllPlayerValuesForNextRound()
     {
@@ -511,31 +531,25 @@ public class Player_Online : Player, IPunObservable
     {
         if (stream.IsWriting)
         {
-            //stream.SendNext(transform.name);
-            stream.SendNext(currentHealth);
-            // stream.SendNext(playerNum);
+            //stream.SendNext(currentHealth);
             stream.SendNext(stamina);
             stream.SendNext(transform.position);
             stream.SendNext(transform.localScale.x);
             stream.SendNext(enemyDead);
             stream.SendNext(staminaBarsOpacity);
-            //stream.SendNext(rb.velocity);
             stream.SendNext(actualMovementsSpeed);
-            stream.SendNext(playerState);
+            //stream.SendNext(playerState);
         }
         else if (stream.IsReading)
         {
-            //transform.name = (string)stream.ReceiveNext();
-            currentHealth = (float)stream.ReceiveNext();
-            // playerNum = (int)stream.ReceiveNext();
+            //currentHealth = (float)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
             Vector3 DistantPos = (Vector3)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();
             enemyDead = (bool)stream.ReceiveNext();
             staminaBarsOpacity = (float)stream.ReceiveNext();
-            //rb.velocity = (Vector2)stream.ReceiveNext();
             actualMovementsSpeed = (float)stream.ReceiveNext();
-            SwitchState((STATE)stream.ReceiveNext());
+           // SwitchState((STATE)stream.ReceiveNext());
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(DistantPos.x, DistantPos.y);
