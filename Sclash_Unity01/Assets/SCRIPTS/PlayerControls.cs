@@ -332,7 +332,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""a484beca-5b10-479e-9b1c-0d0b12707edd"",
                     ""path"": ""<Gamepad>/leftStick/x"",
-                    ""interactions"": ""MultiTap(tapDelay=0.2)"",
+                    ""interactions"": ""MultiTap(tapDelay=0.2,pressPoint=1)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad Scheme"",
                     ""action"": ""Dash"",
