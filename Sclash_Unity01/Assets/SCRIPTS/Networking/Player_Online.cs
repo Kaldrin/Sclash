@@ -12,6 +12,10 @@ public class Player_Online : Player, IPunObservable
 {
     private bool releasedAttack = false;
 
+    #region PunAck
+    private bool sentParry = false;
+    #endregion
+
     public override void OnEnable()
     {
         ConnectManager.PlayerJoined += SendInfos;
@@ -78,13 +82,13 @@ public class Player_Online : Player, IPunObservable
             if (Mathf.Sign(instigator.transform.localScale.x) == Mathf.Sign(transform.localScale.x))
             {
                 hit = true;
-                photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
+                photonView.RPC("TriggerHit", ConnectManager.defaultTarget);
             }
             else if (clashFrames)
             {
                 foreach (GameObject p in GameManager.Instance.playersList)
                 {
-                    p.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
+                    p.GetComponent<PhotonView>().RPC("TriggerClash", ConnectManager.defaultTarget);
                 }
 
                 Vector3 fxPos = new Vector3((GameManager.Instance.playersList[0].transform.position.x + GameManager.Instance.playersList[1].transform.position.x) / 2, clashFX.transform.position.y, clashFX.transform.position.z);
@@ -106,7 +110,7 @@ public class Player_Online : Player, IPunObservable
             {
                 photonView.RPC("N_TriggerStaminaRecupAnim", RpcTarget.All);
 
-                instigator.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
+                instigator.GetComponent<PhotonView>().RPC("TriggerClash", ConnectManager.defaultTarget);
 
                 playerAnimations.TriggerPerfectParry();
                 clashFX.Play();
@@ -120,10 +124,10 @@ public class Player_Online : Player, IPunObservable
             else
             {
                 hit = true;
-                photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
+                photonView.RPC("TriggerHit", ConnectManager.defaultTarget);
             }
 
-            photonView.RPC("CheckDeath", RpcTarget.AllViaServer, instigator.GetComponent<Player>().playerNum);
+            photonView.RPC("CheckDeath", ConnectManager.defaultTarget, instigator.GetComponent<Player>().playerNum);
 
         }
 
@@ -173,7 +177,7 @@ public class Player_Online : Player, IPunObservable
     {
         if (!InputManager.Instance.playerInputs[0].attack && !releasedAttack)
         {
-            photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
+            photonView.RPC("ReleaseAttack", ConnectManager.defaultTarget);
             releasedAttack = true;
             return;
         }
@@ -183,7 +187,7 @@ public class Player_Online : Player, IPunObservable
         {
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
-                photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
+                photonView.RPC("ReleaseAttack", ConnectManager.defaultTarget);
                 releasedAttack = true;
                 return;
             }
@@ -226,15 +230,21 @@ public class Player_Online : Player, IPunObservable
     {
         if (canBriefParry)
         {
-            if (InputManager.Instance.playerInputs[0].parry && canParry)
+            if (InputManager.Instance.playerInputs[0].parryDown && stamina <= staminaCostForMoves && canParry)
+                TriggerNotEnoughStaminaAnim(true);
+
+            if (InputManager.Instance.playerInputs[0].parry && canParry && !sentParry)
             {
-                currentParryFramesPressed++;
                 canParry = false;
+
                 if (stamina >= staminaCostForMoves)
+                {
+                    Debug.Log("Sent parry");
                     photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
-
-                currentParryFramesPressed = 0;
-
+                    playerAnimations.TriggerParry();
+                    sentParry = true;
+                    return;
+                }
             }
 
             if (!InputManager.Instance.playerInputs[0].parry)
@@ -422,7 +432,7 @@ public class Player_Online : Player, IPunObservable
     public override void SwitchState(STATE newState)
     {
         base.SwitchState(newState);
-        SendState(newState);   
+        SendState(newState);
     }
 
 
@@ -485,9 +495,29 @@ public class Player_Online : Player, IPunObservable
     }
 
     [PunRPC]
-    protected override void TriggerParry()
+    protected void TriggerParry(PhotonMessageInfo info)
     {
-        base.TriggerParry();
+        // ANIMATION
+        Debug.Log(info.Sender.IsLocal);
+        if (!info.Sender.IsLocal)
+        {
+            Debug.Log("I'm not the local player");
+            playerAnimations.TriggerParry();
+        }
+
+        SwitchState(STATE.parrying);
+        StaminaCost(staminaCostForMoves, true);
+
+        // STATS
+        if (characterType == CharacterType.duel)
+        {
+            if (statsManager)
+                statsManager.AddAction(ACTION.parry, playerNum, chargeLevel);
+            else
+                Debug.Log("Couldn't access statsManager to record action, ignoring");
+        }
+        Debug.Log("Received parry");
+        sentParry = false;
     }
 
     [PunRPC]
@@ -550,7 +580,7 @@ public class Player_Online : Player, IPunObservable
             enemyDead = (bool)stream.ReceiveNext();
             staminaBarsOpacity = (float)stream.ReceiveNext();
             actualMovementsSpeed = (float)stream.ReceiveNext();
-           // SwitchState((STATE)stream.ReceiveNext());
+            // SwitchState((STATE)stream.ReceiveNext());
 
             //Calculate target position based on lag
             netTargetPos = new Vector2(DistantPos.x, DistantPos.y);

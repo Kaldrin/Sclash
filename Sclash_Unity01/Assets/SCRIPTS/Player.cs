@@ -90,7 +90,7 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
 
-    [SerializeField] bool hasFinishedAnim = false;
+    [SerializeField] protected  bool hasFinishedAnim = false;
     [SerializeField] bool waitingForNextAttack = false;
     [SerializeField] bool hasAttackRecoveryAnimFinished = false;
 
@@ -706,39 +706,6 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (enabled && isActiveAndEnabled)
         {
-            // ONLINE
-            /*if (photonView != null && !photonView.IsMine)
-            {
-                Vector2 lagDistance = netTargetPos - rb.position;
-                //Debug.Log(lagDistance);
-
-
-                // HIGH DISTANCE -> TELEPORT PLAYER
-                if (lagDistance.magnitude > 3f)
-                {
-                    rb.position = netTargetPos;
-                    lagDistance = Vector2.zero;
-                }
-
-
-                if (lagDistance.magnitude < 0.11f)
-                    // Player is nearly at the point
-                    rb.velocity = Vector2.zero;
-                else
-                {
-                    //Player must move to the point
-                    if (playerState != STATE.dashing)
-                        rb.velocity = new Vector2(lagDistance.normalized.x * baseMovementsSpeed, rb.velocity.y);
-                    else
-                        rb.velocity = new Vector2(lagDistance.normalized.x * 15, rb.velocity.y);
-                }
-
-
-                return;
-            }*/
-
-
-
             // KICK FRAMES
             if (kickFrame)
                 ApplyPommelHitbox();
@@ -1464,7 +1431,7 @@ public class Player : MonoBehaviourPunCallbacks
             else
                 CheckDeath(instigator.GetComponent<Player>().playerNum);
         }
-         
+
 
         // FX
         attackRangeFX.gameObject.SetActive(false);
@@ -2693,49 +2660,30 @@ public class Player : MonoBehaviourPunCallbacks
         // If online, only take inputs from player 1
         if (canBriefParry)
         {
-            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+
+            // Stamina animation
+            if (InputManager.Instance.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
+                TriggerNotEnoughStaminaAnim(true);
+
+
+            if (InputManager.Instance.playerInputs[playerNum].parry && canParry)
             {
-                if (InputManager.Instance.playerInputs[0].parry && canParry)
-                {
-                    currentParryFramesPressed++;
-                    canParry = false;
-                    if (stamina >= staminaCostForMoves)
-                        photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
-
-                    currentParryFramesPressed = 0;
-                }
+                canParry = false;
 
 
-                if (!InputManager.Instance.playerInputs[0].parry)
-                    canParry = true;
+                if (stamina >= staminaCostForMoves)
+                    TriggerParry();
             }
-            else
-            {
-                // Stamina animation
-                if (InputManager.Instance.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
-                    TriggerNotEnoughStaminaAnim(true);
-
-
-                if (InputManager.Instance.playerInputs[playerNum].parry && canParry)
-                {
-                    canParry = false;
-
-
-                    if (stamina >= staminaCostForMoves)
-                        TriggerParry();
-                }
 
 
 
-                // Can input again if released the input
-                if (!InputManager.Instance.playerInputs[playerNum].parry)
-                    canParry = true;
-            }
+            // Can input again if released the input
+            if (!InputManager.Instance.playerInputs[playerNum].parry)
+                canParry = true;
         }
     }
 
     // Parry coroutine
-    [PunRPC]
     protected virtual void TriggerParry()
     {
         // ANIMATION

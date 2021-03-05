@@ -75,10 +75,6 @@ public class PlayerControlCenter : MonoBehaviour
             InputManager.Instance.playerInputs[m_playerIndex].parry = true;
             InputManager.Instance.playerInputs[m_playerIndex].parryDown = true;
         }
-        else if (ctx.performed)
-        {
-            InputManager.Instance.playerInputs[m_playerIndex].parryDown = false;
-        }
         else if (ctx.canceled)
         {
             InputManager.Instance.playerInputs[m_playerIndex].parry = false;
@@ -172,7 +168,6 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnSubmit(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Submit");
         if (ctx.started)
         {
             InputManager.Instance.submitInput = true;
