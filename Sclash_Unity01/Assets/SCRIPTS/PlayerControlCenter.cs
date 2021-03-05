@@ -155,6 +155,9 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnAnyKey(InputAction.CallbackContext ctx)
     {
+        if (GameManager.Instance.gameState == GameManager.GAMESTATE.paused)
+            return;
+
         if (ctx.started)
         {
             InputManager.Instance.playerInputs[m_playerIndex].anyKey = true;

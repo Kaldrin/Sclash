@@ -720,10 +720,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             {
                 o_CharacterChanger = c;
                 Debug.Log("Character changer found!");
-                if (bufferedValues.Length > 1)
-                {
-                    o_CharacterChanger.ReceiveCosmetics(bufferedValues[0], bufferedValues[1], bufferedValues[2]);
-                }
                 break;
             }
         }

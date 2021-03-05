@@ -997,7 +997,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     #region STATE SWITCH
-    public void SwitchState(STATE newState)
+    public virtual void SwitchState(STATE newState)
     {
         if (playerState != STATE.frozen)
             oldState = playerState;
@@ -1464,7 +1464,7 @@ public class Player : MonoBehaviourPunCallbacks
             else
                 CheckDeath(instigator.GetComponent<Player>().playerNum);
         }
-
+         
 
         // FX
         attackRangeFX.gameObject.SetActive(false);
@@ -2079,7 +2079,10 @@ public class Player : MonoBehaviourPunCallbacks
         else
         {
             if (InputManager.Instance.playerInputs[playerNum].anyKey && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].locked)
+            {
                 TriggerDraw();
+                Debug.Log("Draw");
+            }
         }
     }
 
@@ -3536,43 +3539,6 @@ public class Player : MonoBehaviourPunCallbacks
     {
         netTargetPos = rb.position;
     }
-
-    /*  public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-      {
-          if (stream.IsWriting)
-          {
-              stream.SendNext(transform.name);
-              stream.SendNext(currentHealth);
-              stream.SendNext(playerNum);
-              stream.SendNext(stamina);
-              stream.SendNext(transform.position);
-              stream.SendNext(transform.localScale.x);
-              stream.SendNext(enemyDead);
-              stream.SendNext(staminaBarsOpacity);
-              //stream.SendNext(rb.velocity);
-              stream.SendNext(actualMovementsSpeed);
-              stream.SendNext(playerState);
-          }
-          else if (stream.IsReading)
-          {
-              transform.name = (string)stream.ReceiveNext();
-              currentHealth = (float)stream.ReceiveNext();
-              playerNum = (int)stream.ReceiveNext();
-              stamina = (float)stream.ReceiveNext();
-              Vector3 DistantPos = (Vector3)stream.ReceiveNext();
-              float xScale = (float)stream.ReceiveNext();
-              enemyDead = (bool)stream.ReceiveNext();
-              staminaBarsOpacity = (float)stream.ReceiveNext();
-              //rb.velocity = (Vector2)stream.ReceiveNext();
-              actualMovementsSpeed = (float)stream.ReceiveNext();
-              SwitchState((STATE)stream.ReceiveNext());
-
-              //Calculate target position based on lag
-              netTargetPos = new Vector2(DistantPos.x, DistantPos.y);
-
-              transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
-          }
-      }*/
     #endregion
 
     public void GetColliders()

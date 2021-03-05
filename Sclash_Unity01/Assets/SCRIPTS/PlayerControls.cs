@@ -332,7 +332,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""a484beca-5b10-479e-9b1c-0d0b12707edd"",
                     ""path"": ""<Gamepad>/leftStick/x"",
-                    ""interactions"": ""MultiTap(tapDelay=0.2)"",
+                    ""interactions"": ""MultiTap(tapDelay=0.2,pressPoint=1)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad Scheme"",
                     ""action"": ""Dash"",
@@ -448,17 +448,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4da3f7c9-2e96-460f-9bcc-3c1faf9b4b86"",
-                    ""path"": ""<Gamepad>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad Scheme"",
-                    ""action"": ""AnyKey"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
