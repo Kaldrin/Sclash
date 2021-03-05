@@ -12,7 +12,15 @@ public class Player_Online : Player, IPunObservable
 {
     private bool releasedAttack = false;
 
+    private void OnEnable()
+    {
+        ConnectManager.PlayerJoined += SendInfos;
+    }
 
+    private void OnDisable()
+    {
+        ConnectManager.PlayerJoined -= SendInfos;
+    }
 
     public override void Update()
     {
@@ -486,15 +494,26 @@ public class Player_Online : Player, IPunObservable
     }
     #endregion
 
+    private void SendInfos()
+    {
+        if (photonView.IsMine)
+            photonView.RPC("ReceiveInfos", RpcTarget.Others, playerNum, transform.name);
+    }
 
+    [PunRPC]
+    private void ReceiveInfos(int num, string name)
+    {
+        transform.name = name;
+        playerNum = num;
+    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(transform.name);
+            //stream.SendNext(transform.name);
             stream.SendNext(currentHealth);
-            stream.SendNext(playerNum);
+            // stream.SendNext(playerNum);
             stream.SendNext(stamina);
             stream.SendNext(transform.position);
             stream.SendNext(transform.localScale.x);
@@ -506,9 +525,9 @@ public class Player_Online : Player, IPunObservable
         }
         else if (stream.IsReading)
         {
-            transform.name = (string)stream.ReceiveNext();
+            //transform.name = (string)stream.ReceiveNext();
             currentHealth = (float)stream.ReceiveNext();
-            playerNum = (int)stream.ReceiveNext();
+            // playerNum = (int)stream.ReceiveNext();
             stamina = (float)stream.ReceiveNext();
             Vector3 DistantPos = (Vector3)stream.ReceiveNext();
             float xScale = (float)stream.ReceiveNext();

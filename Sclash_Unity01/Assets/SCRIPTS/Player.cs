@@ -2072,7 +2072,10 @@ public class Player : MonoBehaviourPunCallbacks
         else
         {
             if (InputManager.Instance.playerInputs[playerNum].anyKey && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].locked)
+            {
                 TriggerDraw();
+                Debug.Log("Draw");
+            }
         }
     }
 

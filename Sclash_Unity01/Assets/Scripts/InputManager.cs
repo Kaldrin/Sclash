@@ -107,7 +107,6 @@ public class InputManager : MonoBehaviour
         controls = GameManager.Instance.Controls;
     }
 
-
     void Start()
     {
         gamepads = new List<Gamepad>();
@@ -169,6 +168,13 @@ public class InputManager : MonoBehaviour
         ConnectManager.PlayerConnected -= OnConnectedPlayer;
     }
 
+    // Update is called once per graphic frame
+    public virtual void Update()
+    {
+        GamepadCount = Gamepad.all.Count;
+    }
+    #endregion
+
     private void OnConnectedPlayer()
     {
         Destroy(inputs[1].gameObject);
@@ -184,14 +190,6 @@ public class InputManager : MonoBehaviour
             inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
     }
 
-    // Update is called once per graphic frame
-    public virtual void Update()
-    {
-        GamepadCount = Gamepad.all.Count;
-    }
-    #endregion
-
-    //TODO finish new controller 
     private void NewController()
     {
         var Gamepads = Gamepad.all;
@@ -226,6 +224,7 @@ public class InputManager : MonoBehaviour
     {
         Debug.Log("Device regained !");
     }
+
 
     #endregion
 }

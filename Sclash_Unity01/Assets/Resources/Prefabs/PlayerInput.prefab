@@ -323,7 +323,18 @@ MonoBehaviour:
     m_ActionId: e849f829-cea2-4975-824d-82b26b3dbb6e
     m_ActionName: UI/Cancel[/Keyboard/escape,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID/buttonEast]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnRestart
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: bcb6704a-2d33-4c88-b2ac-b40da28a54fb
     m_ActionName: Menu/Restart[/Keyboard/alt,/Keyboard/r]
   - m_PersistentCalls:
