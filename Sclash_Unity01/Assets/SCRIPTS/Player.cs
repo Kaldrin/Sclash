@@ -1841,7 +1841,10 @@ public class Player : MonoBehaviourPunCallbacks
         for (int i = 0; i < staminaSliders.Count; i++)
         {
             if (state)
+            {
                 staminaSliders[i].GetComponent<Animator>().SetTrigger("NotEnoughStamina");
+                //staminaSliders[i].GetComponent<Animator>().ResetTrigger("NotEnoughStamina");
+            }
             else
                 staminaSliders[i].GetComponent<Animator>().ResetTrigger("NotEnoughStamina");
         }
@@ -1849,7 +1852,11 @@ public class Player : MonoBehaviourPunCallbacks
 
         // AUDIO
         if (notEnoughStaminaSFX != null)
+        {
+            if (notEnoughStaminaSFX.audioSource.isPlaying)
+                notEnoughStaminaSFX.Stop();
             notEnoughStaminaSFX.Play();
+        }
     }
 
     [PunRPC]
@@ -2285,11 +2292,14 @@ public class Player : MonoBehaviourPunCallbacks
                     // FX
                     chargeFlareFX.Play();
                 }
+
+
+                // ANIMATION STAMINA
+                if (canCharge && stamina <= staminaCostForMoves)
+                    TriggerNotEnoughStaminaAnim(true);
             }
 
-            // ANIMATION STAMINA
-            if (canCharge && stamina <= staminaCostForMoves)
-                TriggerNotEnoughStaminaAnim(true);
+            
 
             if (!InputManager.Instance.playerInputs[playerNum].attack)
                 canCharge = true;
@@ -2692,14 +2702,23 @@ public class Player : MonoBehaviourPunCallbacks
         {
             if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
             {
+                // Stamina animation
+                if (InputManager.Instance.playerInputs[playerNum].parry && stamina <= staminaCostForMoves && canParry)
+                    TriggerNotEnoughStaminaAnim(true);
+
+                
                 if (InputManager.Instance.playerInputs[0].parry && canParry)
                 {
                     currentParryFramesPressed++;
                     canParry = false;
                     if (stamina >= staminaCostForMoves)
+                    {
                         photonView.RPC("TriggerParry", RpcTarget.AllViaServer);
+                        Debug.Log("Online parry");
+                    }
 
                     currentParryFramesPressed = 0;
+                    
                 }
 
 
@@ -2709,7 +2728,7 @@ public class Player : MonoBehaviourPunCallbacks
             else
             {
                 // Stamina animation
-                if (InputManager.Instance.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
+                if (InputManager.Instance.playerInputs[playerNum].parry && stamina <= staminaCostForMoves && canParry)
                     TriggerNotEnoughStaminaAnim(true);
 
 
@@ -2719,7 +2738,10 @@ public class Player : MonoBehaviourPunCallbacks
 
 
                     if (stamina >= staminaCostForMoves)
+                    {
                         TriggerParry();
+                        Debug.Log("Parry");
+                    }
                 }
 
 

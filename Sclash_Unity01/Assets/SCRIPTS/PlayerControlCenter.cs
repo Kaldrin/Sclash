@@ -169,7 +169,6 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnSubmit(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Submit");
         if (ctx.started)
         {
             InputManager.Instance.submitInput = true;

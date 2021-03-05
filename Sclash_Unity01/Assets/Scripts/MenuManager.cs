@@ -17,10 +17,6 @@ public class MenuManager : MonoBehaviour
 
 
     # region MANAGERS
-    [Header("MANAGERS")]
-    [Tooltip("The references to the GameManager script instance component")]
-    [SerializeField] GameManager gameManager = null;
-
     [Tooltip("The AudioManager script instance reference")]
     [SerializeField] AudioManager audioManager = null;
 

@@ -152,16 +152,30 @@ public class MenuBrowser : MonoBehaviour
         {
             if (elements.Length > 0)
             {
+                float xInput = 0;
+                float yInput = 0;
+                if (swapAxis)
+                {
+                    xInput = controls.UI.Navigate.ReadValue<Vector2>().y;
+                    yInput = controls.UI.Navigate.ReadValue<Vector2>().x;
+                }
+                else
+                {
+                    xInput = controls.UI.Navigate.ReadValue<Vector2>().x;
+                    yInput = controls.UI.Navigate.ReadValue<Vector2>().y;
+                }
+
+
                 // H AXIS
                 // Detects H axis let go
-                if (Mathf.Abs(controls.UI.Navigate.ReadValue<Vector2>().x) <= horizontalRestZone)
+                if (Mathf.Abs(xInput) <= horizontalRestZone)
                 {
                     hAxisInUse = false;
                 }
 
 
                 // Move sliders with horizontal
-                if (controls.UI.Navigate.ReadValue<Vector2>().x > horizontalInputDetectionZone && !hAxisInUse)
+                if (xInput > horizontalInputDetectionZone && !hAxisInUse)
                 {
                     // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
                     if (callSpecialElementWhenHorizontal)
@@ -174,7 +188,7 @@ public class MenuBrowser : MonoBehaviour
 
                     hAxisInUse = true;
                 }
-                else if (controls.UI.Navigate.ReadValue<Vector2>().x < -horizontalInputDetectionZone & !hAxisInUse)
+                else if (xInput < -horizontalInputDetectionZone & !hAxisInUse)
                 {
                     // If we want to do stuff if the player inputs horizontal instead of vertical, do stuff
                     if (callSpecialElementWhenHorizontal)
@@ -196,7 +210,7 @@ public class MenuBrowser : MonoBehaviour
 
                 // V AXIS
                 // Detects V axis let go
-                if (Mathf.Abs(controls.UI.Navigate.ReadValue<Vector2>().y) <= verticalInputRestZone)
+                if (Mathf.Abs(yInput) <= verticalInputRestZone)
                 {
                     vAxisInUse = false;
                 }
@@ -205,12 +219,12 @@ public class MenuBrowser : MonoBehaviour
                 if (!vAxisInUse)
                 {
                     // Detects positive V axis input
-                    if (controls.UI.Navigate.ReadValue<Vector2>().y > verticalInputDetectionZone)
+                    if (yInput > verticalInputDetectionZone)
                         VerticalBrowse(1);
 
 
                     // Detects negative V axis input
-                    if (controls.UI.Navigate.ReadValue<Vector2>().y < -verticalInputDetectionZone)
+                    if (yInput < -verticalInputDetectionZone)
                         VerticalBrowse(-1);
                 }
             }
@@ -544,5 +558,18 @@ public class MenuBrowser : MonoBehaviour
         return 0;
     }
     #endregion
+
+
+
+
+
+
+
+    // EDITOR
+    void RemoveWarnings()
+    {
+        if (backButton == "")
+            backButton = "";
+    }
     #endregion
 }

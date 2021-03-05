@@ -46,16 +46,12 @@ public class MapPrefab : MonoBehaviour
         if (backgroundElements != null && backgroundElements.Length > 0)
             for (int i = 0; i < backgroundElements.Length; i++)
                 backgroundElements[i].SetActive(false);
-        else
-            Debug.Log("No background element to disable during dramatic screen for this stage");
 
 
         // Enable elements
         if (objectsToActivateOnDramaticScreen != null && objectsToActivateOnDramaticScreen.Length > 0)
             for (int i = 0; i < objectsToActivateOnDramaticScreen.Length; i++)
                 objectsToActivateOnDramaticScreen[i].SetActive(true);
-        else
-            Debug.Log("No element to enable during dramatic screen for this stage");
     }
 
 

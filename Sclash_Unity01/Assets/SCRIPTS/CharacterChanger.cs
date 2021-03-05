@@ -78,7 +78,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     #endregion
 
     CharacterChanger o_CharacterChanger = null;
-    int[] bufferedValues;
+    int[] bufferedValues = new int[0];
     public const byte ApplyCosmeticChanges = 1;
 
 

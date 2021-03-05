@@ -459,5 +459,16 @@ public class MapMenuLoader : MonoBehaviour
         SaveGameManager.Save();
     }
     #endregion
+
+
+
+
+
+    // EDITOR
+    void RemoveWarnings()
+    {
+        if (stageModeSwitchAxis == "")
+            stageModeSwitchAxis = "";
+    }
     #endregion
 }
