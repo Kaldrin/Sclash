@@ -432,6 +432,7 @@ public class Player_Online : Player, IPunObservable
             photonView.RPC("ReceiveState", RpcTarget.Others, s);
     }
 
+    [PunRPC]
     private void ReceiveState(STATE s)
     {
         SwitchState(s);

@@ -17,10 +17,19 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
 
 
     PlayerControls controls;
+    
+    private void OnEnable()
+    {
+        action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        action.Disable();
+    }
+
     private void Start()
     {
-        controls = GameManager.Instance.Controls;
-
         action.started += (ctx) =>
         {
             Debug.Log("Started");
