@@ -2228,6 +2228,10 @@ public class Player : MonoBehaviourPunCallbacks
             //if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
             if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
             {
+                // ANIMATION STAMINA
+                if (stamina <= staminaCostForMoves)
+                    TriggerNotEnoughStaminaAnim(true);
+
                 if (stamina >= staminaCostForMoves)
                 {
                     canCharge = false;
@@ -2257,9 +2261,7 @@ public class Player : MonoBehaviourPunCallbacks
                 }
             }
 
-            // ANIMATION STAMINA
-            if (canCharge && stamina <= staminaCostForMoves)
-                TriggerNotEnoughStaminaAnim(true);
+            
 
             if (!InputManager.Instance.playerInputs[playerNum].attack)
                 canCharge = true;
