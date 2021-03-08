@@ -46,6 +46,9 @@ public class JsonSave
     [SerializeField] public int roundsToWin = 5;
     [SerializeField] public bool displayHelp = true;
 
+    [Header("ERGONOMY")]
+    [SerializeField] public bool enableRumbles = true;
+
 
     [Header("STAGES")]
     [SerializeField] public List<bool> customList = new List<bool>();

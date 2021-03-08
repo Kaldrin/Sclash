@@ -38,10 +38,13 @@ public class RumbleManager : MonoBehaviour
     public void Rumble(RumbleSettings rumbleSettings)
     {
         // If controller rumbles are enabled, rumble
-        if (enableControllerRumble)
+        if (enableControllerRumble && MenuManager.Instance.menuParametersSaveScriptableObject.enableRumbles)
         {
             if (rumbleSettings != null)
-                StartCoroutine(RumblePlayer01Coroutine(rumbleSettings.rumbleDuration, rumbleSettings.rumbleStrengthLeft, rumbleSettings.rumbleStrengthRight, rumbleSettings.rumbleNumber, rumbleSettings.betweenRumblesDuration));
+            {
+                if (!rumbleSettings.muteRumble)
+                    StartCoroutine(RumblePlayer01Coroutine(rumbleSettings.rumbleDuration, rumbleSettings.rumbleStrengthLeft, rumbleSettings.rumbleStrengthRight, rumbleSettings.rumbleNumber, rumbleSettings.betweenRumblesDuration));
+            }
             else
                 Debug.Log("Rumble settings not found, ignoring");
         }

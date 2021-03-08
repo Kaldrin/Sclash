@@ -323,10 +323,13 @@ public class CameraManager : MonoBehaviour
                 //temporaryCalculationPosition.y = playersList[0].transform.position.y;
                 temporaryCalculationPosition.y = playersBaseYPos;
             }
-            else if (playersList.Length == 1)
+            else if (playersList != null && playersList.Length == 1)
             {
-                temporaryCalculationPosition.x = playersList[0].transform.position.x;
-                temporaryCalculationPosition.y = playersList[0].transform.position.y;
+                if (playersList[0] != null)
+                {
+                    temporaryCalculationPosition.x = playersList[0].transform.position.x;
+                    temporaryCalculationPosition.y = playersList[0].transform.position.y;
+                }
             }
 
 

@@ -10,4 +10,5 @@ public class RumbleSettings : ScriptableObject
     public float rumbleStrengthRight = 0.2f;
     public int rumbleNumber = 2;
     public float betweenRumblesDuration = 0.1f;
+    public bool muteRumble = false;
 }

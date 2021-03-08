@@ -68,6 +68,11 @@ public class MapMenuLoader : MonoBehaviour
 
     [Header("AUDIO")]
     [SerializeField] PlayRandomSoundInList clickSoundSource = null;
+
+
+    [Header("RUMBLE")]
+    [SerializeField] RumbleSettings rightSwitchRumbleSettings = null;
+    [SerializeField] RumbleSettings leftSwitchRumbleSettings = null;
     #endregion
 
 
@@ -127,9 +132,21 @@ public class MapMenuLoader : MonoBehaviour
 
 
             if (controls.Menu.Menutriggers.ReadValue<float>() < -stageModeSwitchAxisDeadzone)
+            {
                 ChangeStageMode(-1);
+
+                // RUMBLE
+                if (RumbleManager.Instance != null)
+                    RumbleManager.Instance.Rumble(leftSwitchRumbleSettings);
+            }
             else if (controls.Menu.Menutriggers.ReadValue<float>() > -stageModeSwitchAxisDeadzone)
+            {
                 ChangeStageMode(1);
+
+                // RUMBLE
+                if (RumbleManager.Instance != null)
+                    RumbleManager.Instance.Rumble(rightSwitchRumbleSettings);
+            }
         }
         else if (Mathf.Abs(controls.Menu.Menutriggers.ReadValue<float>()) < stageModeSwitchAxisDeadzone)
             canInputModeChange = true;

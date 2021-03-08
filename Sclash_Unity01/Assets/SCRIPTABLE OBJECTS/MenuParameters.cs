@@ -35,6 +35,9 @@ public class MenuParameters : ScriptableObject
     public int roundToWin = 5;
     public bool displayHelp = true;
 
+    [Header("ERGONOMY")]
+    public bool enableRumbles = true;
+
 
     [Header("STAGES")]
     public List<bool> customList = new List<bool>();

@@ -310,7 +310,7 @@ public class MenuBrowser : MonoBehaviour
         // RUMBLE
         if (direction != 0)
         {
-            if (RumbleManager.Instance != null)
+            if (RumbleManager.Instance != null && browseRumbleSettings != null)
             {
                 //RumbleManager.Instance.TriggerSimpleControllerVibrationForEveryone(RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationIntensity, RumbleManager.Instance.menuBrowseVibrationDuration);
                 RumbleManager.Instance.Rumble(browseRumbleSettings);

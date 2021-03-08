@@ -44,7 +44,7 @@ public class MenuManager : MonoBehaviour
 
     # region SAVE DATA
     [Header("SAVE DATA")]
-    [SerializeField] MenuParameters menuParametersSaveScriptableObject = null;
+    [SerializeField] public MenuParameters menuParametersSaveScriptableObject = null;
     # endregion
 
 
@@ -72,6 +72,11 @@ public class MenuManager : MonoBehaviour
     [SerializeField] Slider roundsToWinSlider = null;
     [SerializeField] GameObject displayHelpCheckBox = null;
     # endregion
+
+
+
+    [Header("ERGONOMY SETTINGS")]
+    [SerializeField] GameObject rumbleCheckBox = null;
 
 
 
@@ -371,6 +376,7 @@ public class MenuManager : MonoBehaviour
 
         menuParametersSaveScriptableObject.displayHelp = save.displayHelp;
         menuParametersSaveScriptableObject.roundToWin = save.roundsToWin;
+        menuParametersSaveScriptableObject.enableRumbles = save.enableRumbles;
     }
     // AUDIO SETTINGS FROM SAVE TO SCRIPTABLE OBJECT
     public void LoadAudioSaveInScriptableObject()
@@ -424,8 +430,13 @@ public class MenuManager : MonoBehaviour
     // SET UP GAME SETTINGS
     public void SetUpGameSettingsFromScriptableObject()
     {
-        roundsToWinSlider.value = menuParametersSaveScriptableObject.roundToWin;
-        displayHelpCheckBox.SetActive(menuParametersSaveScriptableObject.displayHelp);
+        if (roundsToWinSlider != null)
+            roundsToWinSlider.value = menuParametersSaveScriptableObject.roundToWin;
+        if (displayHelpCheckBox != null)
+            displayHelpCheckBox.SetActive(menuParametersSaveScriptableObject.displayHelp);
+        if (rumbleCheckBox != null)
+            rumbleCheckBox.SetActive(menuParametersSaveScriptableObject.enableRumbles);
+
 
 
         for (int i = 0; i < GameManager.Instance.inGameHelp.Length; i++)
@@ -462,6 +473,8 @@ public class MenuManager : MonoBehaviour
     {
         menuParametersSaveScriptableObject.roundToWin = Mathf.FloorToInt(roundsToWinSlider.value);
         menuParametersSaveScriptableObject.displayHelp = displayHelpCheckBox.activeInHierarchy;
+        if (rumbleCheckBox != null)
+            menuParametersSaveScriptableObject.enableRumbles = rumbleCheckBox.activeInHierarchy;
     }
     // SAVE AUDIO SETTINGS
     public void SaveAudioSettingsInScriptableObject()
@@ -483,6 +496,7 @@ public class MenuManager : MonoBehaviour
 
         save.roundsToWin = menuParametersSaveScriptableObject.roundToWin;
         save.displayHelp = menuParametersSaveScriptableObject.displayHelp;
+        save.enableRumbles = menuParametersSaveScriptableObject.enableRumbles;
 
         SaveGameManager.Save();
     }
