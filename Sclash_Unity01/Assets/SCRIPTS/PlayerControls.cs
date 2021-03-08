@@ -64,7 +64,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""id"": ""5c56dba8-13ec-4540-aab0-9d81aa5f5195"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""MultiTap""
                 },
                 {
                     ""name"": ""AnyKey"",
@@ -103,6 +103,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""006318a6-baf0-44e8-9680-be652cf9ee67"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""QuickDash"",
+                    ""type"": ""Value"",
+                    ""id"": ""7d919240-ecf5-460c-b46a-21e6169f6c17"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -319,64 +327,20 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""ba94faf2-b668-49a7-b3c4-4f9c883bdb8c"",
-                    ""path"": ""<Gamepad>/rightStick/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad Scheme"",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""a484beca-5b10-479e-9b1c-0d0b12707edd"",
                     ""path"": ""<Gamepad>/leftStick/x"",
-                    ""interactions"": ""MultiTap(tapDelay=0.2,pressPoint=1)"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad Scheme"",
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""KeyboardInstant"",
-                    ""id"": ""6472ec87-093c-4bbd-abb3-82212120a6e7"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""14671b5a-9527-42a6-9a9f-e08616a07746"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""WASDScheme"",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""ce6b4e95-aedc-46ff-9f16-19e24552645d"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""WASDScheme"",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
                     ""id"": ""22b19f4c-b87d-4f28-ad47-f5364aa6d9a4"",
                     ""path"": ""<Keyboard>/a"",
-                    ""interactions"": ""MultiTap"",
+                    ""interactions"": """",
                     ""processors"": ""Invert"",
                     ""groups"": ""WASDScheme"",
                     ""action"": ""Dash"",
@@ -387,7 +351,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""e93ade03-26c8-4b37-b25b-4787bf76c9a4"",
                     ""path"": ""<Keyboard>/d"",
-                    ""interactions"": ""MultiTap"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""WASDScheme"",
                     ""action"": ""Dash"",
@@ -398,7 +362,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""811c52e0-847d-4720-8da3-729ec49a8705"",
                     ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": ""MultiTap"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""ArrowScheme"",
                     ""action"": ""Dash"",
@@ -409,45 +373,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""c0414a64-a599-4023-aabf-1bc0a3d51452"",
                     ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": ""MultiTap"",
+                    ""interactions"": """",
                     ""processors"": ""Invert"",
                     ""groups"": ""ArrowScheme"",
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""GamepadTrigger"",
-                    ""id"": ""62d43948-ba25-453c-bccd-133a09c8f787"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""edb353da-3b50-44cb-b756-87ee77a8c27b"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad Scheme"",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""71fa1314-0a86-41e6-b713-d2b246d77fce"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad Scheme"",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -710,6 +641,83 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad Scheme"",
                     ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""KeyboardInstant"",
+                    ""id"": ""6472ec87-093c-4bbd-abb3-82212120a6e7"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickDash"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""14671b5a-9527-42a6-9a9f-e08616a07746"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""WASDScheme"",
+                    ""action"": ""QuickDash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""ce6b4e95-aedc-46ff-9f16-19e24552645d"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""WASDScheme"",
+                    ""action"": ""QuickDash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""GamepadTrigger"",
+                    ""id"": ""62d43948-ba25-453c-bccd-133a09c8f787"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickDash"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""edb353da-3b50-44cb-b756-87ee77a8c27b"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad Scheme"",
+                    ""action"": ""QuickDash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""71fa1314-0a86-41e6-b713-d2b246d77fce"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad Scheme"",
+                    ""action"": ""QuickDash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ba94faf2-b668-49a7-b3c4-4f9c883bdb8c"",
+                    ""path"": ""<Gamepad>/rightStick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad Scheme"",
+                    ""action"": ""QuickDash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1849,6 +1857,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Duel_Score = m_Duel.FindAction("Score", throwIfNotFound: true);
         m_Duel_Pause = m_Duel.FindAction("Pause", throwIfNotFound: true);
         m_Duel_SneathDraw = m_Duel.FindAction("Sneath/Draw", throwIfNotFound: true);
+        m_Duel_QuickDash = m_Duel.FindAction("QuickDash", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Submit = m_Menu.FindAction("Submit", throwIfNotFound: true);
@@ -1931,6 +1940,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Duel_Score;
     private readonly InputAction m_Duel_Pause;
     private readonly InputAction m_Duel_SneathDraw;
+    private readonly InputAction m_Duel_QuickDash;
     public struct DuelActions
     {
         private @PlayerControls m_Wrapper;
@@ -1946,6 +1956,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Score => m_Wrapper.m_Duel_Score;
         public InputAction @Pause => m_Wrapper.m_Duel_Pause;
         public InputAction @SneathDraw => m_Wrapper.m_Duel_SneathDraw;
+        public InputAction @QuickDash => m_Wrapper.m_Duel_QuickDash;
         public InputActionMap Get() { return m_Wrapper.m_Duel; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1988,6 +1999,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @SneathDraw.started -= m_Wrapper.m_DuelActionsCallbackInterface.OnSneathDraw;
                 @SneathDraw.performed -= m_Wrapper.m_DuelActionsCallbackInterface.OnSneathDraw;
                 @SneathDraw.canceled -= m_Wrapper.m_DuelActionsCallbackInterface.OnSneathDraw;
+                @QuickDash.started -= m_Wrapper.m_DuelActionsCallbackInterface.OnQuickDash;
+                @QuickDash.performed -= m_Wrapper.m_DuelActionsCallbackInterface.OnQuickDash;
+                @QuickDash.canceled -= m_Wrapper.m_DuelActionsCallbackInterface.OnQuickDash;
             }
             m_Wrapper.m_DuelActionsCallbackInterface = instance;
             if (instance != null)
@@ -2025,6 +2039,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @SneathDraw.started += instance.OnSneathDraw;
                 @SneathDraw.performed += instance.OnSneathDraw;
                 @SneathDraw.canceled += instance.OnSneathDraw;
+                @QuickDash.started += instance.OnQuickDash;
+                @QuickDash.performed += instance.OnQuickDash;
+                @QuickDash.canceled += instance.OnQuickDash;
             }
         }
     }
@@ -2263,6 +2280,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnScore(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnSneathDraw(InputAction.CallbackContext context);
+        void OnQuickDash(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

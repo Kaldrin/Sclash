@@ -90,7 +90,7 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
 
-    [SerializeField] protected  bool hasFinishedAnim = false;
+    [SerializeField] protected bool hasFinishedAnim = false;
     [SerializeField] bool waitingForNextAttack = false;
     [SerializeField] bool hasAttackRecoveryAnimFinished = false;
 

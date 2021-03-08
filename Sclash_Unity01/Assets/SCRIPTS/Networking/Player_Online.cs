@@ -378,7 +378,6 @@ public class Player_Online : Player, IPunObservable
     {
         // Detects dash with basic input rather than double tap, shortcut
         if (Mathf.Abs(InputManager.Instance.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated && stamina >= staminaCostForMoves)
-            //inputManager.playerInputs[playerStats.playerNum - 1].horizontal;
             currentShortcutDashStep = DASHSTEP.rest;
 
 

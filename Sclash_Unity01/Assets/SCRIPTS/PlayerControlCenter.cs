@@ -90,6 +90,15 @@ public class PlayerControlCenter : MonoBehaviour
         OnAnyKey(ctx);
     }
 
+
+    public void QuickDash(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
+        }
+    }
+
     public void OnDash(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
@@ -97,11 +106,12 @@ public class PlayerControlCenter : MonoBehaviour
             if (m_DashOrientation == 0f)
                 m_DashOrientation = Mathf.Sign(ctx.ReadValue<float>());
         }
-        if (ctx.performed)
+        else if (ctx.performed)
         {
             InputManager.Instance.playerInputs[m_playerIndex].dash = m_DashOrientation;
+            m_DashOrientation = 0f;
         }
-        if (ctx.canceled)
+        else if (ctx.canceled)
         {
             InputManager.Instance.playerInputs[m_playerIndex].dash = 0f;
             m_DashOrientation = 0f;
