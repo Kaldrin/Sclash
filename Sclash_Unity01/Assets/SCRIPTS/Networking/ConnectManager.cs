@@ -81,6 +81,9 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject restartReceivedMessage = null;
     [SerializeField] GameObject cantRestartMessage = null;
     [SerializeField] GameObject restartAcceptedMessage = null;
+     
+    public static RpcTarget defaultTarget = RpcTarget.All;
+
 
     #region Events
     public delegate void Disconnected();
