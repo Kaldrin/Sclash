@@ -2960,6 +2960,8 @@ public class Player : MonoBehaviourPunCallbacks
     // Functions to detect the dash input etc
     public virtual void ManageDashInput()
     {
+        Debug.Log(currentDashStep);
+
         // If multiplayer, only check for input 1
         if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
         {
