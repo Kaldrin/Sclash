@@ -12,6 +12,7 @@ public class MapMenuObject : MonoBehaviour
     [SerializeField] public GameObject mapButtonObject = null;
     [SerializeField] public Image mapImage = null;
     [SerializeField] public TextMeshProUGUI mapText = null;
+    [SerializeField] public TextApparition mapNameTextApparitionComponent = null;
     [SerializeField] public int stageIndex = 0;
     [SerializeField] public GameObject customListCheckBox = null;
 

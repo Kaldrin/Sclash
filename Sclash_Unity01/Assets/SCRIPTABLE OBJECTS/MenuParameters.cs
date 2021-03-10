@@ -37,6 +37,7 @@ public class MenuParameters : ScriptableObject
 
     [Header("ERGONOMY")]
     public bool enableRumbles = true;
+    public string language = "en";
 
 
     [Header("STAGES")]

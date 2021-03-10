@@ -48,6 +48,7 @@ public class JsonSave
 
     [Header("ERGONOMY")]
     [SerializeField] public bool enableRumbles = true;
+    [SerializeField] public string language = "en";
 
 
     [Header("STAGES")]

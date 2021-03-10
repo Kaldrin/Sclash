@@ -184,6 +184,8 @@ public class MenuBrowser : MonoBehaviour
                         VerticalBrowse(horizontalJumpAmount);
                     else if (elements[browseIndex].GetComponent<SliderToVolume>())
                         elements[browseIndex].GetComponent<SliderToVolume>().slider.value++;
+                    else if (elements[browseIndex].GetComponent<Selector>())
+                        elements[browseIndex].GetComponent<Selector>().Switch(true);
 
 
                     hAxisInUse = true;
@@ -197,6 +199,8 @@ public class MenuBrowser : MonoBehaviour
                         VerticalBrowse(-horizontalJumpAmount);
                     else if (elements[browseIndex].GetComponent<SliderToVolume>())
                         elements[browseIndex].GetComponent<SliderToVolume>().slider.value--;
+                    else if (elements[browseIndex].GetComponent<Selector>())
+                        elements[browseIndex].GetComponent<Selector>().Switch(false);
 
 
                     hAxisInUse = true;
@@ -211,9 +215,7 @@ public class MenuBrowser : MonoBehaviour
                 // V AXIS
                 // Detects V axis let go
                 if (Mathf.Abs(yInput) <= verticalInputRestZone)
-                {
                     vAxisInUse = false;
-                }
 
 
                 if (!vAxisInUse)

@@ -14,8 +14,9 @@ public enum STAGETYPE
 [System.Serializable]
 public struct Map
 {
-    public GameObject mapObject;
     public string stageName;
+    public string stageNameKey;
+    public GameObject mapObject;
     public Sprite mapImage;
     public int musicIndex;
     public STAGETYPE type;

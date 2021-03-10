@@ -98,7 +98,7 @@ public class MapMenuLoader : MonoBehaviour
     {
         controls = GameManager.Instance.Controls;
 
-        ChangeStageMode(0);
+        
     }
 
 
@@ -106,12 +106,13 @@ public class MapMenuLoader : MonoBehaviour
     {
         LoadParameters();
         SetUpMenu();
+        ChangeStageMode(0);
     }
 
 
     void Update()
     {
-        if (enabled)
+        if (enabled && isActiveAndEnabled)
             ManageStageModeChange();
     }
     # endregion
@@ -280,7 +281,9 @@ public class MapMenuLoader : MonoBehaviour
 
 
                 newMapMenuObjectScript.mapImage.sprite = mapsDatabase01.stagesLists[i].mapImage;
-                newMapMenuObjectScript.mapText.text = mapsDatabase01.stagesLists[i].stageName;
+                //newMapMenuObjectScript.mapText.text = mapsDatabase01.stagesLists[i].stageName;
+                newMapMenuObjectScript.mapNameTextApparitionComponent.textKey = mapsDatabase01.stagesLists[i].stageNameKey;
+                newMapMenuObjectScript.mapNameTextApparitionComponent.TransfersTrad();
                 newMapMenuObjectScript.stageIndex = i;
                 newMapMenuObjectScript.UpdateCustomListCheckBox();
                 currentlyDisplayedStagesList.Add(i);

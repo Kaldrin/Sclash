@@ -16,36 +16,22 @@ public class MenuManager : MonoBehaviour
     public static MenuManager Instance = null;
 
 
-    # region MANAGERS
-    [Tooltip("The AudioManager script instance reference")]
-    [SerializeField] AudioManager audioManager = null;
-
-    [Tooltip("The references to the InputManager script instance component")]
-    [SerializeField] InputManager inputManager = null;
-    #endregion
 
 
-
-    #region MENU ELEMENTS
+    [Header("MENU ELEMENTS")]
     [SerializeField] GameObject backIndicator = null;
-    #endregion
 
 
 
 
 
-    #region DATA
     [Header("DATA")]
     [SerializeField] CharactersDatabase charactersData = null;
-    #endregion
 
 
 
-
-    # region SAVE DATA
     [Header("SAVE DATA")]
     [SerializeField] public MenuParameters menuParametersSaveScriptableObject = null;
-    # endregion
 
 
 
@@ -77,6 +63,7 @@ public class MenuManager : MonoBehaviour
 
     [Header("ERGONOMY SETTINGS")]
     [SerializeField] GameObject rumbleCheckBox = null;
+    [SerializeField] TextMeshProUGUI languageText = null;
 
 
 
@@ -147,11 +134,13 @@ public class MenuManager : MonoBehaviour
         // FILLS SCRIPTABLE OBJECTS
         LoadAudioSaveInScriptableObject();
         LoadGameSaveInScriptableObject();
+        LoadErgonomySaveInScriptableObject();
 
 
         // FILLS SCENE FROM SCRIPTABLE OBJECTS
         SetUpAudioSettingsFromScriptableObject();
         SetUpGameSettingsFromScriptableObject();
+        SetUpErgonomySettingsFromScriptableObject();
 
 
         Cursor.visible = true;
@@ -203,7 +192,7 @@ public class MenuManager : MonoBehaviour
         // Display score & in game help
         if (!playerDead && GameManager.Instance.gameState == GameManager.GAMESTATE.game)
         {
-            GameManager.Instance.scoreObject.GetComponent<Animator>().SetBool("On", inputManager.scoreInput);
+            GameManager.Instance.scoreObject.GetComponent<Animator>().SetBool("On", InputManager.Instance.scoreInput);
 
 
             for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
@@ -212,16 +201,16 @@ public class MenuManager : MonoBehaviour
                 if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster && i > 0)
                     break;
 
-                GameManager.Instance.inGameHelp[i].SetBool("On", inputManager.playerInputs[i].score);
+                GameManager.Instance.inGameHelp[i].SetBool("On", InputManager.Instance.playerInputs[i].score);
                 if (GameManager.Instance.playersList[i] != null)
-                    GameManager.Instance.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", inputManager.playerInputs[i].score);
+                    GameManager.Instance.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", InputManager.Instance.playerInputs[i].score);
             }
         }
         // Display in game help key indication
         if (!playerDead && GameManager.Instance.gameState == GameManager.GAMESTATE.game)
             for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
-                if (GameManager.Instance.playerKeysIndicators[i] != null && inputManager.playerInputs.Length > i)
-                    GameManager.Instance.playerKeysIndicators[i].SetBool("On", !inputManager.playerInputs[i].score);
+                if (GameManager.Instance.playerKeysIndicators[i] != null && InputManager.Instance.playerInputs.Length > i)
+                    GameManager.Instance.playerKeysIndicators[i].SetBool("On", !InputManager.Instance.playerInputs[i].score);
     }
     # endregion
 
@@ -236,8 +225,8 @@ public class MenuManager : MonoBehaviour
     void ManagePauseOnInput()
     {
         if (!pauseCooldownOn)
-            for (int i = 0; i < inputManager.playerInputs.Length; i++)
-                if (inputManager.playerInputs[i].pauseUp)
+            for (int i = 0; i < InputManager.Instance.playerInputs.Length; i++)
+                if (InputManager.Instance.playerInputs[i].pauseUp)
                 {
                     playerWhoPaused = i;
                     pauseCooldownOn = true;
@@ -250,7 +239,7 @@ public class MenuManager : MonoBehaviour
     void ManagePauseOutInput()
     {
         if (!pauseCooldownOn)
-            if (inputManager.playerInputs[playerWhoPaused].pauseUp)
+            if (InputManager.Instance.playerInputs[playerWhoPaused].pauseUp)
             {
                 pauseCooldownOn = false;
                 pauseCooldownStartTime = Time.time;
@@ -284,7 +273,7 @@ public class MenuManager : MonoBehaviour
         {
             backIndicator.SetActive(true);
 
-            audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
+            AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
             GameManager.Instance.SwitchState(GameManager.GAMESTATE.paused);
 
             if (!ConnectManager.Instance.enableMultiplayer)
@@ -301,7 +290,7 @@ public class MenuManager : MonoBehaviour
                         GameManager.Instance.playersList[i].GetComponent<Player>().canParry = false;
 
             canPauseOn = false;
-            audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
+            AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.pause);
 
             if (GameManager.Instance.gameState == GameManager.GAMESTATE.paused)
                 GameManager.Instance.SwitchState(GameManager.GAMESTATE.game);
@@ -368,6 +357,9 @@ public class MenuManager : MonoBehaviour
 
 
 
+
+
+
     #region SAVE / LOAD PARAMETERS
     // GAME SETTINGS FROM SAVE TO SCRIPTABLE OBJECTS
     public void LoadGameSaveInScriptableObject()
@@ -376,7 +368,14 @@ public class MenuManager : MonoBehaviour
 
         menuParametersSaveScriptableObject.displayHelp = save.displayHelp;
         menuParametersSaveScriptableObject.roundToWin = save.roundsToWin;
+    }
+    // ERGONOMY SETTINGS FROM SAVE TO SCRIPTABLE OBJECTS
+    public void LoadErgonomySaveInScriptableObject()
+    {
+        JsonSave save = SaveGameManager.GetCurrentSave();
+
         menuParametersSaveScriptableObject.enableRumbles = save.enableRumbles;
+        menuParametersSaveScriptableObject.language = save.language;
     }
     // AUDIO SETTINGS FROM SAVE TO SCRIPTABLE OBJECT
     public void LoadAudioSaveInScriptableObject()
@@ -427,7 +426,7 @@ public class MenuManager : MonoBehaviour
     }
 
 
-    // SET UP GAME SETTINGS
+    // SET UP GAME SETTINGS IN SCENE
     public void SetUpGameSettingsFromScriptableObject()
     {
         if (roundsToWinSlider != null)
@@ -444,6 +443,16 @@ public class MenuManager : MonoBehaviour
             GameManager.Instance.inGameHelp[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
             GameManager.Instance.playerKeysIndicators[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
         }
+    }
+    // SET UP ERGONOMY SETTINGS IN SCENE
+    public void SetUpErgonomySettingsFromScriptableObject()
+    {
+        if (rumbleCheckBox != null)
+            rumbleCheckBox.SetActive(menuParametersSaveScriptableObject.enableRumbles);
+        if (LanguageManager.Instance != null)
+            LanguageManager.Instance.language = menuParametersSaveScriptableObject.language;
+        if (languageText != null)
+            languageText.text = menuParametersSaveScriptableObject.language;
     }
     // SET UP AUDIO SETTINGS
     public void SetUpAudioSettingsFromScriptableObject()
@@ -473,8 +482,16 @@ public class MenuManager : MonoBehaviour
     {
         menuParametersSaveScriptableObject.roundToWin = Mathf.FloorToInt(roundsToWinSlider.value);
         menuParametersSaveScriptableObject.displayHelp = displayHelpCheckBox.activeInHierarchy;
+        menuParametersSaveScriptableObject.roundToWin = GameManager.Instance.scoreToWin;
+    }
+    // SAVE GAME SETTINGS
+    public void SaveErgonomySettingsInScriptableObject()
+    {
         if (rumbleCheckBox != null)
             menuParametersSaveScriptableObject.enableRumbles = rumbleCheckBox.activeInHierarchy;
+
+        if (languageText != null)
+            menuParametersSaveScriptableObject.language = languageText.text;
     }
     // SAVE AUDIO SETTINGS
     public void SaveAudioSettingsInScriptableObject()
@@ -485,7 +502,6 @@ public class MenuManager : MonoBehaviour
         menuParametersSaveScriptableObject.menuFXVolume = menuFXVolume.slider.value;
         menuParametersSaveScriptableObject.fxVolume = fxVolume.slider.value;
         menuParametersSaveScriptableObject.voiceVolume = voiceVolume.slider.value;
-        menuParametersSaveScriptableObject.roundToWin = GameManager.Instance.scoreToWin;
     }
 
 
@@ -496,7 +512,16 @@ public class MenuManager : MonoBehaviour
 
         save.roundsToWin = menuParametersSaveScriptableObject.roundToWin;
         save.displayHelp = menuParametersSaveScriptableObject.displayHelp;
+
+        SaveGameManager.Save();
+    }
+    // ERGONOMY SETTINGS FROM SCRIPTABLE OBJECT TO SAVE
+    public void SaveErgonomySettingsFromScriptableObject()
+    {
+        JsonSave save = SaveGameManager.GetCurrentSave();
+
         save.enableRumbles = menuParametersSaveScriptableObject.enableRumbles;
+        save.language = menuParametersSaveScriptableObject.language;
 
         SaveGameManager.Save();
     }
