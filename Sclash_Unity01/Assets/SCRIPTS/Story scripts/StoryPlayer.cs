@@ -81,7 +81,7 @@ public class StoryPlayer : Player
         base.ManageChargeInput();
     }
 
-    public override void ManageDashInput()
+    internal override void ManageDashInput()
     {
         if (playerIsAI)
         {

@@ -2958,8 +2958,25 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     #region DASH
-    public void DashInput(float inDirection, bool quickDash)
+    internal virtual void DashInput(float inDirection, bool quickDash)
     {
+        switch (playerState)
+        {
+            case STATE.normal:
+                break;
+            case STATE.charging:
+                break;
+            case STATE.canAttackAfterAttack:
+                break;
+            case STATE.pommeling:
+                break;
+            case STATE.dashing:
+                break;
+
+            default:
+                return;
+        }
+
         if (quickDash)
         {
             if (Mathf.Abs(inDirection) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
@@ -3013,30 +3030,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
                 case DASHSTEP.invalidated:
-                    bool canDash = false;
-                    switch (playerState)
-                    {
-                        case STATE.normal:
-                            canDash = true;
-                            break;
-                        case STATE.charging:
-                            canDash = true;
-                            break;
-                        case STATE.canAttackAfterAttack:
-                            canDash = true;
-                            break;
-                        case STATE.pommeling:
-                            canDash = true;
-                            break;
-                        case STATE.dashing:
-                            canDash = true;
-                            break;
-
-                        default:
-                            return;
-                    }
-
-                    if (inDirection == 0f && canDash)
+                    if (inDirection == 0f)
                     {
                         Debug.Log("Resetting values");
                         currentDashStep = DASHSTEP.rest;
@@ -3047,11 +3041,20 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
     // Functions to detect the dash input etc
-    public virtual void ManageDashInput()
+    internal virtual void ManageDashInput()
     {
         if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
             if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
                 currentDashStep = DASHSTEP.rest;
+
+        if (InputManager.Instance.playerInputs[playerNum].dash == 0f)
+        {
+            if (currentDashStep == DASHSTEP.invalidated)
+                currentDashStep = DASHSTEP.rest;
+
+            if (currentShortcutDashStep == DASHSTEP.invalidated)
+                currentShortcutDashStep = DASHSTEP.rest;
+        }
 
 
         return;

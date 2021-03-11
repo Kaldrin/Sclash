@@ -374,57 +374,102 @@ public class Player_Online : Player, IPunObservable
         }
     }
 
-    public override void ManageDashInput()
+    internal override void DashInput(float inDirection, bool quickDash)
     {
-        // Detects dash with basic input rather than double tap, shortcut
-        if (Mathf.Abs(InputManager.Instance.playerInputs[0].dash) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated && stamina >= staminaCostForMoves)
-            currentShortcutDashStep = DASHSTEP.rest;
-
-
-        if (Mathf.Abs(InputManager.Instance.playerInputs[0].dash) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
+        switch (playerState)
         {
-            dashDirection = Mathf.Sign(InputManager.Instance.playerInputs[0].dash);
+            case STATE.normal:
+                break;
+            case STATE.charging:
+                break;
+            case STATE.canAttackAfterAttack:
+                break;
+            case STATE.pommeling:
+                break;
+            case STATE.dashing:
+                break;
 
-            photonView.RPC("TriggerBasicDash", RpcTarget.All);
+            default:
+                return;
         }
 
+        if (quickDash)
+        {
+            if (Mathf.Abs(inDirection) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
+                currentShortcutDashStep = DASHSTEP.rest;
 
-        // Resets the dash input if too much time has passed
+            if (Mathf.Abs(inDirection) > shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.rest)
+            {
+                dashDirection = Mathf.Sign(inDirection);
+
+                TriggerBasicDash();
+                currentShortcutDashStep = DASHSTEP.invalidated;
+            }
+        }
+        else
+        {
+            switch (currentDashStep)
+            {
+                case DASHSTEP.rest:
+                    Debug.Log(inDirection);
+                    temporaryDashDirectionForCalculation = inDirection;
+                    dashInitializationStartTime = Time.time;
+                    currentDashStep = DASHSTEP.firstInput;
+                    break;
+
+                case DASHSTEP.firstInput:
+                    if (inDirection == 0f)
+                    {
+                        currentDashStep = DASHSTEP.firstRelease;
+                        break;
+                    }
+
+                    if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
+                    {
+                        currentDashStep = DASHSTEP.invalidated;
+                        break;
+                    }
+                    break;
+
+                case DASHSTEP.firstRelease:
+                    if (temporaryDashDirectionForCalculation == Mathf.Sign(inDirection))
+                    {
+                        dashDirection = temporaryDashDirectionForCalculation;
+                        currentDashStep = DASHSTEP.invalidated;
+                        TriggerBasicDash();
+                    }
+                    else
+                    {
+                        currentDashStep = DASHSTEP.invalidated;
+                    }
+                    break;
+
+
+                case DASHSTEP.invalidated:
+                    if (inDirection == 0f)
+                    {
+                        Debug.Log("Resetting values");
+                        currentDashStep = DASHSTEP.rest;
+                    }
+                    break;
+            }
+        }
+    }
+
+    internal override void ManageDashInput()
+    {
+
         if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
             if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
-                currentDashStep = DASHSTEP.invalidated;
-
-
-        // The player needs to let go the direction before pressing it again to dash
-        if (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) < dashDeadZone)
-        {
-            if (currentDashStep == DASHSTEP.firstInput)
-                currentDashStep = DASHSTEP.firstRelease;
-            // To make the first dash input he must have not been pressing it before, we need a double tap
-            else if (currentDashStep == DASHSTEP.invalidated)
                 currentDashStep = DASHSTEP.rest;
-        }
 
-
-        // When the player presses the direction
-        // Presses the
-        if (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) > dashDeadZone)
+        if (InputManager.Instance.playerInputs[0].dash == 0f)
         {
-            temporaryDashDirectionForCalculation = Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal);
+            if (currentDashStep == DASHSTEP.invalidated)
+                currentDashStep = DASHSTEP.rest;
 
-            if (currentDashStep == DASHSTEP.rest)
-            {
-                currentDashStep = DASHSTEP.firstInput;
-                dashDirection = temporaryDashDirectionForCalculation;
-                dashInitializationStartTime = Time.time;
-
-            }
-            // Dash is validated, the player is gonna dash
-            else if (currentDashStep == DASHSTEP.firstRelease && dashDirection == temporaryDashDirectionForCalculation)
-            {
-                currentDashStep = DASHSTEP.invalidated;
-                photonView.RPC("TriggerBasicDash", RpcTarget.All);
-            }
+            if (currentShortcutDashStep == DASHSTEP.invalidated)
+                currentShortcutDashStep = DASHSTEP.rest;
         }
     }
 
