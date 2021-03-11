@@ -4,7 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-// This script manages loading and reading of the elements, settings and saves of the stages menu
+
+// HEADER
+// For Sclash
+
+/// <summary>
+/// This script manages loading and reading of the elements, settings and saves of the stages menu
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.14
 // OPTIMIZED ?
 public class MapMenuLoader : MonoBehaviour
 {

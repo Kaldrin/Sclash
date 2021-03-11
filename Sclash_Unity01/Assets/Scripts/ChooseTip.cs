@@ -1,7 +1,17 @@
 ﻿using UnityEngine;
 using TMPro;
 
-// This script randomly chooses a tip to display in the main menu when enabled
+
+// HEADER
+// For Sclash
+
+// REQUIREMENTS
+// Requires the TextMeshPro package to work
+// Requires the TextApparitionComponent to make it work with a localization system with the LanguageManager
+
+/// <summary>
+/// This script randomly chooses a tip to display in the main menu when enabled
+/// </summary>
 public class ChooseTip : MonoBehaviour
 {
     [Header("COMPONENTS")]
@@ -17,6 +27,7 @@ public class ChooseTip : MonoBehaviour
 
 
     [Header("SETTINGS")]
+    [Tooltip("Instead of displaying the text in the TMPUGUI component, will set the key corresponding to the tip to display in the TextApparition component so it displays the tip in the right language")]
     [SerializeField] bool keysMode = true;
     
 
@@ -61,7 +72,7 @@ public class ChooseTip : MonoBehaviour
 
 
 
-    // GET REFERENCES
+    // Check if it's possible to get the missing component references
     void GetReferences()
     {
         if (tipsTextBox == null)
@@ -75,6 +86,7 @@ public class ChooseTip : MonoBehaviour
 
 
     // EDITOR
+    // Automatically get the references before the player has to drag'n drop them in the Serialized Fields
     private void OnDrawGizmosSelected()
     {
         GetReferences();

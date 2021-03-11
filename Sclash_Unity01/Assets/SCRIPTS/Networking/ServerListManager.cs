@@ -9,7 +9,7 @@ using Photon.Realtime;
 
 
 // Online script
-//Created for Unity 2019.1.1f1
+// Created for Unity 2019.1.1f1
 public class ServerListManager : MonoBehaviourPunCallbacks
 {
     // SINGLETON
@@ -37,9 +37,6 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     public ServerFinder serverFinder = null;
     [HideInInspector] public List<ServerItemInfos> serverItemsList = new List<ServerItemInfos>();
 
-
-    /*public string[] serverNames;
-    public string[] serverIPs;*/
 
 
     [Header("ROOM SPECS DISPLAY REFERENCES")]

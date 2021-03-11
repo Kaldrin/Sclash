@@ -5,7 +5,19 @@ using UnityEngine.UI;
 using TMPro;
 
 
-// Script that enables more function to change UI elements properties from inspector events like buttons
+
+
+// HEADER
+// Reusable script
+
+// REQUIREMENTS
+// Requires the TextMeshPro package
+
+/// <summary>
+/// Script that enables more function to change UI elements properties from inspector events like buttons
+/// </summary>
+
+// VERSION
 // Originally made for Unity 2019.1.1f1
 public class ChangeUIImageProperties : MonoBehaviour
 {
@@ -16,7 +28,9 @@ public class ChangeUIImageProperties : MonoBehaviour
 
 
 
-    public void ChangeImageColor(int colorIndex)
+
+    #region FUNCTIONS
+    public void ChangeImageColor(int colorIndex)                                                                                  // CHANGE IMAGE COLOR
     {
         GetComponents();
 
@@ -38,8 +52,8 @@ public class ChangeUIImageProperties : MonoBehaviour
 
 
 
-    // If components not here, get them
-    void GetComponents()
+    // Checks if it's possible to get the missing components
+    void GetComponents()                                                                                                                       // GET COMPONENTS
     {
         if (ImageToModify == null)
             if (GetComponent<Image>())
@@ -51,9 +65,13 @@ public class ChangeUIImageProperties : MonoBehaviour
     }
 
 
+
+
     // EDITOR
-    private void OnDrawGizmosSelected()
+    // Ergonomy stuff, tries to automatically get the components before the user has to drag'n drop the references in the Serialized Fields
+    private void OnDrawGizmosSelected()                                                                                                                     // ON DRAW GIZMOS SELECTED  
     {
         GetComponents();
     }
+    #endregion
 }

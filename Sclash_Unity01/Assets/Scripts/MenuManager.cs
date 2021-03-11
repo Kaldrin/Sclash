@@ -6,9 +6,19 @@ using UnityEngine.UI;
 using TMPro;
 
 
-// Manages menus in the duel scene, but only partly, the code is quite a mess on this side
+
+
+
+// HEADER
+// For Sclash
+
+/// <summary>
+/// Manages menus in the duel scene, but only partly, the code is quite a mess on this side
+/// </summary>
+
+// VERSION
 // Created for Unity 2019.1.1f1
-// NNOT OPTIMIZED
+// NOT OPTIMIZED I THINK
 public class MenuManager : MonoBehaviour
 {
     # region VARIABLES

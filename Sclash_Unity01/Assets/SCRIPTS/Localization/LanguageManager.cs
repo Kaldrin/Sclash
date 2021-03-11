@@ -6,28 +6,47 @@ using System.IO;
 
 
 
+
+// HEADER
 // Original script by Dylan BROUSSE
 // Modified to fit Sclash by Bastien BERNAND
-// Originally for Unity 2019.14
+// Reusable script
+
+// REQUIREMENTS
+// Needs the script TextApparition to work
+// Requires the TextApparition script.
+// Requires the TextMeshPro package (Referenced in the TextApparition script)
+// Requires the MenuManager script to work, but it's just because it's where the load / save functions are, you can put your own script with such functions, just edit the code to fit it
+// Requires the MenuParameters scriptable object (Referenced in the MenuManager) but it can be replaced with any game settings storage scriptable object of your own, just edit the code to fit it
+// Requires the DiacriticsReplacementSettings scriptable object to work
+
+/// <summary>
+/// This script, as a unique instance, will manage language stuff in the game.
+/// </summary>
+// It gets the json with the translation data and builds it as a list of entries that can be found with keys to display the text in the right language.
+
+// VERSION
+// Originally made for Unity 2019.14
 public class LanguageManager : MonoBehaviour
 {
     // SINGLETON
     [HideInInspector] public static LanguageManager Instance;
 
 
-
     [Header("SETTINGS")]
-    [SerializeField] public float dialogSpeed = 0.04f;
+    [Tooltip("Currently selected language")]
     [SerializeField] public string language = "english";
+    [Tooltip("Path to the json file starting from the STreamingAssets folder")]
     [SerializeField] public string filePath;
+    [Tooltip("Write here the languages you want to be available to the players. Please make sure the strings are exactly the same as in the GetDialog function")]
     [SerializeField] public List<string> availableLanguages = new List<string>() { "English", "French" };
 
 
     [Header("DATA")]
+    [Tooltip("Reference to the DiacriticsReplacementSettings object you want to use, the TextApparition component can be set to replace diacritics, and it will use these settings you can edit to do so")]
     [SerializeField] public DiacriticsReplacementSettings diacriticsReplacementSettings = null;
-
-
-    // TEXT DATA
+    [Tooltip("List of entries for the text in game")]
+    [HideInInspector] public TextData textData;
     [Serializable] public class Entry
     {
         public string key;
@@ -36,14 +55,11 @@ public class LanguageManager : MonoBehaviour
         public string turk;
         public string rus;
     }
-    
-
     [Serializable] public class TextData
- {
+    {
         public Entry[] mytexts;
     }
 
-    [HideInInspector] public TextData textData;
 
 
 
@@ -56,17 +72,19 @@ public class LanguageManager : MonoBehaviour
 
 
 
-    void Awake()                                                                                            // AWAKE
+    #region FUNCTIONS
+    void Awake()                                                                                                                  // AWAKE
     {
         Instance = this;
     }
 
 
-    void Start()                                                                                                    // START
+    void Start()                                                                                                                        // START
     {
         InitLanguage();
 
 
+        // Gets the json file, put it in a string and converts it to a TextData variable containing the list of entries
         string dataAsJson = null;
         if (File.Exists(Application.streamingAssetsPath + "/" + filePath))
             dataAsJson = File.ReadAllText(Application.streamingAssetsPath + "/" + filePath);
@@ -81,8 +99,12 @@ public class LanguageManager : MonoBehaviour
 
 
 
-    // Finds all the texts and reapplies the right text to them
-    public void RefreshTexts()
+
+
+    /// <summary>
+    /// Finds all the active TextApparition components in the scene and reapplies the right text to them using their already set up key, through calling their TransfersTrad method
+    /// </summary>
+    public void RefreshTexts()                                                                                                                // REFRESH TEXTS
     {
         TextApparition[] textsToRefresh = GameObject.FindObjectsOfType<TextApparition>();
 
@@ -92,16 +114,22 @@ public class LanguageManager : MonoBehaviour
     }
 
 
-    public string GetDialog(string key)
+    /// <summary>
+    /// Returns the text of an entry through its key, in the currently selected language
+    /// </summary>
+    public string GetDialog(string key)                                                                                                 // GET DIALOG
     {
         if (textData != null)
             for (int i = 0; i < textData.mytexts.Length; i++)
                 if (textData.mytexts[i].key == key)
                 {
+                    // RUSSIAN
                     if (language == "русский" && textData.mytexts[i].rus != null && textData.mytexts[i].rus != "")
                         return textData.mytexts[i].rus;
+                    // FRENCH
                     else if (language == "FRANCAIS" && textData.mytexts[i].fr != null && textData.mytexts[i].fr != "")
                         return textData.mytexts[i].fr;
+                    // ENGLISH, default
                     else
                         return textData.mytexts[i].en;
                 }
@@ -110,167 +138,29 @@ public class LanguageManager : MonoBehaviour
         return null;
     }
 
-    /*
-    public List<string> GetListOfCharacters(int position, int length)
+    /// <summary>
+    /// // Returns the key of an entry through its index
+    /// </summary>
+    public string GetDialogKeyfromIndex(int startIndex)                                                                                             // GET DIALOG KEY FROM INDEX
     {
-        if (datas != null)
-        {
-            List<string> characterNames = new List<string>();
-            string[] referenceKey = datas.mytexts[position].Key.Split("_"[0]);
-
-
-            for (int i = position; i < position + length; i++)
-                if (!characterNames.Contains(datas.mytexts[i].FRName))
-                    characterNames.Add(datas.mytexts[i].FRName);
-
-
-            return characterNames;
-        }
-
-
-        return null;
-    }
-    */
-    
-
-    public string GetDialogKeyfromIndex(int startIndex)
-    {
-        //save.language = "french";
         if (textData != null)
             return textData.mytexts[startIndex].key;
         return null;
     }
 
-    /*
-    public string GetNameOfTheSpeaker(string key)
-    {
-        if (datas != null)
-        {
-            for (int i = 0; i < datas.mytexts.Length; i++)
-                if (datas.mytexts[i].Key == key)
-                {
-                    if (language == "french")
-                        return datas.mytexts[i].FRName;
-                    else
-                        return datas.mytexts[i].ENName;
-                }
 
-
-            return null;
-        }
-
-
-        return null;
-    }
-    */
-
-
-    public Sprite GetCharacterSprite(string key)
-    {
-        /*
-        if (datas != null)
-        {
-            for (int i = 0; i < datas.mytexts.Length; i++)
-                if (datas.mytexts[i].Key == key)
-                    return CharactersBank.CharBank.GetSprite(datas.mytexts[i].FRName);
-            return null;
-        }
-        */
-
-        return null;
-    }
-
-
-    public int GetDialogPosition(string key)
-    {
-        if (textData != null)
-        {
-            string[] actualKeyPart = key.Split("_"[0]);
-
-
-            for (int i = 0; i < textData.mytexts.Length; i++)
-            {
-                string[] keyParts = textData.mytexts[i].key.Split("_"[0]);
-
-
-                if (keyParts.Length > 1)
-                    if (keyParts[0] + "_" + keyParts[1] == key)
-                        return i;
-            }
-
-
-            return 0;
-        }
-
-
-        return 0;
-    }
-
-
-    public int DialogQuoteLength(int startIndex)
-    {
-        if (textData != null)
-        {
-            int index = 0;
-            string[] referenceKey = textData.mytexts[startIndex].key.Split("_"[0]);
-
-
-            for (int i = startIndex; i < textData.mytexts.Length; i++)
-            {
-                string[] actualKey = textData.mytexts[i].key.Split("_"[0]);
-                index = i;
-
-
-                if (actualKey[0] + "_" + actualKey[1] != referenceKey[0] + "_" + referenceKey[1])
-                    return i - startIndex;
-            }
-
-
-            return (index + 1) - startIndex;
-        }
-
-
-        return 0;
-    }
-
-
-    public List<string> GetAWholeDialog(string key)
-    {
-        string[] actualKeyPart = key.Split("_"[0]);
-        List<string> list2trucs = new List<string>();
-
-
-        for (int i = 0; i < textData.mytexts.Length; i++)
-        {
-            string[] keyParts = textData.mytexts[i].key.Split("_"[0]);
-
-
-            if (keyParts[0] == actualKeyPart[0])
-                for (int x = i; x < textData.mytexts.Length; x++)
-                {
-                    if (keyParts[1] == actualKeyPart[1])
-                        list2trucs.Add(textData.mytexts[x].key);
-                    else
-                        return list2trucs;
-                }
-        }
-
-
-        return null;
-    }
-
-
-
-    public void InitLanguage()
+    // Set up language settings
+    public void InitLanguage()                                                                                                          // INIT LANGUAGE
     {
         if (MenuManager.Instance != null)
         {
-            //SettingsData settingsSave = GameSaveSystem.LoadSettingsData();
+            // Load setting from save into scriptable object
             MenuManager.Instance.LoadErgonomySaveInScriptableObject();
 
-
+            // Set up active language from scriptable object data
             if (MenuManager.Instance.menuParametersSaveScriptableObject.language != language)
                 language = MenuManager.Instance.menuParametersSaveScriptableObject.language;
         }
     }
+    #endregion
 }

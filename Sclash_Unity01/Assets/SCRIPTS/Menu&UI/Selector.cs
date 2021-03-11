@@ -4,8 +4,20 @@ using UnityEngine;
 using TMPro;
 
 
+// HEADER
+// For Sclash
+// Reusable script
 
-// Script that manages a left / right UI selection, like for a language
+// REQUIREMENTS
+// Requires the LanguageManager script to work as a language selector but you can remove this part it will still work as a selector
+// Requires the TextMeshPro package
+
+/// <summary>
+/// Script that manages a left / right UI selection, like for a language
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.14
 public class Selector : MonoBehaviour
 {
     [Header("COMPONENTS")]
@@ -117,8 +129,10 @@ public class Selector : MonoBehaviour
             wooshSFX.Play();
 
 
+        // Wait for the animation to play and then change the text
         Invoke("ChangeText", 0.09f);
     }
+
 
     void ChangeText()                                                                                       // CHANGE TEXT
     {
