@@ -173,8 +173,59 @@ public class Player_Online : Player, IPunObservable
             photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
     }
 
+    internal override void ManageChargeInput()
+    {
+        if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+        {
+            // Player presses attack button
+            if (InputManager.Instance.playerInputs[0].attack && canCharge)
+            {
+                if (stamina >= staminaCostForMoves)
+                {
+                    releasedAttack = false;
+                    SwitchState(STATE.charging);
+                    canCharge = false;
+                    chargeStartTime = Time.time;
+
+                    // FX
+                    chargeFlareFX.Play();
+                    chargeSlider.value = 1;
+
+
+                    // ANIMATION
+                    playerAnimations.CancelCharge(false);
+                    playerAnimations.TriggerCharge(true);
+
+
+                    // STATS
+                    if (characterType == CharacterType.duel)
+                    {
+                        if (statsManager)
+                            statsManager.AddAction(ACTION.charge, playerNum, 0);
+                        else
+                            Debug.Log("Couldn't access statsManager to record action, ignoring");
+                    }
+
+
+                    // FX
+                    chargeFlareFX.Play();
+
+
+                    // ANIMATION
+                    playerAnimations.CancelCharge(false);
+                    playerAnimations.TriggerCharge(true);
+                }
+            }
+
+            // Player releases attack button
+            if (!InputManager.Instance.playerInputs[0].attack)
+                canCharge = true;
+        }
+    }
+
     protected override void ManageCharging()
     {
+        Debug.Log("Charging input");
         if (!InputManager.Instance.playerInputs[0].attack && !releasedAttack)
         {
             photonView.RPC("ReleaseAttack", ConnectManager.defaultTarget);

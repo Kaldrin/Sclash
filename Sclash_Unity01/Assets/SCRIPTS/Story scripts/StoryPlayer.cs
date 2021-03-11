@@ -48,7 +48,7 @@ public class StoryPlayer : Player
                 solo_iAScript = GetComponent<IAScript>();
     }
 
-    public override void ManageChargeInput()
+    internal override void ManageChargeInput()
     {
         /*if (playerIsAI)
         {

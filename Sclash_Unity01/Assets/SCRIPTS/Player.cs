@@ -2174,7 +2174,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     #region CHARGE
     // Manages the detection of attack charge inputs
-    public virtual void ManageChargeInput()
+    internal virtual void ManageChargeInput()
     {
         // ONLINE
         if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
