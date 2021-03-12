@@ -13,7 +13,7 @@ public class PlayerControlCenter : MonoBehaviour
     PlayerControls controls;
     EventSystemControl UIcontrols;
 
-    Player attachedPlayer;
+    [SerializeField] Player attachedPlayer;
 
     private void Awake()
     {
@@ -34,9 +34,11 @@ public class PlayerControlCenter : MonoBehaviour
     private void Update()
     {
         InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
+
+        if (attachedPlayer == null)
+            if (GameManager.Instance.playersList.Count != 0)
+                attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
     }
-
-
 
     public void OnHorizontal(InputAction.CallbackContext ctx)
     {
@@ -94,14 +96,23 @@ public class PlayerControlCenter : MonoBehaviour
     public void QuickDash(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
-        {
-            InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
-        }
+            attachedPlayer.DashInput(ctx.ReadValue<float>(), true);
+
+        if (ctx.canceled)
+            attachedPlayer.DashInput(0f, true);
+
+        InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
     }
 
     public void OnDash(InputAction.CallbackContext ctx)
     {
-        InputManager.Instance.playerInputs[m_playerIndex].dash = Mathf.Sign(ctx.ReadValue<float>());
+        if (ctx.started)
+            attachedPlayer.DashInput(Mathf.Sign(ctx.ReadValue<float>()), false);
+
+        else if (ctx.canceled)
+            attachedPlayer.DashInput(ctx.ReadValue<float>(), false);
+
+        InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
     }
 
     public void OnPause(InputAction.CallbackContext ctx)

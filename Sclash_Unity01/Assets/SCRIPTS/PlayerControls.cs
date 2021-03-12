@@ -62,9 +62,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": ""Dash"",
                     ""type"": ""Value"",
                     ""id"": ""5c56dba8-13ec-4540-aab0-9d81aa5f5195"",
-                    ""expectedControlType"": ""Axis"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": ""MultiTap""
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""AnyKey"",

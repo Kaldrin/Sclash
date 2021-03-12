@@ -150,6 +150,11 @@ MonoBehaviour:
   backwardsAttackDashDistance: 1.5
   dashDeadZone: 0.5
   shortcutDashDeadZone: 0.5
+  dashDirection: 0
+  temporaryDashDirectionForCalculation: 0
+  dashInitializationStartTime: 0
+  actualUsedDashDistance: 0
+  dashTime: 0
   kickFrame: 0
   kickRange: 0.99
   canPommel: 1

@@ -48,7 +48,7 @@ public class StoryPlayer : Player
                 solo_iAScript = GetComponent<IAScript>();
     }
 
-    public override void ManageChargeInput()
+    internal override void ManageChargeInput()
     {
         /*if (playerIsAI)
         {
@@ -81,7 +81,7 @@ public class StoryPlayer : Player
         base.ManageChargeInput();
     }
 
-    public override void ManageDashInput()
+    internal override void ManageDashInput()
     {
         if (playerIsAI)
         {
