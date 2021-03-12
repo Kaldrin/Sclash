@@ -52,6 +52,14 @@ public class LanguageManager : MonoBehaviour
         public string key;
         public string fr;
         public string en;
+        public string ger;
+        public string braz;
+        public string port;
+        public string spa;
+        public string ita;
+        public string jap;
+        public string chi;
+        public string kor;
         public string turk;
         public string rus;
     }
@@ -123,12 +131,39 @@ public class LanguageManager : MonoBehaviour
             for (int i = 0; i < textData.mytexts.Length; i++)
                 if (textData.mytexts[i].key == key)
                 {
-                    // RUSSIAN
-                    if (language == "русский" && textData.mytexts[i].rus != null && textData.mytexts[i].rus != "")
-                        return textData.mytexts[i].rus;
                     // FRENCH
-                    else if (language == "FRANCAIS" && textData.mytexts[i].fr != null && textData.mytexts[i].fr != "")
+                    if (language == "FRANCAIS" && textData.mytexts[i].fr != null && textData.mytexts[i].fr != "")
                         return textData.mytexts[i].fr;
+                    // GERMAN
+                    else if (language == "DEUTSCHE" && textData.mytexts[i].ger != null && textData.mytexts[i].ger != "")
+                        return textData.mytexts[i].ger;
+                    // BRAZILIAN PORTUGUESE
+                    else if (language == "BRASILEIRO" && textData.mytexts[i].braz != null && textData.mytexts[i].braz != "")
+                        return textData.mytexts[i].braz;
+                    // PORTUGUESE
+                    else if (language == "PORTUGUES" && textData.mytexts[i].port != null && textData.mytexts[i].port != "")
+                        return textData.mytexts[i].port;
+                    // SPANISH
+                    else if (language == "ESPANOL" && textData.mytexts[i].spa != null && textData.mytexts[i].spa != "")
+                        return textData.mytexts[i].spa;
+                    // ITALIAN
+                    else if (language == "ITALIANO" && textData.mytexts[i].ita != null && textData.mytexts[i].ita != "")
+                        return textData.mytexts[i].ita;
+                    // JAPANESE
+                    else if (language == "日本語" && textData.mytexts[i].jap != null && textData.mytexts[i].jap != "")
+                        return textData.mytexts[i].jap;
+                    // CHINESE
+                    else if (language == "中国人" && textData.mytexts[i].chi != null && textData.mytexts[i].chi != "")
+                        return textData.mytexts[i].chi;
+                    // KOREAN
+                    else if (language == "한국어" && textData.mytexts[i].kor != null && textData.mytexts[i].kor != "")
+                        return textData.mytexts[i].kor;
+                    // TURKISH
+                    else if (language == "TURK" && textData.mytexts[i].turk != null && textData.mytexts[i].turk != "")
+                        return textData.mytexts[i].turk;
+                    // RUSSIAN
+                    else if (language == "РУССКИЙ" && textData.mytexts[i].rus != null && textData.mytexts[i].rus != "")
+                        return textData.mytexts[i].rus;
                     // ENGLISH, default
                     else
                         return textData.mytexts[i].en;

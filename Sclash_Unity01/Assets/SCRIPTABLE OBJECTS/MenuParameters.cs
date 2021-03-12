@@ -2,7 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Store all the settings of the menus
+
+// HEADER
+// For Sclash
+// Reusable script ?
+
+/// <summary>
+/// Stores all the saved settings of the menus for the player (Audio volumes, language, etc...)
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.14
 [CreateAssetMenu(fileName = "MenuParameters01", menuName = "Scriptable objects/Menu parameters")]
 public class MenuParameters : ScriptableObject
 {

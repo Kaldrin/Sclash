@@ -8,10 +8,14 @@ using TMPro;
 // REQUIREMENTS
 // Requires the TextMeshPro package to work
 // Requires the TextApparitionComponent to make it work with a localization system with the LanguageManager
+// Requires the TipsDataBase scriptable object to work
 
 /// <summary>
 /// This script randomly chooses a tip to display in the main menu when enabled
 /// </summary>
+
+// VERSION
+// Originally made for Unity 2019.14
 public class ChooseTip : MonoBehaviour
 {
     [Header("COMPONENTS")]
@@ -38,7 +42,7 @@ public class ChooseTip : MonoBehaviour
 
 
 
-    void OnEnable()                                                                         // ON ENABLE
+    void OnEnable()                                                                                   // ON ENABLE
     {
         Invoke("ChangeTip", 0.1f);
     }
@@ -47,7 +51,7 @@ public class ChooseTip : MonoBehaviour
 
     // TIP CHANGE
     // Changes the displayed tip immediatly
-    void ChangeTip()                                                                        // CHANGE TIP
+    void ChangeTip()                                                                                     // CHANGE TIP
     {
         GetReferences();
 
@@ -72,8 +76,9 @@ public class ChooseTip : MonoBehaviour
 
 
 
+
     // Check if it's possible to get the missing component references
-    void GetReferences()
+    void GetReferences()                                                                                                        // GET REFERENCES
     {
         if (tipsTextBox == null)
             if (GetComponent<TextMeshProUGUI>())
@@ -85,9 +90,11 @@ public class ChooseTip : MonoBehaviour
     }
 
 
+
+
     // EDITOR
     // Automatically get the references before the player has to drag'n drop them in the Serialized Fields
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()                                                                                                         // ON DRAW GIZMOS SELECTED
     {
         GetReferences();
     }
