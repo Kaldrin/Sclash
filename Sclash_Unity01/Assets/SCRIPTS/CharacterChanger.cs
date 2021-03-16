@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Animations;
 using TMPro;
 
 using ExitGames.Client.Photon;
@@ -21,7 +22,10 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     [SerializeField] public SpriteRenderer mask = null;
     [SerializeField] public SpriteRenderer weapon = null;
     [SerializeField] public SpriteRenderer sheath = null;
-    [SerializeField] GameObject scarf = null;
+    [SerializeField] GameObject scarfPrefab = null;
+    GameObject scarfObj = null;
+    // [SerializeField] GameObject scarf = null;
+    bool hasScarf = false;
 
 
     [Header("DATA")]
@@ -511,11 +515,38 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
 
+        hasScarf = charactersDatabase.charactersList[currentCharacterIndex].scarf;
+        if (hasScarf)
+        {
+            if (scarfPrefab != null)
+            {
+                scarfObj = Instantiate(scarfPrefab);
+                playerScript.scarfRenderer = scarfObj.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
+
+                ConstraintSource src = new ConstraintSource();
+                src.sourceTransform = transform;
+                src.weight = 1;
+
+                scarfObj.GetComponent<ParentConstraint>().SetSource(0, src);
+            }
+            else
+            {
+                Debug.Log("Couldn't find character scarf, ignoring");
+            }
+        }
+        else if (!hasScarf && scarfObj != null)
+        {
+            Destroy(scarfObj);
+            playerScript.scarfRenderer = null;
+        }
+
         // SCARF
-        if (scarf != null)
-            scarf.SetActive(charactersDatabase.charactersList[currentCharacterIndex].scarf);
-        else
-            Debug.Log("Couldn't find character scarf, ignoring");
+        // if (scarf != null)
+        // {
+        //     scarf.SetActive(charactersDatabase.charactersList[currentCharacterIndex].scarf);
+        // }
+        // else
+        //    
 
 
 
@@ -765,10 +796,30 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
 
         // SCARF
-        if (scarf != null)
-            scarf.SetActive(charactersDatabase.charactersList[currentCharacterIndex].scarf);
-        else
-            Debug.Log("Couldn't find character scarf, ignoring");
+        hasScarf = charactersDatabase.charactersList[currentCharacterIndex].scarf;
+        if (hasScarf)
+        {
+            if (scarfPrefab != null)
+            {
+                scarfObj = Instantiate(scarfPrefab);
+                playerScript.scarfRenderer = scarfObj.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
+
+                ConstraintSource src = new ConstraintSource();
+                src.sourceTransform = transform;
+                src.weight = 1;
+
+                scarfObj.GetComponent<ParentConstraint>().SetSource(0, src);
+            }
+            else
+            {
+                Debug.Log("Couldn't find character scarf, ignoring");
+            }
+        }
+        else if (!hasScarf && scarfObj != null)
+        {
+            Destroy(scarfObj);
+            playerScript.scarfRenderer = null;
+        }
     }
     #endregion
 

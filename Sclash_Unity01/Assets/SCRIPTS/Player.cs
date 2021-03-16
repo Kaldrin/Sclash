@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.Animations;
 
 using Photon.Pun;
 using Photon.Realtime;
@@ -45,7 +46,9 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] SpriteRenderer maskSpriteRenderer = null;
     [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
     [SerializeField] SpriteRenderer sheathSpriteRenderer = null;
-    [SerializeField] Renderer scarfRenderer = null;
+    [SerializeField] GameObject scarfPrefab = null;
+    GameObject scarfObject = null;
+    internal Renderer scarfRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
     [SerializeField] public Light playerLight = null;
     [Tooltip("The animator controller that will be put on the sprite object of the player to enable nice looking character change animations")]
