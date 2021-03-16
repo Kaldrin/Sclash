@@ -299,7 +299,7 @@ public class Player : MonoBehaviourPunCallbacks
         backwardsDashDistance = 2.5f;
     [SerializeField]
     protected float
-        allowanceDurationForDoubleTapDash = 0.3f,
+        allowanceDurationForDoubleTapDash = 0.175f,
         forwardAttackDashDistance = 2.5f,
         backwardsAttackDashDistance = 1.5f,
         dashDeadZone = 0.5f,
@@ -2984,14 +2984,13 @@ public class Player : MonoBehaviourPunCallbacks
             switch (currentDashStep)
             {
                 case DASHSTEP.rest:
-                    Debug.Log(inDirection);
-                    temporaryDashDirectionForCalculation = inDirection;
+                    temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                     dashInitializationStartTime = Time.time;
                     currentDashStep = DASHSTEP.firstInput;
                     break;
 
                 case DASHSTEP.firstInput:
-                    if (inDirection == 0f)
+                    if (Mathf.Abs(inDirection) == 0f)
                     {
                         currentDashStep = DASHSTEP.firstRelease;
                         break;
@@ -3000,8 +2999,8 @@ public class Player : MonoBehaviourPunCallbacks
                     if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
                     {
                         currentDashStep = DASHSTEP.invalidated;
-                        break;
                     }
+
                     break;
 
                 case DASHSTEP.firstRelease:
@@ -3021,7 +3020,6 @@ public class Player : MonoBehaviourPunCallbacks
                 case DASHSTEP.invalidated:
                     if (inDirection == 0f)
                     {
-                        Debug.Log("Resetting values");
                         currentDashStep = DASHSTEP.rest;
                     }
                     break;

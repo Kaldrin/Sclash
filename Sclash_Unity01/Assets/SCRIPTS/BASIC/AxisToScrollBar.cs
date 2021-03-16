@@ -24,9 +24,4 @@ public class AxisToScrollBar : MonoBehaviour
                 scrollbar.value += Mathf.Sign(ctx.ReadValue<Vector2>().y) * multiplier;
         };
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
 }
