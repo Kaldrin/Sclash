@@ -465,6 +465,17 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
+
+    [Header("RUMBLE")]
+    [SerializeField] RumbleSettings deathRumbleSettings = null;
+    [SerializeField] RumbleSettings finalDeathRumbleSettings = null;
+    [SerializeField] RumbleSettings clashedLeftRumbleSettings = null;
+    [SerializeField] RumbleSettings clashedRightRumbleSettings = null;
+    [SerializeField] RumbleSettings pommeledLeftRumbleSettings = null;
+    [SerializeField] RumbleSettings pommeledRightRumbleSettings = null;
+
+
+
     // NETWORK
     protected bool enemyDead = false;
 
@@ -1564,6 +1575,41 @@ public class Player : MonoBehaviourPunCallbacks
         // CAMERA FX
         GameManager.Instance.deathCameraShake.shakeDuration = GameManager.Instance.deathCameraShakeDuration;
         GameManager.Instance.TriggerSlowMoCoroutine(GameManager.Instance.roundEndSlowMoDuration, GameManager.Instance.roundEndSlowMoTimeScale, GameManager.Instance.roundEndTimeScaleFadeSpeed);
+
+
+
+        // RUMBLE
+        if (GameManager.Instance.score[otherPlayerNum] >= GameManager.Instance.scoreToWin - 1)
+        {
+            if (RumbleManager.Instance != null && finalDeathRumbleSettings != null)
+            {
+                // LOCAL
+                if (!ConnectManager.Instance.enableMultiplayer)
+                {
+                    if (playerNum == 0)
+                        RumbleManager.Instance.Rumble(finalDeathRumbleSettings, XInputDotNetPure.PlayerIndex.One);
+                    else if (playerNum == 1)
+                        RumbleManager.Instance.Rumble(finalDeathRumbleSettings, XInputDotNetPure.PlayerIndex.Two);
+                }
+                // ONLINE
+                else if (ConnectManager.Instance.enableMultiplayer && GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                    RumbleManager.Instance.Rumble(finalDeathRumbleSettings, XInputDotNetPure.PlayerIndex.One);
+            }
+        }
+        else if (RumbleManager.Instance != null && deathRumbleSettings != null)
+        {
+            // LOCAL
+            if (!ConnectManager.Instance.enableMultiplayer)
+            {
+                if (playerNum == 0)
+                    RumbleManager.Instance.Rumble(deathRumbleSettings, XInputDotNetPure.PlayerIndex.One);
+                else if (playerNum == 1)
+                    RumbleManager.Instance.Rumble(deathRumbleSettings, XInputDotNetPure.PlayerIndex.Two);
+            }
+            // ONLINE
+            else if (ConnectManager.Instance.enableMultiplayer && GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                RumbleManager.Instance.Rumble(deathRumbleSettings, XInputDotNetPure.PlayerIndex.One);
+        }
     }
     #endregion
 
@@ -2894,6 +2940,49 @@ public class Player : MonoBehaviourPunCallbacks
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
+
+
+
+
+            // RUMBLE
+            RumbleSettings clashedRumble = null;
+            if (transform.position.x - GameManager.Instance.playersList[otherPlayerNum].transform.position.x >= 0)
+                clashedRumble = pommeledLeftRumbleSettings;
+            else
+                clashedRumble = pommeledRightRumbleSettings;
+
+
+            if (GameManager.Instance.score[otherPlayerNum] >= GameManager.Instance.scoreToWin - 1)
+            {
+                if (RumbleManager.Instance != null && finalDeathRumbleSettings != null)
+                {
+                    // LOCAL
+                    if (!ConnectManager.Instance.enableMultiplayer)
+                    {
+                        if (playerNum == 0)
+                            RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+                        else if (playerNum == 1)
+                            RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.Two);
+                    }
+                    // ONLINE
+                    else if (ConnectManager.Instance.enableMultiplayer && GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                        RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+                }
+            }
+            else if (RumbleManager.Instance != null && deathRumbleSettings != null)
+            {
+                // LOCAL
+                if (!ConnectManager.Instance.enableMultiplayer)
+                {
+                    if (playerNum == 0)
+                        RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+                    else if (playerNum == 1)
+                        RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.Two);
+                }
+                // ONLINE
+                else if (ConnectManager.Instance.enableMultiplayer && GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                    RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+            }
         }
     }
     #endregion
@@ -2949,6 +3038,49 @@ public class Player : MonoBehaviourPunCallbacks
         // FX
         if (GameManager.Instance.playersList.Count > 1 && !GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().clashKanasFX.isPlaying)
             clashKanasFX.Play();
+
+
+
+
+        // RUMBLE
+        RumbleSettings clashedRumble = null;
+        if (transform.position.x - GameManager.Instance.playersList[otherPlayerNum].transform.position.x >= 0)
+            clashedRumble = clashedLeftRumbleSettings;
+        else
+            clashedRumble = clashedRightRumbleSettings;
+
+
+        if (GameManager.Instance.score[otherPlayerNum] >= GameManager.Instance.scoreToWin - 1)
+        {
+            if (RumbleManager.Instance != null && finalDeathRumbleSettings != null)
+            {
+                // LOCAL
+                if (!ConnectManager.Instance.enableMultiplayer)
+                {
+                    if (playerNum == 0)
+                        RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+                    else if (playerNum == 1)
+                        RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.Two);
+                }
+                // ONLINE
+                else if (ConnectManager.Instance.enableMultiplayer && GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                    RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+            }
+        }
+        else if (RumbleManager.Instance != null && deathRumbleSettings != null)
+        {
+            // LOCAL
+            if (!ConnectManager.Instance.enableMultiplayer)
+            {
+                if (playerNum == 0)
+                    RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+                else if (playerNum == 1)
+                    RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.Two);
+            }
+            // ONLINE
+            else if (ConnectManager.Instance.enableMultiplayer && GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+        }
     }
     #endregion
 

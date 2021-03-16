@@ -2,28 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+
+
+// HEADER
+// For Sclash
+
+/// <summary>
+/// Script of the camera arm for the duel mode, manages all camera movements
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.1.1f1
 public class CameraManager : MonoBehaviour
 {
     #region VARIABLES
-    #region CAMERA MAIN COMPONENTS
-    // CAMERA
-
-    #region Singleton
+    // Singleton
     // Camera instance for quicker reference
     public static CameraManager Instance;
-    #endregion
+
 
     [Header("CAMERA MAIN COMPONENTS")]
     [SerializeField] public Camera cameraComponent;
-    # endregion
-
 
 
 
 
 
     # region CAMERA STATE
-    // CAMERA STATE
     [Header("CAMERA STATE")]
     [SerializeField] public CAMERASTATE camState = CAMERASTATE.inactive;
     [HideInInspector]
@@ -36,6 +43,9 @@ public class CameraManager : MonoBehaviour
     }
     # endregion
 
+
+
+
     [Header("CAMERA SETTING")]
     public CameraSetting camSetting;
 
@@ -43,7 +53,6 @@ public class CameraManager : MonoBehaviour
 
 
     # region ZOOM
-    // ZOOM
     [Header("ZOOM")]
     [SerializeField] Vector2 cameraZoomZLimits = new Vector2(-6, -25);
     [SerializeField] Vector2 playersDistanceLimitsForCameraZoomedUnzoomedLimits = new Vector2(5, 25);
@@ -72,7 +81,6 @@ public class CameraManager : MonoBehaviour
 
 
     # region CAMERA MOVEMENTS
-    // CAMERA MOVEMENTS
     [Header("CAMERA MOVEMENTS")]
     public float battleXSmoothMovementsMultiplier = 0.5f;
     public float cinematicXSmoothMovementsMultiplier = 0.05f;
@@ -89,13 +97,8 @@ public class CameraManager : MonoBehaviour
 
 
 
-
-
-
-    # region FX
-    // FX
+    [Header("FX")]
     [SerializeField] public float deathCameraShakeDuration = 0.4f;
-    #endregion
     #endregion
 
 
@@ -115,15 +118,14 @@ public class CameraManager : MonoBehaviour
     # region FUNCTIONS
     #region BASE FUNCTIONS
     // BASE FUNCTIONS
-    //Awake is called before Start
-    private void Awake()
+    private void Awake()                                                                                                // AWAKE
     {
         Instance = this;
         if (camSetting != null)
             UseCameraSetting();
     }
 
-    void UseCameraSetting()
+    void UseCameraSetting()                                                                                                                     // USE CAMERA SETTINGS
     {
         cameraZoomZLimits = camSetting.CameraZoomZLimits;
         playersDistanceLimitsForCameraZoomedUnzoomedLimits = camSetting.PlayersDistanceLimitsForCameraZoomedUnzoomed;
@@ -138,8 +140,7 @@ public class CameraManager : MonoBehaviour
     }
 
     
-    // Start is called before the first frame update
-    protected virtual void Start()
+    protected virtual void Start()                                                                                                                  // START
     {
         playersList = FindPlayers();
         /*
@@ -163,8 +164,8 @@ public class CameraManager : MonoBehaviour
         StartCoroutine(BehaviourDependingOnState());
     }
 
-    // Update is called once per frame
-    void Update()
+
+    void Update()                                                                                                                   // UPDATE
     {
         switch (camState)
         {
@@ -183,7 +184,7 @@ public class CameraManager : MonoBehaviour
     }
 
 
-    IEnumerator BehaviourDependingOnState()
+    IEnumerator BehaviourDependingOnState()                                                                                                 // BEHAVIOUR DEPENDING ON STATE
     {
         while (true)
         {
@@ -213,7 +214,6 @@ public class CameraManager : MonoBehaviour
             yield return new WaitForSeconds(Time.fixedDeltaTime / 10);
         }
     }
-
     #endregion
 
 
@@ -224,8 +224,7 @@ public class CameraManager : MonoBehaviour
 
 
     #region CAMERA STATE
-    // CAMERA STATE
-    public void SwitchState(CAMERASTATE newState)
+    public void SwitchState(CAMERASTATE newState)                                                                                                               // SWITCH STATE
     {
         camState = newState;
 
@@ -257,25 +256,20 @@ public class CameraManager : MonoBehaviour
 
 
     #region PLAYERS
-    // PLAYERS
     // Find the players to use in the script
-    public GameObject[] FindPlayers()
+    public GameObject[] FindPlayers()                                                                                                               // FIND PLAYERS
     {
         Player[] playersScripts = FindObjectsOfType<Player>();
         playersList = new GameObject[playersScripts.Length];
 
         for (int i = 0; i < playersScripts.Length; i++)
-        {
             playersList[i] = playersScripts[i].gameObject;
-        }
 
 
         if (playersList != null)
         {
             for (int i = 0; i < playersList.Length; i++)
-            {
                 playersBaseYPos += playersList[i].transform.position.y;
-            }
             playersBaseYPos = playersBaseYPos / 2/*playersList.Length*/;
 
             return playersList;
@@ -296,9 +290,8 @@ public class CameraManager : MonoBehaviour
 
 
     # region X MOVEMENTS
-    // X MOVEMENTS
     // Camera follows players positions
-    protected virtual void MoveCameraWithPlayers()
+    protected virtual void MoveCameraWithPlayers()                                                                                                                  // MOVE CAMERA WITH PLAYERS
     {
         // Only calculates camera movements with players if there is at least 1 player in the scene
         if (playersList.Length > 0 && playersList != null)
@@ -343,13 +336,9 @@ public class CameraManager : MonoBehaviour
 
             // Applies limits to the camera arm X position so it doesn't go out of the game scene
             if (temporaryCalculationPosition.x > camerArmXLimitsForCurrentZoomLevel)
-            {
                 temporaryCalculationPosition.x = camerArmXLimitsForCurrentZoomLevel;
-            }
             else if (temporaryCalculationPosition.x < -camerArmXLimitsForCurrentZoomLevel)
-            {
                 temporaryCalculationPosition.x = -camerArmXLimitsForCurrentZoomLevel;
-            }
 
 
             // Translates the camera arm towards the new X position if there is at least one player in the scene
@@ -367,9 +356,8 @@ public class CameraManager : MonoBehaviour
 
 
     # region Z MOVEMENTS
-    // Z MOVEMENTS
     // Camera zooms with players distance to keep them in view
-    void ZoomCameraWithPlayers()
+    void ZoomCameraWithPlayers()                                                                                                                                                 // ZOOM CAMERA WITH PLAYERS
     {
         // Only calculates the zoom level depending on the players if there is at least one players in the scene
         if (playersList.Length > 0 && playersList != null)
@@ -386,9 +374,7 @@ public class CameraManager : MonoBehaviour
                 actualDistanceBetweenPlayers = Mathf.Abs(Vector3.Distance(playersList[0].transform.position, playersList[1].transform.position));
             }
             else if (playersList.Length == 1)
-            {
                 actualDistanceBetweenPlayers = 0;
-            }
 
 
             float cameraZoomZLimitsDifference = Mathf.Abs(cameraZoomZLimits.y) - Mathf.Abs(cameraZoomZLimits.x);
@@ -410,7 +396,7 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    void ZoomCameraCustom(float customZoom)
+    void ZoomCameraCustom(float customZoom)                                                                                                                                           // ZOOM CAMERA CUSTOM
     {
         Vector3 temporaryCalculationPosition = cameraComponent.transform.localPosition;
         float newCameraZPosition = customZoom;

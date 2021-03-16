@@ -7,36 +7,40 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
-// Created for Unity 2019.1.1f1
-// Global game manager, uses all the other scripts, very important
+
+// HEADER
 // A LITTLE MESSY ?
+// For Sclash
+
+// REQUIREMENTS
+// TextMeshPro package
+// Photon unity
+// PlayerControls script
+// MapLoader script (Single instance)
+// MenuManager script (Single instance)
+// AudioManager script (Single instance)
+// CameraManager script (Single instance)
+
+/// <summary>
+/// Global game manager for the duel mode, uses all the other scripts, very important
+/// </summary>
+
+// VERSION
+// Originally created for Unity 2019.1.1f1
 public class GameManager : MonoBehaviourPun
 {
     #region VARIABLES
-    #region MANAGERS
+    // SINGLETON
     [HideInInspector] public static GameManager Instance;
+
+    #region MANAGERS
     [Header("MANAGERS")]
-    [Tooltip("The AudioManager script instance reference")]
-    [SerializeField] AudioManager audioManager = null;
-
-    [Tooltip("The MenuManager script instance reference")]
-    [SerializeField] MenuManager menuManager = null;
-
-    [Tooltip("The CameraManager script instance reference")]
-    [SerializeField] CameraManager cameraManager = null;
-
-    [Tooltip("The MapLoader script instance reference")]
-    [SerializeField] public MapLoader mapLoader = null;
-
     [Tooltip("The CameraShake scripts instances references in the scene")]
-    [SerializeField]
-    public CameraShake
+    [SerializeField] public CameraShake
         deathCameraShake = null,
         clashCameraShake = null,
         pommelCameraShake = null,
         finalCameraShake = null;
-
-    [SerializeField] StatsManager statsManager = null;
     #endregion
 
 
@@ -457,7 +461,7 @@ public class GameManager : MonoBehaviourPun
 
 
     #region GAME STATE
-    public void SwitchState(GAMESTATE newState)
+    public void SwitchState(GAMESTATE newState)                                                                                                                         // SWITCH STATE
     {
         oldState = gameState;
         gameState = newState;
@@ -468,48 +472,54 @@ public class GameManager : MonoBehaviourPun
             case GAMESTATE.menu:                                                                      // MENU
                 break;
 
-            case GAMESTATE.loading:                                                                                // LOADING
+            case GAMESTATE.loading:                                                                      // LOADING
                 playerDead = false;
-                menuManager.TriggerPause(false);
-                menuManager.winScreen.SetActive(false);
-                scoreObject.GetComponent<Animator>().SetBool("On", false);
+                if (MenuManager.Instance != null)
+                {
+                    MenuManager.Instance.TriggerPause(false);
+                    MenuManager.Instance.winScreen.SetActive(false);
+                }
+                if (scoreObject != null && scoreObject.GetComponent<Animator>())
+                    scoreObject.GetComponent<Animator>().SetBool("On", false);
                 // IN GAME HELP
-                characterSelectionHelpAnimator.SetBool("On", false);
+                if (characterSelectionHelpAnimator != null)
+                    characterSelectionHelpAnimator.SetBool("On", false);
                 Cursor.visible = false;
                 break;
 
-            case GAMESTATE.intro:                                                                                        // INTRO
+            case GAMESTATE.intro:                                                                          // INTRO
                 break;
 
-            case GAMESTATE.game:                                                                                // GAME
+            case GAMESTATE.game:                                                                            // GAME
                 if (oldState == GAMESTATE.paused)
-                {
-                    for (int i = 0; i < playersList.Count; i++)
-                    {
-                        if (playersList[i] != null)
-                        {
-                            // ONLINE
-                            if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+                    if (playersList != null && playersList.Count > 0)
+                        for (int i = 0; i < playersList.Count; i++)
+                            if (playersList[i] != null)
                             {
-                                if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
+                                // ONLINE
+                                if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
                                 {
-                                    if (playersList[i].GetComponent<Player>().oldState != Player.STATE.clashed)
-                                        playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
-                                    else
-                                        playersList[i].GetComponent<Player>().SwitchState(Player.STATE.normal);
+                                    if (playersList[i].GetComponent<PhotonView>() && playersList[i].GetComponent<PhotonView>().IsMine)
+                                    {
+                                        if (playersList[i].GetComponent<Player>().oldState != Player.STATE.clashed)
+                                            playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                                        else
+                                            playersList[i].GetComponent<Player>().SwitchState(Player.STATE.normal);
+                                    }
                                 }
+                                else
+                                    playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+
+                                playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
                             }
-                            else
-                                playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+                if (CameraManager.Instance != null)
+                    CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.battle);
+                if (mainMenu != null)
+                    mainMenu.SetActive(false);
 
-                            playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
-                        }
-                    }
-                }
-                cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
-                mainMenu.SetActive(false);
+                if (blurPanel != null)
+                    blurPanel.SetActive(false);
 
-                blurPanel.SetActive(false);
                 Cursor.visible = false;
                 break;
 
@@ -533,9 +543,11 @@ public class GameManager : MonoBehaviourPun
                 break;
 
             case GAMESTATE.finished:                                                                                          // FINISHED
-                menuManager.winMessage.SetActive(true);
+                if (MenuManager.Instance != null)
+                    MenuManager.Instance.winMessage.SetActive(true);
                 if (oldState == GAMESTATE.paused)
-                    menuManager.SwitchPause();
+                    if (MenuManager.Instance != null)
+                        MenuManager.Instance.SwitchPause();
                 break;
         }
     }
@@ -548,14 +560,15 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    #region BEGIN GAME
+    #region BEGIN GAME                                                                                                                                                                      
     // SETUP
     // Setup the game before it starts
-    void SetupGame()
+    void SetupGame()                                                                                                                                                                       // SET UP GAME
     {
         // SOUND
         // Set on the menu music
-        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
 
 
         // PLAYERS
@@ -565,19 +578,24 @@ public class GameManager : MonoBehaviourPun
         Invoke("SetupGame2", 0.5f);
     }
 
-    void SetupGame2()
+    void SetupGame2()                                                                                                                                                                     // SET UP GAME 2
     {
-        cameraManager.FindPlayers();
+        // CAMERA
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.FindPlayers();
 
 
-        for (int i = 0; i < playersList.Count; i++)
-            playersList[i].GetComponent<Player>().ManageOrientation();
+        // PLAYERS
+        if (playersList != null && playersList.Count > 0)
+            for (int i = 0; i < playersList.Count; i++)
+                if (playersList[i] != null)
+                    playersList[i].GetComponent<Player>().ManageOrientation();
     }
 
 
 
 
-    void ConnectPlayer2()
+    void ConnectPlayer2()                                                                                                                                                               // CONNECT PLAYER 2
     {
         Debug.Log("Player2 joined");
         player2Detected = true;
@@ -595,12 +613,12 @@ public class GameManager : MonoBehaviourPun
     }
 
     // Begins the StartMatch coroutine, this function is called by the menu button Sclash
-    public void StartMatch()
+    public void StartMatch()                                                                                                                                                                // START MATCH
     {
         StartCoroutine(StartMatchCoroutine());
     }
 
-    public void ManageAI()
+    public void ManageAI()                                                                                                                                                              // MANAGE AI
     {
         foreach (Player p in FindObjectsOfType<Player>())
             p.gameObject.AddComponent<IAScript>();
@@ -609,7 +627,7 @@ public class GameManager : MonoBehaviourPun
     }
 
     // Starts the match, activates the camera cinematic zoom and then switches to battle camera
-    public IEnumerator StartMatchCoroutine()
+    public IEnumerator StartMatchCoroutine()                                                                                                                                            // START MATCH COROUTINE
     {
         StopCoroutine(StartMatchCoroutine());
 
@@ -619,8 +637,11 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.FindPlayers();
-        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.FindPlayers();
+            AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.beforeBattle);
+        }
 
 
         // SCORE DISPLAY
@@ -651,7 +672,8 @@ public class GameManager : MonoBehaviourPun
 
         // STATE
         SwitchState(GAMESTATE.game);
-        cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.battle);
 
 
         yield return new WaitForSeconds(0.5f);
@@ -666,9 +688,12 @@ public class GameManager : MonoBehaviourPun
 
 
         // Change camera speeds
-        cameraManager.actualXSmoothMovementsMultiplier = cameraManager.battleXSmoothMovementsMultiplier;
-        cameraManager.actualZoomSpeed = cameraManager.battleZoomSpeed;
-        cameraManager.actualZoomSmoothDuration = cameraManager.battleZoomSmoothDuration;
+        if (CameraManager.Instance != null)
+        {
+            CameraManager.Instance.actualXSmoothMovementsMultiplier = CameraManager.Instance.battleXSmoothMovementsMultiplier;
+            CameraManager.Instance.actualZoomSpeed = CameraManager.Instance.battleZoomSpeed;
+            CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.battleZoomSmoothDuration;
+        }
 
 
         yield return new WaitForSeconds(10f);
@@ -694,9 +719,10 @@ public class GameManager : MonoBehaviourPun
     }
 
     // A saber has been drawn, stores it and checks if both players have drawn
-    public void SaberDrawn(int playerNum)
+    public void SaberDrawn(int playerNum)                                                                                                                                                       // SABER DRAWN
     {
-        if (audioManager.audioState == AudioManager.AUDIOSTATE.beforeBattle || audioManager.audioState == AudioManager.AUDIOSTATE.pause)
+
+        if (AudioManager.Instance != null && AudioManager.Instance.audioState == AudioManager.AUDIOSTATE.beforeBattle || AudioManager.Instance.audioState == AudioManager.AUDIOSTATE.pause)
         {
             allPlayersHaveDrawn = true;
 
@@ -712,7 +738,7 @@ public class GameManager : MonoBehaviourPun
             if (allPlayersHaveDrawn)
             {
                 //audioManager.ActivateBattleMusic();
-                audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
+                AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
 
 
                 // IN GAME HELP
@@ -720,13 +746,13 @@ public class GameManager : MonoBehaviourPun
 
 
                 // STATS
-                statsManager.InitalizeNewGame(1, playersList[0].GetComponent<CharacterChanger>().currentCharacterIndex, playersList[1].GetComponent<CharacterChanger>().currentCharacterIndex);
-                statsManager.InitializeNewRound();
+                StatsManager.Instance.InitalizeNewGame(1, playersList[0].GetComponent<CharacterChanger>().currentCharacterIndex, playersList[1].GetComponent<CharacterChanger>().currentCharacterIndex);
+                StatsManager.Instance.InitializeNewRound();
 
 
                 // STAGE
-                if (mapLoader.currentMap != null && mapLoader.currentMap.GetComponent<MapPrefab>())
-                    mapLoader.currentMap.GetComponent<MapPrefab>().TriggerStartStage();
+                if (MapLoader.Instance.currentMap != null && MapLoader.Instance.currentMap.GetComponent<MapPrefab>())
+                    MapLoader.Instance.currentMap.GetComponent<MapPrefab>().TriggerStartStage();
                 else
                     Debug.Log("Couldn't find current stage script, ignoring");
 
@@ -747,7 +773,7 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    void SpawnAI()
+    void SpawnAI()                                                                                                                                                              // SPAWN AI
     {
         playersList.Clear();
         for (int i = 0; i < playerSpawns.Length; i++)
@@ -790,7 +816,7 @@ public class GameManager : MonoBehaviourPun
     /// Instantiates the players in the duel scene
     /// </summary>
     // Spawns the players
-    void SpawnPlayers()
+    void SpawnPlayers()                                                                                                                                                         // SPAWN PLAYERS
     {
         for (int i = 0; i < playerSpawns.Length; i++)
         {
@@ -846,7 +872,7 @@ public class GameManager : MonoBehaviourPun
     }
 
     // Reset all the players' variables for next round
-    void ResetPlayersForNextMatch()
+    void ResetPlayersForNextMatch()                                                                                                                                             // RESET PLAYERS FOR NEXT MATCH 
     {
         if (playerSpawns.Length < 2)
             playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
@@ -885,7 +911,7 @@ public class GameManager : MonoBehaviourPun
     }
 
     // Reset all the players' variables for next round
-    void ResetPlayersForNextRound()
+    void ResetPlayersForNextRound()                                                                                                                                             // RESET PLAYERS FOR NEXT ROUND
     {
         if (playerSpawns.Length < 2)
             playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
@@ -920,7 +946,7 @@ public class GameManager : MonoBehaviourPun
         playerDead = false;
     }
 
-    public GameObject GetOtherPlayer(GameObject o)
+    public GameObject GetOtherPlayer(GameObject o)                                                                                                                                  // GET OTEHR PLAYER
     {
         for (int i = 0; i < playersList.Count; i++)
             if (playersList[i] == o)
@@ -928,7 +954,6 @@ public class GameManager : MonoBehaviourPun
 
         return null;
     }
-
     #endregion
 
 
@@ -941,7 +966,7 @@ public class GameManager : MonoBehaviourPun
     #region ROUND TO ROUND & SCORE
     // DEAD
     // Executed when a player dies, starts the score display and next round parameters
-    public void APlayerIsDead(int incomingWinning)
+    public void APlayerIsDead(int incomingWinning)                                                                                                                                      // A PLAYER IS DEAD
     {
         winningPlayerIndex = incomingWinning;
         losingPlayerIndex = 1 - winningPlayerIndex;
@@ -949,7 +974,8 @@ public class GameManager : MonoBehaviourPun
         // STATS
         try
         {
-            statsManager.FinalizeRound(winningPlayerIndex);
+            if (StatsManager.Instance != null)
+                StatsManager.Instance.FinalizeRound(winningPlayerIndex);
         }
         catch
         {
@@ -986,7 +1012,7 @@ public class GameManager : MonoBehaviourPun
 
 
     // SCORE
-    void UpdatePlayersScoreValues()
+    void UpdatePlayersScoreValues()                                                                                                                                                     // UPDATE PLAYERS SCORE VALUES
     {
         score[winningPlayerIndex] += 1;
 
@@ -1006,7 +1032,7 @@ public class GameManager : MonoBehaviourPun
 
 
     // WON ?
-    bool CheckIfThePlayerWon()
+    bool CheckIfThePlayerWon()                                                                                                                                                          // CHECK IF THE PLAYER WON
     {
         if (score[winningPlayerIndex] >= scoreToWin)
             return true;
@@ -1017,7 +1043,7 @@ public class GameManager : MonoBehaviourPun
 
     // NEXT ROUND
     // Starts next round
-    IEnumerator NextRoundCoroutine()
+    IEnumerator NextRoundCoroutine()                                                                                                                    // NEXT ROUND COROUTINE
     {
         yield return new WaitForSecondsRealtime(timeBeforeNextRoundTransitionTriggers);
 
@@ -1026,7 +1052,8 @@ public class GameManager : MonoBehaviourPun
 
 
         // FX
-        roundTransitionLeavesFX.Play();
+        if (roundTransitionLeavesFX != null)
+            roundTransitionLeavesFX.Play();
 
 
         yield return new WaitForSeconds(1.5f);
@@ -1038,7 +1065,7 @@ public class GameManager : MonoBehaviourPun
         // STATS
         try
         {
-            statsManager.InitializeNewRound();
+            StatsManager.Instance.InitializeNewRound();
         }
         catch
         {
@@ -1053,20 +1080,21 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.roundBeginsRandomSoundSource.Play();
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.roundBeginsRandomSoundSource.Play();
     }
 
 
     // DISPLAY SCORE
     // Displays the current score for a given amount of time
-    void ShowScoreBetweenRoundsCoroutine()
+    void ShowScoreBetweenRoundsCoroutine()                                                                                                                  // SHOW SCORE BETWEEN ROUDNS COROUTINE
     {
         scoreObject.GetComponent<Animator>().SetBool("On", true);
 
 
         Invoke("HideScoreBetweenRounds", betweenRoundsScoreShowDuration);
     }
-    void HideScoreBetweenRounds()
+    void HideScoreBetweenRounds()                                                                                                                       // HIDE SCORE BETWEEN ROUNDS
     {
         scoreObject.GetComponent<Animator>().SetBool("On", false);
     }
@@ -1074,7 +1102,7 @@ public class GameManager : MonoBehaviourPun
 
     // RESET
     // Reset the score and its display
-    void ResetScore()
+    void ResetScore()                                                                                                                                   // RESET SCORE
     {
         score = new Vector2(0, 0);
 
@@ -1084,7 +1112,7 @@ public class GameManager : MonoBehaviourPun
 
 
     // MAX SCORE
-    public void UpdateMaxScoreDisplay()
+    public void UpdateMaxScoreDisplay()                                                                                                                     // UPDATE MAX SCORE DISPLAY
     {
         maxScoreTextDisplay.text = scoreToWin.ToString();
     }
@@ -1098,13 +1126,13 @@ public class GameManager : MonoBehaviourPun
 
     #region RESTART GAME
     // Calls ResetGame coroutine, called by main menu button at the end of the match
-    public void ResetGame()
+    public void ResetGame()                                                                                                                                     // RESET GAME
     {
         StartCoroutine(ResetGameCoroutine(false));
     }
 
     // Calls ResetGame coroutine, called by main menu button at the end of the match
-    public void ResetGameAndRematch()
+    public void ResetGameAndRematch()                                                                                                                               // RESET GAME & REMATCH
     {
         // ONLINE
         if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
@@ -1122,14 +1150,15 @@ public class GameManager : MonoBehaviourPun
     }
 
     // Resets the match settings and values for a next match
-    IEnumerator ResetGameCoroutine(bool rematchRightAfter)
+    IEnumerator ResetGameCoroutine(bool rematchRightAfter)                                                                                                          // RESET GAME COROUTINE
     {
         // STATS
         if (gameState != GAMESTATE.finished && allPlayersHaveDrawn)
         {
             try
             {
-                statsManager.FinalizeGame(false, 1);
+                if (StatsManager.Instance != null)
+                    StatsManager.Instance.FinalizeGame(false, 1);
             }
             catch
             {
@@ -1144,11 +1173,12 @@ public class GameManager : MonoBehaviourPun
 
 
         // NEXT STAGE
-        int newStageIndex = mapLoader.currentMapIndex;
+        int newStageIndex = 0;
+        if (MapLoader.Instance != null)
+            newStageIndex = MapLoader.Instance.currentMapIndex;
 
-        if (gameState == GAMESTATE.finished)
-            if (rematchRightAfter)
-                newStageIndex = CalculateNextStageIndex();
+        if (gameState == GAMESTATE.finished && rematchRightAfter)
+            newStageIndex = CalculateNextStageIndex();
 
 
         // STATE
@@ -1160,9 +1190,12 @@ public class GameManager : MonoBehaviourPun
             blurPanel.SetActive(true);
 
         // IN GAME INDICATIONS
-        drawTextAnimator.ResetTrigger("FadeOut");
-        drawTextAnimator.SetTrigger("FadeOut");
-        drawTextAnimator.ResetTrigger("FadeIn");
+        if (drawTextAnimator != null)
+        {
+            drawTextAnimator.ResetTrigger("FadeOut");
+            drawTextAnimator.SetTrigger("FadeOut");
+            drawTextAnimator.ResetTrigger("FadeIn");
+        }
 
         if (playersList != null && playersList.Count > 0)
             for (int i = 0; i < playersList.Count; i++)
@@ -1183,7 +1216,8 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.none);
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.none);
 
 
         yield return new WaitForSecondsRealtime(resetGameDelay);
@@ -1194,33 +1228,40 @@ public class GameManager : MonoBehaviourPun
 
 
         // PLAYERS LIGHTS / COLORS
-        for (int i = 0; i < playersList.Count; i++)
-            if (playersList[i].GetComponent<Player>().playerLight != null)
-            {
-                playersList[i].GetComponent<Player>().playerLight.color = playerLightsColors[i];
-                playersList[i].GetComponent<Player>().playerLight.intensity = 5;
-            }
+        if (playersList != null && playersList.Count > 0 && playerLightsColors != null && playerLightsColors.Length > 0)
+            for (int i = 0; i < playersList.Count; i++)
+                if (playersList[i] != null && playersList[i].GetComponent<Player>() && playersList[i].GetComponent<Player>().playerLight != null && playerLightsColors[i] != null)
+                {
+                    playersList[i].GetComponent<Player>().playerLight.color = playerLightsColors[i];
+                    playersList[i].GetComponent<Player>().playerLight.intensity = 5;
+                }
 
 
         // NEXT STAGE
-        if (demo && mapLoader.halloween) // Halloween stage for demo
-            mapLoader.SetMap(0, true);
-        else if (demo && mapLoader.christmas) // Christmas stage for demo
-            mapLoader.SetMap(1, true);
-
-        else
-            mapLoader.SetMap(newStageIndex, false);
+        if (MapLoader.Instance != null)
+        {
+            if (demo && MapLoader.Instance.halloween) // Halloween stage for demo
+                MapLoader.Instance.SetMap(0, true);
+            else if (demo && MapLoader.Instance.christmas) // Christmas stage for demo
+                MapLoader.Instance.SetMap(1, true);
+            else
+                MapLoader.Instance.SetMap(newStageIndex, false);
+        }
 
 
         ResetScore();
 
 
         // CAMERA
-        cameraManager.SwitchState(CameraManager.CAMERASTATE.inactive);
-        cameraManager.actualXSmoothMovementsMultiplier = cameraManager.cinematicXSmoothMovementsMultiplier;
-        cameraManager.actualZoomSmoothDuration = cameraManager.cinematicZoomSmoothDuration;
-        cameraManager.gameObject.transform.position = cameraManager.cameraArmBasePos;
-        cameraManager.cameraComponent.transform.position = cameraManager.cameraBasePos;
+        if (CameraManager.Instance != null)
+        {
+            CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.inactive);
+            CameraManager.Instance.actualXSmoothMovementsMultiplier = CameraManager.Instance.cinematicXSmoothMovementsMultiplier;
+            CameraManager.Instance.actualZoomSmoothDuration = CameraManager.Instance.cinematicZoomSmoothDuration;
+            CameraManager.Instance.gameObject.transform.position = CameraManager.Instance.cameraArmBasePos;
+            if (CameraManager.Instance.cameraComponent != null)
+                CameraManager.Instance.cameraComponent.transform.position = CameraManager.Instance.cameraBasePos;
+        }
 
 
         // Restarts a new match right after it is finished being set up
@@ -1232,18 +1273,20 @@ public class GameManager : MonoBehaviourPun
             SwitchState(GAMESTATE.menu);
 
             // Activates the main menu if it is not supposed to start a new match right after
-            menuManager.mainMenu.SetActive(true);
+            if (MenuManager.Instance != null && MenuManager.Instance.mainMenu != null)
+                MenuManager.Instance.mainMenu.SetActive(true);
             Cursor.visible = true;
 
 
             // AUDIO
-            audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.menu);
         }
     }
 
 
     // ONLINE
-    void OnlineRestartCall()
+    void OnlineRestartCall()                                                                                                                        // ONLINE RESTART CALL
     {
         if (ConnectManager.Instance != null)
             ConnectManager.Instance.RestartCall();
@@ -1253,15 +1296,8 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    private void OnMouseDown()
-    {
-
-    }
-
-
-
-    #region MATCH END
-    public void APlayerLeft()
+    #region MATCH END   
+    public void APlayerLeft()                                                                                                                               // A PLAYER LEFT
     {
         foreach (GameObject p in playersList)
             if (p != null)
@@ -1277,12 +1313,13 @@ public class GameManager : MonoBehaviourPun
     }
 
 
-    void APlayerWon()
+    void APlayerWon()                                                                                                                                                // A PLAYER WON
     {
         // STATS
         try
         {
-            statsManager.FinalizeGame(true, 1);
+            if (StatsManager.Instance != null)
+                StatsManager.Instance.FinalizeGame(true, 1);
         }
         catch
         {
@@ -1291,17 +1328,22 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        audioManager.SwitchAudioState(AudioManager.AUDIOSTATE.won);
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.won);
 
 
         // SCORE
         scoreObject.GetComponent<Animator>().SetBool("On", false);
-        for (int i = 0; i < playersList.Count; i++)
-        {
-            playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
-            inGameHelp[i].SetBool("On", false);
-            playerKeysIndicators[i].SetBool("On", false);
-        }
+        if (playersList != null && playersList.Count > 0)
+            for (int i = 0; i < playersList.Count; i++)
+            {
+                if (playersList[i] != null && playersList[i].GetComponent<PlayerAnimations>() && playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator != null)
+                    playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
+                if (inGameHelp != null && inGameHelp.Length > i && inGameHelp[i] != null)
+                    inGameHelp[i].SetBool("On", false);
+                if (playerKeysIndicators != null && playerKeysIndicators.Count > i && playerKeysIndicators[i] != null)
+                    playerKeysIndicators[i].SetBool("On", false);
+            }
 
         Invoke("EndGame", 4f);
     }
@@ -1311,19 +1353,23 @@ public class GameManager : MonoBehaviourPun
 
     // END
     // RENAME HERE IF WORKING
-    void EndGame()
+    void EndGame()                                                                                                                                                  // END GAME
     {
         // GAME STATE
         SwitchState(GAMESTATE.finished);
 
 
         // PLAYER STATE
-        playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.sneathing);
-        playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+        if (playersList != null && playersList.Count > 0 && playersList[winningPlayerIndex] != null && playersList[winningPlayerIndex].GetComponent<Player>())
+        {
+            playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.sneathing);
+            playersList[winningPlayerIndex].GetComponent<Player>().SwitchState(Player.STATE.frozen);
+        }
 
 
         // WIN MENU
-        menuManager.SetUpWinMenu(charactersData.charactersList[playersList[winningPlayerIndex].GetComponent<Player>().characterIndex].name, playersColors[winningPlayerIndex], score, playersColors);
+        if (MenuManager.Instance != null)
+            MenuManager.Instance.SetUpWinMenu(charactersData.charactersList[playersList[winningPlayerIndex].GetComponent<Player>().characterIndex].name, playersColors[winningPlayerIndex], score, playersColors);
 
 
         // ANIMATION
@@ -1336,23 +1382,27 @@ public class GameManager : MonoBehaviourPun
 
     // DEATH
     // Animation
-    void TriggerFallDeadAnimation()
+    void TriggerFallDeadAnimation()                                                                                                                                     // TRIGGER FALL DEATH ANIMATION
     {
-        playersList[losingPlayerIndex].GetComponent<PlayerAnimations>().TriggerRealDeath();
+        if (playersList != null && playersList.Count > 0 && playersList[losingPlayerIndex] != null && playersList[losingPlayerIndex].GetComponent<PlayerAnimations>())
+            playersList[losingPlayerIndex].GetComponent<PlayerAnimations>().TriggerRealDeath();
     }
 
 
     // MENU
-    void ShowMenu()
+    void ShowMenu()                                                                                                                                             // SHOW MENU
     {
         // MENU
-        blurPanel.SetActive(false);
-        menuManager.winScreen.SetActive(true);
+        if (blurPanel != null)
+            blurPanel.SetActive(false);
+        if (MenuManager.Instance != null && MenuManager.Instance.winScreen != null)
+            MenuManager.Instance.winScreen.SetActive(true);
         Cursor.visible = true;
 
 
         // AUDIO
-        audioManager.winMusicAudioSource.Play();
+        if (AudioManager.Instance != null && AudioManager.Instance.winMusicAudioSource != null)
+            AudioManager.Instance.winMusicAudioSource.Play();
     }
 
 
@@ -1360,7 +1410,7 @@ public class GameManager : MonoBehaviourPun
 
 
     #region EFFECTS
-    public void TriggerMatchEndFilterEffect(bool on)
+    public void TriggerMatchEndFilterEffect(bool on)                                                                                                        // TRIGGER MATCH END FILTER EFFECT
     {
         if (on)
         {
@@ -1371,8 +1421,8 @@ public class GameManager : MonoBehaviourPun
                 */
 
             // STAGE ELEMENTS
-            if (mapLoader.currentMap != null && mapLoader.currentMap.GetComponent<MapPrefab>())
-                mapLoader.currentMap.GetComponent<MapPrefab>().TriggerDramaticScreen();
+            if (MapLoader.Instance.currentMap != null && MapLoader.Instance.currentMap != null && MapLoader.Instance.currentMap.GetComponent<MapPrefab>())
+                MapLoader.Instance.currentMap.GetComponent<MapPrefab>().TriggerDramaticScreen();
 
 
 
@@ -1397,67 +1447,72 @@ public class GameManager : MonoBehaviourPun
 
             // SET ALL BLACK
             // SPRITES
-            for (int i = 0; i < spriteRenderers.Length; i++)
-                if (!spriteRenderers[i].CompareTag("NonBlackFX"))
-                {
-                    originalSpriteRenderersColors.Add(spriteRenderers[i].color);
-                    spriteRenderers[i].color = Color.black;
+            if (spriteRenderers != null && spriteRenderers.Length > 0)
+                for (int i = 0; i < spriteRenderers.Length; i++)
+                    if (!spriteRenderers[i].CompareTag("NonBlackFX"))
+                    {
+                        originalSpriteRenderersColors.Add(spriteRenderers[i].color);
+                        spriteRenderers[i].color = Color.black;
 
-                    originalSpriteRenderersMaterials.Add(spriteRenderers[i].material);
-                    spriteRenderers[i].material = deathFXSpriteMaterial;
-                }
+                        originalSpriteRenderersMaterials.Add(spriteRenderers[i].material);
+                        spriteRenderers[i].material = deathFXSpriteMaterial;
+                    }
             // MESHES
-            for (int i = 0; i < meshRenderers.Length; i++)
-                if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
-                {
-                    try
+            if (meshRenderers != null && meshRenderers.Length > 0)
+                for (int i = 0; i < meshRenderers.Length; i++)
+                    if (!meshRenderers[i].CompareTag("NonBlackFX") && meshRenderers[i].gameObject.activeInHierarchy)
                     {
-                        // Store original color DONT DELETE
-                        //originalMeshRenderersColors.Add(meshRenderers[i].material.color);
-                        // Set black
-                        meshRenderers[i].material.color = Color.black;
+                        try
+                        {
+                            // Store original color DONT DELETE
+                            //originalMeshRenderersColors.Add(meshRenderers[i].material.color);
+                            // Set black
+                            meshRenderers[i].material.color = Color.black;
+                        }
+                        catch { }
                     }
-                    catch { }
-                }
             // SKINNED MESHES
-            for (int i = 0; i < skinnedMeshRenderers.Length; i++)
-                if (!skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
-                {
-                    try
+            if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
+                for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                    if (!skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
                     {
-                        // Store original color
-                        skinnedMeshRenderesColors.Add(skinnedMeshRenderers[i].material.color);
-                        // Set black
-                        skinnedMeshRenderers[i].material.color = Color.black;
+                        try
+                        {
+                            // Store original color
+                            skinnedMeshRenderesColors.Add(skinnedMeshRenderers[i].material.color);
+                            // Set black
+                            skinnedMeshRenderers[i].material.color = Color.black;
+                        }
+                        catch { }
                     }
-                    catch { }
-                }
             // PARTICLES
-            for (int i = 0; i < particleSystems.Length; i++)
-                if (particleSystems[i] != null && !particleSystems[i].CompareTag("NonBlackFX") && particleSystems[i].gameObject.activeInHierarchy && particleSystems[i].isPlaying)
-                {
-                    // INDIVIDUAL
-                    ParticleSystem.Particle[] particles = new ParticleSystem.Particle[particleSystems[i].particleCount];
-                    particleSystems[i].GetParticles(particles);
+            if (particleSystems != null && particleSystems.Length > 0)
+                for (int i = 0; i < particleSystems.Length; i++)
+                    if (particleSystems[i] != null && !particleSystems[i].CompareTag("NonBlackFX") && particleSystems[i].gameObject.activeInHierarchy && particleSystems[i].isPlaying)
+                    {
+                        // INDIVIDUAL
+                        ParticleSystem.Particle[] particles = new ParticleSystem.Particle[particleSystems[i].particleCount];
+                        particleSystems[i].GetParticles(particles);
 
-                    for (int o = 0; o < particles.Length; o++)
-                        particles[o].startColor = Color.black;
-                    particleSystems[i].SetParticles(particles, particles.Length);
+                        for (int o = 0; o < particles.Length; o++)
+                            particles[o].startColor = Color.black;
+                        particleSystems[i].SetParticles(particles, particles.Length);
 
 
-                    // SYSTEMS
-                    ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
-                    originalParticleSystemsColors.Add(particleSystemMain.startColor.color);
-                    particleSystemMain.startColor = Color.black;
-                    originalParticleSystemsGradients.Add(particleSystemMain.startColor.gradient);
-                    particleSystemMain.startColor = deathVFXGradientForParticles;
-                }
+                        // SYSTEMS
+                        ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
+                        originalParticleSystemsColors.Add(particleSystemMain.startColor.color);
+                        particleSystemMain.startColor = Color.black;
+                        originalParticleSystemsGradients.Add(particleSystemMain.startColor.gradient);
+                        particleSystemMain.startColor = deathVFXGradientForParticles;
+                    }
 
 
             // LIGHTS
-            for (int i = 0; i < lights.Length; i++)
-                if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
-                    lights[i].gameObject.SetActive(false);
+            if (lights != null && lights.Length > 0)
+                for (int i = 0; i < lights.Length; i++)
+                    if (lights[i] != null && !lights[i].CompareTag("NonBlackFX") && lights[i].gameObject.activeInHierarchy)
+                        lights[i].gameObject.SetActive(false);
         }
         else
         {
@@ -1466,16 +1521,12 @@ public class GameManager : MonoBehaviourPun
             // SPRITES
 
             if (spriteRenderers != null && spriteRenderers.Length > 0)
-            {
                 for (int i = 0; i < spriteRenderers.Length; i++)
-                {
                     if (spriteRenderers[i] != null && !spriteRenderers[i].CompareTag("NonBlackFX"))
                     {
                         spriteRenderers[i].color = originalSpriteRenderersColors[i];
                         spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
                     }
-                }
-            }
             /*
             // MESHES DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             if (meshRenderers != null && meshRenderers.Length > 0)
@@ -1487,11 +1538,9 @@ public class GameManager : MonoBehaviourPun
             */
             // SKINNED MESHES
             if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
-            {
                 for (int i = 0; i < skinnedMeshRenderers.Length; i++)
                     if (skinnedMeshRenderers[i] != null && !skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
                         skinnedMeshRenderers[i].material.color = skinnedMeshRenderesColors[i];
-            }
             // PARTICLES
             if (particleSystems != null && particleSystems.Length > 0)
                 for (int i = 0; i < particleSystems.Length; i++)
@@ -1532,7 +1581,7 @@ public class GameManager : MonoBehaviourPun
 
     // SLOW MO
     // Starts the SlowMo coroutine
-    public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
+    public void TriggerSlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)                                                                  // TRIGGER SLOW ME COROUTINE
     {
         if (useSlowMotion)
         {
@@ -1543,10 +1592,11 @@ public class GameManager : MonoBehaviourPun
 
 
     // Slow motion and zoom for a given duration
-    IEnumerator SlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)
+    IEnumerator SlowMoCoroutine(float slowMoEffectDuration, float slowMoTimeScale, float fadeSpeed)                                                                         // SLOW MO COROUTINE
     {
         // CAMERA STATE
-        cameraManager.SwitchState(CameraManager.CAMERASTATE.eventcam);
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.eventcam);
 
 
         // TIME
@@ -1566,8 +1616,8 @@ public class GameManager : MonoBehaviourPun
 
 
         // AUDIO
-        if (score[winningPlayerIndex] < scoreToWin)
-            audioManager.TriggerSlowMoAudio(true);
+        if (score[winningPlayerIndex] < scoreToWin && AudioManager.Instance != null)
+            AudioManager.Instance.TriggerSlowMoAudio(true);
 
 
         yield return new WaitForSecondsRealtime(slowMoEffectDuration);
@@ -1579,7 +1629,8 @@ public class GameManager : MonoBehaviourPun
 
 
         // CAMERA
-        cameraManager.SwitchState(CameraManager.CAMERASTATE.battle);
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.SwitchState(CameraManager.CAMERASTATE.battle);
 
 
         // AUDIO
@@ -1590,8 +1641,8 @@ public class GameManager : MonoBehaviourPun
             audioManager.battleMusicStrikesSources[i].pitch = 1;
         }
         */
-        if (score[winningPlayerIndex] < scoreToWin)
-            audioManager.TriggerSlowMoAudio(false);
+        if (score != null && score[winningPlayerIndex] < scoreToWin && AudioManager.Instance != null)
+            AudioManager.Instance.TriggerSlowMoAudio(false);
 
 
         yield return new WaitForSecondsRealtime(0.5f);
@@ -1611,7 +1662,7 @@ public class GameManager : MonoBehaviourPun
 
 
     // Update the timescale smoothly for smooth slow mo effects in FixedUpdate
-    void RunTimeScaleUpdate()
+    void RunTimeScaleUpdate()                                                                                                                            // RUN TIMESCALE UPDATE
     {
         if (runTimeScaleUpdate)
         {
@@ -1624,17 +1675,15 @@ public class GameManager : MonoBehaviourPun
             if (Time.timeScale <= minTimeScale)
                 Time.timeScale = minTimeScale;
 
-
-            for (int i = 0; i < audioManager.phasesMainAudioSources.Count; i++)
-            {
-                audioManager.phasesMainAudioSources[i].pitch = Time.timeScale;
-                audioManager.phasesStrikesAudioSources[i].pitch = Time.timeScale;
-            }
+            // AUDIO
+            if (AudioManager.Instance != null)
+                for (int i = 0; i < AudioManager.Instance.phasesMainAudioSources.Count; i++)
+                {
+                    AudioManager.Instance.phasesMainAudioSources[i].pitch = Time.timeScale;
+                    AudioManager.Instance.phasesStrikesAudioSources[i].pitch = Time.timeScale;
+                }
         }
     }
-
-
-
     #endregion
 
 
@@ -1643,9 +1692,12 @@ public class GameManager : MonoBehaviourPun
 
     #region SECONDARY FUNCTIONS
     // STAGE INDEX
-    public int CalculateNextStageIndex()
+    public int CalculateNextStageIndex()                                                                                                            // CALCULATE NEXT STAGE INDEX
     {
-        int nextStageIndex = mapLoader.currentMapIndex;
+        int nextStageIndex = 0;
+        if (MapLoader.Instance != null)
+            nextStageIndex = MapLoader.Instance.currentMapIndex;
+
         int loopCount = 0;
 
 
@@ -1657,23 +1709,23 @@ public class GameManager : MonoBehaviourPun
             {
                 if (!gameParameters.randomStage)
                 {
-                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
-                        nextStageIndex = mapLoader.currentMapIndex + 1;
-                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.night)
-                        nextStageIndex = mapLoader.currentMapIndex - 1;
+                    if (MapLoader.Instance.mapsData.stagesLists[MapLoader.Instance.currentMapIndex].type == STAGETYPE.day)
+                        nextStageIndex = MapLoader.Instance.currentMapIndex + 1;
+                    if (MapLoader.Instance.mapsData.stagesLists[MapLoader.Instance.currentMapIndex].type == STAGETYPE.night)
+                        nextStageIndex = MapLoader.Instance.currentMapIndex - 1;
                 }
                 else
                 {
-                    if (mapLoader.mapsData.stagesLists[mapLoader.currentMapIndex].type == STAGETYPE.day)
-                        nextStageIndex = mapLoader.currentMapIndex + 1;
+                    if (MapLoader.Instance.mapsData.stagesLists[MapLoader.Instance.currentMapIndex].type == STAGETYPE.day)
+                        nextStageIndex = MapLoader.Instance.currentMapIndex + 1;
                     else
                     {
-                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                        nextStageIndex = Random.Range(0, MapLoader.Instance.mapsData.stagesLists.Count);
 
                         if (gameParameters.useCustomListForRandom)
-                            while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex || !(mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.day))
+                            while (!MapLoader.Instance.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == MapLoader.Instance.currentMapIndex || !(MapLoader.Instance.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.day))
                             {
-                                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                                nextStageIndex = Random.Range(0, MapLoader.Instance.mapsData.stagesLists.Count);
                                 loopCount++;
 
 
@@ -1684,9 +1736,9 @@ public class GameManager : MonoBehaviourPun
                                 }
                             }
                         else
-                            while (nextStageIndex == mapLoader.currentMapIndex || mapLoader.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.night)
+                            while (nextStageIndex == MapLoader.Instance.currentMapIndex || MapLoader.Instance.mapsData.stagesLists[nextStageIndex].type == STAGETYPE.night)
                             {
-                                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                                nextStageIndex = Random.Range(0, MapLoader.Instance.mapsData.stagesLists.Count);
                                 loopCount++;
 
 
@@ -1704,13 +1756,13 @@ public class GameManager : MonoBehaviourPun
             // If not day / night
             else if (gameParameters.randomStage)
             {
-                nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                nextStageIndex = Random.Range(0, MapLoader.Instance.mapsData.stagesLists.Count);
 
 
                 if (gameParameters.useCustomListForRandom)
-                    while (!mapLoader.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == mapLoader.currentMapIndex)
+                    while (!MapLoader.Instance.mapsData.stagesLists[nextStageIndex].inCustomList || nextStageIndex == MapLoader.Instance.currentMapIndex)
                     {
-                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                        nextStageIndex = Random.Range(0, MapLoader.Instance.mapsData.stagesLists.Count);
 
                         loopCount++;
                         if (loopCount >= 100)
@@ -1720,9 +1772,9 @@ public class GameManager : MonoBehaviourPun
                         }
                     }
                 else
-                    while (nextStageIndex == mapLoader.currentMapIndex)
+                    while (nextStageIndex == MapLoader.Instance.currentMapIndex)
                     {
-                        nextStageIndex = Random.Range(0, mapLoader.mapsData.stagesLists.Count);
+                        nextStageIndex = Random.Range(0, MapLoader.Instance.mapsData.stagesLists.Count);
 
                         loopCount++;
                         if (loopCount >= 100)
@@ -1741,7 +1793,7 @@ public class GameManager : MonoBehaviourPun
 
     // COMPARE FLOATS
     // Compares 2 floats with a range of tolerance
-    public static bool FastApproximately(float a, float b, float threshold)
+    public static bool FastApproximately(float a, float b, float threshold)                                                                                                 // FAST APPROXIMATELY
     {
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
     }

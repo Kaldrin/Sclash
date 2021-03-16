@@ -4,24 +4,39 @@ using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using Unity.RemoteConfig;
 
-// This class controls stage loading and most stage related stuff. Strongly tied to the MapMenuLoader and MapMenu stuff classes
+
+
+
+
+// HEADER
+// For Sclash
 // OPTIMIZED
+
+// REQUIREMENTS
+// Requires Remote Config package
+// Requires Post Processing Stack package
+// Requires GameManager script (Single instance)
+// Requires Audio Manager script (Single instance)
+// Requires MapMenuLoader script (Single instance)
+
+/// <summary>
+/// This script controls stage loading and most stage related stuff. Strongly tied to the MapMenuLoader and MapMenu stuff classes
+/// </summary>
+
+
 public class MapLoader : MonoBehaviour
 {
     #region VARIABLES
-    #region Singleton
+    // Singleton
     public static MapLoader Instance;
-    #endregion
 
 
-    #region MANAGERS
+
     [Header("MANAGERS")]
     [Tooltip("The reference for the unique game manager script of the scene")]
     [SerializeField] GameManager gameManager = null;
     [SerializeField] AudioManager audioManager = null;
     [SerializeField] MapMenuLoader mapMenuLoader = null;
-    # endregion
-
 
 
 
@@ -44,7 +59,6 @@ public class MapLoader : MonoBehaviour
 
 
 
-    # region STAGE LOADING
     [Header("STAGE LOADING")]
     [SerializeField] bool loadMapOnStart = false;
     [HideInInspector] public bool halloween = false;
@@ -52,7 +66,6 @@ public class MapLoader : MonoBehaviour
     bool canLoadNewMap = true;
     int season = 0;
     int postProcessVolumeBlendState = 0;
-    #endregion
 
 
 
@@ -90,7 +103,7 @@ public class MapLoader : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    void Awake()                                                                                                        // AWAKE
+    void Awake()                                                                                                                                    // AWAKE
     {
         Instance = this;
 
@@ -106,7 +119,7 @@ public class MapLoader : MonoBehaviour
     }
     
     // Update is called once per graphic frame
-    void Update()                                                                                                                           // UPDATE
+    void Update()                                                                                                                                        // UPDATE
     {
         // POST PROCESS
         // Blends last and current stages post process volumes profiles for smooth transition

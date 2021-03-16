@@ -8,8 +8,24 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 
-// This script, placed on the character, allows for changing the character before the battle, and also affects the UI elements that display the characters
+
+// HEADER
+// For Sclash
 // OPTIMIZED
+
+// REQUIREMENTS
+// Photon Unity
+// TextMeshPro package
+// Player script
+// GameManager script (Single instance)
+// ConnetManager script (Single instance)
+
+/// <summary>
+/// This script, placed on the character, allows for changing the character before the battle, and also affects the UI elements that display the characters
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.14
 public class CharacterChanger : MonoBehaviourPunCallbacks
 {
     #region VARIABLES
@@ -89,10 +105,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     #region FUNCTIONS
-    void Start()
-    {
-    }
-
     new void OnEnable()                                                                             // ONE ENABLE
     {
         ConnectManager.PlayerJoined += FetchChanger;
@@ -488,7 +500,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // CHANGE MASK & WEAPON INDEX
-        if (playerScript.gameManager.mapLoader.halloween) // Halloween
+        if (MapLoader.Instance.halloween) // Halloween
         {
             currentMaskIndex = 6;
             currentWeaponIndex = 1;
@@ -754,7 +766,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // CHANGE MASK & WEAPON INDEX
-        if (playerScript.gameManager.mapLoader.halloween) // Halloween
+        if (MapLoader.Instance.halloween) // Halloween
         {
             currentMaskIndex = 6;
             currentWeaponIndex = 1;

@@ -5,8 +5,20 @@ using System;
 using System.IO;
 
 
+// HEADER
+// For Sclash
 
-// Script that manages the recording of fights to have data
+// REQUIREMENTS
+// GameManager script (Single instance)
+// MapLoader script (Single instance)
+// Stats scriptable object
+
+/// <summary>
+/// Script that manages the recording of fights to have data
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.1.1f1
 public class StatsManager : MonoBehaviour
 {
     // SINGLETON
@@ -30,6 +42,9 @@ public class StatsManager : MonoBehaviour
 
     [Header("SAVE DATA")]
     [SerializeField] string statsSaveFileName = "StatsAsset.txt";
+
+
+
 
 
 

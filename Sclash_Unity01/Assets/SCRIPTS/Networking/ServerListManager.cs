@@ -340,5 +340,21 @@ public class ServerListManager : MonoBehaviourPunCallbacks
             joinRoomButtonTextApparitionCOmponent.TransfersTrad();
         }
     }
+
+
+
+
+
+
+
+
+
+    // 'cause I'm stressed by these warnings but I don't want to remove these variables;
+    void RemoveWarnings()
+    {
+        matchmakingButtonName += matchmakingButtonName;
+        joinServerButtonName += joinServerButtonName;
+        joinRoomText.text += joinRoomText.text;
+    }
     #endregion
 }

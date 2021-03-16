@@ -2,7 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Store the game st ats at runtime
+
+
+// HEADER
+// For Sclash
+
+/// <summary>
+/// Scriptable object that stores the game stats at runtime, with multiple classes and structures to organize it. Works with the StatManager script (Single instance)
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.1.1f1
+[CreateAssetMenu(fileName = "Stats01", menuName = "Scriptable objects/Stats")]
+public class Stats : ScriptableObject
+{
+    public List<GlobalStat> globalStats = new List<GlobalStat>();
+
+    public List<CharacterStats> characters = new List<CharacterStats>();
+}
+
+
+
+
+
+
+
 [System.Serializable]
 public struct Date
 {
@@ -141,12 +165,4 @@ public struct GlobalStat
     public int successfulParry;
     public int clash;
     public int dodge;
-}
-
-[CreateAssetMenu(fileName = "Stats01", menuName = "Scriptable objects/Stats")]
-public class Stats : ScriptableObject
-{
-    public List<GlobalStat> globalStats = new List<GlobalStat>();
-
-    public List<CharacterStats> characters = new List<CharacterStats>();
 }
