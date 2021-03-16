@@ -557,6 +557,7 @@ public class Player : MonoBehaviourPunCallbacks
             {
                 UpdateStaminaSlidersValue();
                 UpdateStaminaColor();
+                UpdateChargeShadowSize();
 
 
                 SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -2265,7 +2266,7 @@ public class Player : MonoBehaviourPunCallbacks
                 }
             }
 
-            
+
 
             if (!InputManager.Instance.playerInputs[playerNum].attack)
                 canCharge = true;
@@ -2274,36 +2275,19 @@ public class Player : MonoBehaviourPunCallbacks
 
     protected virtual void ManageCharging()
     {
-        // Online
-        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster && photonView.IsMine)
+        //Player releases attack button
+        if (!InputManager.Instance.playerInputs[playerNum].attack)
         {
-            //Player releases attack button
-            if (!InputManager.Instance.playerInputs[0].attack)
-            {
-                photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
-                return;
-            }
+            ReleaseAttack();
+            return;
         }
-        else
-        {
-            //Player releases attack button
-            if (!InputManager.Instance.playerInputs[playerNum].attack)
-            {
-                ReleaseAttack();
-                return;
-            }
-        }
-
 
         // If the player has waited too long charging
         if (chargeLevel >= maxChargeLevel)
         {
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
-                if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
-                    photonView.RPC("ReleaseAttack", RpcTarget.All);
-                else
-                    ReleaseAttack();
+                ReleaseAttack();
             }
         }
         // Pass charge levels
