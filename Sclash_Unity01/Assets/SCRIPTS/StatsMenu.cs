@@ -22,6 +22,7 @@ public class StatsMenu : MonoBehaviour
     [SerializeField] string statModeSwitchAxis = "MenuTriggers";
     [SerializeField] float statModeSwitchAxisDeadzone = 0.3f;
     bool canInputModeChange = true;
+    PlayerControls controls;
 
 
 
@@ -62,6 +63,15 @@ public class StatsMenu : MonoBehaviour
     [SerializeField] GameObject gameStatObject = null;
     List<GameStat> gameStatsList = new List<GameStat>();
     #endregion
+
+
+    [Header("AUDIO")]
+    [SerializeField] PlayRandomSoundInList clickSFX = null;
+
+
+    [Header("RUMBLE")]
+    [SerializeField] RumbleSettings rightSwitchRumbleSettings = null;
+    [SerializeField] RumbleSettings leftSwitchRumbleSettings = null;
     #endregion
 
 
@@ -81,6 +91,7 @@ public class StatsMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        controls = GameManager.Instance.Controls;
         ChangeStatMode(0);
     }
 
@@ -98,17 +109,30 @@ public class StatsMenu : MonoBehaviour
 
     void ManageStatModeChange()
     {
-        if (canInputModeChange && Mathf.Abs(Input.GetAxis(statModeSwitchAxis)) > statModeSwitchAxisDeadzone)
+        if (canInputModeChange && Mathf.Abs(controls.Menu.Menutriggers.ReadValue<float>()) > statModeSwitchAxisDeadzone)
         {
             canInputModeChange = false;
 
 
-            if (Input.GetAxis(statModeSwitchAxis) < -statModeSwitchAxisDeadzone)
+            if (controls.Menu.Menutriggers.ReadValue<float>() < -statModeSwitchAxisDeadzone)
+            {
                 ChangeStatMode(-1);
-            else if (Input.GetAxis(statModeSwitchAxis) > -statModeSwitchAxisDeadzone)
+
+                // RUMBLE
+                if (RumbleManager.Instance != null)
+                    RumbleManager.Instance.Rumble(leftSwitchRumbleSettings);
+
+            }
+            else if (controls.Menu.Menutriggers.ReadValue<float>() > -statModeSwitchAxisDeadzone)
+            {
                 ChangeStatMode(1);
+
+                // RUMBLE
+                if (RumbleManager.Instance != null)
+                    RumbleManager.Instance.Rumble(rightSwitchRumbleSettings);
+            }
         }
-        else if (Mathf.Abs(Input.GetAxis(statModeSwitchAxis)) < statModeSwitchAxisDeadzone)
+        else if (Mathf.Abs(controls.Menu.Menutriggers.ReadValue<float>()) < statModeSwitchAxisDeadzone)
             canInputModeChange = true;
     }
 
@@ -122,6 +146,12 @@ public class StatsMenu : MonoBehaviour
             currentStatMode = statModes.Count - 1;
         else if (currentStatMode > statModes.Count - 1)
             currentStatMode = 0;
+
+
+        // AUDIO
+        if (clickSFX != null)
+            clickSFX.Play();
+
 
 
         UpdateAllStatsDisplayedInfos();
@@ -337,6 +367,15 @@ public class StatsMenu : MonoBehaviour
 
 
         gameStatObject.SetActive(false);
+    }
+
+
+
+
+    // EDITOR
+    void RemoveWarnings()
+    {
+        statModeSwitchAxis = statModeSwitchAxis + statModeSwitchAxis;
     }
     #endregion
 }

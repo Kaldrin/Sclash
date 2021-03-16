@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class ActivateButtonOnInputDetect : MonoBehaviour
 {
     [SerializeField] string axisToCheck = "MenuSecondary";
-    [SerializeField] InputAction action;
+    [SerializeField] InputAction action = null;
     [SerializeField] Button buttonToActivate = null;
     [SerializeField] float valueToCheck = 0.5f;
     [SerializeField] bool superiorOrInferior = false;
@@ -68,5 +68,21 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
                 }
             }
         }*/
+    }
+
+
+
+
+
+
+
+    // EDITOR
+    // Pointless but don't remove please
+    void RemoveWarnings()
+    {
+        axisToCheck = axisToCheck + axisToCheck;
+        superiorOrInferior = superiorOrInferior || superiorOrInferior;
+        valueToCheck = valueToCheck + valueToCheck;
+        hasBeenChecked = hasBeenChecked || hasBeenChecked;
     }
 }

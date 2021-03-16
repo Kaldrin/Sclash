@@ -28,7 +28,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public GameObject localPlayer;
     public int localPlayerNum;
     GameObject[] spawners;
-    bool twoPlayersInRoom = false;
+    //bool twoPlayersInRoom = false;
 
     [SerializeField] private Animator RightPanel;
     [SerializeField] private Animator LeftPanel;
@@ -218,7 +218,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
-        twoPlayersInRoom = false;
+        //twoPlayersInRoom = false;
     }
 
 
@@ -405,7 +405,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
-        twoPlayersInRoom = false;
+        //twoPlayersInRoom = false;
 
 
         // CONNEXION WINDOW
@@ -487,7 +487,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         PhotonNetwork.Disconnect();
         localPlayerSide = 1;
 
-        twoPlayersInRoom = false;
+        //twoPlayersInRoom = false;
 
 
 
@@ -505,7 +505,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         PlayerDisconnected.Invoke();
 
 
-        twoPlayersInRoom = false;
+        //twoPlayersInRoom = false;
 
         localPlayerSide = 1;
 

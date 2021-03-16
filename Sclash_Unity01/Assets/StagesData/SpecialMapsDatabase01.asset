@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: SpecialMapsDatabase01
   m_EditorClassIdentifier: 
   stagesLists:
-  - mapObject: {fileID: 998257788692097228, guid: 0269e2dd236bc6f45875eaae76f74c76,
+  - stageName: HALLOWEEN
+    stageNameKey: S_Halloween01
+    mapObject: {fileID: 998257788692097228, guid: 0269e2dd236bc6f45875eaae76f74c76,
       type: 3}
-    stageName: HALLOWEEN
     mapImage: {fileID: 21300000, guid: 1b798df2a0e70494ea45d57f702434b2, type: 3}
     musicIndex: 4
     type: 1
@@ -23,9 +24,10 @@ MonoBehaviour:
     postProcessProfile: {fileID: 11400000, guid: e854384bf1719b04e9e10a96b48cde5a,
       type: 2}
     particleSet: 1
-  - mapObject: {fileID: 52343934745639428, guid: abfbf9faf6cad094fb4f8dd12b369145,
+  - stageName: CHRISTMAS
+    stageNameKey: S_Christmas01
+    mapObject: {fileID: 52343934745639428, guid: abfbf9faf6cad094fb4f8dd12b369145,
       type: 3}
-    stageName: CHRISTMAS
     mapImage: {fileID: 21300000, guid: 39860d95ef5958e40a116e7ae30568ef, type: 3}
     musicIndex: 1
     type: 1

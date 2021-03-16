@@ -4,7 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-// This script manages loading and reading of the elements, settings and saves of the stages menu
+
+// HEADER
+// For Sclash
+
+/// <summary>
+/// This script manages loading and reading of the elements, settings and saves of the stages menu
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.14
 // OPTIMIZED ?
 public class MapMenuLoader : MonoBehaviour
 {
@@ -68,6 +77,11 @@ public class MapMenuLoader : MonoBehaviour
 
     [Header("AUDIO")]
     [SerializeField] PlayRandomSoundInList clickSoundSource = null;
+
+
+    [Header("RUMBLE")]
+    [SerializeField] RumbleSettings rightSwitchRumbleSettings = null;
+    [SerializeField] RumbleSettings leftSwitchRumbleSettings = null;
     #endregion
 
 
@@ -93,7 +107,7 @@ public class MapMenuLoader : MonoBehaviour
     {
         controls = GameManager.Instance.Controls;
 
-        ChangeStageMode(0);
+        
     }
 
 
@@ -101,12 +115,13 @@ public class MapMenuLoader : MonoBehaviour
     {
         LoadParameters();
         SetUpMenu();
+        ChangeStageMode(0);
     }
 
 
     void Update()
     {
-        if (enabled)
+        if (enabled && isActiveAndEnabled)
             ManageStageModeChange();
     }
     # endregion
@@ -127,9 +142,21 @@ public class MapMenuLoader : MonoBehaviour
 
 
             if (controls.Menu.Menutriggers.ReadValue<float>() < -stageModeSwitchAxisDeadzone)
+            {
                 ChangeStageMode(-1);
+
+                // RUMBLE
+                if (RumbleManager.Instance != null)
+                    RumbleManager.Instance.Rumble(leftSwitchRumbleSettings);
+            }
             else if (controls.Menu.Menutriggers.ReadValue<float>() > -stageModeSwitchAxisDeadzone)
+            {
                 ChangeStageMode(1);
+
+                // RUMBLE
+                if (RumbleManager.Instance != null)
+                    RumbleManager.Instance.Rumble(rightSwitchRumbleSettings);
+            }
         }
         else if (Mathf.Abs(controls.Menu.Menutriggers.ReadValue<float>()) < stageModeSwitchAxisDeadzone)
             canInputModeChange = true;
@@ -263,7 +290,9 @@ public class MapMenuLoader : MonoBehaviour
 
 
                 newMapMenuObjectScript.mapImage.sprite = mapsDatabase01.stagesLists[i].mapImage;
-                newMapMenuObjectScript.mapText.text = mapsDatabase01.stagesLists[i].stageName;
+                //newMapMenuObjectScript.mapText.text = mapsDatabase01.stagesLists[i].stageName;
+                newMapMenuObjectScript.mapNameTextApparitionComponent.textKey = mapsDatabase01.stagesLists[i].stageNameKey;
+                newMapMenuObjectScript.mapNameTextApparitionComponent.TransfersTrad();
                 newMapMenuObjectScript.stageIndex = i;
                 newMapMenuObjectScript.UpdateCustomListCheckBox();
                 currentlyDisplayedStagesList.Add(i);
@@ -459,5 +488,16 @@ public class MapMenuLoader : MonoBehaviour
         SaveGameManager.Save();
     }
     #endregion
+
+
+
+
+
+    // EDITOR
+    void RemoveWarnings()
+    {
+        if (stageModeSwitchAxis == "")
+            stageModeSwitchAxis = "";
+    }
     #endregion
 }

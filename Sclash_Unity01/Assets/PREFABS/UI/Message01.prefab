@@ -325,6 +325,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7808068097157901233}
   - component: {fileID: 7808068097157901234}
+  - component: {fileID: 2234719511547094948}
   m_Layer: 5
   m_Name: Message01
   m_TagString: Untagged
@@ -369,6 +370,23 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &2234719511547094948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7808068097157901232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73d29140ea5e52c4c862af346a4d92ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  play: 0
+  justPlayAudioSourceSound: 1
+  audioSource: {fileID: 0}
+  soundList: []
+  playOnEnable: 1
 --- !u!1 &7808068097235593662
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
+// Script that manages button that you need to maintain pressed to activate, ergonomy stuff
 public class PressLongToCallButton : MonoBehaviour
 {
     [SerializeField] Button buttonToCall = null;
@@ -15,54 +18,72 @@ public class PressLongToCallButton : MonoBehaviour
     bool hasStartedPlayingSound = false;
     [SerializeField] Vector2 pitchLimits = new Vector2(1, 1.8f);
 
-    private void OnEnable()
+
+
+
+
+    #region FUNCTIONS
+    private void OnEnable()                                                         // ON ENABLE
     {
         sliderToSlide.value = sliderToSlide.minValue;
         pressing = false;
     }
 
-    void FixedUpdate()
+    void FixedUpdate()                                                              // FIXED UPDATE
     {
-        if (pressing)
+        if (enabled && isActiveAndEnabled)
         {
-            if (selected)
-                pressSoundAudioSource.pitch = pitchLimits.x + (pitchLimits.y - pitchLimits.x) * (sliderToSlide.value / sliderToSlide.maxValue);
-
-            if (!lastPressState && !hasStartedPlayingSound && selected)
+            if (pressing)
             {
-                pressSoundAudioSource.loop = true;
-                hasStartedPlayingSound = true;
-                pressSoundAudioSource.Play();
-            }
+                if (selected)
+                    pressSoundAudioSource.pitch = pitchLimits.x + (pitchLimits.y - pitchLimits.x) * (sliderToSlide.value / sliderToSlide.maxValue);
 
-            if (sliderToSlide.value < sliderToSlide.maxValue)
-                sliderToSlide.value += incrementationSpeed;
+                if (!lastPressState && !hasStartedPlayingSound && selected)
+                {
+                    pressSoundAudioSource.loop = true;
+                    hasStartedPlayingSound = true;
+                    pressSoundAudioSource.Play();
+                }
+
+                if (sliderToSlide.value < sliderToSlide.maxValue)
+                    sliderToSlide.value += incrementationSpeed;
+                else
+                {
+                    CallButton();
+                    sliderToSlide.value = sliderToSlide.maxValue;
+                }
+            }
             else
             {
-                CallButton();
-                sliderToSlide.value = sliderToSlide.maxValue;
-            }
-        }
-        else
-        {
-            if (selected)
-            {
-                pressSoundAudioSource.loop = false;
-                hasStartedPlayingSound = false;
-            }
+                if (selected)
+                {
+                    pressSoundAudioSource.loop = false;
+                    hasStartedPlayingSound = false;
+                }
 
-            if (sliderToSlide.value > sliderToSlide.minValue)
-                sliderToSlide.value -= incrementationSpeed;
-            else
-                sliderToSlide.value = sliderToSlide.minValue;
+                if (sliderToSlide.value > sliderToSlide.minValue)
+                    sliderToSlide.value -= incrementationSpeed;
+                else
+                    sliderToSlide.value = sliderToSlide.minValue;
+            }
         }
     }
 
-    private void Update()
+
+    private void Update()                                                                       // UPDATE
     {
-        if (InputManager.Instance.submitInputUp)
-            pressing = false;
+        if (enabled && isActiveAndEnabled)
+            if (InputManager.Instance.submitInputUp)
+            {
+                
+                pressing = false;
+            }
     }
+
+
+
+
+
 
 
     public void Press(bool onOff)
@@ -84,4 +105,5 @@ public class PressLongToCallButton : MonoBehaviour
         pressing = false;
         buttonToCall.onClick.Invoke();
     }
+    #endregion
 }

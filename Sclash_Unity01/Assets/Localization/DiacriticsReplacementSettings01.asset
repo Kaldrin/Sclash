@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e48873b55e890434f904d36a06ba5432, type: 3}
+  m_Name: DiacriticsReplacementSettings01
+  m_EditorClassIdentifier: 
+  charactersToReplace:
+  - characterToReplace: 233
+    replacementCharacter: 101
+  - characterToReplace: 232
+    replacementCharacter: 101
+  - characterToReplace: 234
+    replacementCharacter: 101
+  - characterToReplace: 235
+    replacementCharacter: 101
+  - characterToReplace: 244
+    replacementCharacter: 111
+  - characterToReplace: 224
+    replacementCharacter: 97
+  - characterToReplace: 228
+    replacementCharacter: 97
+  - characterToReplace: 220
+    replacementCharacter: 85
+  - characterToReplace: 252
+    replacementCharacter: 117
+  - characterToReplace: 251
+    replacementCharacter: 117
+  - characterToReplace: 219
+    replacementCharacter: 85
+  - characterToReplace: 214
+    replacementCharacter: 79
+  - characterToReplace: 246
+    replacementCharacter: 111
+  - characterToReplace: 231
+    replacementCharacter: 111

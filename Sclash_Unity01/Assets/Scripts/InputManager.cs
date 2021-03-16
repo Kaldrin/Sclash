@@ -63,6 +63,10 @@ public class InputManager : MonoBehaviour
         jumpAxis = "Jump",
         scoreAxis = "Score",
         selectcharAxis = "SelectChar";*/
+
+    [Header("MESSAGES")]
+    [SerializeField] GameObject controllerP1InMessageRef = null;
+    [SerializeField] GameObject controllerP2InMessageRef = null;
     #endregion
 
 
@@ -199,6 +203,15 @@ public class InputManager : MonoBehaviour
             {
                 gamepads.Add(g);
                 Debug.Log("Controller plugged in");
+
+
+                // MESSAGE
+                if (gamepads.Count == 1)
+                    if (controllerP1InMessageRef != null)
+                        controllerP1InMessageRef.SetActive(true);
+                if (gamepads.Count == 2)
+                    if (controllerP2InMessageRef != null)
+                        controllerP2InMessageRef.SetActive(true);
             }
         }
     }

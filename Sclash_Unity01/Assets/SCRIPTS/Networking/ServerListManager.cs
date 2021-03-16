@@ -9,7 +9,7 @@ using Photon.Realtime;
 
 
 // Online script
-//Created for Unity 2019.1.1f1
+// Created for Unity 2019.1.1f1
 public class ServerListManager : MonoBehaviourPunCallbacks
 {
     // SINGLETON
@@ -38,12 +38,10 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     [HideInInspector] public List<ServerItemInfos> serverItemsList = new List<ServerItemInfos>();
 
 
-    /*public string[] serverNames;
-    public string[] serverIPs;*/
-
 
     [Header("ROOM SPECS DISPLAY REFERENCES")]
     [SerializeField] public TextMeshProUGUI roomInfosDisplayName = null;
+    [SerializeField] public TextApparition roomInfosDisplayNameTextApparitionComponent = null;
     [SerializeField] public TextMeshProUGUI roomInfosDisplayCurrentPlayers = null;
     [SerializeField] public TextMeshProUGUI roomInfosDisplayMaxPlayers = null;
     [SerializeField] public TextMeshProUGUI roomInfosDisplayRounds = null;
@@ -53,14 +51,18 @@ public class ServerListManager : MonoBehaviourPunCallbacks
 
     [Header("MENU")]
     [SerializeField] TextMeshProUGUI joinRoomText = null;
+    [SerializeField] TextApparition joinRoomButtonTextApparitionCOmponent = null;
     [SerializeField] string matchmakingButtonName = "Matchmaking";
     [SerializeField] string joinServerButtonName = "Join room";
+    [SerializeField] string matchmakingButtonNameKey = "OM_B_Matchmaking01";
+    [SerializeField] string joinServerButtonNameKey = "OM_B_JoinRoom01";
 
 
 
 
     [Header("SERVER DISPLAY ERROR PLACEHOLDERS")]
     [SerializeField] public string namePlaceholder = "Error displaying info";
+    [SerializeField] public string namePlaceholderKey = "OM_RoomName01";
     [SerializeField] public string currentPlayersPlaceholder = "?";
     [SerializeField] public string maxPlayersPlaceholder = "?";
     [SerializeField] public string roundsPlacerholder = "?";
@@ -150,10 +152,17 @@ public class ServerListManager : MonoBehaviourPunCallbacks
 
 
     // PLACEHOLDER
-    void FillPlaceholderInfos()
+    public void FillPlaceholderInfos()
     {
+        /*
         if (roomInfosDisplayName != null)
             roomInfosDisplayName.text = namePlaceholder;
+            */
+        if (roomInfosDisplayNameTextApparitionComponent != null)
+        {
+            roomInfosDisplayNameTextApparitionComponent.textKey = namePlaceholderKey;
+            roomInfosDisplayNameTextApparitionComponent.TransfersTrad();
+        }
         if (roomInfosDisplayCurrentPlayers != null)
             roomInfosDisplayCurrentPlayers.text = currentPlayersPlaceholder;
         if (roomInfosDisplayMaxPlayers != null)
@@ -305,8 +314,11 @@ public class ServerListManager : MonoBehaviourPunCallbacks
     }
 
 
+    // Changes the text of the join room button depending on if a server is selected
+    // Handles language through keys
     public void DisplayJoinRoomButton(bool on = false)
     {
+        /*
         if (joinRoomText != null)
         {
             if (!on)
@@ -316,6 +328,17 @@ public class ServerListManager : MonoBehaviourPunCallbacks
         }
         else
             Debug.Log("Can't find join room button, ignoring");
+            */
+
+        if (joinRoomButtonTextApparitionCOmponent != null)
+        {
+            if (on)
+                joinRoomButtonTextApparitionCOmponent.textKey = joinServerButtonNameKey;
+            else
+                joinRoomButtonTextApparitionCOmponent.textKey = matchmakingButtonNameKey;
+
+            joinRoomButtonTextApparitionCOmponent.TransfersTrad();
+        }
     }
     #endregion
 }

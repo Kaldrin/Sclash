@@ -18,7 +18,7 @@ public class ControllerDetector : MonoBehaviour
 
 
 
-    void Update()
+    void Update()                                                               // UPDATE
     {/*
         if (enabled && isActiveAndEnabled && doDetectController)
         {
@@ -41,5 +41,16 @@ public class ControllerDetector : MonoBehaviour
                         Cursor.visible = true;
                     }
         }*/
+    }
+
+
+
+
+
+    // EDITOR
+    void RemoveWarnings()
+    {
+        if (doDetectController)
+            doDetectController = false;
     }
 }

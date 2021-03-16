@@ -2,6 +2,22 @@
 using UnityEngine.UI;
 using TMPro;
 
+
+
+
+
+// HEADER
+// For Sclash
+
+// REQUIREMENTS
+// Requires the TextMeshPro package to work
+
+/// <summary>
+/// Script present on a stage button object in the stage selection screen
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.1.1f1
 public class MapMenuObject : MonoBehaviour
 {
     [Header("MANAGERS")]
@@ -12,6 +28,7 @@ public class MapMenuObject : MonoBehaviour
     [SerializeField] public GameObject mapButtonObject = null;
     [SerializeField] public Image mapImage = null;
     [SerializeField] public TextMeshProUGUI mapText = null;
+    [SerializeField] public TextApparition mapNameTextApparitionComponent = null;
     [SerializeField] public int stageIndex = 0;
     [SerializeField] public GameObject customListCheckBox = null;
 
@@ -21,7 +38,7 @@ public class MapMenuObject : MonoBehaviour
 
 
 
-    public void SwitchCustomList()
+    public void SwitchCustomList()                                                              // SWITCH CUSTOM LIST
     {
         Map newMap = mapLoader.mapsData.stagesLists[stageIndex];
 
@@ -34,14 +51,14 @@ public class MapMenuObject : MonoBehaviour
     }
 
 
-    public void UpdateCustomListCheckBox()
+    public void UpdateCustomListCheckBox()                                                          // UPDATE CUSTOM LIST CHECK BOX
     {
         if (mapLoader.mapsData.stagesLists[stageIndex].inCustomList)
             customListCheckBox.SetActive(true);
     }
 
-
-    public void ChangeMap()
+        
+    public void ChangeMap()                                                                 // CHANGE MAP
     {
         mapLoader.LoadNewMapInGame(stageIndex);
     }

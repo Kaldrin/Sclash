@@ -6,9 +6,20 @@ using XInputDotNetPure;
 
 
 
-// This is the rumble manager.
-// It manages all controller rumbles in the game
-// Any rumble that should occur will be called here
+// HEADER
+// Reusable script
+// For Sclash
+
+// REQUIREMENTS
+// Requires the XInputDotNet package to work
+// Requires the RumbleSettings scriptable object to work
+
+/// <summary>
+/// Manages all controller rumbles in the game. Any rumble that should occur will be called here
+/// </summary>
+
+// VERSION
+// Originally created for Unity 2019.1.14
 public class RumbleManager : MonoBehaviour
 {
     [HideInInspector] public static RumbleManager Instance;
@@ -24,7 +35,7 @@ public class RumbleManager : MonoBehaviour
 
 
 
-    void Start()
+    void Start()                                                                                                // START
     {
         Instance = this;
 
@@ -35,20 +46,23 @@ public class RumbleManager : MonoBehaviour
 
 
     // Function to call by other scripts to make a controller rumble
-    public void Rumble(RumbleSettings rumbleSettings)
+    public void Rumble(RumbleSettings rumbleSettings)                                                                               // RUMBLE
     {
         // If controller rumbles are enabled, rumble
-        if (enableControllerRumble)
+        if (enableControllerRumble && MenuManager.Instance.menuParametersSaveScriptableObject.enableRumbles)
         {
             if (rumbleSettings != null)
-                StartCoroutine(RumblePlayer01Coroutine(rumbleSettings.rumbleDuration, rumbleSettings.rumbleStrengthLeft, rumbleSettings.rumbleStrengthRight, rumbleSettings.rumbleNumber, rumbleSettings.betweenRumblesDuration));
+            {
+                if (!rumbleSettings.muteRumble)
+                    StartCoroutine(RumblePlayer01Coroutine(rumbleSettings.rumbleDuration, rumbleSettings.rumbleStrengthLeft, rumbleSettings.rumbleStrengthRight, rumbleSettings.rumbleNumber, rumbleSettings.betweenRumblesDuration));
+            }
             else
                 Debug.Log("Rumble settings not found, ignoring");
         }
     }
 
 
-    IEnumerator RumblePlayer01Coroutine(float duration, float leftStrength, float rightStrength, int numberOfTimes, float betweenRumblesDuration)
+    IEnumerator RumblePlayer01Coroutine(float duration, float leftStrength, float rightStrength, int numberOfTimes, float betweenRumblesDuration)                               // RUMBLE PLAYER 01 COROUTINE
     {
         //GamePad.SetVibration(playerIndex, 0, 0);
 
@@ -78,6 +92,7 @@ public class RumbleManager : MonoBehaviour
 
 
     #region EDITOR ONLY
+    // Useless but don't remove it
     void RemoveFuckingWarnings()
     {
         state = prevState;
