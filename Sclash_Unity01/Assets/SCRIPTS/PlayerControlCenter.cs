@@ -106,12 +106,14 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext ctx)
     {
-        if (ctx.started)
-            attachedPlayer.DashInput(Mathf.Sign(ctx.ReadValue<float>()), false);
 
-        else if (ctx.canceled)
-            attachedPlayer.DashInput(ctx.ReadValue<float>(), false);
+        if (ctx.canceled)
+        {
+            attachedPlayer.DashInput(0f, false);
+            return;
+        }
 
+        attachedPlayer.DashInput(ctx.ReadValue<float>(), false);
         InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
     }
 

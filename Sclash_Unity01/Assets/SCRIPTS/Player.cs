@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.Animations;
 
 using Photon.Pun;
 using Photon.Realtime;
@@ -45,7 +46,9 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] SpriteRenderer maskSpriteRenderer = null;
     [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
     [SerializeField] SpriteRenderer sheathSpriteRenderer = null;
-    [SerializeField] Renderer scarfRenderer = null;
+    [SerializeField] GameObject scarfPrefab = null;
+    GameObject scarfObject = null;
+    internal Renderer scarfRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
     [SerializeField] public Light playerLight = null;
     [Tooltip("The animator controller that will be put on the sprite object of the player to enable nice looking character change animations")]
@@ -296,7 +299,7 @@ public class Player : MonoBehaviourPunCallbacks
         backwardsDashDistance = 2.5f;
     [SerializeField]
     protected float
-        allowanceDurationForDoubleTapDash = 0.3f,
+        allowanceDurationForDoubleTapDash = 0.175f,
         forwardAttackDashDistance = 2.5f,
         backwardsAttackDashDistance = 1.5f,
         dashDeadZone = 0.5f,
@@ -565,6 +568,7 @@ public class Player : MonoBehaviourPunCallbacks
             {
                 UpdateStaminaSlidersValue();
                 UpdateStaminaColor();
+                UpdateChargeShadowSize();
 
 
                 SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -2308,7 +2312,7 @@ public class Player : MonoBehaviourPunCallbacks
                 }
             }
 
-            
+
 
             if (!InputManager.Instance.playerInputs[playerNum].attack)
                 canCharge = true;
@@ -2317,36 +2321,19 @@ public class Player : MonoBehaviourPunCallbacks
 
     protected virtual void ManageCharging()
     {
-        // Online
-        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster && photonView.IsMine)
+        //Player releases attack button
+        if (!InputManager.Instance.playerInputs[playerNum].attack)
         {
-            //Player releases attack button
-            if (!InputManager.Instance.playerInputs[0].attack)
-            {
-                photonView.RPC("ReleaseAttack", RpcTarget.AllViaServer);
-                return;
-            }
+            ReleaseAttack();
+            return;
         }
-        else
-        {
-            //Player releases attack button
-            if (!InputManager.Instance.playerInputs[playerNum].attack)
-            {
-                ReleaseAttack();
-                return;
-            }
-        }
-
 
         // If the player has waited too long charging
         if (chargeLevel >= maxChargeLevel)
         {
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
             {
-                if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
-                    photonView.RPC("ReleaseAttack", RpcTarget.All);
-                else
-                    ReleaseAttack();
+                ReleaseAttack();
             }
         }
         // Pass charge levels
@@ -3129,14 +3116,13 @@ public class Player : MonoBehaviourPunCallbacks
             switch (currentDashStep)
             {
                 case DASHSTEP.rest:
-                    Debug.Log(inDirection);
-                    temporaryDashDirectionForCalculation = inDirection;
+                    temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                     dashInitializationStartTime = Time.time;
                     currentDashStep = DASHSTEP.firstInput;
                     break;
 
                 case DASHSTEP.firstInput:
-                    if (inDirection == 0f)
+                    if (Mathf.Abs(inDirection) == 0f)
                     {
                         currentDashStep = DASHSTEP.firstRelease;
                         break;
@@ -3145,8 +3131,8 @@ public class Player : MonoBehaviourPunCallbacks
                     if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
                     {
                         currentDashStep = DASHSTEP.invalidated;
-                        break;
                     }
+
                     break;
 
                 case DASHSTEP.firstRelease:
@@ -3166,7 +3152,6 @@ public class Player : MonoBehaviourPunCallbacks
                 case DASHSTEP.invalidated:
                     if (inDirection == 0f)
                     {
-                        Debug.Log("Resetting values");
                         currentDashStep = DASHSTEP.rest;
                     }
                     break;

@@ -67,7 +67,7 @@ MonoBehaviour:
   maskSpriteRenderer: {fileID: 795436277678510488}
   weaponSpriteRenderer: {fileID: 2446411058545188054}
   sheathSpriteRenderer: {fileID: 4085421616859230693}
-  scarfRenderer: {fileID: 7114168733727327617}
+  scarfPrefab: {fileID: 0}
   playerLight: {fileID: 0}
   characterChangerAnimatorController: {fileID: 9100000, guid: 5fa8da7530845334fbdd529ebdbcab36,
     type: 2}
@@ -369,19 +369,19 @@ MonoBehaviour:
     SynchronizeType: 1
     Name: VerticalSpeed
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: PerfectParry
   - Type: 9
     SynchronizeType: 0
     Name: ReallyDead
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: BattleSneath
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: BattleDraw
   - Type: 1
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: AttackState
   m_SynchronizeLayers:
   - SynchronizeType: 1
@@ -604,12 +604,6 @@ SpriteRenderer:
 --- !u!212 &795436277678510488 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 7595475461889729980, guid: 3f5effdde23e47744a2f4942c91916c7,
-    type: 3}
-  m_PrefabInstance: {fileID: 7089081034316100644}
-  m_PrefabAsset: {fileID: 0}
---- !u!137 &7114168733727327617 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 61893027603198373, guid: 3f5effdde23e47744a2f4942c91916c7,
     type: 3}
   m_PrefabInstance: {fileID: 7089081034316100644}
   m_PrefabAsset: {fileID: 0}
