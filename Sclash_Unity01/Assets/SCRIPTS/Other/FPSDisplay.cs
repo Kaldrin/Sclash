@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 
 
+
+
 // HEADER
 // Reusable script
 // For Sclash
@@ -27,31 +29,40 @@ public class FPSDisplay : MonoBehaviour
     [SerializeField] TextMeshPro textMeshproToDisplay = null;
     [SerializeField] Text textToDisplay = null;
     [SerializeField] TextMesh textMeshToDisplay = null;
-    [SerializeField] float refreshFrequency = 2;
-
+    [SerializeField] float customRefreshFrequency = 5;
+    [SerializeField] bool useCustomFrequencyCoroutine = true;
 
 
 
 
     #region FUNCTIONS
-    private void Awake()                                                                            // AWAKE
+    private void Awake()                                                                                              // AWAKE
     {
         GetComponents();
     }
 
     private void Start()                                                                                                // START
     {
-        if (Debug.isDebugBuild || Application.isEditor)
-            StartCoroutine(RefreshCoroutine());
+        if (useCustomFrequencyCoroutine)
+        {
+            if (Debug.isDebugBuild || Application.isEditor)
+                StartCoroutine(RefreshCoroutine());
+            else
+                RemoveDisplay();
+        }
     }
 
 
     private void Update()                                                                                                   // UPDATE
     {
-        /*
         if (enabled && isActiveAndEnabled)
-            DisplayFPS();
-            */
+            if (!useCustomFrequencyCoroutine)
+            {
+                if (Debug.isDebugBuild || Application.isEditor)
+                    DisplayFPS();
+                else
+                    RemoveDisplay();
+            }
     }
 
     IEnumerator RefreshCoroutine()                                                                                          // REFRESH COROUTINE
@@ -60,14 +71,14 @@ public class FPSDisplay : MonoBehaviour
             while (true)
             {
                 DisplayFPS();
-                yield return new WaitForSecondsRealtime(1 / refreshFrequency);
+                yield return new WaitForSecondsRealtime(1 / customRefreshFrequency);
             }
     }
 
 
 
 
-    public void DisplayFPS()                                                                                       // DISPLAY VERSION
+    public void DisplayFPS()                                                                                                // DISPLAY VERSION
     {
         // If components are missing, try to find them
         GetComponents();
@@ -86,6 +97,20 @@ public class FPSDisplay : MonoBehaviour
             textToDisplay.text = fpsToDisplay;
         if (textMeshToDisplay != null)
             textMeshToDisplay.text = fpsToDisplay;
+    }
+
+    public void RemoveDisplay()                                                                                                 // REMOVE DISPLAY
+    {
+        if (textMeshProUGUIToDiplay != null)
+            textMeshProUGUIToDiplay.enabled = false;
+        if (textMeshproToDisplay != null)
+            textMeshproToDisplay.enabled = false;
+        if (textToDisplay != null)
+            textToDisplay.enabled = false;
+        if (textMeshToDisplay != null)
+            textMeshToDisplay.text = "";
+
+        this.enabled = false;
     }
 
 

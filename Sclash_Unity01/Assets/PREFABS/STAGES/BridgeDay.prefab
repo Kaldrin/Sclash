@@ -23557,7 +23557,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8590596194261935817
 Transform:
@@ -23935,8 +23935,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4531662782807152133}
-  - component: {fileID: 4605636721815800947}
   - component: {fileID: 4830632663973251210}
+  - component: {fileID: 37627770}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -23963,25 +23963,6 @@ Transform:
   m_Father: {fileID: 8837831479465254334}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &4605636721815800947
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 339493570519676819}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &4830632663973251210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23994,8 +23975,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 4605636721815800947}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 37627770}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &37627770
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339493570519676819}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &349476837439856299
 GameObject:
   m_ObjectHideFlags: 0
@@ -24379,8 +24378,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3332433672294718021}
-  - component: {fileID: 1378472541903451165}
   - component: {fileID: 7446338931741271059}
+  - component: {fileID: 1071335914}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -24407,25 +24406,6 @@ Transform:
   m_Father: {fileID: 7362623296356767137}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1378472541903451165
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 605793233798501885}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &7446338931741271059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24438,8 +24418,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 1378472541903451165}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 1071335914}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &1071335914
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605793233798501885}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &617685611626124011
 GameObject:
   m_ObjectHideFlags: 0
@@ -25243,7 +25241,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &297538364915351546
 Transform:
@@ -27322,7 +27320,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6489912557608147302
 Transform:
@@ -27526,7 +27524,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5222272679690254283
 Transform:
@@ -27651,7 +27649,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &746801731293707492
 Transform:
@@ -45220,7 +45218,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2868207705504247887
 Transform:
@@ -46191,7 +46189,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5118738237438275463
 Transform:
@@ -46278,8 +46276,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8395330858318193049}
-  - component: {fileID: 459504180597525295}
   - component: {fileID: 4941265345482503428}
+  - component: {fileID: 59300342}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -46306,25 +46304,6 @@ Transform:
   m_Father: {fileID: 297538364915351546}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &459504180597525295
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3678048705799588367}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &4941265345482503428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46337,8 +46316,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 459504180597525295}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 59300342}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &59300342
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3678048705799588367}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &3685155491744730633
 GameObject:
   m_ObjectHideFlags: 0
@@ -46348,8 +46345,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2986043483228015496}
-  - component: {fileID: 4391893906383229868}
   - component: {fileID: 4036503918651389742}
+  - component: {fileID: 1988345651}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -46376,25 +46373,6 @@ Transform:
   m_Father: {fileID: 2681897576724430619}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &4391893906383229868
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3685155491744730633}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &4036503918651389742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46407,8 +46385,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 4391893906383229868}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 1988345651}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &1988345651
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3685155491744730633}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &3759285752008610668
 GameObject:
   m_ObjectHideFlags: 0
@@ -46974,8 +46970,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7216281659768476750}
-  - component: {fileID: 4952061586973316131}
   - component: {fileID: 8828165198977045123}
+  - component: {fileID: 514107210}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -47002,25 +46998,6 @@ Transform:
   m_Father: {fileID: 2715523518829615686}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &4952061586973316131
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3948081867708742593}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &8828165198977045123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47033,8 +47010,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 4952061586973316131}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 514107210}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &514107210
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3948081867708742593}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &3994426796224829368
 GameObject:
   m_ObjectHideFlags: 0
@@ -47049,7 +47044,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7933687501577233350
 Transform:
@@ -47917,7 +47912,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &814096886820566573
 Transform:
@@ -48823,7 +48818,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4537346143291338984
 Transform:
@@ -61812,7 +61807,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2506349448501612924
 Transform:
@@ -63400,7 +63395,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8190571904223257149
 Transform:
@@ -63657,7 +63652,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3124044989663673211
 Transform:
@@ -65034,8 +65029,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8810275553847019224}
-  - component: {fileID: 205668888567834583}
   - component: {fileID: 7918797846044186893}
+  - component: {fileID: 225521874}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -65062,25 +65057,6 @@ Transform:
   m_Father: {fileID: 5222272679690254283}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &205668888567834583
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5649364804470829589}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &7918797846044186893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65093,8 +65069,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 205668888567834583}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 225521874}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &225521874
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5649364804470829589}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &5667236035336448466
 GameObject:
   m_ObjectHideFlags: 0
@@ -65104,8 +65098,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6561613565780380910}
-  - component: {fileID: 1398446049841297347}
   - component: {fileID: 4699579246656469145}
+  - component: {fileID: 585390102}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -65132,25 +65126,6 @@ Transform:
   m_Father: {fileID: 7933687501577233350}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1398446049841297347
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5667236035336448466}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &4699579246656469145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65163,8 +65138,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 1398446049841297347}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 585390102}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &585390102
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5667236035336448466}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &5724597107685560047
 GameObject:
   m_ObjectHideFlags: 0
@@ -65266,8 +65259,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4697161949461139189}
-  - component: {fileID: 3174007467968208465}
   - component: {fileID: 495978732023254856}
+  - component: {fileID: 57273104}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -65293,25 +65286,6 @@ Transform:
   m_Father: {fileID: 7517701573458850776}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &3174007467968208465
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5750304392444012864}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &495978732023254856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65324,8 +65298,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 3174007467968208465}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 57273104}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &57273104
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5750304392444012864}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &5756328125258414491
 GameObject:
   m_ObjectHideFlags: 0
@@ -65847,8 +65839,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8280973803615197719}
-  - component: {fileID: 6593266519606663189}
   - component: {fileID: 2812921279365491668}
+  - component: {fileID: 1739305500}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -65874,25 +65866,6 @@ Transform:
   m_Father: {fileID: 8096992026802516378}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &6593266519606663189
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5866388116948654205}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &2812921279365491668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65905,8 +65878,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 6593266519606663189}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 1739305500}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &1739305500
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5866388116948654205}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &5961220183680820600
 GameObject:
   m_ObjectHideFlags: 0
@@ -66506,8 +66497,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 999932690445235211}
-  - component: {fileID: 3585657591310750600}
   - component: {fileID: 7378871300207172913}
+  - component: {fileID: 748077238}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -66534,25 +66525,6 @@ Transform:
   m_Father: {fileID: 3289540323627577543}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &3585657591310750600
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6170264472938925224}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &7378871300207172913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66565,8 +66537,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 3585657591310750600}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 748077238}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &748077238
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6170264472938925224}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &6238559078396958214
 GameObject:
   m_ObjectHideFlags: 0
@@ -66583,7 +66573,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &841245272442159405
 Transform:
@@ -66655,8 +66645,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2961892283568796829}
-  - component: {fileID: 3436439271226466418}
   - component: {fileID: 1893919645088247913}
+  - component: {fileID: 146810607}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -66682,25 +66672,6 @@ Transform:
   m_Father: {fileID: 814096886820566573}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &3436439271226466418
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6256926676289320924}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &1893919645088247913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66713,8 +66684,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 3436439271226466418}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 146810607}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &146810607
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6256926676289320924}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &6260595888060590633
 GameObject:
   m_ObjectHideFlags: 0
@@ -68137,7 +68126,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8837831479465254334
 Transform:
@@ -69099,7 +69088,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3289540323627577543
 Transform:
@@ -69301,7 +69290,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5724709188481423817
 Transform:
@@ -69327,8 +69316,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2941982976000918879}
-  - component: {fileID: 1166744569537269958}
   - component: {fileID: 1337856174503495914}
+  - component: {fileID: 2063468362}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -69355,25 +69344,6 @@ Transform:
   m_Father: {fileID: 5724709188481423817}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1166744569537269958
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7166086967609124758}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &1337856174503495914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69386,8 +69356,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 1166744569537269958}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 2063468362}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &2063468362
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7166086967609124758}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &7195724168279338657
 GameObject:
   m_ObjectHideFlags: 0
@@ -69666,8 +69654,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3504342823826849377}
-  - component: {fileID: 6115016725719426658}
   - component: {fileID: 6458151485837393304}
+  - component: {fileID: 1842770200}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -69694,25 +69682,6 @@ Transform:
   m_Father: {fileID: 746801731293707492}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &6115016725719426658
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7264731060276335281}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &6458151485837393304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69725,8 +69694,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 6115016725719426658}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 1842770200}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &1842770200
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7264731060276335281}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &7272008906620910624
 GameObject:
   m_ObjectHideFlags: 0
@@ -70060,7 +70047,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4292547174331172963
 Transform:
@@ -70302,7 +70289,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2715523518829615686
 Transform:
@@ -71275,7 +71262,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2681897576724430619
 Transform:
@@ -71477,8 +71464,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2038691690964977503}
-  - component: {fileID: 453019226476829017}
   - component: {fileID: 6703951583991784563}
+  - component: {fileID: 1947504935}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -71505,25 +71492,6 @@ Transform:
   m_Father: {fileID: 2506349448501612924}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &453019226476829017
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7962036130013790454}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &6703951583991784563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71536,8 +71504,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 453019226476829017}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 1947504935}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &1947504935
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962036130013790454}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &8016307740986817680
 GameObject:
   m_ObjectHideFlags: 0
@@ -72602,7 +72588,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8096992026802516378
 Transform:
@@ -72633,7 +72619,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7362623296356767137
 Transform:
@@ -72659,8 +72645,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6783915837610683290}
-  - component: {fileID: 2148958369240242845}
   - component: {fileID: 4541833173812694004}
+  - component: {fileID: 2041648858}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -72687,25 +72673,6 @@ Transform:
   m_Father: {fileID: 8764712299657863726}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &2148958369240242845
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8544375811367753122}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &4541833173812694004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72718,8 +72685,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 2148958369240242845}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 2041648858}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &2041648858
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8544375811367753122}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &8620665994854575884
 GameObject:
   m_ObjectHideFlags: 0
@@ -72844,7 +72829,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4725478014127450995
 Transform:
@@ -73145,7 +73130,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1973793428877898293
 Transform:
@@ -73495,7 +73480,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8764712299657863726
 Transform:
@@ -73698,8 +73683,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 256247589130804784}
-  - component: {fileID: 7883192446430362840}
   - component: {fileID: 2920444706352749378}
+  - component: {fileID: 881456175}
   m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
@@ -73725,25 +73710,6 @@ Transform:
   m_Father: {fileID: 6489912557608147302}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &7883192446430362840
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9003182631608063099}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e76ba413db821a148b95e7beacea3aeb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &2920444706352749378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73756,8 +73722,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorToTrigger: {fileID: 7883192446430362840}
+  animatorToTrigger: {fileID: 0}
+  animationToTrigger: {fileID: 881456175}
+  animationName: LanternWind02
   randomDelayBetween: {x: 0, y: 2}
+--- !u!111 &881456175
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9003182631608063099}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e2551d4547532c43b6101d250fc1a1f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &9087529847205928115
 GameObject:
   m_ObjectHideFlags: 0
@@ -73851,7 +73835,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7517701573458850776
 Transform:

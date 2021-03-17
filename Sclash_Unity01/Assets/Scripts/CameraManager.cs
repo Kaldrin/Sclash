@@ -28,9 +28,6 @@ public class CameraManager : MonoBehaviour
 
 
 
-
-
-    # region CAMERA STATE
     [Header("CAMERA STATE")]
     [SerializeField] public CAMERASTATE camState = CAMERASTATE.inactive;
     [HideInInspector]
@@ -41,8 +38,6 @@ public class CameraManager : MonoBehaviour
         eventcam,
         solo
     }
-    # endregion
-
 
 
 
@@ -79,8 +74,6 @@ public class CameraManager : MonoBehaviour
 
 
 
-
-    # region CAMERA MOVEMENTS
     [Header("CAMERA MOVEMENTS")]
     public float battleXSmoothMovementsMultiplier = 0.5f;
     public float cinematicXSmoothMovementsMultiplier = 0.05f;
@@ -88,12 +81,11 @@ public class CameraManager : MonoBehaviour
     float playersBaseYPos = 0;
 
     [SerializeField] Vector2 cameraArmXLimitsZoomedAndUnzoomed = new Vector2(10, 5);
-
     Vector3 currentMovementSpeed = new Vector3(0, 0, 0);
     [HideInInspector] public Vector3 cameraArmBasePos = new Vector3(0, 0, 0);
-
     [SerializeField] GameObject[] playersList = new GameObject[2];
-    #endregion
+
+
 
 
 
@@ -115,15 +107,17 @@ public class CameraManager : MonoBehaviour
 
 
 
+
+
     # region FUNCTIONS
     #region BASE FUNCTIONS
-    // BASE FUNCTIONS
     private void Awake()                                                                                                // AWAKE
     {
         Instance = this;
         if (camSetting != null)
             UseCameraSetting();
     }
+
 
     void UseCameraSetting()                                                                                                                     // USE CAMERA SETTINGS
     {
@@ -255,7 +249,7 @@ public class CameraManager : MonoBehaviour
 
 
 
-    #region PLAYERS
+
     // Find the players to use in the script
     public GameObject[] FindPlayers()                                                                                                               // FIND PLAYERS
     {
@@ -280,7 +274,7 @@ public class CameraManager : MonoBehaviour
             return null;
         }
     }
-    #endregion
+
 
 
 
@@ -317,13 +311,11 @@ public class CameraManager : MonoBehaviour
                 temporaryCalculationPosition.y = playersBaseYPos;
             }
             else if (playersList != null && playersList.Length == 1)
-            {
                 if (playersList[0] != null)
                 {
                     temporaryCalculationPosition.x = playersList[0].transform.position.x;
                     temporaryCalculationPosition.y = playersList[0].transform.position.y;
                 }
-            }
 
 
             float cameraZoomZLimitsDifference = Mathf.Abs(cameraZoomZLimits.y) - Mathf.Abs(cameraZoomZLimits.x);
@@ -412,5 +404,5 @@ public class CameraManager : MonoBehaviour
         //cameraComponent.transform.localPosition = Vector3.SmoothDamp(cameraComponent.transform.localPosition, newCameraPosition, ref currentZoomSpeed, actualZoomSmoothDuration, actualZoomSpeed, Time.deltaTime);
     }
     #endregion
-    # endregion
+    #endregion
 }

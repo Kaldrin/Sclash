@@ -8,6 +8,9 @@ using Photon.Pun;
 using Photon.Realtime;
 
 
+
+
+
 // HEADER
 // A LITTLE MESSY ?
 // For Sclash
@@ -20,6 +23,11 @@ using Photon.Realtime;
 // MenuManager script (Single instance)
 // AudioManager script (Single instance)
 // CameraManager script (Single instance)
+// Player script
+// PLayerAnimations script
+// TagsReferences scriptable object
+// CharactersDatabase scriptable object
+// MenuParameters scriptable object
 
 /// <summary>
 /// Global game manager for the duel mode, uses all the other scripts, very important
@@ -33,22 +41,13 @@ public class GameManager : MonoBehaviourPun
     // SINGLETON
     [HideInInspector] public static GameManager Instance;
 
-    #region MANAGERS
-    [Header("MANAGERS")]
-    [Tooltip("The CameraShake scripts instances references in the scene")]
-    [SerializeField] public CameraShake
-        deathCameraShake = null,
-        clashCameraShake = null,
-        pommelCameraShake = null,
-        finalCameraShake = null;
-    #endregion
-
 
 
     #region DATA
     [Header("DATA")]
     [SerializeField] public CharactersDatabase charactersData = null;
     [SerializeField] public MenuParameters gameParameters = null;
+    [SerializeField] TagsReferences tagsReferences = null;
     #endregion
 
 
@@ -234,6 +233,15 @@ public class GameManager : MonoBehaviourPun
 
 
 
+    [Header("CAMERA SHAKE")]
+    [Tooltip("The CameraShake scripts instances references in the scene")]
+    [SerializeField] public CameraShake deathCameraShake = null;
+    [SerializeField] public CameraShake clashCameraShake = null;
+    [SerializeField] public CameraShake pommelCameraShake = null;
+    [SerializeField] public CameraShake finalCameraShake = null;
+
+
+
     #region DEMO STUFF
     [Header("DEMO")]
     [SerializeField] public bool demo = false;
@@ -274,6 +282,7 @@ public class GameManager : MonoBehaviourPun
     int winningPlayerIndex;
 
 
+    // EVENTS
     [HideInInspector] public delegate void OnResetGameEvent();
     [HideInInspector] public event OnResetGameEvent ResetGameEvent;
     #endregion
@@ -460,7 +469,7 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    #region GAME STATE
+    // GAME STATE
     public void SwitchState(GAMESTATE newState)                                                                                                                         // SWITCH STATE
     {
         oldState = gameState;
@@ -551,7 +560,6 @@ public class GameManager : MonoBehaviourPun
                 break;
         }
     }
-    #endregion
 
 
 
@@ -874,38 +882,45 @@ public class GameManager : MonoBehaviourPun
     // Reset all the players' variables for next round
     void ResetPlayersForNextMatch()                                                                                                                                             // RESET PLAYERS FOR NEXT MATCH 
     {
-        if (playerSpawns.Length < 2)
+        if (playerSpawns.Length < 2 || playerSpawns == null)
             playerSpawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
 
-        if (ConnectManager.Instance.connectedToMaster)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster && playersList != null && playersList.Count > 0)
+        {
             foreach (GameObject p in playersList)
-            {
-                int _tempPNum = p.GetComponent<Player>().playerNum;
+                if (p != null)
+                {
+                    int _tempPNum = p.GetComponent<Player>().playerNum;
 
-                p.GetComponent<PlayerAnimations>().TriggerSneath();
+                    p.GetComponent<PlayerAnimations>().TriggerSneath();
 
-                p.transform.position = playerSpawns[_tempPNum].transform.position;
-                p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
-                p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
+                    p.transform.position = playerSpawns[_tempPNum].transform.position;
+                    p.transform.rotation = playerSpawns[_tempPNum].transform.rotation;
+                    p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
 
-                p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
-            }
-        else
+                    p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+                }
+        }
+        else if (playersList != null && playersList.Count > 0)
             for (int i = 0; i < playersList.Count; i++)
-            {
-                GameObject p = playersList[i];
+                if (playersList[i] != null)
+                {
+                    GameObject p = playersList[i];
 
+                    if (p.GetComponent<PlayerAnimations>())
+                        playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
 
-                playersList[i].GetComponent<PlayerAnimations>().TriggerSneath();
+                    /*
+                    p.transform.position = playerSpawns[i].transform.position;
+                    p.transform.rotation = playerSpawns[i].transform.rotation;
+                    */
+                    p.transform.SetPositionAndRotation(playerSpawns[i].transform.position, playerSpawns[i].transform.rotation);
+                    if (p.GetComponent<PlayerAnimations>())
+                        p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
 
-
-                p.transform.position = playerSpawns[i].transform.position;
-                p.transform.rotation = playerSpawns[i].transform.rotation;
-                p.GetComponent<PlayerAnimations>().ResetAnimsForNextMatch();
-
-
-                p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
-            }
+                    if (p.GetComponent<Player>())
+                        p.GetComponent<Player>().ResetAllPlayerValuesForNextMatch();
+                }
 
         playerDead = false;
     }
@@ -1524,8 +1539,14 @@ public class GameManager : MonoBehaviourPun
                 for (int i = 0; i < spriteRenderers.Length; i++)
                     if (spriteRenderers[i] != null && !spriteRenderers[i].CompareTag("NonBlackFX"))
                     {
-                        spriteRenderers[i].color = originalSpriteRenderersColors[i];
-                        spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
+                        if (originalSpriteRenderersColors.Count > i && originalSpriteRenderersColors[i] != null)
+                            spriteRenderers[i].color = originalSpriteRenderersColors[i];
+                        if (originalSpriteRenderersMaterials.Count > i && originalSpriteRenderersMaterials[i] != null)
+                            spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
+
+                        // If player sprite, white
+                        if (spriteRenderers[i].tag == tagsReferences.playerTag)
+                            spriteRenderers[i].color = Color.white;
                     }
             /*
             // MESHES DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1540,7 +1561,8 @@ public class GameManager : MonoBehaviourPun
             if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
                 for (int i = 0; i < skinnedMeshRenderers.Length; i++)
                     if (skinnedMeshRenderers[i] != null && !skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
-                        skinnedMeshRenderers[i].material.color = skinnedMeshRenderesColors[i];
+                        if (skinnedMeshRenderesColors.Count > i && skinnedMeshRenderesColors[i] != null)
+                            skinnedMeshRenderers[i].material.color = skinnedMeshRenderesColors[i];
             // PARTICLES
             if (particleSystems != null && particleSystems.Length > 0)
                 for (int i = 0; i < particleSystems.Length; i++)
@@ -1551,9 +1573,10 @@ public class GameManager : MonoBehaviourPun
                             ParticleSystem.MainModule particleSystemMain = particleSystems[i].main;
 
 
-
-                            particleSystemMain.startColor = originalParticleSystemsGradients[i];
-                            particleSystemMain.startColor = originalParticleSystemsColors[i];
+                            if (originalParticleSystemsGradients.Count > i && originalParticleSystemsGradients[i] != null)
+                                particleSystemMain.startColor = originalParticleSystemsGradients[i];
+                            if (originalParticleSystemsColors.Count > i && originalParticleSystemsColors[i] != null)
+                                particleSystemMain.startColor = originalParticleSystemsColors[i];
                         }
                         catch { }
                     }
