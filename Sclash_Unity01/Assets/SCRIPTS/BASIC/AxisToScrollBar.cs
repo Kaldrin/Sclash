@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
+
+
+
+
 public class AxisToScrollBar : MonoBehaviour
 {
     [SerializeField] string axisToUse = "Scrollwheel";
@@ -12,8 +16,11 @@ public class AxisToScrollBar : MonoBehaviour
 
     EventSystemControl eControl;
 
-    // Start is called before the first frame update
-    void Start()
+
+
+
+
+    void Start()                                                                                                                                        // START
     {
         eControl = new EventSystemControl();
         eControl.Enable();
@@ -23,5 +30,15 @@ public class AxisToScrollBar : MonoBehaviour
             if (ctx.ReadValue<Vector2>().y != 0f)
                 scrollbar.value += Mathf.Sign(ctx.ReadValue<Vector2>().y) * multiplier;
         };
+    }
+
+
+
+
+    // SECONDARY    
+    // Useless, just to remove editor warnings, they stress me
+    void RemoveWarnings()                                                                                                                                   // REMOVE WARNINGS
+    {
+        Input.GetAxis(axisToUse);
     }
 }

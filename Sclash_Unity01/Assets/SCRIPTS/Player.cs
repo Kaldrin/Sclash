@@ -43,7 +43,7 @@ public class Player : MonoBehaviourPunCallbacks
     [Tooltip("All of the player's 2D colliders")]
     public Collider2D[] playerColliders = null;
     public SpriteRenderer spriteRenderer = null;
-    [SerializeField] SpriteRenderer maskSpriteRenderer = null;
+    [SerializeField] public SpriteRenderer maskSpriteRenderer = null;
     [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
     [SerializeField] SpriteRenderer sheathSpriteRenderer = null;
     [SerializeField] GameObject scarfPrefab = null;
@@ -427,23 +427,15 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
-    #region STAGE DEPENDENT FX
+
     [Header("STAGE DEPENDENT FX")]
-    [SerializeField]
-    ParticleSystem
-        dashFXFront = null;
-    [SerializeField]
-    ParticleSystem
-        dashFXBack = null,
+    [SerializeField] ParticleSystem dashFXFront = null;
+    [SerializeField] ParticleSystem dashFXBack = null,
         attackDashFXFront = null,
         attackDashFXBack = null,
         attackNeutralFX = null;
-    [SerializeField]
-    protected ParticleSystem
-        walkFXFront = null,
+    [SerializeField] protected ParticleSystem walkFXFront = null,
         walkFXBack = null;
-    #endregion
-
 
     [System.Serializable]
     public struct ParticleSet
@@ -455,15 +447,19 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
+
     #region AUDIO
     [Header("AUDIO")]
+    [SerializeField] WalkSoundsLists walkSoundsList = null;
     [Tooltip("The reference to the stamina charged audio FX AudioSource")]
     [SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
+    float staminaBarChargedSFXBasePitch = 0.9f;
     [SerializeField] AudioSource staminaBreakAudioFX = null;
     [SerializeField] AudioSource finalDeathAudioFX = null;
     [SerializeField] PlayRandomSoundInList notEnoughStaminaSFX = null;
     [SerializeField] PlayRandomSoundInList staminaEndSFX = null;
     [SerializeField] PlayRandomSoundInList staminaUseSFX = null;
+    [SerializeField] PlayRandomSoundInList walkSFX = null;
     #endregion
 
 
@@ -509,17 +505,22 @@ public class Player : MonoBehaviourPunCallbacks
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    protected void Awake()
+    protected void Awake()                                                                                                                                                                  // AWAKE
     {
-
         // GET PLAYER CHARACTER CHANGE ANIMATOR (Because I always forget to add it back while editing the animations (Because I have to remove it, it conflicts with the main animator))
         if (spriteRenderer.gameObject.GetComponent<Animator>() == null)
             characterChanger.characterChangeAnimator = spriteRenderer.gameObject.AddComponent<Animator>();
         if (characterChanger.characterChangeAnimator != null && characterChangerAnimatorController != null && characterChanger.characterChangeAnimator.runtimeAnimatorController != characterChangerAnimatorController)
             characterChanger.characterChangeAnimator.runtimeAnimatorController = characterChangerAnimatorController;
+
+
+        // AUDIO
+        if (staminaBarChargedAudioEffectSource != null)
+            staminaBarChargedSFXBasePitch = staminaBarChargedAudioEffectSource.pitch;
     }
 
-    public virtual void Start()                                                                // START
+
+    public virtual void Start()                                                                                                                                                                  // START
     {
         // GET MANAGERS
         //audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
@@ -558,8 +559,8 @@ public class Player : MonoBehaviourPunCallbacks
         }
     }
 
-    // Update is called once per graphic frame
-    public virtual void Update()
+
+    public virtual void Update()                                                                                                                                                                // UPDATE
     {
         if (enabled && isActiveAndEnabled)
         {
@@ -717,8 +718,8 @@ public class Player : MonoBehaviourPunCallbacks
             CheatsInputs();
     }
 
-    // FixedUpdate is called 50 times per second
-    public virtual void FixedUpdate()
+
+    public virtual void FixedUpdate()                                                                                                                                                           // FIXED UPDATE
     {
         if (enabled && isActiveAndEnabled)
         {
@@ -1621,7 +1622,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
-    void ManageIA()
+    void ManageIA()                                                                                                                                                                         // MANAGE AI
     {
         if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
             return;
@@ -1760,21 +1761,20 @@ public class Player : MonoBehaviourPunCallbacks
     {
         // DETECT STAMINA CHARGE UP
         if (Mathf.FloorToInt(oldStaminaValue) < Mathf.FloorToInt(stamina) && (characterType == CharacterType.campaign || (characterType == CharacterType.duel && !gameManager.playerDead && gameManager.gameState == GameManager.GAMESTATE.game)))
-        {
             if (!staminaRecupAnimOn && !staminaBreakAnimOn)
-            {
                 if (!staminaRecupAnimOn && !staminaBreakAnimOn)
                 {
+                    // AUDIO
+                    staminaBarChargedAudioEffectSource.pitch = 0.4f + (stamina / maxStamina) * (staminaBarChargedSFXBasePitch - 0.4f);
                     staminaBarChargedAudioEffectSource.Play();
 
+                    // CHEAT
                     if (cheatSettings.useExtraDiegeticFX)
                     {
                         staminaGainFX.Play();
                         staminaGainFX.GetComponent<ParticleSystem>().Play();
                     }
                 }
-            }
-        }
 
         oldStaminaValue = stamina;
         staminaSliders[0].value = Mathf.Clamp(stamina, 0, 1);
@@ -1794,22 +1794,16 @@ public class Player : MonoBehaviourPunCallbacks
 
 
         for (int i = 1; i < staminaSliders.Count; i++)
-        {
             staminaSliders[i].value = Mathf.Clamp(stamina, i, i + 1) - i;
-        }
 
 
         if (stamina >= maxStamina)
         {
             if (staminaBarsOpacity > 0)
-            {
                 staminaBarsOpacity -= 0.05f;
-            }
         }
         else if (staminaBarsOpacity != staminaBarBaseOpacity)
-        {
             staminaBarsOpacity = staminaBarBaseOpacity;
-        }
     }
 
     // Manages stamina bars opacity
@@ -3495,7 +3489,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     // To set which particles are active depending of the terrain
-    public void SetParticleSets(int index)
+    public void SetParticleSets(int index)                                                                                                                                          // SET PARTICLE SETS
     {
         bool state = false;
 
@@ -3514,13 +3508,41 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
 
+    // To set which footstep sounds to use
+    public void SetWalkSFXSet(int walkSFXSetIndex = 0)                                                                                                                              // SET WALK SFX SET
+    {
+        if (walkSFX != null && walkSoundsList != null && walkSoundsList.audioClipsLists.Count > walkSFXSetIndex && walkSoundsList.audioClipsLists[walkSFXSetIndex].audioclips != null)
+            walkSFX.soundList = walkSoundsList.audioClipsLists[walkSFXSetIndex].audioclips;
+    }
 
 
 
 
 
 
-    #region CHEATS
+
+    // NETWORK
+    [PunRPC]
+    public virtual void ResetPos()
+    {
+        netTargetPos = rb.position;
+    }
+
+
+    public void GetColliders()                                                                                                                                                              // GET COLLIDERS
+    {
+        Collider2D[] test = GetComponentsInChildren<Collider2D>();
+        for (int i = 0; i < playerColliders.Length; i++)
+            if (test[i].CompareTag("Player"))
+                playerColliders[i] = test[i];
+    }
+
+
+
+
+
+
+    // CHEATS
     void CheatsInputs()
     {
         // CLASH
@@ -3553,30 +3575,13 @@ public class Player : MonoBehaviourPunCallbacks
             StartCoroutine(TriggerStaminaRecupAnim());
     }
 
-    #endregion
-    #endregion
 
 
-
-
-
-
-
-    #region Network
-    [PunRPC]
-    public virtual void ResetPos()
+    // Useless, just to remove editor warnings
+    void RemoveWarnings()
     {
-        netTargetPos = rb.position;
+        scarfObject.SetActive(true);
+        Instantiate(scarfPrefab);
     }
     #endregion
-
-    public void GetColliders()
-    {
-        Collider2D[] test = GetComponentsInChildren<Collider2D>();
-        for (int i = 0; i < playerColliders.Length; i++)
-        {
-            if (test[i].CompareTag("Player"))
-                playerColliders[i] = test[i];
-        }
-    }
 }

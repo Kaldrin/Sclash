@@ -92,14 +92,12 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    #region IN GAME INFOS
     [Header("IN GAME INFOS REFERENCES")]
     [SerializeField] public Animator[] inGameHelp = null;
     [SerializeField] public List<Animator> playerKeysIndicators = new List<Animator>(2);
     [SerializeField] List<TextMeshProUGUI> playerHelpTextIdentifiers = new List<TextMeshProUGUI>(2);
     [SerializeField] List<Image> playerHelpIconIdentifiers = new List<Image>(2);
     [SerializeField] Animator characterSelectionHelpAnimator = null;
-    #endregion
 
 
 
@@ -113,6 +111,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] public List<Text> scoresDisplays = new List<Text>(2);
     [SerializeField] public TextMeshProUGUI maxScoreTextDisplay = null;
     #endregion
+
 
     #region SCORE CALCULATION
     [Header("SCORE CALCULATION")]
@@ -1466,11 +1465,15 @@ public class GameManager : MonoBehaviourPun
                 for (int i = 0; i < spriteRenderers.Length; i++)
                     if (!spriteRenderers[i].CompareTag("NonBlackFX"))
                     {
+
                         originalSpriteRenderersColors.Add(spriteRenderers[i].color);
                         spriteRenderers[i].color = Color.black;
 
-                        originalSpriteRenderersMaterials.Add(spriteRenderers[i].material);
-                        spriteRenderers[i].material = deathFXSpriteMaterial;
+                        if (spriteRenderers[i].tag != tagsReferences.playerTag && spriteRenderers[i].tag != tagsReferences.comesticsTag)
+                        {
+                            originalSpriteRenderersMaterials.Add(spriteRenderers[i].material);
+                            spriteRenderers[i].material = deathFXSpriteMaterial;
+                        }
                     }
             // MESHES
             if (meshRenderers != null && meshRenderers.Length > 0)
@@ -1539,14 +1542,24 @@ public class GameManager : MonoBehaviourPun
                 for (int i = 0; i < spriteRenderers.Length; i++)
                     if (spriteRenderers[i] != null && !spriteRenderers[i].CompareTag("NonBlackFX"))
                     {
-                        if (originalSpriteRenderersColors.Count > i && originalSpriteRenderersColors[i] != null)
-                            spriteRenderers[i].color = originalSpriteRenderersColors[i];
-                        if (originalSpriteRenderersMaterials.Count > i && originalSpriteRenderersMaterials[i] != null)
-                            spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
+                        
 
-                        // If player sprite, white
-                        if (spriteRenderers[i].tag == tagsReferences.playerTag)
+                        // If player sprite
+                        if (spriteRenderers[i].tag == tagsReferences.playerTag || spriteRenderers[i].tag == tagsReferences.comesticsTag)
+                        {
                             spriteRenderers[i].color = Color.white;
+                            /*
+                            if (playerSpriteMaterial != null)
+                                spriteRenderers[i].material = playerSpriteMaterial;
+                                */
+                        }
+                        else
+                        {
+                            if (originalSpriteRenderersColors.Count > i && originalSpriteRenderersColors[i] != null)
+                                spriteRenderers[i].color = originalSpriteRenderersColors[i];
+                            if (originalSpriteRenderersMaterials.Count > i && originalSpriteRenderersMaterials[i] != null)
+                                spriteRenderers[i].material = originalSpriteRenderersMaterials[i];
+                        }
                     }
             /*
             // MESHES DONT DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

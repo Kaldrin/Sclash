@@ -41,4 +41,5 @@ public class MapsDataBase : ScriptableObject
     public bool inCustomList;
     public PostProcessProfile postProcessProfile;
     public int particleSet;
+    public int walkStepSFXSet;
 }

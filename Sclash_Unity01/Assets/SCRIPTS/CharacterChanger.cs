@@ -39,6 +39,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     [SerializeField] public SpriteRenderer weapon = null;
     [SerializeField] public SpriteRenderer sheath = null;
     [SerializeField] GameObject scarfPrefab = null;
+    [SerializeField] Transform scarfFollowPoint = null;
     GameObject scarfObj = null;
     // [SerializeField] GameObject scarf = null;
     bool hasScarf = false;
@@ -109,7 +110,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     #region FUNCTIONS
-    new void OnEnable()                                                                             // ONE ENABLE
+    new void OnEnable()                                                                                                                                                          // ON ENABLE
     {
         ConnectManager.PlayerJoined += FetchChanger;
 
@@ -188,7 +189,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
-    new private void OnDisable()
+    new private void OnDisable()                                                                                                                                              // ON DISABLE
     {
         ConnectManager.PlayerJoined -= FetchChanger;
 
@@ -205,7 +206,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     // Update is called once per frame
-    void Update()
+    void Update()                                                                                                                                                               // UPDATE
     {
         if (enabled & isActiveAndEnabled)
         {
@@ -223,7 +224,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     // ANIMATION
-    public void EnableVisuals(bool state)
+    public void EnableVisuals(bool state)                                                                                                                                       // ENABLE VISUALS
     {
         if (fullObjectsAnimators != null && fullObjectsAnimators.Count > playerScript.playerNum && fullObjectsAnimators[playerScript.playerNum])
             fullObjectsAnimators[playerScript.playerNum].SetBool("On", state);
@@ -232,8 +233,10 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // ACTIVATE ALL BUTTONS
+        if (verticalElements != null && verticalElements.Count > 0)
         for (int i = 0; i < verticalElements.Count; i++)
-            verticalElements[i].SetBool("Disabled", false);
+            if (verticalElements[i] != null)
+                verticalElements[i].SetBool("Disabled", false);
     }
 
 
@@ -242,7 +245,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
 
-    public void FindElements()
+    public void FindElements()                                                                                                                                              // FIND ELEMENTS
     {
         for (int i = 0; i < 2; i++)
         {
@@ -261,14 +264,12 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         if (verticalMenu != null && verticalMenu.transform.childCount > 0)
-        {
             for (int i = 0; i < verticalMenu.transform.childCount; i++)
             {
                 verticalElements.Add(verticalMenu.transform.GetChild(i).GetComponent<Animator>());
                 verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().characterChanger = gameObject.GetComponent<CharacterChanger>();
                 verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().index = verticalElements.Count - 1;
             }
-        }
 
 
         // ONLINE
@@ -280,7 +281,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
-    void ManageVerticalSelectionChange()
+    void ManageVerticalSelectionChange()                                                                                                                                   // MANAGE VERTICAL SELECTION CHANGE
     {
         // INPUT INDEX
         // Old input
@@ -300,7 +301,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
-    public void VerticalSelectionChange(int playerIndex = 0)
+    public void VerticalSelectionChange(int playerIndex = 0)                                                                                                                // VERTICAL SELECTION CHANGE
     {
         if (InputManager.Instance.playerInputs[playerIndex].vertical > 0.5f)
             verticalIndex--;
@@ -318,7 +319,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
-    void SelectVerticalElement()
+    void SelectVerticalElement()                                                                                                                                                // SELECT VERTICAL ELEMENT
     {
         for (int i = 0; i < verticalElements.Count; i++)
             if (i == verticalIndex)
@@ -328,7 +329,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
-    void ManageHorizontalSwitch()
+    void ManageHorizontalSwitch()                                                                                                                                           // MANAGE HORIZONTAL SWITCH
     {
         // INPUT INDEX
         // Old input
@@ -354,7 +355,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     // Change current property after horizontal input
-    public void HorizontalSwitch(int direction)
+    public void HorizontalSwitch(int direction)                                                                                                                                     // HORIZONTAL SWITCH
     {
         int changeDirection = 0;
 
@@ -413,7 +414,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
-    void ManageCharacterChange()
+    void ManageCharacterChange()                                                                                                                                                 // MANAGE CHARACTER CHANGE
     {
         // IF CORRECT INPUT DETECTED, CHANGE CHARACTER
         if (canChangeHorizontal && (Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal) > 0.5f))
@@ -434,7 +435,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
     #region CHANGES
     // CHARACTER
-    public IEnumerator ApplyCharacterChange(int direction)
+    public IEnumerator ApplyCharacterChange(int direction)                                                                                                                      // APPLY CHARACTER CHANGE
     {
         // Get the script with the references to the displays of this element
         CharaSelecMenuElement elementScript = null;
@@ -488,7 +489,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // NAME
-        if (elementScript != null)
+        if (elementScript != null && elementScript.text1 != null && charactersDatabase != null)
             elementScript.text1.text = charactersDatabase.charactersList[currentCharacterIndex].name;
 
 
@@ -504,7 +505,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // CHANGE MASK & WEAPON INDEX
-        if (MapLoader.Instance.halloween) // Halloween
+        if (MapLoader.Instance != null && MapLoader.Instance.halloween) // Halloween
         {
             currentMaskIndex = 6;
             currentWeaponIndex = 1;
@@ -514,42 +515,52 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             currentMaskIndex = charactersDatabase.charactersList[currentCharacterIndex].defaultMask;
             currentWeaponIndex = charactersDatabase.charactersList[currentCharacterIndex].defaultWeapon;
         }
+        if (mask != null && masksDatabase != null)
         mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
-        weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
-        sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
-
-
-        if (verticalElements != null && verticalElements.Count > 0)
+        if (weaponsDatabase != null)
         {
-            verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
-            verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
+            if (weapon != null)
+                weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
+            if (sheath != null)
+                sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
         }
 
 
+        if (verticalElements != null && verticalElements.Count > 2)
+        {
+            if (verticalElements[1] != null && GetComponent<CharaSelecMenuElement>() && verticalElements[1].GetComponent<CharaSelecMenuElement>().text1)
+                verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
+            if (verticalElements[2] != null && GetComponent<CharaSelecMenuElement>() && verticalElements[2].GetComponent<CharaSelecMenuElement>().text1)
+                verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
+        }
 
-        hasScarf = charactersDatabase.charactersList[currentCharacterIndex].scarf;
+
+        if (charactersDatabase != null)
+            hasScarf = charactersDatabase.charactersList[currentCharacterIndex].scarf;
         if (hasScarf)
         {
             if (scarfPrefab != null)
             {
-                scarfObj = Instantiate(scarfPrefab);
-                playerScript.scarfRenderer = scarfObj.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
+                if (scarfPrefab != null)
+                    scarfObj = Instantiate(scarfPrefab);
+                if (playerScript != null)
+                    playerScript.scarfRenderer = scarfObj.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
 
                 ConstraintSource src = new ConstraintSource();
-                src.sourceTransform = transform;
+                src.sourceTransform = scarfFollowPoint;
                 src.weight = 1;
 
-                scarfObj.GetComponent<ParentConstraint>().SetSource(0, src);
+                if (scarfObj != null && scarfObj.GetComponent<ParentConstraint>())
+                    scarfObj.GetComponent<ParentConstraint>().SetSource(0, src);
             }
             else
-            {
                 Debug.Log("Couldn't find character scarf, ignoring");
-            }
         }
         else if (!hasScarf && scarfObj != null)
         {
             Destroy(scarfObj);
-            playerScript.scarfRenderer = null;
+            if (playerScript != null)
+                playerScript.scarfRenderer = null;
         }
 
         // SCARF
@@ -563,23 +574,32 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // UI DISPLAY
-        if (illustrationsUIObjects.Count > 0)
-            illustrationsUIObjects[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacterIndex].illustration;
-        if (UICharacternames.Count > 0)
-            UICharacternames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+        if (charactersDatabase != null)
+        {
+            if (illustrationsUIObjects != null && illustrationsUIObjects.Count > 0)
+                illustrationsUIObjects[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacterIndex].illustration;
+            if (UICharacternames != null && UICharacternames.Count > 0)
+                UICharacternames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+        }
 
 
         // SCRIPT VALUES
-        playerScript.characterNameDisplay.text = charactersDatabase.charactersList[currentCharacterIndex].name;
-        playerScript.characterIndex = currentCharacterIndex;
-        playerScript.gameManager.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+        if (playerScript != null)
+        {
+            if (playerScript.characterNameDisplay != null)
+                playerScript.characterNameDisplay.text = charactersDatabase.charactersList[currentCharacterIndex].name;
+            playerScript.characterIndex = currentCharacterIndex;
+            if (GameManager.Instance != null && GameManager.Instance.scoresNames != null && GameManager.Instance.scoresNames.Count > playerScript.playerNum)
+                if (GameManager.Instance.scoresNames[playerScript.playerNum] != null && charactersDatabase != null && charactersDatabase.charactersList.Count > currentCharacterIndex)
+                    GameManager.Instance.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+        }
 
         SendCosmetics();
     }
 
 
     // MASK
-    public IEnumerator ApplyMaskChange(int direction)
+    public IEnumerator ApplyMaskChange(int direction)                                                                                                                           // APPLY MASK CHANGE
     {
         // Get the script with the references to the displays of this element
         CharaSelecMenuElement elementScript = verticalElements[verticalIndex].GetComponent<CharaSelecMenuElement>();
@@ -668,11 +688,11 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
 
         SendCosmetics();
-    }
+    }                                                                                                                       // APPLY WEAPON CHANGE
 
 
-    // PLAYER
-    public IEnumerator ApplyPlayerChange(int direction)
+    // PLAYER   
+    public IEnumerator ApplyPlayerChange(int direction)                                                                                                                         // APPLY PLAYER CHANGE
     {
         // Get the script with the references to the displays of this element
         CharaSelecMenuElement elementScript = null;
@@ -726,7 +746,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     // CHARACTER 2
-    public IEnumerator ApplyCharacter2Change(int direction)
+    public IEnumerator ApplyCharacter2Change(int direction)                                                                                                                     // APPLY CHARACTER 2 CHANGE
     {
         // Get the script with the references to the displays of this element
         CharaSelecMenuElement elementScript = verticalElements[verticalIndex].GetComponent<CharaSelecMenuElement>();
@@ -735,21 +755,23 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(currentSwitchDelay);
 
-        elementScript.text1.text = charactersDatabase.charactersList[otherCharacterChanger.currentCharacterIndex].name;
+        if (elementScript != null && elementScript.text1 != null)
+            elementScript.text1.text = charactersDatabase.charactersList[otherCharacterChanger.currentCharacterIndex].name;
     }
     #endregion
 
     #region Photon
     private void SendCosmetics()
     {
-        if (!ConnectManager.Instance.connectedToMaster)
+        if (ConnectManager.Instance != null && !ConnectManager.Instance.connectedToMaster)
             return;
 
         int[] content = new int[] { currentMaskIndex, currentCharacterIndex, currentWeaponIndex };
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { CachingOption = EventCaching.AddToRoomCache, Receivers = ReceiverGroup.Others };
 
-        photonView.RPC("ApplyCosmetics", RpcTarget.OthersBuffered, content);
+        if (photonView != null)
+            photonView.RPC("ApplyCosmetics", RpcTarget.OthersBuffered, content);
         // Debug.LogFormat("Sent {0} {1} {2}", content[0], content[1], content[2]);
     }
 
@@ -757,15 +779,15 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     {
         //Fetch other player Character changer
         CharacterChanger[] changers = FindObjectsOfType<CharacterChanger>();
-        foreach (CharacterChanger c in changers)
-        {
-            if (c != this)
-            {
-                o_CharacterChanger = c;
-                Debug.Log("Character changer found!");
-                break;
-            }
-        }
+
+        if (changers != null && changers.Length > 0)
+            foreach (CharacterChanger c in changers)
+                if (c != null && c != this)
+                {
+                    o_CharacterChanger = c;
+                    Debug.Log("Character changer found!");
+                    break;
+                }
         if (o_CharacterChanger == null)
         {
             Invoke("FetchChanger", 0.5f);
@@ -776,7 +798,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     [PunRPC]
     private void ApplyCosmetics(int[] data)
     {
-        if (!photonView.IsMine)
+        if (photonView != null && !photonView.IsMine)
         {
             Debug.LogFormat("Received {0} {1} {2}", data[0], data[1], data[2]);
             ReceiveCosmetics(data[0], data[1], data[2]);
@@ -797,35 +819,44 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // CHANGE MASK & WEAPON INDEX
-        if (MapLoader.Instance.halloween) // Halloween
+        if (MapLoader.Instance != null && MapLoader.Instance.halloween) // Halloween
         {
             currentMaskIndex = 6;
             currentWeaponIndex = 1;
         }
 
-        mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
-        weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
-        sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
+        if (mask != null && masksDatabase != null)
+            mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
+        if (weaponsDatabase != null)
+        {
+            if (weapon != null)
+                weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
+            if (sheath != null)
+                sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
+        }
 
         // SCARF
-        hasScarf = charactersDatabase.charactersList[currentCharacterIndex].scarf;
+        if (charactersDatabase != null)
+            hasScarf = charactersDatabase.charactersList[currentCharacterIndex].scarf;
         if (hasScarf)
         {
             if (scarfPrefab != null)
             {
-                scarfObj = Instantiate(scarfPrefab);
-                playerScript.scarfRenderer = scarfObj.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
+                if (scarfPrefab != null)
+                    scarfObj = Instantiate(scarfPrefab);
+                if (playerScript != null)
+                    playerScript.scarfRenderer = scarfObj.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
 
                 ConstraintSource src = new ConstraintSource();
-                src.sourceTransform = transform;
+                if (scarfFollowPoint != null)
+                    src.sourceTransform = scarfFollowPoint;
                 src.weight = 1;
 
-                scarfObj.GetComponent<ParentConstraint>().SetSource(0, src);
+                if (scarfObj != null && scarfObj.GetComponent<ParentConstraint>())
+                    scarfObj.GetComponent<ParentConstraint>().SetSource(0, src);
             }
             else
-            {
                 Debug.Log("Couldn't find character scarf, ignoring");
-            }
         }
         else if (!hasScarf && scarfObj != null)
         {

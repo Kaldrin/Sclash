@@ -1,13 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 using Photon.Pun;
 using Photon.Realtime;
 
 
-// MANAGES ALL ANIMATIONS OF THE PLAYER
+
+
+// HEADER
+// For Sclash
 // COULD BE MORE OPTIMIZED PROBABLY ?
+
+// REQUIREMENTS
+// Photon Unity package
+// Player script
+
+/// <summary>
+/// Manages all animations of the player
+/// </summary>
+
+// VERSION
+// Made for Unity 2019.1.1f1
 public class PlayerAnimations : MonoBehaviourPunCallbacks
 {
     #region VARIABLES
@@ -32,7 +47,6 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
 
-    #region ANIMATION VALUES
     [Header("ANIMATION VALUES")]
     [Tooltip("The minimum speed required for the walk anim to trigger")]
     [SerializeField] float minSpeedForWalkAnim = 0.05f;
@@ -41,7 +55,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         legsAnimatorBaseSpeed = 0;
 
     [HideInInspector] public float nextAttackState = 0;
-    #endregion
+    [SerializeField] RuntimeAnimatorController defaultAnimator = null;
+    [SerializeField] RuntimeAnimatorController defaultLegsAnimator = null;
+    [SerializeField] Sprite defaultMask = null;
 
 
 
@@ -111,6 +127,14 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     private void Start()                                                                                    // START
     {
         animatorBaseSpeed = animator.speed;
+
+        // Default look
+        if (animator != null && defaultAnimator != null)
+            animator.runtimeAnimatorController = defaultAnimator;
+        if (legsAnimator2 != null && defaultLegsAnimator != null)
+            legsAnimator2.runtimeAnimatorController = defaultLegsAnimator;
+        if (playerScript != null && playerScript.maskSpriteRenderer != null && defaultMask != null)
+            playerScript.maskSpriteRenderer.sprite = defaultMask;
     }
 
     void FixedUpdate()                                                                                      // FIXED UPDATE
