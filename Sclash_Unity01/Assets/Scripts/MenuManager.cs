@@ -74,6 +74,7 @@ public class MenuManager : MonoBehaviour
     [Header("ERGONOMY SETTINGS")]
     [SerializeField] GameObject rumbleCheckBox = null;
     [SerializeField] TextMeshProUGUI languageText = null;
+    [SerializeField] GameObject pingCheckBox = null;
 
 
 
@@ -325,7 +326,7 @@ public class MenuManager : MonoBehaviour
             {
                 if (GameManager.Instance.inGameHelp.Length > i && GameManager.Instance.inGameHelp[i] != null)
                     GameManager.Instance.inGameHelp[i].SetBool("On", state);
-                
+
                 if (GameManager.Instance.playersList[i] != null)
                     GameManager.Instance.playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator.SetBool("On", false);
 
@@ -386,6 +387,7 @@ public class MenuManager : MonoBehaviour
 
         menuParametersSaveScriptableObject.enableRumbles = save.enableRumbles;
         menuParametersSaveScriptableObject.language = save.language;
+        menuParametersSaveScriptableObject.displayPing = save.displayPing;
     }
     // AUDIO SETTINGS FROM SAVE TO SCRIPTABLE OBJECT
     public void LoadAudioSaveInScriptableObject()
@@ -445,6 +447,8 @@ public class MenuManager : MonoBehaviour
             displayHelpCheckBox.SetActive(menuParametersSaveScriptableObject.displayHelp);
         if (rumbleCheckBox != null)
             rumbleCheckBox.SetActive(menuParametersSaveScriptableObject.enableRumbles);
+        if (pingCheckBox != null)
+            pingCheckBox.SetActive(menuParametersSaveScriptableObject.displayPing);
 
 
 
@@ -459,6 +463,8 @@ public class MenuManager : MonoBehaviour
     {
         if (rumbleCheckBox != null)
             rumbleCheckBox.SetActive(menuParametersSaveScriptableObject.enableRumbles);
+        if (pingCheckBox != null)
+            pingCheckBox.SetActive(menuParametersSaveScriptableObject.displayPing);
         if (LanguageManager.Instance != null)
             LanguageManager.Instance.language = menuParametersSaveScriptableObject.language;
         if (languageText != null)
@@ -500,6 +506,9 @@ public class MenuManager : MonoBehaviour
         if (rumbleCheckBox != null)
             menuParametersSaveScriptableObject.enableRumbles = rumbleCheckBox.activeInHierarchy;
 
+        if (pingCheckBox != null)
+            menuParametersSaveScriptableObject.displayPing = pingCheckBox.activeInHierarchy;
+
         if (languageText != null)
             menuParametersSaveScriptableObject.language = languageText.text;
     }
@@ -532,6 +541,7 @@ public class MenuManager : MonoBehaviour
 
         save.enableRumbles = menuParametersSaveScriptableObject.enableRumbles;
         save.language = menuParametersSaveScriptableObject.language;
+        save.displayPing = menuParametersSaveScriptableObject.displayPing;
 
         SaveGameManager.Save();
     }

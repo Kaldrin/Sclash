@@ -41,7 +41,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     string[] newRoomParameters = { "rn", "pc", "rc" };
     ExitGames.Client.Photon.Hashtable customRoomProperties;
-    readonly string DefaultRoomName = "ROOM NAME";
+    readonly string DefaultRoomName = "...";
 
 
     // RESTART
@@ -81,9 +81,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject restartReceivedMessage = null;
     [SerializeField] GameObject cantRestartMessage = null;
     [SerializeField] GameObject restartAcceptedMessage = null;
-     
+    [SerializeField] GameObject pingMessage = null;
+    [SerializeField] TextMeshProUGUI pingText = null;
+
     public static RpcTarget defaultTarget = RpcTarget.All;
 
+    internal bool shouldShowPing = false;
+    internal bool displayPing = false;
 
     #region Events
     public delegate void Disconnected();
@@ -92,7 +96,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public static event Connected PlayerConnected;
     public delegate void Joined();
     public static event Joined PlayerJoined;
-
     #endregion
 
     #region BASE FUNCTIONS
@@ -103,6 +106,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.NetworkingClient.EnableLobbyStatistics = true;
         gameVersion = Application.version;
+
+        shouldShowPing = MenuManager.Instance.menuParametersSaveScriptableObject.displayPing;
 
         // SET UP MESSAGES
         SetUpMessages();
@@ -123,6 +128,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         if (enabled && isActiveAndEnabled)
             if (enableMultiplayer && !PhotonNetwork.IsConnected && isConnecting)
                 Connect();
+
+        if (displayPing)
+        {
+            if (pingMessage)
+            {
+                pingText.text = "<cspace=-6>" + PhotonNetwork.GetPing() + "ms</cspace>";
+                //Debug.Log(PhotonNetwork.GetPing());
+            }
+        }
     }
     #endregion
 
@@ -155,14 +169,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         if (!connectedToMaster)
         {
             if (!enableMultiplayer)
+            {
                 GameManager.Instance.StartMatch();
+            }
             else
                 Debug.LogWarning("Can't join room if you're not connected");
             return;
         }
 
-
-        PhotonNetwork.JoinRandomRoom();
+        Debug.Log("Joining Random room");
     }
 
 
@@ -231,6 +246,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         try
         {
             newPlayer = PhotonNetwork.Instantiate("Prefabs/PlayerNetwork", spawnPos, Quaternion.identity);
+            Debug.Log("Player instantiated");
         }
         catch
         {
@@ -364,15 +380,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.Log("PUN : OnJoinedRoom() called by PUN. Player is now in a room");
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
+        if (shouldShowPing)
+        {
+            pingMessage.SetActive(true);
+            displayPing = true;
+        }
 
         if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && waitingForPlayerMessage != null)
             waitingForPlayerMessage.SetActive(true);
-
-
-
-
-
-
 
         // RESET MENU
         multiplayerBrowser.enabled = true;
@@ -422,6 +437,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         ServerListManager.Instance.roomInfosList = roomList;
         ServerListManager.Instance.DisplayServerList();
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogWarning("PUN: Failed to join selected room");
+        Debug.LogWarning(message);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -537,6 +558,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
     public override void OnJoinedRoom()
     {
+        Debug.Log("OnJoinedRoom");
         StartCoroutine(JoinRoomCoroutine());
     }
 
@@ -1031,7 +1053,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         localWantToRestart = false;
         remoteWantsToRestart = false;
-        
+
 
 
 
@@ -1064,6 +1086,20 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
     }
 
+    public void TogglePing()
+    {
+        shouldShowPing = !shouldShowPing;
+        if (!shouldShowPing)
+        {
+            displayPing = false;
+            pingMessage.SetActive(false);
+        }
+        else if (PhotonNetwork.InRoom && shouldShowPing)
+        {
+            displayPing = true;
+            pingMessage.SetActive(true);
+        }
+    }
 
     [PunRPC]
     void RestartSyncStage(int stageIndex)

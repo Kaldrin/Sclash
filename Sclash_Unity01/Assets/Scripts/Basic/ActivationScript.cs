@@ -12,7 +12,6 @@ public class ActivationScript : MonoBehaviour
 
     public void Switch()
     {
-        Debug.Log("Switch favorite");
         gameObject.SetActive(!isActiveAndEnabled);
     }
 }

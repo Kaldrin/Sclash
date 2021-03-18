@@ -46,7 +46,7 @@ public static class SaveGameManager
         stream.Write(savedBytes, 0, savedBytes.Length);
         stream.Close();
         stream.Dispose();
-            
+
         Debug.Log("Content file saved = " + stringSave.ToString());
     }
 
@@ -68,7 +68,7 @@ public static class SaveGameManager
                 string contentFile = Encoding.UTF8.GetString(bytesArray);
 
                 Debug.Log("Content file loaded = " + contentFile);
-                    
+
                 currentSaves = JsonUtility.FromJson<ObjectSaved>(contentFile);
             }
             else
@@ -95,7 +95,7 @@ public static class SaveGameManager
     {
         currentSaves = new ObjectSaved();
         Save();
-            
+
         Debug.Log("All saves are successfully deleted");
     }
 
@@ -110,7 +110,7 @@ public static class SaveGameManager
     {
         currentSaves.savesArray[currentSaves.selectedSaveID] = new JsonSave();
         Save();
-            
+
         Debug.Log("Save id = " + currentSaves.selectedSaveID + " successfully reset");
     }
 
@@ -123,14 +123,14 @@ public static class SaveGameManager
 
     public static JsonSave SelectSave(int id)                                                                                               // SELECTED SAVE
     {
-        if(id == currentSaves.selectedSaveID)
+        if (id == currentSaves.selectedSaveID)
             return GetCurrentSave();
         else if (id >= 0 && id < currentSaves.savesArray.Length)
         {
             currentSaves.savesArray[id].isEmpty = false;
             currentSaves.selectedSaveID = id;
             Save();
-                
+
             Debug.Log("Select save id = " + id);
         }
         else
@@ -146,7 +146,8 @@ public static class SaveGameManager
 
 
 #region CLASSES
-[Serializable] public class ObjectSaved
+[Serializable]
+public class ObjectSaved
 {
     public JsonSave[] savesArray = new JsonSave[SaveGameManager.NB_SAVES];
     public int selectedSaveID = 0;
@@ -157,12 +158,14 @@ public static class SaveGameManager
             savesArray[i] = new JsonSave();
     }
 }
-[Serializable] public class stickerOnBoardAndPosition
+[Serializable]
+public class stickerOnBoardAndPosition
 {
     public int sticker;
     public Vector3 position;
 }
-[Serializable] public class JsonSave
+[Serializable]
+public class JsonSave
 {
     public bool isEmpty = true;
 
@@ -184,6 +187,7 @@ public static class SaveGameManager
     [Header("ERGONOMY")]
     [SerializeField] public bool enableRumbles = true;
     [SerializeField] public string language = "en";
+    [SerializeField] public bool displayPing = false;
 
 
     [Header("STAGES")]
