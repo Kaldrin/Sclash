@@ -462,7 +462,6 @@ public class Player_Online : Player, IPunObservable
             switch (currentDashStep)
             {
                 case DASHSTEP.rest:
-                    Debug.Log(inDirection);
                     temporaryDashDirectionForCalculation = inDirection;
                     dashInitializationStartTime = Time.time;
                     currentDashStep = DASHSTEP.firstInput;

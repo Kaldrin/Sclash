@@ -41,7 +41,9 @@ QualitySettings:
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
     customRenderPipeline: {fileID: 0}
-    excludedTargetPlatforms: []
+    excludedTargetPlatforms:
+    - Standalone
+    - Windows Store Apps
   - serializedVersion: 2
     name: Low
     pixelLightCount: 20
@@ -149,7 +151,9 @@ QualitySettings:
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
     customRenderPipeline: {fileID: 0}
-    excludedTargetPlatforms: []
+    excludedTargetPlatforms:
+    - Standalone
+    - Windows Store Apps
   - serializedVersion: 2
     name: High
     pixelLightCount: 20
@@ -225,3 +229,4 @@ QualitySettings:
   m_PerPlatformDefaultQuality:
     Standalone: 5
     WebGL: 5
+    Windows Store Apps: 5
