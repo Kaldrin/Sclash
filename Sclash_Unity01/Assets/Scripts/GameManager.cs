@@ -43,12 +43,12 @@ public class GameManager : MonoBehaviourPun
 
 
 
-    #region DATA
+
     [Header("DATA")]
     [SerializeField] public CharactersDatabase charactersData = null;
     [SerializeField] public MenuParameters gameParameters = null;
     [SerializeField] TagsReferences tagsReferences = null;
-    #endregion
+
 
 
 
@@ -116,29 +116,26 @@ public class GameManager : MonoBehaviourPun
     #region SCORE CALCULATION
     [Header("SCORE CALCULATION")]
     [Tooltip("The duration the score lasts on screen when a round has finished")]
-    [SerializeField] float betweenRoundsScoreShowDuration = 4f;
+    [HideInInspector] float betweenRoundsScoreShowDuration = 4f;
     [Tooltip("The slider component reference in the options menu to change the number of rounds to win")]
     [SerializeField] Slider scoreToWinSliderComponent = null;
 
     [HideInInspector] public Vector2 score = new Vector2(0, 0);
     [Tooltip("The score to reach to win")]
-    [SerializeField] public int scoreToWin = 10;
+    [HideInInspector] public int scoreToWin = 10;
     # endregion
 
 
-
-    # region ROUNDS & MATCH
     [Header("ROUND & MATCH")]
     [Tooltip("The delay before a new round starts when one has finished and players are waiting")]
-    [SerializeField] float timeBeforeNextRoundTransitionTriggers = 3;
-    [SerializeField] float resetGameDelay = 1.5f;
-    #endregion
+    [HideInInspector] float timeBeforeNextRoundTransitionTriggers = 3;
+    [HideInInspector] float resetGameDelay = 1.5f;
 
 
 
     [Header("WIN")]
     [Tooltip("The delay before the win menu screen appears when a player has won")]
-    [SerializeField] float timeBeforeWinScreenAppears = 2f;
+    [HideInInspector] float timeBeforeWinScreenAppears = 2f;
 
 
 
@@ -163,38 +160,37 @@ public class GameManager : MonoBehaviourPun
 
 
 
+
+
     # region FX
     [Header("FX")]
     [Tooltip("The level of time slow down that is activated when a player dies")]
     [SerializeField] public float roundEndSlowMoTimeScale = 0.2f;
-    [SerializeField]
-    public float minTimeScale = 0.05f,
-        roundEndSlowMoDuration = 1.3f,
-        roundEndTimeScaleFadeSpeed = 0.05f,
-        gameEndSlowMoTimeScale = 0.1f,
-        gameEndSlowMoDuration = 0.5f,
-        gameEndTimeScaleFadeSpeed = 0.2f,
-        clashSlowMoTimeScale = 0.1f,
-        clashSlowMoDuration = 0.5f,
-        clashTimeScaleFadeSpeed = 0.2f,
-        parrySlowMoTimeScale = 0.2f,
-        parrySlowMoDuration = 2f,
-        parryTimeScaleFadeSpeed = 0.2f,
-        dodgeSlowMoTimeScale = 0.2f,
-        dodgeSlowMoDuration = 2f,
-        dodgeTimeScaleFadeSpeed = 0.2f,
-        deathCameraShakeDuration = 0.3f,
-        clashCameraShakeDuration = 0.3f,
-        pommelCameraShakeDuration = 0.3f,
-        finalCameraShakeDuration = 0.7f;
+    [HideInInspector] public float minTimeScale = 0.05f;
+    [SerializeField] public float roundEndSlowMoDuration = 1.3f;
+    [HideInInspector] public float roundEndTimeScaleFadeSpeed = 0.05f;
+    [SerializeField] public float gameEndSlowMoTimeScale = 0.1f;
+    [SerializeField] public float gameEndSlowMoDuration = 0.5f;
+    [SerializeField] public float gameEndTimeScaleFadeSpeed = 0.2f;
+    [SerializeField] public float clashSlowMoTimeScale = 0.1f;
+    [SerializeField] public float clashSlowMoDuration = 0.5f;
+    [SerializeField] public float clashTimeScaleFadeSpeed = 0.2f;
+    [SerializeField] public float parrySlowMoTimeScale = 0.2f;
+    [SerializeField] public float parrySlowMoDuration = 2f;
+    [HideInInspector] public float parryTimeScaleFadeSpeed = 0.2f;
+    [SerializeField] public float dodgeSlowMoTimeScale = 0.2f;
+    [SerializeField] public float dodgeSlowMoDuration = 2f;
+    [HideInInspector] public float dodgeTimeScaleFadeSpeed = 0.2f;
 
 
 
-    float actualTimeScaleUpdateSmoothness = 0.05f,
-        baseTimeScale = 1,
-        timeScaleObjective = 1;
 
+    float actualTimeScaleUpdateSmoothness = 0.05f;
+    float baseTimeScale = 1;
+    float timeScaleObjective = 1;
     bool runTimeScaleUpdate = true;
+
+
 
     [Tooltip("The round transition leaves effect object reference")]
     [SerializeField] public ParticleSystem roundTransitionLeavesFX = null;
@@ -233,6 +229,10 @@ public class GameManager : MonoBehaviourPun
 
 
     [Header("CAMERA SHAKE")]
+    [SerializeField] public float deathCameraShakeDuration = 0.3f;
+    [SerializeField] public float clashCameraShakeDuration = 0.3f;
+    [SerializeField] public float pommelCameraShakeDuration = 0.3f;
+    [SerializeField] public float finalCameraShakeDuration = 0.7f;
     [Tooltip("The CameraShake scripts instances references in the scene")]
     [SerializeField] public CameraShake deathCameraShake = null;
     [SerializeField] public CameraShake clashCameraShake = null;
@@ -267,10 +267,8 @@ public class GameManager : MonoBehaviourPun
     [Tooltip("Use cheat codes ?")]
     [SerializeField] public bool cheatCodes = false;
     [Tooltip("The key to activate the slow motion cheat")]
-    [SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
-    [SerializeField] float[] timeSlowDownSteps = null;
-    //bool slowedDownTime = false;
-
+    //[SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
+    [HideInInspector] float[] timeSlowDownSteps = { 2f, 0.2f, 0.05f};
     int timeSlowDownLevel = 0;
     #endregion
 
@@ -321,18 +319,18 @@ public class GameManager : MonoBehaviourPun
     }
 
 
-    private void OnEnable()
+    private void OnEnable()                                                                                                             // ON ENABLE
     {
         _controls.Enable();
     }
 
-    private void OnDisable()
+    private void OnDisable()                                                                                                            // ON DISABLE
     {
         _controls.Disable();
     }
 
     // Start is called before the first frame update
-    public virtual void Start()
+    public virtual void Start()                                                                                                       // START
     {
 
         // Set variables
@@ -348,9 +346,10 @@ public class GameManager : MonoBehaviourPun
 
 
     // Update is called once per graphic frame
-    public virtual void Update()
+    public virtual void Update()                                                                                                        // UPDATE
     {
         // IF CHEATS ON
+        /*
         if (enabled && isActiveAndEnabled && cheatCodes)
             if (Input.GetKeyUp(slowTimeKey))
             {
@@ -373,6 +372,7 @@ public class GameManager : MonoBehaviourPun
                         Time.timeScale = 1;
                 }
             }
+            */
     }
 
     // FixedUpdate is called 50 times per second
@@ -1834,6 +1834,18 @@ public class GameManager : MonoBehaviourPun
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
     }
     #endregion
+
+
+
+
+
+
+
+
+    void RemoveWarnings()
+    {
+        timeSlowDownLevel += timeSlowDownLevel;
+    }
     #endregion
 
 }

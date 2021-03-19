@@ -205,7 +205,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
-    // Update is called once per frame
     void Update()                                                                                                                                                               // UPDATE
     {
         if (enabled & isActiveAndEnabled)
@@ -218,6 +217,16 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     }
 
 
+    private void OnDestroy()
+    {
+        // SCARF
+        if (scarfObj != null)
+        {
+            Destroy(scarfObj.gameObject);
+            if (playerScript != null)
+                playerScript.scarfRenderer = null;
+        }
+    }
 
 
 
@@ -535,6 +544,14 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         }
 
 
+        // SCARF
+        if (scarfObj != null)
+        {
+            Destroy(scarfObj.gameObject);
+            if (playerScript != null)
+                playerScript.scarfRenderer = null;
+        }
+
         if (charactersDatabase != null)
             hasScarf = charactersDatabase.charactersList[currentCharacterIndex].scarf;
         if (hasScarf)
@@ -558,7 +575,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         }
         else if (!hasScarf && scarfObj != null)
         {
-            Destroy(scarfObj);
+            Debug.Log("Destroy scarf");
+            Destroy(scarfObj.gameObject);
             if (playerScript != null)
                 playerScript.scarfRenderer = null;
         }
@@ -716,15 +734,18 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // NAMES
         if (elementScript != null)
             elementScript.text1.text = player2ModesDatabase.player2modes[currentAI_Index].name;
-        if (verticalElements != null && verticalElements.Count > 0 && verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>())
-            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().text1.text = charactersDatabase.charactersList[playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.currentCharacterIndex].name;
+        if (GameManager.Instance != null && verticalElements != null && verticalElements.Count > 0 && verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>())
+            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().text1.text = charactersDatabase.charactersList[GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.currentCharacterIndex].name;
 
         // ENABLE CHARACTER CHANGE
         if (verticalElements != null && verticalElements.Count > 0)
             verticalElements[verticalElements.Count - 1].SetBool("Disabled", !player2ModesDatabase.player2modes[currentAI_Index].AI);
-        playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
-        playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
-        playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().iaScript.enabled = player2ModesDatabase.player2modes[currentAI_Index].AI;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
+            GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
+            GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().iaScript.enabled = player2ModesDatabase.player2modes[currentAI_Index].AI;
+        }
         playerScript.iaScript.SetDifficulty(player2ModesDatabase.player2modes[currentAI_Index].difficulty);
 
 
@@ -750,7 +771,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     {
         // Get the script with the references to the displays of this element
         CharaSelecMenuElement elementScript = verticalElements[verticalIndex].GetComponent<CharaSelecMenuElement>();
-        CharacterChanger otherCharacterChanger = playerScript.gameManager.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger;
+        CharacterChanger otherCharacterChanger = null;
+        if (GameManager.Instance != null)
+            otherCharacterChanger = GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger;
         StartCoroutine(otherCharacterChanger.ApplyCharacterChange(direction));
 
         yield return new WaitForSeconds(currentSwitchDelay);

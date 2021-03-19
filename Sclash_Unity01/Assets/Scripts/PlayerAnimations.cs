@@ -38,26 +38,23 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     [SerializeField] public Animator nameDisplayAnimator = null;
 
     [Tooltip("The reference to the player's SpriteRenderers components for the character and their legs")]
-    [SerializeField] public SpriteRenderer
-        spriteRenderer,
-        legsSpriteRenderer = null;
+    [SerializeField] public SpriteRenderer spriteRenderer = null;
+    [SerializeField] public SpriteRenderer legsSpriteRenderer = null;
 
     [SerializeField] Player playerScript = null;
     # endregion
 
 
 
-    [Header("ANIMATION VALUES")]
-    [Tooltip("The minimum speed required for the walk anim to trigger")]
-    [SerializeField] float minSpeedForWalkAnim = 0.05f;
-    [HideInInspector] public float
-        animatorBaseSpeed,
-        legsAnimatorBaseSpeed = 0;
-
-    [HideInInspector] public float nextAttackState = 0;
+    [Header("DEFAULT")]
     [SerializeField] RuntimeAnimatorController defaultAnimator = null;
     [SerializeField] RuntimeAnimatorController defaultLegsAnimator = null;
     [SerializeField] Sprite defaultMask = null;
+    [HideInInspector] public float animatorBaseSpeed = 0;
+    [HideInInspector] public float legsAnimatorBaseSpeed = 0;
+    [HideInInspector] public float nextAttackState = 0;
+    [Tooltip("The minimum speed required for the walk anim to trigger")]
+    float minSpeedForWalkAnim = 0.05f;
 
 
 

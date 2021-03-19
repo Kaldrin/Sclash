@@ -8,31 +8,38 @@ using UnityEngine.Animations;
 using Photon.Pun;
 using Photon.Realtime;
 
-// Main player script for duel mode
+
+
+
+
+
+// HEADER
 // A LITTLE MESSY ?
+// For Sclash
+
+// REQUIREMENTS
+// Photon Unity package
+// StatsManager script (Single instance)
+// InputManager script (Single instance)
+// GameManager script (Single instance)
+// PlayerAnimations script
+// PlayerCheatParameters scriptable object
+
+/// <summary>
+/// Main player script
+/// </summary>
+
+// HEADER
+// Made for Unity 2019.4.14
 public class Player : MonoBehaviourPunCallbacks
 {
-    #region Events
     public delegate void OnDrawnEvent();
     public event OnDrawnEvent DrawnEvent;
-    #endregion
 
 
     #region VARIABLES
-    #region MANAGERS
-    [Header("MANAGERS")]
-    AudioManager audioManager;
-    [HideInInspector] public GameManager gameManager;
-
-    // Input manager
-    [Tooltip("The name of the object in the scene containing the InputManager script component, to find its reference")]
-
-    protected InputManager inputManager = null;
-
-    protected StatsManager statsManager = null;
-    #endregion
-
-
+    public StatsManager statsManager = null;
+    public InputManager inputManager = null;
 
     #region PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]
@@ -50,7 +57,7 @@ public class Player : MonoBehaviourPunCallbacks
     GameObject scarfObject = null;
     internal Renderer scarfRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
-    [SerializeField] public Light playerLight = null;
+    public Light playerLight = null;
     [Tooltip("The animator controller that will be put on the sprite object of the player to enable nice looking character change animations")]
     [SerializeField] public RuntimeAnimatorController characterChangerAnimatorController = null;
     #endregion
@@ -119,20 +126,19 @@ public class Player : MonoBehaviourPunCallbacks
     [HideInInspector] public int characterIndex = 0;
     [HideInInspector] public int networkPlayerNum = 0;
     [HideInInspector] public bool playerIsAI;
-    public int playerNum = 0;
-    public int otherPlayerNum = 0;
+    [HideInInspector] public int playerNum = 0;
+    [HideInInspector] public int otherPlayerNum = 0;
     Player opponent;
     #endregion
 
 
 
 
-    #region HEALTH
-    [Header("HEALTH")]
+    // HEALTH
     [Tooltip("The maximum health of the player")]
-    [SerializeField] float maxHealth = 1;
+    float maxHealth = 1;
     protected float currentHealth;
-    #endregion
+
 
 
 
@@ -144,25 +150,23 @@ public class Player : MonoBehaviourPunCallbacks
     protected List<Slider> staminaSliders = new List<Slider>();
 
     [Tooltip("The amount of stamina each move will cost when executed")]
-    [SerializeField] public float staminaCostForMoves = 1;
+    [HideInInspector] public float staminaCostForMoves = 1;
     [Tooltip("The maximum amount of stamina one player can have")]
-    [SerializeField] public float maxStamina = 4f;
+    [HideInInspector] public float maxStamina = 4f;
     [Tooltip("Stamina parameters")]
-    [SerializeField]
-    float
-        durationBeforeStaminaRegen = 0.5f,
-        staminaGlobalGainOverTimeMultiplier = 1f,
-        idleStaminaGainOverTimeMultiplier = 0.8f,
-        backWalkingStaminaGainOverTime = 0.8f,
-        frontWalkingStaminaGainOverTime = 0.4f,
-        quickStaminaRegenGap = 1,
-        lowStaminaGap = 1,
-        idleQuickStaminaGainOverTimeMultiplier = 1.2f,
-        backWalkingQuickStaminaGainOverTime = 1.2f,
-        frontWalkingQuickStaminaGainOverTime = 0.8f,
-        staminaBarBaseOpacity = 0.8f,
-        staminaRecupTriggerDelay = 0.35f,
-        staminaRecupAnimRegenSpeed = 0.025f;
+    [SerializeField] float durationBeforeStaminaRegen = 0.5f;
+    [SerializeField] float staminaGlobalGainOverTimeMultiplier = 1f;
+    [SerializeField] float idleStaminaGainOverTimeMultiplier = 0.8f;
+    [SerializeField] float backWalkingStaminaGainOverTime = 0.8f;
+    [SerializeField] float frontWalkingStaminaGainOverTime = 0.4f;
+    float quickStaminaRegenGap = 1;
+    float lowStaminaGap = 1;
+    [SerializeField] float idleQuickStaminaGainOverTimeMultiplier = 1.2f;
+    [SerializeField] float backWalkingQuickStaminaGainOverTime = 1.2f;
+    [SerializeField] float frontWalkingQuickStaminaGainOverTime = 0.8f;
+    [SerializeField] float staminaBarBaseOpacity = 0.8f;
+    [SerializeField] float staminaRecupTriggerDelay = 0.35f;
+    [SerializeField] float staminaRecupAnimRegenSpeed = 0.025f;
     [HideInInspector] public float stamina = 0;
     float currentTimeBeforeStaminaRegen = 0;
     protected float staminaBarsOpacity = 1;
@@ -177,12 +181,10 @@ public class Player : MonoBehaviourPunCallbacks
     [Header("STAMINA COLORS")]
     [Tooltip("Stamina colors depending on how much there is left")]
     [SerializeField] Color staminaBaseColor = Color.green;
-    [SerializeField]
-    Color
-        staminaLowColor = Color.yellow,
-        staminaDeadColor = Color.red,
-        staminaRecupColor = Color.blue,
-        staminaBreakColor = Color.red;
+    [SerializeField] Color staminaLowColor = Color.yellow;
+    [SerializeField] Color staminaDeadColor = Color.red;
+    [SerializeField] Color staminaRecupColor = Color.blue;
+    [SerializeField] Color staminaBreakColor = Color.red;
     #endregion
 
 
@@ -191,31 +193,26 @@ public class Player : MonoBehaviourPunCallbacks
     #region MOVEMENTS SETTING
     [Header("MOVEMENTS")]
     [Tooltip("The default movement speed of the player")]
-    [SerializeField] protected float baseMovementsSpeed = 2.5f;
-    [SerializeField] float chargeMovementsSpeed = 1.2f;
-    [SerializeField] float sneathedMovementsSpeed = 1.8f;
-    [SerializeField] float attackingMovementsSpeed = 2.2f;
+    protected float baseMovementsSpeed = 2.5f;
+    float chargeMovementsSpeed = 1.2f;
+    float sneathedMovementsSpeed = 1.8f;
+    float attackingMovementsSpeed = 2.2f;
     [HideInInspector] public float actualMovementsSpeed = 1;
 
     Vector3 oldPos = Vector3.zero;
     protected Vector2 netTargetPos = Vector2.zero;
-    //float lerpValue = 0f;
-    //bool lerpToTarget = false;
     #endregion
 
 
 
-    #region ORIENTATION
+
     [Header("ORIENTATION")]
     [Tooltip("The duration before the player can orient again towards the enemy if they need to once they applied the orientation")]
-    [SerializeField] protected float orientationCooldown = 0.1f;
-    protected float
-         orientationCooldownStartTime = 0;
+    protected float orientationCooldown = 0.1f;
+    protected float orientationCooldownStartTime = 0;
+    protected bool orientationCooldownFinished = true;
+    protected bool canOrientTowardsEnemy = true;
 
-    protected bool
-        orientationCooldownFinished = true,
-        canOrientTowardsEnemy = true;
-    #endregion
 
 
 
@@ -247,8 +244,8 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
-    [Header("JUMP")]
-    [SerializeField] float jumpPower = 10f;
+    // JUMP
+    float jumpPower = 10f;
 
 
 
@@ -274,12 +271,11 @@ public class Player : MonoBehaviourPunCallbacks
     #region ATTACK STUFF
     [Header("ATTACK")]
     [Tooltip("Attack range parameters")]
-    [SerializeField] public float lightAttackRange = 1.8f;
+    [HideInInspector] public float lightAttackRange = 1.8f;
     [Tooltip("Attack range parameters")]
-    [SerializeField] public float heavyAttackRange = 3.2f;
-    [SerializeField] public float baseBackAttackRangeDisjoint = 0f;
-    [SerializeField] public float forwardAttackBackrangeDisjoint = 2.5f;
-    //[SerializeField] float axisDeadZoneForAttackDash = 0.2f;
+    [HideInInspector] public float heavyAttackRange = 3.2f;
+    [HideInInspector] public float baseBackAttackRangeDisjoint = 0f;
+    [HideInInspector] public float forwardAttackBackrangeDisjoint = 1.7f;
 
     [HideInInspector] public float actualAttackRange = 0;
     protected float actualBackAttackRangeDisjoint = 0f;
@@ -291,28 +287,25 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
+
     #region DASH
     [Header("DASH")]
     [SerializeField] public float baseDashSpeed = 3;
-    [SerializeField]
-    public float forwardDashDistance = 3,
-        backwardsDashDistance = 2.5f;
-    [SerializeField]
-    protected float
-        allowanceDurationForDoubleTapDash = 0.175f,
-        forwardAttackDashDistance = 2.5f,
-        backwardsAttackDashDistance = 1.5f,
-        dashDeadZone = 0.5f,
-        shortcutDashDeadZone = 0.5f;
-    [SerializeField]
-    protected float
-   dashDirection = 0,
-   temporaryDashDirectionForCalculation = 0,
-   dashInitializationStartTime = 0,
-   actualUsedDashDistance = 0,
-   dashTime = 0;
+    [SerializeField] public float forwardDashDistance = 3;
+    public float backwardsDashDistance = 2.5f;
+    [SerializeField] protected float allowanceDurationForDoubleTapDash = 0.175f;
+    [SerializeField] protected float forwardAttackDashDistance = 2.5f;
+    [SerializeField] protected float backwardsAttackDashDistance = 1.5f;
+    protected float dashDeadZone = 0.5f;
+    protected float shortcutDashDeadZone = 0.5f;
+    protected float dashDirection = 0;
+    protected float temporaryDashDirectionForCalculation = 0;
+    protected float dashInitializationStartTime = 0;
+    protected float actualUsedDashDistance = 0;
+    protected float dashTime = 0;
 
-    protected enum DASHSTEP
+    [System.Serializable]
+    public enum DASHSTEP
     {
         rest,
         firstInput,
@@ -320,7 +313,7 @@ public class Player : MonoBehaviourPunCallbacks
         invalidated,
     }
 
-    protected DASHSTEP currentDashStep = DASHSTEP.invalidated;
+    public DASHSTEP currentDashStep = DASHSTEP.invalidated;
     protected DASHSTEP currentShortcutDashStep = DASHSTEP.invalidated;
 
     protected Vector3 initPos;
@@ -331,14 +324,13 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
-    #region POMMEL
+
     [Header("POMMEL")]
     [Tooltip("Is currently applying the pommel effect to what they touches ?")]
     [SerializeField] public bool kickFrame = false;
-    [SerializeField] protected float kickRange = 0.88f;
+    protected float kickRange = 0.99f;
     [HideInInspector] public bool canPommel = true;
 
-    #endregion
 
 
 
@@ -354,7 +346,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     [Header("MAINTAIN PARRY")]
-    [SerializeField] float maintainParryStaminaCostOverTime = 0.1f;
+    float maintainParryStaminaCostOverTime = 0.03f;
 
 
 
@@ -378,27 +370,21 @@ public class Player : MonoBehaviourPunCallbacks
 
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public ParticleSystem attackRangeFX = null;
-    [SerializeField]
-    protected ParticleSystem
-        clashKanasFX = null,
-        kickKanasFX = null,
-        kickedFX = null,
-        clashFX = null,
-        slashFX = null;
+    [SerializeField] protected ParticleSystem clashKanasFX = null;
+    [SerializeField] protected ParticleSystem kickKanasFX = null;
+    [SerializeField] protected ParticleSystem kickedFX = null;
+    [SerializeField] protected ParticleSystem clashFX = null;
+    [SerializeField] protected ParticleSystem slashFX = null;
 
 
-    [SerializeField] float attackSignDisjoint = 0.4f;
+    float attackSignDisjoint = 0.4f;
     [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
-    [SerializeField] float deathBloodFXRotationForDirectionChange = 240;
+    float deathBloodFXRotationForDirectionChange = 240;
     [SerializeField] GameObject attackSlashFXParent = null;
-    [SerializeField]
-    float
-        //lightAttackSwordTrailWidth = 20f,
-        //heavyAttackSwordTrailWidth = 65f,
-        lightAttackSwordTrailScale = 1,
-        heavyAttackSwordTrailScale = 3;
+    float lightAttackSwordTrailScale = 0.95f;
+    float heavyAttackSwordTrailScale = 1.44f;
     [Tooltip("The minimum speed required for the walk fx to trigger")]
-    [SerializeField] protected float minSpeedForWalkFX = 0.05f;
+    protected float minSpeedForWalkFX = 0.05f;
 
     Vector3 deathFXbaseAngles = new Vector3(0, 0, 0);
     Vector3 deathBloodFXBaseRotation = Vector3.zero;
@@ -418,24 +404,23 @@ public class Player : MonoBehaviourPunCallbacks
 
     [Header("STAMINA FX")]
     [SerializeField] ParticleSystem staminaLossFX = null;
-    [SerializeField]
-    ParticleSystem staminaGainFX = null,
-        staminaRecupFX = null,
-        staminaRecupFinishedFX = null,
-        staminaBreakFX = null;
+    [SerializeField] ParticleSystem staminaGainFX = null;
+    [SerializeField] ParticleSystem staminaRecupFX = null;
+    [SerializeField] ParticleSystem staminaRecupFinishedFX = null;
+    [SerializeField] ParticleSystem staminaBreakFX = null;
     #endregion
 
 
 
-
+    
     [Header("STAGE DEPENDENT FX")]
     [SerializeField] ParticleSystem dashFXFront = null;
-    [SerializeField] ParticleSystem dashFXBack = null,
-        attackDashFXFront = null,
-        attackDashFXBack = null,
-        attackNeutralFX = null;
-    [SerializeField] protected ParticleSystem walkFXFront = null,
-        walkFXBack = null;
+    [SerializeField] ParticleSystem dashFXBack = null;
+    [SerializeField] ParticleSystem attackDashFXFront = null;
+    [SerializeField] ParticleSystem attackDashFXBack = null;
+    [SerializeField] ParticleSystem attackNeutralFX = null;
+    [SerializeField] protected ParticleSystem walkFXFront = null;
+    [SerializeField] protected ParticleSystem walkFXBack = null;
 
     [System.Serializable]
     public struct ParticleSet
@@ -507,6 +492,11 @@ public class Player : MonoBehaviourPunCallbacks
     #region BASE FUNCTIONS
     protected void Awake()                                                                                                                                                                  // AWAKE
     {
+        if (InputManager.Instance != null)
+            inputManager = InputManager.Instance;
+        if (StatsManager.Instance != null)
+            statsManager = StatsManager.Instance;
+
         // GET PLAYER CHARACTER CHANGE ANIMATOR (Because I always forget to add it back while editing the animations (Because I have to remove it, it conflicts with the main animator))
         if (spriteRenderer.gameObject.GetComponent<Animator>() == null)
             characterChanger.characterChangeAnimator = spriteRenderer.gameObject.AddComponent<Animator>();
@@ -522,16 +512,6 @@ public class Player : MonoBehaviourPunCallbacks
 
     public virtual void Start()                                                                                                                                                                  // START
     {
-        // GET MANAGERS
-        //audioManager = GameObject.Find(audioManagerName).GetComponent<AudioManager>();
-        audioManager = AudioManager.Instance;
-        //gameManager = GameObject.Find(gameManagerName).GetComponent<GameManager>();
-        gameManager = GameManager.Instance;
-        //inputManager = GameObject.Find(inputManagerName).GetComponent<InputManager>();
-        inputManager = InputManager.Instance;
-        //statsManager = GameObject.Find(statsManagerName).GetComponent<StatsManager>();
-        statsManager = StatsManager.Instance;
-
         // The forward attack touches a little behind the character for cool effects
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
 
@@ -584,7 +564,7 @@ public class Player : MonoBehaviourPunCallbacks
             // Action depending on state
             switch (playerState)
             {
-                case STATE.onlinefrozen:                    // ONLINE FROZEN
+                case STATE.onlinefrozen:                                     // ONLINE FROZEN
                     UpdateStaminaSlidersValue();
                     UpdateStaminaColor();
 
@@ -593,22 +573,22 @@ public class Player : MonoBehaviourPunCallbacks
                     RunDash();
                     break;
 
-                case STATE.frozen:                          // FROZEN                         
+                case STATE.frozen:                                          // FROZEN                         
                     break;
 
-                case STATE.sneathing:                       // SNEATHING
+                case STATE.sneathing:                                      // SNEATHING
                     break;
 
-                case STATE.sneathed:                        // SNEATHED
+                case STATE.sneathed:                                        // SNEATHED
                     ManageOrientation();
                     ManageIA();
                     ManageDraw();
                     break;
 
-                case STATE.drawing:                                // DRAWING
+                case STATE.drawing:                                         // DRAWING
                     break;
 
-                case STATE.battleDrawing:                              // BATTLE DRAWING
+                case STATE.battleDrawing:                                   // BATTLE DRAWING
                     break;
 
                 case STATE.battleSneathing:                                 // BATTLE SNEATHING
@@ -618,7 +598,7 @@ public class Player : MonoBehaviourPunCallbacks
                     ManageBattleDraw();
                     break;
 
-                case STATE.normal:                                              // NORMAL
+                case STATE.normal:                                          // NORMAL
                     ManageJumpInput();
                     ManageChargeInput();
                     ManageDashInput();
@@ -633,7 +613,7 @@ public class Player : MonoBehaviourPunCallbacks
                     UpdateChargeShadowSize();
                     break;
 
-                case STATE.charging:                                    // CHARGING
+                case STATE.charging:                                          // CHARGING
                     ManageDashInput();
                     ManagePommel();
                     ManageParryInput();
@@ -647,7 +627,7 @@ public class Player : MonoBehaviourPunCallbacks
                     UpdateChargeShadowSize();
                     break;
 
-                case STATE.canAttackAfterAttack:                                        // CAN ATTACK AFTER ATTACK
+                case STATE.canAttackAfterAttack:                                // CAN ATTACK AFTER ATTACK
                     ManageJumpInput();
                     ManageChargeInput();
                     ManageDashInput();
@@ -661,7 +641,7 @@ public class Player : MonoBehaviourPunCallbacks
                     UpdateChargeShadowSize();
                     break;
 
-                case STATE.recovering:                                      // RECOVERING
+                case STATE.recovering:                                            // RECOVERING
                     UpdateChargeShadowSize();
                     break;
 
@@ -708,7 +688,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
             // Cheatcodes to use for development purposes
-            if (gameManager.cheatCodes)
+            if (GameManager.Instance != null && GameManager.Instance.cheatCodes)
                 CheatsInputs();
         }
 
@@ -762,7 +742,7 @@ public class Player : MonoBehaviourPunCallbacks
             // Behaviour depending on state
             switch (playerState)
             {
-                case STATE.onlinefrozen:                                                      // FROZEN
+                case STATE.onlinefrozen:                                                   // FROZEN
                     SetStaminaBarsOpacity(staminaBarsOpacity);
                     rb.velocity = Vector2.zero;
                     UpdateStaminaSlidersValue();
@@ -770,7 +750,7 @@ public class Player : MonoBehaviourPunCallbacks
                     playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
                     break;
 
-                case STATE.frozen:                                                      // FROZEN
+                case STATE.frozen:                                                           // FROZEN
                     SetStaminaBarsOpacity(0);
                     rb.velocity = Vector2.zero;
                     break;
@@ -786,7 +766,7 @@ public class Player : MonoBehaviourPunCallbacks
                     }
                     break;
 
-                case STATE.sneathed:                                                    // SNEATHED
+                case STATE.sneathed:                                                         // SNEATHED
                     ManageStaminaRegen();
                     UpdateStaminaSlidersValue();
                     SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -794,7 +774,7 @@ public class Player : MonoBehaviourPunCallbacks
                     rb.velocity = new Vector2(0, rb.velocity.y);
                     break;
 
-                case STATE.drawing:                                                     // DRAWING
+                case STATE.drawing:                                                           // DRAWING
                     SetStaminaBarsOpacity(staminaBarsOpacity);
                     UpdateStaminaColor();
                     if (DrawnEvent != null)
@@ -803,11 +783,11 @@ public class Player : MonoBehaviourPunCallbacks
                     {
                         hasFinishedAnim = false;
                         SwitchState(STATE.normal);
-                        gameManager.SaberDrawn(playerNum);
+                        GameManager.Instance.SaberDrawn(playerNum);
                     }
                     break;
 
-                case STATE.battleDrawing:                                               // BATTLE DRAWING
+                case STATE.battleDrawing:                                                     // BATTLE DRAWING
                     UpdateStaminaSlidersValue();
                     SetStaminaBarsOpacity(staminaBarsOpacity);
                     UpdateStaminaColor();
@@ -816,7 +796,7 @@ public class Player : MonoBehaviourPunCallbacks
                         SwitchState(STATE.normal);
                     break;
 
-                case STATE.battleSneathing:                                                     // BATTLE SNEATHING
+                case STATE.battleSneathing:                                                  // BATTLE SNEATHING
                     if (hasFinishedAnim)
                         SwitchState(STATE.battleSneathedNormal);
                     UpdateStaminaSlidersValue();
@@ -833,7 +813,7 @@ public class Player : MonoBehaviourPunCallbacks
                     ManageOrientation();
                     break;
 
-                case STATE.normal:                                                      // NORMAL
+                case STATE.normal:                                                          // NORMAL
                     ManageMovementsInputs();
                     ManageOrientation();
                     ManageStaminaRegen();
@@ -841,7 +821,7 @@ public class Player : MonoBehaviourPunCallbacks
                     playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
                     break;
 
-                case STATE.charging:                                                // CHARGING
+                case STATE.charging:                                                         // CHARGING
                     ManageMovementsInputs();
                     ManageStaminaRegen();
                     UpdateStaminaSlidersValue();
@@ -849,7 +829,7 @@ public class Player : MonoBehaviourPunCallbacks
                     UpdateStaminaColor();
                     break;
 
-                case STATE.attacking:                                               // ATTACKING
+                case STATE.attacking:                                                         // ATTACKING
                     RunDash();
                     ManageMovementsInputs();
                     if (hasFinishedAnim)
@@ -865,7 +845,7 @@ public class Player : MonoBehaviourPunCallbacks
                         ApplyAttackHitbox();
                     break;
 
-                case STATE.canAttackAfterAttack:                                    // CAN ATTACK AFTER ATTACK
+                case STATE.canAttackAfterAttack:                                               // CAN ATTACK AFTER ATTACK
                     ManageStaminaRegen();
                     SetStaminaBarsOpacity(staminaBarsOpacity);
                     if (hasAttackRecoveryAnimFinished)
@@ -875,7 +855,7 @@ public class Player : MonoBehaviourPunCallbacks
                     }
                     break;
 
-                case STATE.recovering:                                              // RECOVERING
+                case STATE.recovering:                                                          // RECOVERING
                     if (waitingForNextAttack)
                         SwitchState(STATE.canAttackAfterAttack);
                     if (hasAttackRecoveryAnimFinished)
@@ -891,7 +871,7 @@ public class Player : MonoBehaviourPunCallbacks
                     rb.velocity = Vector3.zero;
                     break;
 
-                case STATE.pommeling:                                               // POMMELING
+                case STATE.pommeling:                                                            // POMMELING
                     RunDash();
                     if (hasFinishedAnim)
                     {
@@ -904,7 +884,7 @@ public class Player : MonoBehaviourPunCallbacks
                     rb.velocity = Vector3.zero;
                     break;
 
-                case STATE.parrying:                                                // PARRYING
+                case STATE.parrying:                                                              // PARRYING
                     RunDash();
                     if (hasFinishedAnim)
                     {
@@ -915,7 +895,7 @@ public class Player : MonoBehaviourPunCallbacks
                     rb.velocity = Vector3.zero;
                     break;
 
-                case STATE.maintainParrying:                                        // MAINTAIN PARRY
+                case STATE.maintainParrying:                                                  // MAINTAIN PARRY
                     RunDash();
                     if (hasFinishedAnim)
                         SwitchState(STATE.normal);
@@ -925,7 +905,7 @@ public class Player : MonoBehaviourPunCallbacks
                     UpdateStaminaColor();
                     break;
 
-                case STATE.preparingToJump:                                         // PREPARING TO JUMP
+                case STATE.preparingToJump:                                                   // PREPARING TO JUMP
                     if (hasFinishedAnim)
                         ActuallyJump();
                     UpdateStaminaSlidersValue();
@@ -933,22 +913,22 @@ public class Player : MonoBehaviourPunCallbacks
                     UpdateStaminaColor();
                     break;
 
-                case STATE.jumping:                                                 // JUMPING
+                case STATE.jumping:                                                           // JUMPING
                     if (hasAttackRecoveryAnimFinished)
                         SwitchState(STATE.normal);
                     UpdateStaminaSlidersValue();
                     SetStaminaBarsOpacity(staminaBarsOpacity);
                     UpdateStaminaColor();
                     break;
-
-                case STATE.dashing:                                                 // DASHING
+                        
+                case STATE.dashing:                                                           // DASHING
                     UpdateStaminaSlidersValue();
                     SetStaminaBarsOpacity(staminaBarsOpacity);
                     UpdateStaminaColor();
                     RunDash();
                     break;
 
-                case STATE.clashed:                                                     // CLASHED
+                case STATE.clashed:                                                           // CLASHED
                     ManageStaminaRegen();
                     UpdateStaminaSlidersValue();
                     SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -957,18 +937,18 @@ public class Player : MonoBehaviourPunCallbacks
                     rb.velocity = Vector3.zero;
                     break;
 
-                case STATE.enemyKilled:                                     // ENEMY KILLED
+                case STATE.enemyKilled:                                                        // ENEMY KILLED
                     ManageMovementsInputs();
                     SetStaminaBarsOpacity(0);
                     playerAnimations.UpdateIdleStateDependingOnStamina(stamina);
                     break;
 
-                case STATE.enemyKilledEndMatch:                                     // ENEMY KILLED END MATCH
+                case STATE.enemyKilledEndMatch:                                                // ENEMY KILLED END MATCH
                     ManageMovementsInputs();
                     SetStaminaBarsOpacity(0);
                     break;
 
-                case STATE.dead:                                        // DEAD
+                case STATE.dead:                                                               // DEAD
                     break;
             }
         }
@@ -1342,7 +1322,6 @@ public class Player : MonoBehaviourPunCallbacks
                     photonView.RPC("TriggerHit", RpcTarget.AllViaServer);
                 else
                     TriggerHit();
-
             }
             // CLASH
             else if (clashFrames)
@@ -1365,10 +1344,10 @@ public class Player : MonoBehaviourPunCallbacks
 
 
                 // STATS
-                if (statsManager)
+                if (StatsManager.Instance != null)
                 {
-                    statsManager.AddAction(ACTION.clash, playerNum, 0);
-                    statsManager.AddAction(ACTION.clash, otherPlayerNum, 0);
+                    StatsManager.Instance.AddAction(ACTION.clash, playerNum, 0);
+                    StatsManager.Instance.AddAction(ACTION.clash, otherPlayerNum, 0);
                 }
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
@@ -1405,8 +1384,8 @@ public class Player : MonoBehaviourPunCallbacks
                 // STATS
                 if (characterType == CharacterType.duel)
                 {
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.successfulParry, playerNum, 0);
+                    if (StatsManager.Instance != null)
+                        StatsManager.Instance.AddAction(ACTION.successfulParry, playerNum, 0);
                     else
                         Debug.Log("Couldn't access statsManager to record action, ignoring");
                 }
@@ -1424,8 +1403,8 @@ public class Player : MonoBehaviourPunCallbacks
                 // STATS
                 if (characterType == CharacterType.duel)
                 {
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.dodge, playerNum, 0);
+                    if (StatsManager.Instance != null)
+                        StatsManager.Instance.AddAction(ACTION.dodge, playerNum, 0);
                     else
                         Debug.Log("Couldn't access statsManager to record action, ignoring");
                 }
@@ -1531,8 +1510,8 @@ public class Player : MonoBehaviourPunCallbacks
             // STATS
             if (characterType == CharacterType.duel)
             {
-                if (statsManager)
-                    statsManager.AddAction(ACTION.death, playerNum, 0);
+                if (StatsManager.Instance != null)
+                    StatsManager.Instance.AddAction(ACTION.death, playerNum, 0);
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
@@ -1760,7 +1739,7 @@ public class Player : MonoBehaviourPunCallbacks
     protected void UpdateStaminaSlidersValue()
     {
         // DETECT STAMINA CHARGE UP
-        if (Mathf.FloorToInt(oldStaminaValue) < Mathf.FloorToInt(stamina) && (characterType == CharacterType.campaign || (characterType == CharacterType.duel && !gameManager.playerDead && gameManager.gameState == GameManager.GAMESTATE.game)))
+        if (Mathf.FloorToInt(oldStaminaValue) < Mathf.FloorToInt(stamina) && (characterType == CharacterType.campaign || (characterType == CharacterType.duel && !GameManager.Instance.playerDead && GameManager.Instance.gameState == GameManager.GAMESTATE.game)))
             if (!staminaRecupAnimOn && !staminaBreakAnimOn)
                 if (!staminaRecupAnimOn && !staminaBreakAnimOn)
                 {
@@ -2245,8 +2224,8 @@ public class Player : MonoBehaviourPunCallbacks
                     // STATS
                     if (characterType == CharacterType.duel)
                     {
-                        if (statsManager)
-                            statsManager.AddAction(ACTION.charge, playerNum, 0);
+                        if (StatsManager.Instance != null)
+                            StatsManager.Instance.AddAction(ACTION.charge, playerNum, 0);
                         else
                             Debug.Log("Couldn't access statsManager to record action, ignoring");
                     }
@@ -2294,8 +2273,8 @@ public class Player : MonoBehaviourPunCallbacks
                     // STATS
                     if (characterType == CharacterType.duel)
                     {
-                        if (statsManager)
-                            statsManager.AddAction(ACTION.charge, playerNum, 0);
+                        if (StatsManager.Instance != null)
+                            StatsManager.Instance.AddAction(ACTION.charge, playerNum, 0);
                         else
                             Debug.Log("Couldn't access statsManager to record action, ignoring");
                     }
@@ -2326,9 +2305,7 @@ public class Player : MonoBehaviourPunCallbacks
         if (chargeLevel >= maxChargeLevel)
         {
             if (Time.time - maxChargeLevelStartTime >= maxHoldDurationAtMaxCharge)
-            {
                 ReleaseAttack();
-            }
         }
         // Pass charge levels
         else if (Time.time - chargeStartTime >= durationToNextChargeLevel)
@@ -2502,8 +2479,8 @@ public class Player : MonoBehaviourPunCallbacks
                 // STATS
                 if (characterType == CharacterType.duel)
                 {
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.forwardAttack, inputNum, saveChargeLevelForStats);
+                    if (StatsManager.Instance != null)
+                        StatsManager.Instance.AddAction(ACTION.forwardAttack, inputNum, saveChargeLevelForStats);
                     else
                         Debug.Log("Couldn't access statsManager to record action, ignoring");
                 }
@@ -2520,8 +2497,8 @@ public class Player : MonoBehaviourPunCallbacks
                 // STATS
                 if (characterType == CharacterType.duel)
                 {
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.backwardsAttack, inputNum, saveChargeLevelForStats);
+                    if (StatsManager.Instance != null)
+                        StatsManager.Instance.AddAction(ACTION.backwardsAttack, inputNum, saveChargeLevelForStats);
                     else
                         Debug.Log("Couldn't access statsManager to record action, ignoring");
                 }
@@ -2536,8 +2513,8 @@ public class Player : MonoBehaviourPunCallbacks
             // STATS
             if (characterType == CharacterType.duel)
             {
-                if (statsManager)
-                    statsManager.AddAction(ACTION.neutralAttack, inputNum, saveChargeLevelForStats);
+                if (StatsManager.Instance != null)
+                    StatsManager.Instance.AddAction(ACTION.neutralAttack, inputNum, saveChargeLevelForStats);
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
@@ -2578,14 +2555,9 @@ public class Player : MonoBehaviourPunCallbacks
         foreach (Collider2D c in hitsCol)
         {
             if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
-            {
-
                 hits.Add(c.transform.parent.gameObject);
-            }
             else if (c.CompareTag("Destructible") && !hits.Contains(c.transform.parent.gameObject))
-            {
                 hits.Add(c.gameObject);
-            }
         }
 
 
@@ -2667,7 +2639,8 @@ public class Player : MonoBehaviourPunCallbacks
 
 
         // STATS
-        statsManager.AddAction(ACTION.parry, playerNum, chargeLevel);
+        if (StatsManager.Instance != null)
+            StatsManager.Instance.AddAction(ACTION.parry, playerNum, chargeLevel);
     }
 
     void ReleaseMaintainParry()
@@ -2725,8 +2698,8 @@ public class Player : MonoBehaviourPunCallbacks
         // STATS
         if (characterType == CharacterType.duel)
         {
-            if (statsManager)
-                statsManager.AddAction(ACTION.parry, playerNum, chargeLevel);
+            if (StatsManager.Instance != null)
+                StatsManager.Instance.AddAction(ACTION.parry, playerNum, chargeLevel);
             else
                 Debug.Log("Couldn't access statsManager to record action, ignoring");
         }
@@ -2742,8 +2715,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     #region POMMEL
     // Detect pommel inputs
-    public virtual void ManagePommel(
-        )
+    public virtual void ManagePommel()
     {
         // ONLINE
         if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
@@ -2792,8 +2764,8 @@ public class Player : MonoBehaviourPunCallbacks
         // STATS
         if (characterType == CharacterType.duel)
         {
-            if (statsManager)
-                statsManager.AddAction(ACTION.pommel, playerNum, chargeLevel);
+            if (StatsManager.Instance != null)
+                StatsManager.Instance.AddAction(ACTION.pommel, playerNum, chargeLevel);
             else
                 Debug.Log("Couldn't access statsManager to record action, ignoring");
         }
@@ -2916,8 +2888,8 @@ public class Player : MonoBehaviourPunCallbacks
             // STATS
             if (characterType == CharacterType.duel)
             {
-                if (statsManager)
-                    statsManager.AddAction(ACTION.successfulPommel, otherPlayerNum, chargeLevel);
+                if (StatsManager.Instance != null)
+                    StatsManager.Instance.AddAction(ACTION.successfulPommel, otherPlayerNum, chargeLevel);
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
@@ -3087,11 +3059,11 @@ public class Player : MonoBehaviourPunCallbacks
                 break;
             case STATE.dashing:
                 break;
-
             default:
                 return;
         }
 
+        // QUICK DASH
         if (quickDash)
         {
             if (Mathf.Abs(inDirection) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
@@ -3105,6 +3077,7 @@ public class Player : MonoBehaviourPunCallbacks
                 currentShortcutDashStep = DASHSTEP.invalidated;
             }
         }
+        // NORMAL DASH
         else
         {
             switch (currentDashStep)
@@ -3112,11 +3085,12 @@ public class Player : MonoBehaviourPunCallbacks
                 case DASHSTEP.rest:
                     temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                     dashInitializationStartTime = Time.time;
+                    Debug.Log("First input");
                     currentDashStep = DASHSTEP.firstInput;
                     break;
 
                 case DASHSTEP.firstInput:
-                    if (Mathf.Abs(inDirection) == 0f)
+                    if (Mathf.Abs(inDirection) <= 0f)
                     {
                         currentDashStep = DASHSTEP.firstRelease;
                         break;
@@ -3124,29 +3098,47 @@ public class Player : MonoBehaviourPunCallbacks
 
                     if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
                     {
-                        currentDashStep = DASHSTEP.invalidated;
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
+                        //currentDashStep = DASHSTEP.invalidated;
                     }
-
                     break;
 
                 case DASHSTEP.firstRelease:
                     if (temporaryDashDirectionForCalculation == Mathf.Sign(inDirection))
                     {
                         dashDirection = temporaryDashDirectionForCalculation;
+                        Debug.Log("Invalidate");
                         currentDashStep = DASHSTEP.invalidated;
                         TriggerBasicDash();
                     }
+                    else if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
+                    {
+                        Debug.Log("First input");
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
+                        currentDashStep = DASHSTEP.firstInput;
+                    }
                     else
                     {
+                        Debug.Log("Invalidate");
                         currentDashStep = DASHSTEP.invalidated;
                     }
                     break;
 
 
                 case DASHSTEP.invalidated:
-                    if (inDirection == 0f)
+                    if (Mathf.Abs(inDirection) <= 0f)
                     {
+                        Debug.Log("Rest");
                         currentDashStep = DASHSTEP.rest;
+                    }
+                    else if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
+                    {
+                        Debug.Log("First input");
+                        currentDashStep = DASHSTEP.firstInput;
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
                     }
                     break;
             }
@@ -3156,9 +3148,18 @@ public class Player : MonoBehaviourPunCallbacks
     // Functions to detect the dash input etc
     internal virtual void ManageDashInput()
     {
-        if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
+        if (currentDashStep == DASHSTEP.firstInput)
             if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
+            {
+                Debug.Log("Invalidate");
+                currentDashStep = DASHSTEP.invalidated;
+            }
+        if (currentDashStep == DASHSTEP.firstRelease)
+            if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
+            {
+                Debug.Log("Rest");
                 currentDashStep = DASHSTEP.rest;
+            }
 
         if (InputManager.Instance.playerInputs[playerNum].dash == 0f)
         {
@@ -3215,8 +3216,8 @@ public class Player : MonoBehaviourPunCallbacks
                 // STATS
                 if (characterType == CharacterType.duel)
                 {
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.forwardDash, otherPlayerNum, chargeLevel);
+                    if (StatsManager.Instance != null)
+                        StatsManager.Instance.AddAction(ACTION.forwardDash, otherPlayerNum, chargeLevel);
                     else
                         Debug.Log("Couldn't access statsManager to record action, ignoring");
                 }
@@ -3230,8 +3231,8 @@ public class Player : MonoBehaviourPunCallbacks
                 // STATS
                 if (characterType == CharacterType.duel)
                 {
-                    if (statsManager)
-                        statsManager.AddAction(ACTION.backwardsDash, otherPlayerNum, chargeLevel);
+                    if (StatsManager.Instance != null)
+                        StatsManager.Instance.AddAction(ACTION.backwardsDash, otherPlayerNum, chargeLevel);
                     else
                         Debug.Log("Couldn't access statsManager to record action, ignoring");
                 }
@@ -3246,12 +3247,11 @@ public class Player : MonoBehaviourPunCallbacks
             targetPos = transform.position + new Vector3(actualUsedDashDistance * dashDirection, 0, 0);
             dashDirection = 0f;
         }
-
-
         // Stamina animation
         else
             TriggerNotEnoughStaminaAnim(true);
     }
+
 
     // Runs the dash, to use in FixedUpdate
     void RunDash()
@@ -3297,14 +3297,18 @@ public class Player : MonoBehaviourPunCallbacks
 
         // ANIMATION
         playerAnimations.TriggerClashed(false);
-        //Debug.Log("End dash");
+
 
 
         // FX
-        dashFXFront.Stop();
-        dashFXBack.Stop();
-        attackDashFXFront.Stop();
-        attackDashFXBack.Stop();
+        if (dashFXFront != null)
+            dashFXFront.Stop();
+        if (dashFXBack != null)
+            dashFXBack.Stop();
+        if (attackDashFXFront != null)
+            attackDashFXFront.Stop();
+        if (attackDashFXBack != null)
+            attackDashFXBack.Stop();
     }
     #endregion
 
@@ -3543,8 +3547,9 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     // CHEATS
-    void CheatsInputs()
+    void CheatsInputs()                                                                                                                                                                     // CHEATS INPUTS
     {
+        /*
         // CLASH
         if (Input.GetKeyDown(cheatSettings.clashCheatKey))
             TriggerClash();
@@ -3573,12 +3578,15 @@ public class Player : MonoBehaviourPunCallbacks
         // RECUP STAMINA
         if (Input.GetKeyDown(cheatSettings.triggerStaminaRecupAnim))
             StartCoroutine(TriggerStaminaRecupAnim());
+            */
     }
 
 
 
+
+
     // Useless, just to remove editor warnings
-    void RemoveWarnings()
+    void RemoveWarnings()                                                                                                                                                               // REMOVE WARNINGS
     {
         scarfObject.SetActive(true);
         Instantiate(scarfPrefab);
