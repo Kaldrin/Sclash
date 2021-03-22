@@ -1,7 +1,90 @@
 ManifestFileVersion: 0
-CRC: 3552574236
+CRC: 1739202885
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: sound
+      Dependencies: {}
+    Info_1:
+      Name: village01
+      Dependencies:
+        Dependency_0: sound
+        Dependency_1: other
+        Dependency_2: fx
+        Dependency_3: bridge01
+    Info_2:
+      Name: other
+      Dependencies:
+        Dependency_0: village01
+        Dependency_1: ui
+        Dependency_2: snowtemple01
+        Dependency_3: cosmetics
+        Dependency_4: bridge01
+        Dependency_5: interior01
+        Dependency_6: battlefield01
+        Dependency_7: fonts
+    Info_3:
+      Name: characters01
+      Dependencies:
+        Dependency_0: sound
+        Dependency_1: other
+        Dependency_2: ui
+        Dependency_3: fx
+        Dependency_4: cosmetics
+        Dependency_5: voices01
+        Dependency_6: fonts
+        Dependency_7: susanou
+        Dependency_8: jinmu
+    Info_4:
+      Name: ui
+      Dependencies: {}
+    Info_5:
+      Name: fx
+      Dependencies:
+        Dependency_0: village01
+        Dependency_1: other
+        Dependency_2: snowtemple01
+        Dependency_3: battlefield01
+    Info_6:
+      Name: snowtemple01
+      Dependencies:
+        Dependency_0: other
+        Dependency_1: fx
+        Dependency_2: bridge01
+    Info_7:
+      Name: cosmetics
+      Dependencies: {}
+    Info_8:
+      Name: bridge01
+      Dependencies:
+        Dependency_0: other
+        Dependency_1: fx
+    Info_9:
+      Name: voices01
+      Dependencies: {}
+    Info_10:
+      Name: interior01
+      Dependencies:
+        Dependency_0: village01
+        Dependency_1: other
+        Dependency_2: fx
+        Dependency_3: bridge01
+    Info_11:
+      Name: battlefield01
+      Dependencies:
+        Dependency_0: other
+        Dependency_1: fx
+        Dependency_2: snowtemple01
+        Dependency_3: bridge01
+    Info_12:
+      Name: fonts
+      Dependencies: {}
+    Info_13:
+      Name: assetbundle01
+      Dependencies: {}
+    Info_14:
+      Name: susanou
+      Dependencies: {}
+    Info_15:
+      Name: jinmu
       Dependencies: {}
