@@ -15,7 +15,7 @@ using XInputDotNetPure;
 // Requires the RumbleSettings scriptable object to work
 
 /// <summary>
-/// Manages all controller rumbles in the game. Any rumble that should occur will be called here
+/// Manages all controller rumbles in the game. Any rumble that should occur will be called here. Just drop it in your scene it should work.
 /// </summary>
 
 // VERSION
@@ -33,11 +33,14 @@ public class RumbleManager : MonoBehaviour
 
 
 
-
-
-    void Start()                                                                                                // START
+    void Awake()                                                                                                                                                                                    // AWAKE
     {
         Instance = this;
+    }
+
+    void Start()                                                                                                                                                                                   // START
+    {
+        
 
         // If controller rumbles are enabled, sets the current rumble value to 0 for all controllers
         if (enableControllerRumble)
@@ -45,8 +48,15 @@ public class RumbleManager : MonoBehaviour
     }
 
 
-    // Function to call by other scripts to make a controller rumble
-    public void Rumble(RumbleSettings rumbleSettings)                                                                               // RUMBLE
+
+
+
+
+
+
+
+    // Function to call by other scripts to make a controller rumble and specifying which one
+    public void Rumble(RumbleSettings rumbleSettings, PlayerIndex indexToRumble)                                                                                                                                               // RUMBLE
     {
         // If controller rumbles are enabled, rumble
         if (enableControllerRumble && MenuManager.Instance.menuParametersSaveScriptableObject.enableRumbles)
@@ -54,7 +64,17 @@ public class RumbleManager : MonoBehaviour
             if (rumbleSettings != null)
             {
                 if (!rumbleSettings.muteRumble)
-                    StartCoroutine(RumblePlayer01Coroutine(rumbleSettings.rumbleDuration, rumbleSettings.rumbleStrengthLeft, rumbleSettings.rumbleStrengthRight, rumbleSettings.rumbleNumber, rumbleSettings.betweenRumblesDuration));
+                    StartCoroutine(
+                        RumblePlayer01Coroutine(
+                            rumbleSettings.rumbleMultiplier,
+                            rumbleSettings.rumbleDuration,
+                            rumbleSettings.rumbleStrengthLeft,
+                            rumbleSettings.rumbleStrengthRight,
+                            rumbleSettings.rumbleNumber,
+                            rumbleSettings.betweenRumblesDuration,
+                            indexToRumble
+                            )
+                            );
             }
             else
                 Debug.Log("Rumble settings not found, ignoring");
@@ -62,22 +82,50 @@ public class RumbleManager : MonoBehaviour
     }
 
 
-    IEnumerator RumblePlayer01Coroutine(float duration, float leftStrength, float rightStrength, int numberOfTimes, float betweenRumblesDuration)                               // RUMBLE PLAYER 01 COROUTINE
+
+    // Function to call by other scripts to make a controller rumble
+    public void Rumble(RumbleSettings rumbleSettings)                                                                                                                                               // RUMBLE
     {
-        //GamePad.SetVibration(playerIndex, 0, 0);
+        // If controller rumbles are enabled, rumble
+        if (enableControllerRumble && MenuManager.Instance.menuParametersSaveScriptableObject.enableRumbles)
+        {
+            if (rumbleSettings != null)
+            {
+                if (!rumbleSettings.muteRumble)
+                    StartCoroutine(
+                        RumblePlayer01Coroutine(
+                            rumbleSettings.rumbleMultiplier,
+                            rumbleSettings.rumbleDuration,
+                            rumbleSettings.rumbleStrengthLeft,
+                            rumbleSettings.rumbleStrengthRight,
+                            rumbleSettings.rumbleNumber,
+                            rumbleSettings.betweenRumblesDuration,
+                            rumbleSettings.playerIndex
+                            )
+                            );
+            }
+            else
+                Debug.Log("Rumble settings not found, ignoring");
+        }
+    }
+
+
+    IEnumerator RumblePlayer01Coroutine(float multiplier, float duration, float leftStrength, float rightStrength, int numberOfTimes, float betweenRumblesDuration, PlayerIndex indexToRumble)             // RUMBLE PLAYER 01 COROUTINE
+    {
+        //GamePad.SetVibration(indexToRumble, 0, 0);
 
 
         for (int i = 0; i < numberOfTimes; i++)
         {
             // Starts the rumble
-            GamePad.SetVibration(playerIndex, leftStrength, rightStrength);
+            GamePad.SetVibration(indexToRumble, leftStrength, rightStrength);
 
 
             yield return new WaitForSecondsRealtime(duration);
 
 
             // Ends the rumble
-            GamePad.SetVibration(playerIndex, 0, 0);
+            GamePad.SetVibration(indexToRumble, 0, 0);
 
 
             yield return new WaitForSecondsRealtime(betweenRumblesDuration);

@@ -337,6 +337,40 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     path: Sprite/Fourreau/Mask01
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: {x: -0.099, y: 0.531, z: 0}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.15
+        value: {x: -0.047, y: 0.579, z: 0}
+        inSlope: {x: 0.3046154, y: 0.3076922, z: 0}
+        outSlope: {x: 0.3046154, y: 0.3076922, z: 0}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.325
+        value: {x: 0, y: 0.631, z: 0}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: JinmuScarf01
   m_ScaleCurves:
   - curve:
       serializedVersion: 2
@@ -799,11 +833,14 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 68e6c9265292ddc44b76805e8a061fc0, type: 3}
+      value: {fileID: 5308237681817343687, guid: fdbb9589fc6ef674da6eb9b9429aa0fb,
+        type: 3}
     - time: 0.15
-      value: {fileID: 21300000, guid: 848fcb33c67e394418b85072ad0879c4, type: 3}
+      value: {fileID: -4582169831480564442, guid: fdbb9589fc6ef674da6eb9b9429aa0fb,
+        type: 3}
     - time: 0.325
-      value: {fileID: 21300000, guid: 6fd924281a5586649a37c7f396ac6fc5, type: 3}
+      value: {fileID: 7308591000157502387, guid: fdbb9589fc6ef674da6eb9b9429aa0fb,
+        type: 3}
     attribute: m_Sprite
     path: Sprite
     classID: 212
@@ -852,6 +889,13 @@ AnimationClip:
       isPPtrCurve: 0
     - serializedVersion: 2
       path: 1216592068
+      attribute: 1
+      script: {fileID: 0}
+      typeID: 4
+      customType: 0
+      isPPtrCurve: 0
+    - serializedVersion: 2
+      path: 928105960
       attribute: 1
       script: {fileID: 0}
       typeID: 4
@@ -1005,9 +1049,9 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 68e6c9265292ddc44b76805e8a061fc0, type: 3}
-    - {fileID: 21300000, guid: 848fcb33c67e394418b85072ad0879c4, type: 3}
-    - {fileID: 21300000, guid: 6fd924281a5586649a37c7f396ac6fc5, type: 3}
+    - {fileID: 5308237681817343687, guid: fdbb9589fc6ef674da6eb9b9429aa0fb, type: 3}
+    - {fileID: -4582169831480564442, guid: fdbb9589fc6ef674da6eb9b9429aa0fb, type: 3}
+    - {fileID: 7308591000157502387, guid: fdbb9589fc6ef674da6eb9b9429aa0fb, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
@@ -2736,6 +2780,117 @@ AnimationClip:
     attribute: m_Size.x
     path: Collider01
     classID: 61
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: -0.099
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.15
+        value: -0.047
+        inSlope: 0.3046154
+        outSlope: 0.3046154
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.325
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: JinmuScarf01
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.531
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.15
+        value: 0.579
+        inSlope: 0.3076922
+        outSlope: 0.3076922
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.325
+        value: 0.631
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.y
+    path: JinmuScarf01
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.15
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.325
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.z
+    path: JinmuScarf01
+    classID: 4
     script: {fileID: 0}
   m_EulerEditorCurves:
   - curve:

@@ -3,11 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+
+
+
+// HEADER
+// For Sclash
+
+// REQUIREMENTS
+// InputSystem package
+// Player script
+// GameManager script (Single instance)
+// InputManager script (Single instance)
+
+/// <summary>
+/// 
+/// </summary>
+
+// VERSION
+// Made for Unity 2019.4.14
 public class PlayerControlCenter : MonoBehaviour
 {
     PlayerInput m_playerInput;
-    [SerializeField]
-    int m_playerIndex;
+    [SerializeField] int m_playerIndex;
     float m_DashOrientation = 0f;
 
     PlayerControls controls;
@@ -15,13 +33,21 @@ public class PlayerControlCenter : MonoBehaviour
 
     [SerializeField] Player attachedPlayer;
 
-    private void Awake()
+
+
+
+
+
+
+    #region FUNCTIONS
+    private void Awake()                                                                                                                            // AWAKE
     {
         UIcontrols = new EventSystemControl();
         UIcontrols.UI.Enable();
     }
 
-    private void Start()
+
+    private void Start()                                                                                                                            // START
     {
         m_playerInput = GetComponent<PlayerInput>();
         m_playerIndex = m_playerInput.playerIndex;
@@ -31,7 +57,8 @@ public class PlayerControlCenter : MonoBehaviour
         UIcontrols.UI.Submit.canceled += (ctx) => OnSubmit(ctx);
     }
 
-    private void Update()
+
+    private void Update()                                                                                                                           // UPDATE
     {
         InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
 
@@ -40,17 +67,24 @@ public class PlayerControlCenter : MonoBehaviour
                 attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
     }
 
-    public void OnHorizontal(InputAction.CallbackContext ctx)
+
+
+
+
+
+    public void OnHorizontal(InputAction.CallbackContext ctx)                                                                                       // ON HORIZONTAL
     {
         InputManager.Instance.playerInputs[m_playerIndex].horizontal = ctx.ReadValue<float>();
     }
 
-    public void OnVertical(InputAction.CallbackContext ctx)
+
+    public void OnVertical(InputAction.CallbackContext ctx)                                                                                         // ON VERTICAL
     {
         InputManager.Instance.playerInputs[m_playerIndex].vertical = ctx.ReadValue<float>();
     }
 
-    public void OnAttack(InputAction.CallbackContext ctx)
+
+    public void OnAttack(InputAction.CallbackContext ctx)                                                                                           // ON ATTACK
     {
         if (ctx.started)
         {
@@ -58,9 +92,7 @@ public class PlayerControlCenter : MonoBehaviour
             InputManager.Instance.playerInputs[m_playerIndex].attackDown = true;
         }
         else if (ctx.performed)
-        {
             InputManager.Instance.playerInputs[m_playerIndex].attackDown = false;
-        }
         else if (ctx.canceled)
         {
             InputManager.Instance.playerInputs[m_playerIndex].attack = false;
@@ -70,7 +102,8 @@ public class PlayerControlCenter : MonoBehaviour
         OnAnyKey(ctx);
     }
 
-    public void OnParry(InputAction.CallbackContext ctx)
+
+    public void OnParry(InputAction.CallbackContext ctx)                                                                                                // ON PARRY
     {
         if (ctx.started)
         {
@@ -86,14 +119,15 @@ public class PlayerControlCenter : MonoBehaviour
         OnAnyKey(ctx);
     }
 
-    public void OnPommel(InputAction.CallbackContext ctx)
+
+    public void OnPommel(InputAction.CallbackContext ctx)                                                                                               // ON POMMEL
     {
         InputManager.Instance.playerInputs[m_playerIndex].kick = ctx.performed;
         OnAnyKey(ctx);
     }
 
 
-    public void QuickDash(InputAction.CallbackContext ctx)
+    public void QuickDash(InputAction.CallbackContext ctx)                                                                                               // QUICK DASH
     {
         if (ctx.performed)
             attachedPlayer.DashInput(ctx.ReadValue<float>(), true);
@@ -101,88 +135,105 @@ public class PlayerControlCenter : MonoBehaviour
         if (ctx.canceled)
             attachedPlayer.DashInput(0f, true);
 
-        InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
+        if (InputManager.Instance)
+            InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
     }
 
-    public void OnDash(InputAction.CallbackContext ctx)
-    {
 
+    public void OnDash(InputAction.CallbackContext ctx)                                                                                                 // ON DASH
+    {
         if (ctx.canceled)
         {
+            
             attachedPlayer.DashInput(0f, false);
             return;
         }
 
         attachedPlayer.DashInput(ctx.ReadValue<float>(), false);
-        InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
+
+
+        if (InputManager.Instance)
+            InputManager.Instance.playerInputs[m_playerIndex].dash = ctx.ReadValue<float>();
     }
 
-    public void OnPause(InputAction.CallbackContext ctx)
+
+    public void OnPause(InputAction.CallbackContext ctx)                                                                                                // ON PAUSE
     {
         if (ctx.started)
-        {
-            InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
-        }
+            if (InputManager.Instance)
+                InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
 
         if (ctx.canceled)
-        {
-            InputManager.Instance.playerInputs[m_playerIndex].pauseUp = true;
-        }
+            if (InputManager.Instance)
+                InputManager.Instance.playerInputs[m_playerIndex].pauseUp = true;
     }
 
-    public void OnScore(InputAction.CallbackContext ctx)
+
+    public void OnScore(InputAction.CallbackContext ctx)                                                                                                // ON SCORE
     {
         if (ctx.started)
-        {
-            InputManager.Instance.playerInputs[m_playerIndex].scoreUp = true;
-            InputManager.Instance.scoreInput = true;
-        }
+            if (InputManager.Instance)
+            {
+                InputManager.Instance.playerInputs[m_playerIndex].scoreUp = true;
+                InputManager.Instance.scoreInput = true;
+            }
 
         if (ctx.canceled)
-        {
-            InputManager.Instance.playerInputs[m_playerIndex].scoreUp = false;
-            InputManager.Instance.scoreInput = false;
-        }
+            if (InputManager.Instance)
+            {
+                InputManager.Instance.playerInputs[m_playerIndex].scoreUp = false;
+                InputManager.Instance.scoreInput = false;
+            }
     }
 
-    public void OnJump(InputAction.CallbackContext ctx)
+
+    public void OnJump(InputAction.CallbackContext ctx)                                                                                                     // ON JUMP
     {
-        InputManager.Instance.playerInputs[m_playerIndex].jump = ctx.started;
+        if (InputManager.Instance)
+            InputManager.Instance.playerInputs[m_playerIndex].jump = ctx.started;
     }
 
-    public void OnSneath(InputAction.CallbackContext ctx)
+
+    public void OnSneath(InputAction.CallbackContext ctx)                                                                                                   // ON SNEATH
     {
         if (ctx.started)
-            InputManager.Instance.playerInputs[m_playerIndex].battleSneathDraw = true;
+            if (InputManager.Instance)
+                InputManager.Instance.playerInputs[m_playerIndex].battleSneathDraw = true;
         if (ctx.canceled)
-            InputManager.Instance.playerInputs[m_playerIndex].battleSneathDraw = false;
+            if (InputManager.Instance)
+                InputManager.Instance.playerInputs[m_playerIndex].battleSneathDraw = false;
     }
 
-    public void OnAnyKey(InputAction.CallbackContext ctx)
+
+    public void OnAnyKey(InputAction.CallbackContext ctx)                                                                                                     // ON ANY KEY
     {
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.paused)
             return;
 
         if (ctx.started)
         {
-            InputManager.Instance.playerInputs[m_playerIndex].anyKey = true;
-            InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = true;
+            if (InputManager.Instance)
+            {
+                InputManager.Instance.playerInputs[m_playerIndex].anyKey = true;
+                InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = true;
+            }
         }
         else if (ctx.canceled)
-        {
-            InputManager.Instance.playerInputs[m_playerIndex].anyKey = false;
-            InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = false;
-        }
+            if (InputManager.Instance)
+            {
+                InputManager.Instance.playerInputs[m_playerIndex].anyKey = false;
+                InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = false;
+            }
     }
 
-    public void OnSubmit(InputAction.CallbackContext ctx)
+
+    public void OnSubmit(InputAction.CallbackContext ctx)                                                                                                       // ON SUBMIT
     {
         if (ctx.started)
         {
             InputManager.Instance.submitInput = true;
             InputManager.Instance.submitInputUp = false;
         }
-
         if (ctx.canceled)
         {
             InputManager.Instance.submitInput = false;
@@ -190,19 +241,36 @@ public class PlayerControlCenter : MonoBehaviour
         }
     }
 
-    public void OnRestart(InputAction.CallbackContext ctx)
+
+    public void OnRestart(InputAction.CallbackContext ctx)                                                                                                      // ON RESTART
     {
         Debug.Log("Restart");
     }
 
-    public void OnDeviceLost(PlayerInput input)
+
+    public void OnDeviceLost(PlayerInput input)                                                                                                                 // ON DEVICE LOST
     {
-        InputManager.Instance.LostDevice(input);
+        if (InputManager.Instance)
+            InputManager.Instance.LostDevice(input);
     }
 
-    public void OnDeviceRegained(PlayerInput input)
-    {
-        InputManager.Instance.RegainedDevice(input);
-    }
 
+    public void OnDeviceRegained(PlayerInput input)                                                                                                             // ON DEVICE REGAINED
+    {
+        if (InputManager.Instance)
+            InputManager.Instance.RegainedDevice(input);
+    }
+    
+    
+    
+
+
+
+
+
+    void RemoveWarnings()
+    {
+        m_DashOrientation += m_DashOrientation;
+    }
+    #endregion
 }

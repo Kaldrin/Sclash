@@ -4,24 +4,38 @@ using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using Unity.RemoteConfig;
 
-// This class controls stage loading and most stage related stuff. Strongly tied to the MapMenuLoader and MapMenu stuff classes
+
+
+
+
+// HEADER
+// For Sclash
 // OPTIMIZED
+
+// REQUIREMENTS
+// Requires Remote Config package
+// Requires Post Processing Stack package
+// Requires GameManager script (Single instance)
+// Requires Audio Manager script (Single instance)
+// Requires MapMenuLoader script (Single instance)
+
+/// <summary>
+/// This script controls stage loading and most stage related stuff. Strongly tied to the MapMenuLoader and MapMenu stuff classes
+/// </summary>
+
+
 public class MapLoader : MonoBehaviour
 {
     #region VARIABLES
-    #region Singleton
+    // Singleton
     public static MapLoader Instance;
-    #endregion
 
 
-    #region MANAGERS
+
     [Header("MANAGERS")]
     [Tooltip("The reference for the unique game manager script of the scene")]
-    [SerializeField] GameManager gameManager = null;
     [SerializeField] AudioManager audioManager = null;
     [SerializeField] MapMenuLoader mapMenuLoader = null;
-    # endregion
-
 
 
 
@@ -44,7 +58,6 @@ public class MapLoader : MonoBehaviour
 
 
 
-    # region STAGE LOADING
     [Header("STAGE LOADING")]
     [SerializeField] bool loadMapOnStart = false;
     [HideInInspector] public bool halloween = false;
@@ -52,7 +65,6 @@ public class MapLoader : MonoBehaviour
     bool canLoadNewMap = true;
     int season = 0;
     int postProcessVolumeBlendState = 0;
-    #endregion
 
 
 
@@ -90,13 +102,13 @@ public class MapLoader : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    void Awake()                                                                                                        // AWAKE
+    void Awake()                                                                                                                                                                    // AWAKE
     {
         Instance = this;
 
 
         // REMOTE CONFIG
-        if (gameManager.demo)
+        if (GameManager.Instance != null && GameManager.Instance.demo)
         {
             ConfigManager.FetchCompleted += SetRemoteVariables;
             ConfigManager.FetchConfigs<userAttributes, appAttributes>(new userAttributes(), new appAttributes());
@@ -105,8 +117,8 @@ public class MapLoader : MonoBehaviour
             LoadMapOnStart();
     }
     
-    // Update is called once per graphic frame
-    void Update()                                                                                                                           // UPDATE
+
+    void Update()                                                                                                                                                                      // UPDATE
     {
         // POST PROCESS
         // Blends last and current stages post process volumes profiles for smooth transition
@@ -135,10 +147,10 @@ public class MapLoader : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()                                                                                                                            // START
+    void Start()                                                                                                                                                                    // START
     {
         // STAGES MENU
-        if (gameManager.demo)
+        if (GameManager.Instance != null && GameManager.Instance.demo)
             mapMenuLoader.LoadDemoParameters();
         else
             mapMenuLoader.LoadParameters();
@@ -147,7 +159,7 @@ public class MapLoader : MonoBehaviour
         mapMenuLoader.SetUpMenu();
     }
 
-    void OnDestroy()                                                                                            // ON DESTROY
+    void OnDestroy()                                                                                                                                                           // ON DESTROY
     {
         // REMOTE CONFIG STUFF FOR DEMO
         ConfigManager.FetchCompleted -= SetRemoteVariables;
@@ -162,29 +174,31 @@ public class MapLoader : MonoBehaviour
 
 
 
-    void SetRemoteVariables(ConfigResponse response) // Get remote config variables
+    void SetRemoteVariables(ConfigResponse response) // Get remote config variables                                                                                     // SET REMOTE VARIABLES
     {
         season = ConfigManager.appConfig.GetInt("season");
         halloween = ConfigManager.appConfig.GetBool("halloween");
         christmas = ConfigManager.appConfig.GetBool("christmas");
 
-
-        if (halloween) // HALLOWEEN SPRITES
-            for (int i = 0; i < gameManager.playersList.Count; i++)
-            {
-                gameManager.playersList[i].GetComponent<CharacterChanger>().mask.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().masksDatabase.masksList[6].sprite;
-                gameManager.playersList[i].GetComponent<CharacterChanger>().weapon.sprite = gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase.weaponsList[1].sprite;
-            }
-        else if (christmas)
+        if (GameManager.Instance != null)
         {
-            gameManager.charactersData = gameManager.christmasCharactersData;
-            Debug.Log("Christmas");
-
-            for (int i = 0; i < gameManager.playersList.Count; i++)
+            if (halloween) // HALLOWEEN SPRITES
+                for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                {
+                    GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().mask.sprite = GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().masksDatabase.masksList[6].sprite;
+                    GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().weapon.sprite = GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase.weaponsList[1].sprite;
+                }
+            else if (christmas)
             {
-                gameManager.playersList[i].GetComponent<CharacterChanger>().charactersDatabase = gameManager.christmasCharactersData;
-                gameManager.playersList[i].GetComponent<CharacterChanger>().masksDatabase = gameManager.christmasMasksDatabase;
-                gameManager.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase = gameManager.christmasWeaponsDatabase;
+                GameManager.Instance.charactersData = GameManager.Instance.christmasCharactersData;
+                Debug.Log("Christmas");
+
+                for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                {
+                    GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().charactersDatabase = GameManager.Instance.christmasCharactersData;
+                    GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().masksDatabase = GameManager.Instance.christmasMasksDatabase;
+                    GameManager.Instance.playersList[i].GetComponent<CharacterChanger>().weaponsDatabase = GameManager.Instance.christmasWeaponsDatabase;
+                }
             }
         }
 
@@ -199,7 +213,7 @@ public class MapLoader : MonoBehaviour
 
 
     # region STAGE LOADING
-    void LoadMapOnStart()
+    void LoadMapOnStart()                                                                                                                                               // LOAD MAP ON START
     {
         // TRIES TO LOAD A STAGE WHEN THE GAME STARTS IF IT IS SET TO DO SO
         if (loadMapOnStart)
@@ -222,38 +236,41 @@ public class MapLoader : MonoBehaviour
 
 
             // IF DEMO
-            if (gameManager.demo)
+            if (GameManager.Instance != null)
             {
-                if (halloween)
-                    SetMap(0, true); // HALLOWEEN STAGE REMOTE CONFIG
-                else if (christmas)
-                    SetMap(1, true); // CHRISTMAS STAGE REMOTE CONFIG
-                else
-                    SetMap(season * 2, false); // SEASON DEPENDANT STAGE REMOTE CONFIG
-            } // ELSE IF NOT DEMO
-            else if (gameManager.gameParameters.keepLastLoadedStage)
-                SetMap(gameManager.gameParameters.lastLoadedStageIndex, false);
-            else if (gameManager.gameParameters.useCustomListForRandomStartStage)
-            {
-                int loopCount = 0;
-
-                while (!mapsData.stagesLists[nextStageIndex].inCustomList)
+                if (GameManager.Instance.demo)
                 {
-                    nextStageIndex = Random.Range(0, mapsData.stagesLists.Count);
+                    if (halloween)
+                        SetMap(0, true); // HALLOWEEN STAGE REMOTE CONFIG
+                    else if (christmas)
+                        SetMap(1, true); // CHRISTMAS STAGE REMOTE CONFIG
+                    else
+                        SetMap(season * 2, false); // SEASON DEPENDANT STAGE REMOTE CONFIG
+                } // ELSE IF NOT DEMO
+                else if (GameManager.Instance.gameParameters.keepLastLoadedStage)
+                    SetMap(GameManager.Instance.gameParameters.lastLoadedStageIndex, false);
+                else if (GameManager.Instance.gameParameters.useCustomListForRandomStartStage)
+                {
+                    int loopCount = 0;
 
-                    loopCount++;
-                    if (loopCount >= 100)
+                    while (!mapsData.stagesLists[nextStageIndex].inCustomList)
                     {
-                        nextStageIndex = 0;
-                        break;
+                        nextStageIndex = Random.Range(0, mapsData.stagesLists.Count);
+
+                        loopCount++;
+                        if (loopCount >= 100)
+                        {
+                            nextStageIndex = 0;
+                            break;
+                        }
                     }
+
+
+                    SetMap(nextStageIndex, false);
                 }
-
-
-                SetMap(nextStageIndex, false);
+                else
+                    SetMap(Random.Range(0, mapsData.stagesLists.Count), false);
             }
-            else
-                SetMap(Random.Range(0, mapsData.stagesLists.Count), false);
         }
         else
             for (int i = 0; i < mapContainer.transform.childCount; i++)
@@ -268,7 +285,7 @@ public class MapLoader : MonoBehaviour
     /// </summary>
     /// <param name="mapIndex"></param>
     /// <param name="special"></param>
-    public void SetMap(int mapIndex, bool special)
+    public void SetMap(int mapIndex, bool special)                                                                                                                      // SET MAP
     {
         // IF THERE IS ALREADY A STAGE, DESTROY IT
         if (currentMap != null)
@@ -297,8 +314,12 @@ public class MapLoader : MonoBehaviour
         
 
 
-        // CHOOSE PLAYER'S STAGE PARTICLES TO ACTIVATE
+        // CHOOSE PLAYER'S STAGE PARTICLES & FOOT STEP TO ACTIVATE
         StartCoroutine(SetPlayerParticlesSet(special));
+        StartCoroutine(SetPlayersWalkSFXSet(special));
+        //Invoke("SetPlayerParticlesSet", 0.3f);
+        //Invoke("SetPlayersWalkSFXSet", 0.3f);
+
 
 
         // AUDIO
@@ -311,10 +332,12 @@ public class MapLoader : MonoBehaviour
 
 
         // SAVES
-        gameManager.gameParameters.lastLoadedStageIndex = currentMapIndex; // Writes last loaded stage index variable in scriptable object
-        JsonSave save = SaveGameManager.GetCurrentSave(); // Gets save file
-        save.lastLoadedStageIndex = gameManager.gameParameters.lastLoadedStageIndex; // Writes last loaded stage index variable from scriptable object to save file
-        //mapMenuLoader.SaveParameters();
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.gameParameters.lastLoadedStageIndex = currentMapIndex; // Writes last loaded stage index variable in scriptable object
+            JsonSave save = SaveGameManager.GetCurrentSave(); // Gets save file
+            save.lastLoadedStageIndex = GameManager.Instance.gameParameters.lastLoadedStageIndex; // Writes last loaded stage index variable from scriptable object to save file
+        }
     }
 
 
@@ -322,35 +345,46 @@ public class MapLoader : MonoBehaviour
     IEnumerator SetPlayerParticlesSet(bool special)
     {
         yield return new WaitForSecondsRealtime(0.3f);
-
-
         bool state = false;
 
-
-        for (int i = 0; i < gameManager.playersList.Count; i++)
-        {
-            for (int y = 0; y < gameManager.playersList[i].GetComponent<Player>().particlesSets.Count; y++)
-            {
-                if (special) // SPECIAL STAGE PARTICLE SET
+        if (GameManager.Instance != null)
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                for (int y = 0; y < GameManager.Instance.playersList[i].GetComponent<Player>().particlesSets.Count; y++)
                 {
-                    if (y == (specialMapsData.stagesLists[currentMapIndex].particleSet))
-                        state = true;
-                    else
-                        state = false;
+                    if (special) // SPECIAL STAGE PARTICLE SET
+                    {
+                        if (y == (specialMapsData.stagesLists[currentMapIndex].particleSet))
+                            state = true;
+                        else
+                            state = false;
+
+                    }
+                    else // NORMAL STAGE PARTICLE SET
+                    {
+                        if (y == (mapsData.stagesLists[currentMapIndex].particleSet))
+                            state = true;
+                        else
+                            state = false;
+                    }
+
+
+                    for (int o = 0; o < GameManager.Instance.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems.Count; o++)
+                        GameManager.Instance.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems[o].SetActive(state);
                 }
-                else // NORMAL STAGE PARTICLE SET
+    }
+    IEnumerator SetPlayersWalkSFXSet(bool special = false)
+    {
+        yield return new WaitForSecondsRealtime(0.3f);
+
+        if (GameManager.Instance != null && GameManager.Instance.playersList != null && GameManager.Instance.playersList.Count > 0)
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+                if (GameManager.Instance.playersList[i] != null && GameManager.Instance.playersList[i].GetComponent<Player>())
                 {
-                    if (y == (mapsData.stagesLists[currentMapIndex].particleSet))
-                        state = true;
+                    if (special)
+                        GameManager.Instance.playersList[i].GetComponent<Player>().SetWalkSFXSet(specialMapsData.stagesLists[currentMapIndex].walkStepSFXSet);
                     else
-                        state = false;
+                        GameManager.Instance.playersList[i].GetComponent<Player>().SetWalkSFXSet(mapsData.stagesLists[currentMapIndex].walkStepSFXSet);
                 }
-
-
-                for (int o = 0; o < gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems.Count; o++)
-                    gameManager.playersList[i].GetComponent<Player>().particlesSets[y].particleSystems[o].SetActive(state);
-            }
-        }
     }
 
 
@@ -371,10 +405,12 @@ public class MapLoader : MonoBehaviour
             int index = 0;
             index = newMapIndex;
 
-
-            gameManager.roundTransitionLeavesFX.gameObject.SetActive(false);
-            gameManager.roundTransitionLeavesFX.gameObject.SetActive(true);
-            gameManager.roundTransitionLeavesFX.Play();
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.roundTransitionLeavesFX.gameObject.SetActive(false);
+                GameManager.Instance.roundTransitionLeavesFX.gameObject.SetActive(true);
+                GameManager.Instance.roundTransitionLeavesFX.Play();
+            }
             canLoadNewMap = false;
 
             // MUSIC

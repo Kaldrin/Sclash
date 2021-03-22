@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
+
 // OPTIMIZED
 public class KeepGameFocused : MonoBehaviour
 {

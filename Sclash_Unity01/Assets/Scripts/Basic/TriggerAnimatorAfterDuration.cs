@@ -3,10 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
+
+
+
+// HEADER
+// Reusable script
+
+// REQUIREMENTS
+// None
+
+/// <summary>
+/// This script is to trigger an animator / animation after a certain time in the scene
+/// </summary>
+
+// VERSION
 // Created for Unity 2019.1.1f1
 public class TriggerAnimatorAfterDuration : MonoBehaviour
 {
     [SerializeField] Animator animatorToTrigger = null;
+    [SerializeField] Animation animationToTrigger = null;
+    [SerializeField] string animationName = "LanternWind01";
     [SerializeField] Vector2 randomDelayBetween = new Vector2(0.1f, 1f);
 
 
@@ -19,31 +36,54 @@ public class TriggerAnimatorAfterDuration : MonoBehaviour
 
 
 
-    // BASE FUNCTIONS
-    // Start is called before the first frame update
-    void Start()
+
+
+    void Start()                                                                                                            // START
     {
-        animatorToTrigger.enabled = false;
+        if (animatorToTrigger != null)
+            animatorToTrigger.enabled = false;
         
 
-        StartCoroutine(TriggerAnimatorAfter(Random.Range(randomDelayBetween.x, randomDelayBetween.y)));
-    }
-
-    // Update is called once per graphic frame
-    void Update()
-    {
-        
+        Invoke("TriggerAnimation", Random.Range(randomDelayBetween.x, randomDelayBetween.y));
     }
 
 
 
 
-
-
-    // TRIGGER
-    IEnumerator TriggerAnimatorAfter(float duration)
+    void TriggerAnimation()                                                                                                  // TRIGGER ANIMATION
     {
-        yield return new WaitForSecondsRealtime(duration);
-        animatorToTrigger.enabled = true;
+        GetComponents();
+
+        if (animationToTrigger != null && animationName != null && animationName != "" && animationToTrigger.GetClip(animationName) != null)
+            animationToTrigger.Play(animationName, PlayMode.StopAll);
+        if (animatorToTrigger != null)
+            animatorToTrigger.enabled = true;
+    }
+
+
+
+
+
+
+
+
+    // See if it's possible to automatically get missing components
+    void GetComponents()                                                                                                            // GET COMPONENTS
+    {
+        if (animationToTrigger == null && GetComponent<Animation>())
+            animationToTrigger = GetComponent<Animation>();
+        if (animatorToTrigger == null && GetComponent<Animator>())
+            animatorToTrigger = GetComponent<Animator>();
+    }
+
+
+
+
+
+
+    // Automatically gets the components references before the user has to assign them
+    private void OnDrawGizmosSelected()                                                                             // ON DRAW GIZMOS SELECTED
+    {
+        GetComponents();
     }
 }

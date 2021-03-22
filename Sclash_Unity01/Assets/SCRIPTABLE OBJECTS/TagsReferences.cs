@@ -6,4 +6,5 @@
 public class TagsReferences : ScriptableObject
 {
     public string playerTag = "Player";
+    public string comesticsTag = "Cosmetic";
 }

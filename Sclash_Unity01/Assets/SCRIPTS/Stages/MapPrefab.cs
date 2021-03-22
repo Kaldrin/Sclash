@@ -1,11 +1,24 @@
 ﻿using UnityEngine;
 
-// References classes : Scarf02
 
 
 
-// This script is contained at the root of a stage prefab. It allows to reference which objects should do what in the stages
-// OPTIMIZED
+
+
+// HEADER
+// Optimized
+// For Sclash
+
+// REQUIREMENTS
+// Scarf02 script
+//
+
+/// <summary>
+/// This script is contained at the root of a stage prefab. It manages a few functions for the stage and dramatic screen references & stuff
+/// </summary>
+
+// VERSION
+// Made for Unity 2019.4
 public class MapPrefab : MonoBehaviour
 {
     [SerializeField] bool previewDramaticScreenInEditor = true;
@@ -28,8 +41,7 @@ public class MapPrefab : MonoBehaviour
 
 
     #region FUNCTIONS
-    // BASIC FUNCTIONS
-    private void Start()                                                                        // START
+    private void Start()                                                                                                                       // START
     {
         EnableClothCollision();
     }
@@ -40,18 +52,20 @@ public class MapPrefab : MonoBehaviour
 
 
     // DRAMATIC SCREEN
-    public void TriggerDramaticScreen()
+    public void TriggerDramaticScreen()                                                                                                                 // TRIGGER DRAMATIC SCREEN
     {
         // Disable elements
         if (backgroundElements != null && backgroundElements.Length > 0)
             for (int i = 0; i < backgroundElements.Length; i++)
-                backgroundElements[i].SetActive(false);
+                if (backgroundElements[i] != null && backgroundElements[i].activeInHierarchy)
+                    backgroundElements[i].SetActive(false);
 
 
         // Enable elements
         if (objectsToActivateOnDramaticScreen != null && objectsToActivateOnDramaticScreen.Length > 0)
             for (int i = 0; i < objectsToActivateOnDramaticScreen.Length; i++)
-                objectsToActivateOnDramaticScreen[i].SetActive(true);
+                if (objectsToActivateOnDramaticScreen[i] != null && !objectsToActivateOnDramaticScreen[i].activeInHierarchy)
+                    objectsToActivateOnDramaticScreen[i].SetActive(true);
     }
 
 
@@ -61,7 +75,7 @@ public class MapPrefab : MonoBehaviour
 
 
     // START ANIM
-    public void TriggerStartStage()
+    public void TriggerStartStage()                                                                                                                         // TRIGGER START STAGE
     {
         if (animatorToEnableOnStart != null)
         {

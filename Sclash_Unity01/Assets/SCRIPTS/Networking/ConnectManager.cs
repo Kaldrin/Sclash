@@ -11,7 +11,30 @@ using Steamworks;
 
 
 
-// Script that handles main network stuff
+
+
+// HEADER
+// For Sclash
+
+// REQUIREMENTS
+// Requires Photon Unity
+// Requires Text Mesh Pro package
+// Requires Steamworks API
+// Requires the MenuBrowser script
+// Requires the GameManager script (Single instance)
+// Requires the PlayerAnimations script
+// Requires the InputManager script (Single instance)
+// Requires the Player script
+// Requires the CameraManager script (Single instance)
+// Requires the AudioManager script (Single instance)
+// Requires the MapLoader script
+
+/// <summary>
+/// Script that handles main network stuff
+/// </summary>
+
+// VERSION
+// Originally made for Unity 2019.14
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PhotonView))]
 public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
@@ -97,6 +120,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     public delegate void Joined();
     public static event Joined PlayerJoined;
     #endregion
+
+
+
+
+
+
+
+
+
 
     #region BASE FUNCTIONS
     void Awake()                                                                                // AWAKE
