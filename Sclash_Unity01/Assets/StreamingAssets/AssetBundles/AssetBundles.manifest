@@ -1,0 +1,90 @@
+ManifestFileVersion: 0
+CRC: 3148148807
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: fx
+      Dependencies:
+        Dependency_0: battlefield01
+        Dependency_1: other
+        Dependency_2: village01
+        Dependency_3: snowtemple01
+    Info_1:
+      Name: cosmetics
+      Dependencies: {}
+    Info_2:
+      Name: characters01
+      Dependencies:
+        Dependency_0: fx
+        Dependency_1: cosmetics
+        Dependency_2: ui
+        Dependency_3: susanou
+        Dependency_4: other
+        Dependency_5: voices01
+        Dependency_6: jinmu
+        Dependency_7: fonts
+        Dependency_8: sound
+    Info_3:
+      Name: bridge01
+      Dependencies:
+        Dependency_0: fx
+        Dependency_1: other
+    Info_4:
+      Name: ui
+      Dependencies: {}
+    Info_5:
+      Name: battlefield01
+      Dependencies:
+        Dependency_0: fx
+        Dependency_1: bridge01
+        Dependency_2: other
+        Dependency_3: snowtemple01
+    Info_6:
+      Name: susanou
+      Dependencies: {}
+    Info_7:
+      Name: interior01
+      Dependencies:
+        Dependency_0: fx
+        Dependency_1: bridge01
+        Dependency_2: other
+        Dependency_3: village01
+    Info_8:
+      Name: other
+      Dependencies:
+        Dependency_0: cosmetics
+        Dependency_1: bridge01
+        Dependency_2: ui
+        Dependency_3: battlefield01
+        Dependency_4: interior01
+        Dependency_5: village01
+        Dependency_6: fonts
+        Dependency_7: snowtemple01
+    Info_9:
+      Name: voices01
+      Dependencies: {}
+    Info_10:
+      Name: jinmu
+      Dependencies: {}
+    Info_11:
+      Name: village01
+      Dependencies:
+        Dependency_0: fx
+        Dependency_1: bridge01
+        Dependency_2: other
+        Dependency_3: sound
+    Info_12:
+      Name: fonts
+      Dependencies: {}
+    Info_13:
+      Name: snowtemple01
+      Dependencies:
+        Dependency_0: fx
+        Dependency_1: bridge01
+        Dependency_2: other
+    Info_14:
+      Name: sound
+      Dependencies: {}
+    Info_15:
+      Name: assetbundle01
+      Dependencies: {}
