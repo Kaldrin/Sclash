@@ -199,8 +199,6 @@ public class StoryPlayer : Player
 
     public override void ManageMovementsInputs(/*InputAction.CallbackContext ctx*/)
     {
-        Debug.Log(actualMovementsSpeed);
-
         if (playerIsAI)
         {
             base.ManageMovementsInputs(/*ctx*/);

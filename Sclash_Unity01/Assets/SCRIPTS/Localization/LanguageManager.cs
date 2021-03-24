@@ -35,11 +35,11 @@ public class LanguageManager : MonoBehaviour
 
     [Header("SETTINGS")]
     [Tooltip("Currently selected language")]
-    [SerializeField] public string language = "english";
+    [SerializeField] public string language = "ENGLISH";
     [Tooltip("Path to the json file starting from the STreamingAssets folder")]
-    [SerializeField] public string filePath;
+    [SerializeField] public string filePath = "igtexts.json";
     [Tooltip("Write here the languages you want to be available to the players. Please make sure the strings are exactly the same as in the GetDialog function")]
-    [SerializeField] public List<string> availableLanguages = new List<string>() { "English", "French" };
+    [SerializeField] public List<string> availableLanguages = new List<string>() { "ENGLISH", "FRANCAIS" };
 
 
     [Header("DATA")]

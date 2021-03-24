@@ -437,7 +437,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     #region AUDIO
     [Header("AUDIO")]
-    [SerializeField] WalkSoundsLists walkSoundsList = null;
+    [SerializeField] public WalkSoundsLists walkSoundsList = null;
     [Tooltip("The reference to the stamina charged audio FX AudioSource")]
     [SerializeField] AudioSource staminaBarChargedAudioEffectSource = null;
     float staminaBarChargedSFXBasePitch = 0.9f;

@@ -40,7 +40,7 @@ public class EnvironmentStart01 : MonoBehaviour
 
                 if (lights != null && lights.Length > 0)
                     for (int i = 0; i < lights.Length; i++)
-                        if (lights[i].intensity != lightsIntensities[i])
+                        if (lights[i] != null && lights[i].intensity != lightsIntensities[i])
                         {
                             finished = false;
                             lights[i].intensity = Mathf.Lerp(lights[i].intensity, lightsIntensities[i], Time.deltaTime * lightSmoothInSpeed);

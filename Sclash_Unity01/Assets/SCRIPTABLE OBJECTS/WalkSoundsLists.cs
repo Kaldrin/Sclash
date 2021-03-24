@@ -12,6 +12,7 @@ public class WalkSoundsLists : ScriptableObject
     public struct AudioClipsList
     {
         public string name;
+        public Sprite icon;
         public AudioClip[] audioclips;
     }
 

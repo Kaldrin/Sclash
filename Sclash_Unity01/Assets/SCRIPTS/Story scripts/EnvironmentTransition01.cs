@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 using TMPro;
 
@@ -18,6 +19,7 @@ using TMPro;
 // Player script
 // TextMeshPro package
 // EnvironmentStart01 script
+// WalkSoundsLists scriptable object
 
 /// <summary>
 /// Script used on environment transition objects for the campaign mode to load the next parts of the level and change the particles used by the player, when the player passes on it
@@ -32,11 +34,19 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
 
-    [Header("SETTINGS")]
-    [SerializeField] GameObject environmentToUnload = null;
-    [SerializeField] GameObject environmentToLoad = null;
+    [Header("SETTINGS YOU SHOULD EDIT")]
+    [Tooltip("The environment chunk game object to load")]
+    [SerializeField] GameObject chunkToUnload = null;
+    [Tooltip("The environment chunk game object to unload starting from this point")]
+    [SerializeField] GameObject chunkToLoad = null;
+
+
     [SerializeField] bool changePlayerParticlesSet = false;
+    [Range(0, 10)]
     [SerializeField] int newParticleSetIndex = 0;
+    [SerializeField] bool changePlayerWalkSFXSet = false;
+    [Range(0, 3)]
+    [SerializeField] int newWalkSFXSetIndex = 0;
     [Tooltip("Duration before this transition objects can be used again (To prevent it triggered 50 times because the player has multiple colliders)")]
     [SerializeField] float cooldown = 10f;
 
@@ -48,11 +58,13 @@ public class EnvironmentTransition01 : MonoBehaviour
 
     [Header("EDITOR")]
     [SerializeField] GameObject editorDisplayStuff = null;
-    [SerializeField] Color volumeColor = Color.red;
-    [SerializeField] Color volumeColorIfActivatesChunks = Color.red;
     [SerializeField] bool wiredVolume = true;
+    [SerializeField] GameObject FXIndexDisplayParent = null;
     [SerializeField] TextMeshPro particleIndexDisplay = null;
     [SerializeField] SpriteRenderer particleSetIconDisplay = null;
+    [SerializeField] GameObject walkSFXIndexDisplayParent = null;
+    [SerializeField] TextMeshPro walkSFXSetIndexDisplay = null;
+    [SerializeField] SpriteRenderer walkSFXSetIconDisplay = null;
     [SerializeField] TextMeshPro environmentToLoadDisplay = null;
     [SerializeField] TextMeshPro environmentToUnloadDisplay = null;
     [SerializeField] GameObject backgroundShadow = null;
@@ -72,7 +84,14 @@ public class EnvironmentTransition01 : MonoBehaviour
         // Disable editor only stuff
         if (editorDisplayStuff && editorDisplayStuff.activeInHierarchy)
             editorDisplayStuff.SetActive(false);
+    }
 
+
+    private void OnEnable()                                                                                                                                                     // ON ENABLE
+    {
+        // Disable editor only stuff
+        if (editorDisplayStuff && editorDisplayStuff.activeInHierarchy)
+            editorDisplayStuff.SetActive(false);
     }
 
 
@@ -120,29 +139,36 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
         // LOAD / UNLOAD
-        if (environmentToUnload)
+        if (chunkToUnload)
         {
-            if (environmentToUnload.GetComponent<EnvironmentStart01>())
-                environmentToUnload.GetComponent<EnvironmentStart01>().Disable();
+            if (chunkToUnload.GetComponent<EnvironmentStart01>())
+                chunkToUnload.GetComponent<EnvironmentStart01>().Disable();
             else
-                environmentToUnload.SetActive(false);
+                chunkToUnload.SetActive(false);
+        }
+        if (chunkToLoad)
+        {
+            if (chunkToLoad.GetComponent<EnvironmentStart01>())
+                chunkToLoad.GetComponent<EnvironmentStart01>().Enable();
+            else
+                chunkToLoad.SetActive(true);
         }
 
-        if (environmentToLoad)
-        {
-            if (environmentToLoad.GetComponent<EnvironmentStart01>())
-                environmentToLoad.GetComponent<EnvironmentStart01>().Enable();
-            else
-                environmentToLoad.SetActive(true);
-        }
 
 
-
-        // PARTICLES
+        // PARTICLES && WALK SFX
         if (player != null)
+        {
             if (changePlayerParticlesSet)
                 player.SetParticleSets(newParticleSetIndex);
+            if (changePlayerWalkSFXSet)
+                player.SetWalkSFXSet(newWalkSFXSetIndex);
+        }
+
     }
+
+
+
 
 
 
@@ -154,87 +180,113 @@ public class EnvironmentTransition01 : MonoBehaviour
     // EDITOR ONLY
     private void OnDrawGizmos()                                                                                                                                                           // ON DRAW GIZMOS
     {
-        // Display all editor infos
-        if (isActiveAndEnabled && enabled)
+        if (chunkToLoad != null || chunkToUnload != null && Color.red != null)
+            Gizmos.color = Color.red;
+        else if (!changePlayerParticlesSet && changePlayerWalkSFXSet && Gizmos.color != Color.blue)
+            Gizmos.color = Color.blue;
+        else if (Gizmos.color != Color.green)
+            Gizmos.color = Color.green;
+
+
+        // Display the volume in editor
+        if (wiredVolume)
+            Gizmos.DrawWireCube(transform.position, transform.localScale);
+        else
+            Gizmos.DrawCube(transform.position, transform.localScale);
+
+
+
+
+
+
+        // DISPLAYS ENVIRONMENTS TO LOAD / UNLOAD
+        // Link to environment to unload
+        if (Gizmos.color != Color.red)
+            Gizmos.color = Color.red;
+        if (chunkToUnload)
         {
-            if (!editorDisplayStuff.activeInHierarchy)
-                editorDisplayStuff.SetActive(true);
-
-
-            if (environmentToLoad != null || environmentToUnload != null && volumeColorIfActivatesChunks != null && Gizmos.color != volumeColorIfActivatesChunks)
-                Gizmos.color = volumeColorIfActivatesChunks;
-            else if (volumeColor != null && Gizmos.color != volumeColor)
-                Gizmos.color = volumeColor;
-
-
-            // Display the volume in editor
-            if (wiredVolume)
-                Gizmos.DrawWireCube(transform.position, transform.localScale);
-            else
-                Gizmos.DrawCube(transform.position, transform.localScale);
-
-
-
-
-
-
-            // DISPLAYS ENVIRONMENTS TO LOAD / UNLOAD
-            // Link to environment to unload
-            if (Gizmos.color != Color.red)
-                Gizmos.color = Color.red;
-            if (environmentToUnload)
+            Gizmos.DrawLine(transform.position, chunkToUnload.transform.position);
+            if (environmentToUnloadDisplay != null)
             {
-                Gizmos.DrawLine(transform.position, environmentToUnload.transform.position);
-                if (environmentToUnloadDisplay != null)
-                {
-                    if (!environmentToUnloadDisplay.gameObject.activeInHierarchy)
-                        environmentToUnloadDisplay.gameObject.SetActive(true);
-                    environmentToUnloadDisplay.text = environmentToUnload.gameObject.name;
-                }
+                if (!environmentToUnloadDisplay.gameObject.activeInHierarchy)
+                    environmentToUnloadDisplay.gameObject.SetActive(true);
+                environmentToUnloadDisplay.text = chunkToUnload.gameObject.name;
             }
-            else if (environmentToUnloadDisplay && environmentToUnloadDisplay.gameObject.activeInHierarchy)
-                environmentToUnloadDisplay.gameObject.SetActive(false);
+        }
+        else if (environmentToUnloadDisplay && environmentToUnloadDisplay.gameObject.activeInHierarchy)
+            environmentToUnloadDisplay.gameObject.SetActive(false);
 
-            // Link to environment to load
-            if (Gizmos.color != Color.green)
-                Gizmos.color = Color.green;
-            if (environmentToLoad)
+        // Link to environment to load
+        if (Gizmos.color != Color.green)
+            Gizmos.color = Color.green;
+        if (chunkToLoad)
+        {
+            Gizmos.DrawLine(transform.position, chunkToLoad.transform.position);
+            if (environmentToLoadDisplay != null)
             {
-                Gizmos.DrawLine(transform.position, environmentToLoad.transform.position);
-                if (environmentToLoadDisplay != null)
-                {
-                    if (!environmentToLoadDisplay.gameObject.activeInHierarchy)
-                        environmentToLoadDisplay.gameObject.SetActive(true);
-                    environmentToLoadDisplay.text = environmentToLoad.gameObject.name;
-                }
+                if (!environmentToLoadDisplay.gameObject.activeInHierarchy)
+                    environmentToLoadDisplay.gameObject.SetActive(true);
+                environmentToLoadDisplay.text = chunkToLoad.gameObject.name;
             }
-            else if (environmentToLoadDisplay && environmentToLoadDisplay.gameObject.activeInHierarchy)
-                environmentToLoadDisplay.gameObject.SetActive(false);
+        }
+        else if (environmentToLoadDisplay && environmentToLoadDisplay.gameObject.activeInHierarchy)
+            environmentToLoadDisplay.gameObject.SetActive(false);
 
-            // If nothing to display remove the shadow
-            if (backgroundShadow)
+        // If nothing to display remove the shadow
+        if (backgroundShadow)
+        {
+            if (chunkToUnload == null && chunkToLoad == null && !changePlayerParticlesSet && !changePlayerWalkSFXSet)
             {
-                if (environmentToUnload == null && environmentToLoad == null)
-                {
-                    if (backgroundShadow.activeInHierarchy)
-                        backgroundShadow.SetActive(false);
-                }
-                else if (!backgroundShadow.activeInHierarchy)
-                    backgroundShadow.SetActive(true);
+                if (backgroundShadow.activeInHierarchy)
+                    backgroundShadow.SetActive(false);
             }
+            else if (!backgroundShadow.activeInHierarchy)
+                backgroundShadow.SetActive(true);
+        }
 
 
 
-            if (player == null)
-                player = FindObjectOfType<Player>();
+        // Get player to get data in it
+        if (player == null)
+            player = FindObjectOfType<Player>();
 
-            // Display particle set index
+
+
+        // Display particle set index
+        if (changePlayerParticlesSet)
+        {
+            if (FXIndexDisplayParent && !FXIndexDisplayParent.activeInHierarchy)
+                FXIndexDisplayParent.SetActive(true);
             if (particleIndexDisplay)
                 particleIndexDisplay.text = newParticleSetIndex.ToString();
-            if (particleSetIconDisplay)
+            if (particleSetIconDisplay && player && player.particlesSets != null && player.particlesSets.Count > newParticleSetIndex && newParticleSetIndex >= 0)
                 particleSetIconDisplay.sprite = player.particlesSets[newParticleSetIndex].icon;
+            else
+                particleSetIconDisplay.sprite = null;
         }
-        else if (editorDisplayStuff.activeInHierarchy)
-            editorDisplayStuff.SetActive(false);
+        else
+            if (FXIndexDisplayParent && FXIndexDisplayParent.activeInHierarchy)
+                FXIndexDisplayParent.SetActive(false);
+
+
+        // Display walk SFX set index
+        if (changePlayerWalkSFXSet)
+        {
+            if (walkSFXIndexDisplayParent && !walkSFXIndexDisplayParent.activeInHierarchy)
+                walkSFXIndexDisplayParent.SetActive(true);
+            if (walkSFXSetIndexDisplay)
+                walkSFXSetIndexDisplay.text = newWalkSFXSetIndex.ToString();
+            if (walkSFXSetIconDisplay && player && player.walkSoundsList != null && player.walkSoundsList.audioClipsLists != null && player.walkSoundsList.audioClipsLists.Count > newWalkSFXSetIndex && newWalkSFXSetIndex >= 0)
+                walkSFXSetIconDisplay.sprite = player.walkSoundsList.audioClipsLists[newWalkSFXSetIndex].icon;
+            else
+                walkSFXSetIconDisplay.sprite = null;
+        }
+        else
+            if (walkSFXIndexDisplayParent && walkSFXIndexDisplayParent.activeInHierarchy)
+                walkSFXIndexDisplayParent.SetActive(false);
+
+        #if UNITY_EDITOR
+            HandleUtility.Repaint();
+        #endif
     }
 }
