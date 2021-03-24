@@ -18,7 +18,13 @@ public class StoryPlayer : Player
     [SerializeField]
     private GameObject debrisContainer;
 
-    new void Awake()
+
+
+
+
+
+
+    new void Awake()                                                                                                                                                        // AWAKE
     {
         base.Awake();
 
@@ -31,7 +37,8 @@ public class StoryPlayer : Player
             inputManager = InputManager_Story.Instance;
     }
 
-    public override void Start()
+
+    public override void Start()                                                                                                                                            // START
     {
         SetUpStaminaBars();
         stamina = maxStamina;
@@ -40,7 +47,8 @@ public class StoryPlayer : Player
         GameManager_Story.Instance.playersList.Add(gameObject);
     }
 
-    public override void FixedUpdate()
+
+    public override void FixedUpdate()                                                                                                                                        // FIXED UPDATE
     {
         base.FixedUpdate();
         if (playerIsAI)
@@ -48,7 +56,17 @@ public class StoryPlayer : Player
                 solo_iAScript = GetComponent<IAScript>();
     }
 
-    internal override void ManageChargeInput()
+
+
+
+
+
+
+
+
+
+
+    internal override void ManageChargeInput()                                                                                                                                  // MANAGE CHARGE INPUT
     {
         /*if (playerIsAI)
         {
@@ -80,6 +98,7 @@ public class StoryPlayer : Player
 
         base.ManageChargeInput();
     }
+
 
     internal override void ManageDashInput()
     {
@@ -132,6 +151,7 @@ public class StoryPlayer : Player
         }
     }
 
+
     public override void ManagePommel()
     {
         if (playerIsAI)
@@ -149,6 +169,7 @@ public class StoryPlayer : Player
             TriggerPommel();
         }
     }
+
 
     public override void ManageParryInput()
     {
@@ -175,8 +196,11 @@ public class StoryPlayer : Player
         }
     }
 
+
     public override void ManageMovementsInputs(/*InputAction.CallbackContext ctx*/)
     {
+        Debug.Log(actualMovementsSpeed);
+
         if (playerIsAI)
         {
             base.ManageMovementsInputs(/*ctx*/);
@@ -217,12 +241,15 @@ public class StoryPlayer : Player
 
     }
 
+
     public override void ManageOrientation()
     {
         if (playerIsAI)
         {
             //Orient toward the Player
-            float sign = Mathf.Sign(transform.position.x - solo_iAScript.opponent.transform.position.x);
+            float sign = 1;
+            if (solo_iAScript && solo_iAScript.opponent)
+                sign = Mathf.Sign(transform.position.x - solo_iAScript.opponent.transform.position.x);
             ApplyOrientation(sign);
 
             //base.ManageOrientation();
@@ -233,13 +260,12 @@ public class StoryPlayer : Player
             soloOrientation = -InputManager.Instance.playerInputs[0].horizontal;
 
         if (canOrientTowardsEnemy)
-        {
             ApplyOrientation(Mathf.Sign(soloOrientation));
-        }
 
         if (Time.time >= orientationCooldown + orientationCooldownStartTime)
             orientationCooldownFinished = true;
     }
+
 
     protected override void ApplyPommelHitbox()
     {
@@ -247,28 +273,19 @@ public class StoryPlayer : Player
         List<GameObject> hits = new List<GameObject>();
 
         foreach (Collider2D c in hitsCol)
-        {
             if (c.CompareTag("Player"))
-            {
                 if (!hits.Contains(c.transform.parent.gameObject))
-                {
                     hits.Add(c.transform.parent.gameObject);
-                }
-            }
-        }
 
         foreach (GameObject g in hits)
-        {
             if (g != gameObject)
             {
                 otherPlayerNum = GetTargetNum(g);
                 if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
-                {
                     g.GetComponent<Player>().Pommeled();
-                }
             }
-        }
     }
+
 
     protected override void ApplyAttackHitbox()
     {
@@ -279,30 +296,21 @@ public class StoryPlayer : Player
         foreach (Collider2D c in hitsCol)
         {
             if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
-            {
                 hits.Add(c.transform.parent.gameObject);
-            }
             else if (c.CompareTag("Destructible") && !hits.Contains(c.gameObject))
-            {
                 hits.Add(c.gameObject);
-            }
         }
 
         foreach (Collider c in hitCols3D)
         {
             if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
-            {
                 hits.Add(c.transform.parent.gameObject);
-            }
             else if (c.CompareTag("Destructible") && !hits.Contains(c.gameObject))
-            {
                 hits.Add(c.gameObject);
-            }
         }
 
 
         foreach (GameObject g in hits)
-        {
             if (g != gameObject && !targetsHit.Contains(g))
             {
                 if (g.CompareTag("Player"))
@@ -360,8 +368,8 @@ public class StoryPlayer : Player
                         g.transform.parent.gameObject.GetComponent<Destructible>().Destroy();
                 }
             }
-        }
     }
+
 
     IEnumerator InstantiateHulls(GameObject[] hulls, bool l_isBaseFixed, Transform l_objTransform, int l_hitCount)
     {
@@ -408,28 +416,28 @@ public class StoryPlayer : Player
         yield return null;
     }
 
+
     private float isOdd(int n)
     {
         if (n % 2 == 0)
-        {
             return -1f;
-        }
         else
-        {
             return 1f;
-        }
     }
+
 
     private GameObject[] Slice(GameObject obj, Vector3 planeWorldPos, Vector3 planeWorldDirection)
     {
         return obj.SliceInstantiate(planeWorldPos, planeWorldDirection, m_crossMaterial);
     }
 
+
     public override void Pommeled()
     {
         //otherPlayerNum = GetTargetNum();
         base.Pommeled();
     }
+
 
     public override bool TakeDamage(GameObject instigator, int hitStrength = 1)
     {
@@ -476,6 +484,7 @@ public class StoryPlayer : Player
         return hit;
     }
 
+
     public override void CheckDeath(int instigatorNum)
     {
         if (OnDeath != null)
@@ -484,12 +493,11 @@ public class StoryPlayer : Player
         //base.CheckDeath(instigatorNum);
     }
 
+
     public int GetTargetNum(GameObject g)
     {
         if (g.GetComponent<Player>())
-        {
             return g.GetComponent<Player>().playerNum;
-        }
 
         return -1;
     }

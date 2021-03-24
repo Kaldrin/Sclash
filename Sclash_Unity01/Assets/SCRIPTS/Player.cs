@@ -65,6 +65,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
+
     #region PLAYER STATES
     [Header("PLAYER STATES")]
     [SerializeField] public STATE playerState = STATE.normal;
@@ -426,6 +427,7 @@ public class Player : MonoBehaviourPunCallbacks
     public struct ParticleSet
     {
         public List<GameObject> particleSystems;
+        public Sprite icon;
     }
     [Tooltip("Different lists of particle effects for the player's steps, for the different stages")]
     [SerializeField] public List<ParticleSet> particlesSets = new List<ParticleSet>();
@@ -498,9 +500,9 @@ public class Player : MonoBehaviourPunCallbacks
             statsManager = StatsManager.Instance;
 
         // GET PLAYER CHARACTER CHANGE ANIMATOR (Because I always forget to add it back while editing the animations (Because I have to remove it, it conflicts with the main animator))
-        if (spriteRenderer.gameObject.GetComponent<Animator>() == null)
+        if (spriteRenderer.gameObject.GetComponent<Animator>() == null && characterChanger)
             characterChanger.characterChangeAnimator = spriteRenderer.gameObject.AddComponent<Animator>();
-        if (characterChanger.characterChangeAnimator != null && characterChangerAnimatorController != null && characterChanger.characterChangeAnimator.runtimeAnimatorController != characterChangerAnimatorController)
+        if (characterChanger && characterChanger.characterChangeAnimator && characterChangerAnimatorController != null && characterChanger.characterChangeAnimator.runtimeAnimatorController != characterChangerAnimatorController)
             characterChanger.characterChangeAnimator.runtimeAnimatorController = characterChangerAnimatorController;
 
 
@@ -1034,14 +1036,14 @@ public class Player : MonoBehaviourPunCallbacks
                         characterChanger.EnableVisuals(false);
                     characterChanger.enabled = false;
                 }
-                else
+                else if (characterChanger)
                 {
-                    characterChanger.EnableVisuals(false);
-                    characterChanger.enabled = false;
+                     characterChanger.EnableVisuals(false);
+                     characterChanger.enabled = false;
                 }
 
                 if (playerNum == 0)
-                    if (!ConnectManager.Instance.connectedToMaster)
+                    if (ConnectManager.Instance && !ConnectManager.Instance.connectedToMaster)
                         if (GameManager.Instance.playersList.Count > 1)
                             GameManager.Instance.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
@@ -2060,13 +2062,10 @@ public class Player : MonoBehaviourPunCallbacks
             if (InputManager.Instance.playerInputs[0].anyKey)
                 photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
         }
-        else
+        else if (InputManager.Instance.playerInputs[playerNum].anyKey && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].locked)
         {
-            if (InputManager.Instance.playerInputs[playerNum].anyKey && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].locked)
-            {
-                TriggerDraw();
-                Debug.Log("Draw");
-            }
+            TriggerDraw();
+            Debug.Log("Draw");
         }
     }
 
@@ -2084,8 +2083,11 @@ public class Player : MonoBehaviourPunCallbacks
 
         // RANGE
         // Get range of the character
-        lightAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[0];
-        heavyAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[1];
+        if (characterChanger)
+        {
+            lightAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[0];
+            heavyAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[1];
+        }
 
 
 
@@ -2348,7 +2350,9 @@ public class Player : MonoBehaviourPunCallbacks
         {
             float X_ScaleObjective = 0;
             float opacityObjective = 0.3f;
-            Color shadowColor = rangeIndicatorShadowSprite.color;
+            Color shadowColor = Color.blue;
+            if (rangeIndicatorShadowSprite)
+                shadowColor = rangeIndicatorShadowSprite.color;
 
 
             if (playerState == STATE.charging)
@@ -3085,7 +3089,6 @@ public class Player : MonoBehaviourPunCallbacks
                 case DASHSTEP.rest:
                     temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                     dashInitializationStartTime = Time.time;
-                    Debug.Log("First input");
                     currentDashStep = DASHSTEP.firstInput;
                     break;
 
@@ -3100,7 +3103,6 @@ public class Player : MonoBehaviourPunCallbacks
                     {
                         temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                         dashInitializationStartTime = Time.time;
-                        //currentDashStep = DASHSTEP.invalidated;
                     }
                     break;
 
@@ -3108,20 +3110,17 @@ public class Player : MonoBehaviourPunCallbacks
                     if (temporaryDashDirectionForCalculation == Mathf.Sign(inDirection))
                     {
                         dashDirection = temporaryDashDirectionForCalculation;
-                        Debug.Log("Invalidate");
                         currentDashStep = DASHSTEP.invalidated;
                         TriggerBasicDash();
                     }
                     else if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
                     {
-                        Debug.Log("First input");
                         temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                         dashInitializationStartTime = Time.time;
                         currentDashStep = DASHSTEP.firstInput;
                     }
                     else
                     {
-                        Debug.Log("Invalidate");
                         currentDashStep = DASHSTEP.invalidated;
                     }
                     break;
@@ -3129,13 +3128,9 @@ public class Player : MonoBehaviourPunCallbacks
 
                 case DASHSTEP.invalidated:
                     if (Mathf.Abs(inDirection) <= 0f)
-                    {
-                        Debug.Log("Rest");
                         currentDashStep = DASHSTEP.rest;
-                    }
                     else if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
                     {
-                        Debug.Log("First input");
                         currentDashStep = DASHSTEP.firstInput;
                         temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                         dashInitializationStartTime = Time.time;
@@ -3150,16 +3145,10 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (currentDashStep == DASHSTEP.firstInput)
             if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
-            {
-                Debug.Log("Invalidate");
                 currentDashStep = DASHSTEP.invalidated;
-            }
         if (currentDashStep == DASHSTEP.firstRelease)
             if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
-            {
-                Debug.Log("Rest");
                 currentDashStep = DASHSTEP.rest;
-            }
 
         if (InputManager.Instance.playerInputs[playerNum].dash == 0f)
         {

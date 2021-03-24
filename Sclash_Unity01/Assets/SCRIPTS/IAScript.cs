@@ -298,8 +298,7 @@ public class IAScript : MonoBehaviour
         if (attachedPlayer.playerState == Player.STATE.clashed)
             IncreaseWeight("Parry", 2);
 
-        if (opponent.stamina <= 1)
-        {
+        if (opponent && opponent.stamina <= 1)
             switch (IADifficulty)
             {
                 case Difficulty.Medium:
@@ -313,12 +312,9 @@ public class IAScript : MonoBehaviour
                         IncreaseWeight("Attack", 10);
                     }
                     else
-                    {
                         Attack();
-                    }
                     break;
             }
-        }
 
         switch (opponent.playerState)
         {
@@ -329,14 +325,11 @@ public class IAScript : MonoBehaviour
                     IncreaseWeight("Attack", 2);
                 }
                 else if (attachedPlayer.stamina >= 2)
-                {
                     IncreaseWeight("DashToward", 5);
-                }
                 break;
 
             case Player.STATE.attacking:
                 if (isClose)
-                {
                     if (attachedPlayer.playerState == Player.STATE.charging)
                     {
                         //Debug.Log("<color=red>INTERUPT !!!</color>");
@@ -356,12 +349,10 @@ public class IAScript : MonoBehaviour
                                 break;
                         }
                     }
-                }
                 break;
 
             case Player.STATE.parrying:
                 if (distBetweenPlayers <= 1)
-                {
                     switch (IADifficulty)
                     {
                         case Difficulty.Easy:
@@ -376,10 +367,8 @@ public class IAScript : MonoBehaviour
                             Pommel();
                             break;
                     }
-                }
 
                 if (attachedPlayer.stamina >= 2)
-                {
                     switch (IADifficulty)
                     {
                         case Difficulty.Easy:
@@ -395,7 +384,6 @@ public class IAScript : MonoBehaviour
                             IncreaseWeight("Attack", 25);
                             break;
                     }
-                }
 
                 IncreaseWeight("Attack", 2);
                 break;
@@ -407,9 +395,7 @@ public class IAScript : MonoBehaviour
 
             case Player.STATE.normal:
                 if (attachedPlayer.stamina >= 2)
-                {
                     IncreaseWeight("Attack", 1);
-                }
                 else
                 {
                     ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x));
@@ -452,13 +438,9 @@ public class IAScript : MonoBehaviour
 
         float randCancel = Random.Range(0f, 1f);
         if (randCancel >= 0.75f)
-        {
             ReleaseAttack();
-        }
         else
-        {
             DashAway();
-        }
 
         isChoosing = false;
     }
@@ -477,16 +459,10 @@ public class IAScript : MonoBehaviour
         if (distBetweenPlayers <= hitDistance - 1)
         {
             if (Random.Range(0f, 1f) > 0.5)
-            {
-                //Debug.Log("Back attack !");
                 InputManager.Instance.playerInputs[attachedPlayer.playerNum].horizontal = Mathf.Sign(transform.position.x - opponent.transform.position.x);
-            }
         }
         else
-        {
-            //Debug.Log("Forward attack !");
             InputManager.Instance.playerInputs[attachedPlayer.playerNum].horizontal = Mathf.Sign(opponent.transform.position.x - transform.position.x);
-        }
 
         InputManager.Instance.playerInputs[attachedPlayer.playerNum].attack = false;
     }
@@ -500,6 +476,7 @@ public class IAScript : MonoBehaviour
         isChoosing = false;
     }
 
+
     void Pommel()
     {
         //Debug.Log("Pommel");
@@ -510,6 +487,7 @@ public class IAScript : MonoBehaviour
 
         isChoosing = false;
     }
+
 
     /*void MoveToward()
     {
@@ -527,6 +505,7 @@ public class IAScript : MonoBehaviour
         isChoosing = false;
     }*/
 
+
     void DashToward()
     {
         if (attachedPlayer.stamina >= attachedPlayer.staminaCostForMoves)
@@ -535,6 +514,7 @@ public class IAScript : MonoBehaviour
         StartCoroutine(WaitABit("ResetInput", 0.15f));
         isChoosing = false;
     }
+
 
     void DashAway()
     {
@@ -548,15 +528,15 @@ public class IAScript : MonoBehaviour
     }
     #endregion
 
+
     protected void UpdateWeightSum()
     {
         //Calculate weight sum
         actionWeightSum = 0;
         foreach (Actions a in actionsList)
-        {
             actionWeightSum += a.weight;
-        }
     }
+
 
     string ChooseState()
     {
@@ -577,45 +557,40 @@ public class IAScript : MonoBehaviour
         }
 
         if (rState == "" || rState == null)
-        {
             Debug.LogError("No Action selected ! Log : Action sum:" + actionWeightSum + " Random num: " + randomAction, gameObject);
-        }
 
         return rState;
     }
 
+
     void IncreaseWeight(string actionName, int amount = 1)
     {
         foreach (Actions act in actionsList)
-        {
             if (act.name == actionName)
             {
                 act.weight += amount;
                 return;
             }
-        }
         Debug.LogWarning("Action " + actionName + " not found !");
     }
+
 
     void ResetWeight(string actionName)
     {
         foreach (Actions act in actionsList)
-        {
             if (act.name == actionName)
             {
                 act.weight = 1;
                 return;
             }
-        }
     }
+
 
     void IncreaseOtherWeights()
     {
         foreach (Actions a in actionsList)
-        {
             if (a.name != "InterruptAttack")
                 a.weight++;
-        }
     }
 
     void ResetSelfWeight(Actions a)

@@ -41,7 +41,8 @@ public class IAScript_Solo : IAScript
 
     void Start()
     {
-        InputManager_Story.Instance_Solo.AddInputs(playerScript.playerNum + 1);
+        if (InputManager_Story.Instance_Solo && playerScript)
+            InputManager_Story.Instance_Solo.AddInputs(playerScript.playerNum + 1);
         attachedPlayer.Invoke("TriggerDraw", 0f);
     }
 
@@ -61,23 +62,16 @@ public class IAScript_Solo : IAScript
         {
             DisableWeight();
             if (attachedPlayer.stamina >= 2)
-            {
                 ManageMovementsInputs((int)Mathf.Sign(opponent.transform.position.x - transform.position.x)); //Move Towards
-            }
             else
-            {
                 EnableWeight();
-            }
         }
-        else if (distBetweenPlayers <= 2.5f)
+        else if (distBetweenPlayers <= 2.5f && opponent)
         {
             ManageMovementsInputs((int)Mathf.Sign(transform.position.x - opponent.transform.position.x)); //Move Backwards
         }
-        else
-        {
-            if (Mathf.Abs(0 - attachedPlayer.rb.velocity.x) > 0.1)
-                Invoke("ResetMovementInput", UnityEngine.Random.Range(.75f, 1f));
-        }
+        else if (Mathf.Abs(0 - attachedPlayer.rb.velocity.x) > 0.1)
+            Invoke("ResetMovementInput", UnityEngine.Random.Range(.75f, 1f));
 
         if (canAddWeight)
             AddWeights();
@@ -110,13 +104,16 @@ public class IAScript_Solo : IAScript
 
     private bool CalculateDistance()
     {
-        distBetweenPlayers = Mathf.Abs(transform.position.x - opponent.transform.position.x);
+        if (opponent)
+            distBetweenPlayers = Mathf.Abs(transform.position.x - opponent.transform.position.x);
         return distBetweenPlayers <= DistanceTolerance ? true : false;
     }
 
     private void ManageOrientation()
     {
-        float sign = Mathf.Sign(transform.position.x - opponent.transform.position.x);
+        float sign = 1;
+        if (opponent)
+            sign = Mathf.Sign(transform.position.x - opponent.transform.position.x);
         if (orientationCooldownFinished)
             ApplyOrientation(sign);
 
@@ -127,17 +124,14 @@ public class IAScript_Solo : IAScript
     private void ApplyOrientation(float sign)
     {
         if (sign > 0)
-        {
             transform.localScale = new Vector3(1, 1, 1);
-        }
         else
-        {
             transform.localScale = new Vector3(-1, 1, 1);
-        }
 
         orientationCooldownStartTime = Time.time;
         orientationCooldownFinished = false;
     }
+
 
     public void Die()
     {
@@ -145,9 +139,8 @@ public class IAScript_Solo : IAScript
         isDead = true;
 
         //playerScript.playerCollider.gameObject.SetActive(false);
-        foreach(Collider2D col in playerScript.playerColliders){
+        foreach(Collider2D col in playerScript.playerColliders)
             col.gameObject.SetActive(false);
-        }
 
         playerScript.rb.bodyType = RigidbodyType2D.Static;
         playerScript.enabled = false;
@@ -160,6 +153,7 @@ public class IAScript_Solo : IAScript
         Invoke("FallAnimation", 1f);
         playerAnimations.DeathActivated(true);
     }
+
 
     private void FallAnimation()
     {

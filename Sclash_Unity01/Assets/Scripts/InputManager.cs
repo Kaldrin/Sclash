@@ -101,17 +101,26 @@ public class InputManager : MonoBehaviour
     List<PlayerInput> inputs = new List<PlayerInput>();
 
 
+
+
+
+
+
+
+
+
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    protected void Awake()                                                                                                                                          // AWAKE
+    protected void Awake()                                                                                                                                                        // AWAKE
     {
         Instance = this;
 
-        controls = GameManager.Instance.Controls;
+        if (GameManager.Instance && GameManager.Instance.Controls != null)
+            controls = GameManager.Instance.Controls;
     }
 
 
-    void Start()                                                                                                                                                        // START
+    void Start()                                                                                                                                                                   // START
     {
         gamepads = new List<Gamepad>();
         GamepadCount = Gamepad.all.Count;
@@ -132,7 +141,7 @@ public class InputManager : MonoBehaviour
     }
 
 
-    private void OnEnable()                                                                                                                                                 // ON ENABLE
+    private void OnEnable()                                                                                                                                                       // ON ENABLE
     {
         ConnectManager.PlayerDisconnected += DisconnectedPlayer;
         ConnectManager.PlayerConnected += OnConnectedPlayer;
@@ -177,14 +186,14 @@ public class InputManager : MonoBehaviour
 
 
 
-    private void OnConnectedPlayer()
+    private void OnConnectedPlayer()                                                                                                                                            // ON CONNECTED PLAYER
     {
         Destroy(inputs[1].gameObject);
         inputs.RemoveAt(1);
     }
 
 
-    private void DisconnectedPlayer()
+    private void DisconnectedPlayer()                                                                                                                                            // DISCONNECTED PLAYER
     {
         Debug.Log("Player Disconnected, rebuilding input for P2");
         if (gamepads.Count == 2)
@@ -194,7 +203,7 @@ public class InputManager : MonoBehaviour
     }
 
 
-    private void NewController()
+    private void NewController()                                                                                                                                                // NEW CONTROLLER
     {
         var Gamepads = Gamepad.all;
         foreach (Gamepad g in Gamepads)
@@ -215,7 +224,7 @@ public class InputManager : MonoBehaviour
     }
 
 
-    public void LostDevice(PlayerInput input)
+    public void LostDevice(PlayerInput input)                                                                                                                                           // LOST DEVICE
     {
         switch (input.playerIndex)
         {
@@ -233,11 +242,9 @@ public class InputManager : MonoBehaviour
     }
 
 
-    public void RegainedDevice(PlayerInput input)
+    public void RegainedDevice(PlayerInput input)                                                                                                                                       // REGAINED DEVICE
     {
         Debug.Log("Device regained !");
     }
-
-
     #endregion
 }

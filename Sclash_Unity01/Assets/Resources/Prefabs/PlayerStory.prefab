@@ -12,11 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e23bdea4796ffa438f763f5cbc811d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioManagerName: GlobalManager
-  gameManagerName: GlobalManager
-  gameManager: {fileID: 0}
-  inputManagerName: GlobalManager
-  statsManagerName: GlobalManager
+  statsManager: {fileID: 0}
+  inputManager: {fileID: 0}
   rb: {fileID: 3745652980613596167}
   playerAnimations: {fileID: 4868823034912938903}
   characterChanger: {fileID: 0}
@@ -29,7 +26,7 @@ MonoBehaviour:
   maskSpriteRenderer: {fileID: 4297116810558010068}
   weaponSpriteRenderer: {fileID: 6843923685257428415}
   sheathSpriteRenderer: {fileID: 0}
-  scarfRenderer: {fileID: 0}
+  scarfPrefab: {fileID: 0}
   playerLight: {fileID: 775014298758161834}
   characterChangerAnimatorController: {fileID: 0}
   playerState: 0
@@ -37,6 +34,7 @@ MonoBehaviour:
   hasFinishedAnim: 0
   waitingForNextAttack: 0
   hasAttackRecoveryAnimFinished: 0
+  characterType: 0
   characterNameDisplay: {fileID: 6438496562793090023}
   characterIdentificationArrow: {fileID: 7585897267653555579}
   usePlayerColorsDifferenciation: 1
@@ -47,7 +45,6 @@ MonoBehaviour:
   playerIsAI: 0
   playerNum: 0
   otherPlayerNum: 0
-  maxHealth: 1
   staminaSlider: {fileID: 6778164554863519697}
   staminaCostForMoves: 1
   maxStamina: 4
@@ -56,8 +53,6 @@ MonoBehaviour:
   idleStaminaGainOverTimeMultiplier: 0.8
   backWalkingStaminaGainOverTime: 1
   frontWalkingStaminaGainOverTime: 0.4
-  quickStaminaRegenGap: 1
-  lowStaminaGap: 1
   idleQuickStaminaGainOverTimeMultiplier: 1.6
   backWalkingQuickStaminaGainOverTime: 1.8
   frontWalkingQuickStaminaGainOverTime: 1.2
@@ -71,12 +66,7 @@ MonoBehaviour:
   staminaDeadColor: {r: 1, g: 0, b: 0, a: 1}
   staminaRecupColor: {r: 0, g: 0.95294124, b: 1, a: 1}
   staminaBreakColor: {r: 1, g: 0, b: 0, a: 1}
-  baseMovementsSpeed: 2.5
-  chargeMovementsSpeed: 1.2
-  sneathedMovementsSpeed: 1.8
-  attackingMovementsSpeed: 2.2
   actualMovementsSpeed: 1
-  orientationCooldown: 0.1
   canJump: 0
   canMaintainParry: 0
   canBriefParry: 1
@@ -89,7 +79,6 @@ MonoBehaviour:
   clashFrames: 0
   untouchableFrame: 0
   untouchableFrameOpacity: 0.55
-  jumpPower: 6.5
   maxChargeLevel: 5
   chargeLevel: 1
   durationToNextChargeLevel: 0.5
@@ -108,14 +97,11 @@ MonoBehaviour:
   allowanceDurationForDoubleTapDash: 0.3
   forwardAttackDashDistance: 2
   backwardsAttackDashDistance: 1.5
-  dashDeadZone: 0.5
-  shortcutDashDeadZone: 0.5
+  currentDashStep: 0
   kickFrame: 0
-  kickRange: 0.68
   canPommel: 1
   kickKnockbackDistance: 1.2
   canParry: 1
-  maintainParryStaminaCostOverTime: 0.03
   clashKnockback: 2
   clashKnockbackSpeed: 2
   clashFXPrefabRef: {fileID: 2627013336226953172}
@@ -126,14 +112,7 @@ MonoBehaviour:
   kickedFX: {fileID: 707424469932090123}
   clashFX: {fileID: 2627013336226953161}
   slashFX: {fileID: 1624886033840967876}
-  attackSignDisjoint: 0.4
-  deathBloodFXRotationForDirectionChange: 240
   attackSlashFXParent: {fileID: 4134978699999107005}
-  lightAttackSwordTrailWidth: 20
-  heavyAttackSwordTrailWidth: 65
-  lightAttackSwordTrailScale: 0.95
-  heavyAttackSwordTrailScale: 1.6
-  minSpeedForWalkFX: 0.05
   chargeSlider: {fileID: 4350404002624048649}
   chargeFlareFX: {fileID: 7698195352831946002}
   chargeFX: {fileID: 3473722525670961778}
@@ -165,6 +144,7 @@ MonoBehaviour:
     - {fileID: 7513095811531480174}
     - {fileID: 8551541923959265016}
     - {fileID: 1021714296344529399}
+    icon: {fileID: 21300000, guid: 1f6f722b3854e2f4aa48cb888be1c876, type: 3}
   - particleSystems:
     - {fileID: 7842028062286602988}
     - {fileID: 5943264936148931870}
@@ -177,6 +157,7 @@ MonoBehaviour:
     - {fileID: 1727169578652363874}
     - {fileID: 3683699946403947176}
     - {fileID: 5014576835084276187}
+    icon: {fileID: 21300000, guid: ba0d6b9f8c4d3fe4f92d1d9a7b35c3b5, type: 3}
   - particleSystems:
     - {fileID: 1788972435606492755}
     - {fileID: 814897552532982465}
@@ -185,10 +166,11 @@ MonoBehaviour:
     - {fileID: 3019481765809577367}
     - {fileID: 768556531191262414}
     - {fileID: 7302014725697884662}
+    - {fileID: 3001093015185262663}
+    - {fileID: 8910985805251739338}
     - {fileID: 8593996533821695599}
     - {fileID: 7782322133126023309}
-    - {fileID: 8593996533821695599}
-    - {fileID: 7782322133126023309}
+    icon: {fileID: 21300000, guid: 89d5bcfab2f9c864dbda13c8ccc70670, type: 3}
   - particleSystems:
     - {fileID: 4257176900132866493}
     - {fileID: 2475228115415995905}
@@ -197,10 +179,11 @@ MonoBehaviour:
     - {fileID: 5253200677110871713}
     - {fileID: 576151227214508352}
     - {fileID: 5731617790864784428}
+    - {fileID: 7517451924365831724}
+    - {fileID: 810614959817250509}
     - {fileID: 311835736087101056}
     - {fileID: 1221159008909981516}
-    - {fileID: 311835736087101056}
-    - {fileID: 1221159008909981516}
+    icon: {fileID: 21300000, guid: 89d5bcfab2f9c864dbda13c8ccc70670, type: 3}
   - particleSystems:
     - {fileID: 524591037666382079}
     - {fileID: 2559038241287916568}
@@ -213,6 +196,7 @@ MonoBehaviour:
     - {fileID: 7935329707090478452}
     - {fileID: 2047088577560802750}
     - {fileID: 868977099765023963}
+    icon: {fileID: 21300000, guid: 5dd88a4604f16f54db0606e99c039137, type: 3}
   - particleSystems:
     - {fileID: 4694525787817605521}
     - {fileID: 3840756126200167908}
@@ -225,12 +209,21 @@ MonoBehaviour:
     - {fileID: 9222347907358825217}
     - {fileID: 5069153300833686836}
     - {fileID: 6502327942373577}
+    icon: {fileID: 21300000, guid: 5dd88a4604f16f54db0606e99c039137, type: 3}
+  walkSoundsList: {fileID: 0}
   staminaBarChargedAudioEffectSource: {fileID: 3025365506530642923}
   staminaBreakAudioFX: {fileID: 113308978076794533}
   finalDeathAudioFX: {fileID: 3432172012008313085}
   notEnoughStaminaSFX: {fileID: 165914405733726394}
   staminaEndSFX: {fileID: 5945760205007766583}
   staminaUseSFX: {fileID: 1473821427511216063}
+  walkSFX: {fileID: 0}
+  deathRumbleSettings: {fileID: 0}
+  finalDeathRumbleSettings: {fileID: 0}
+  clashedLeftRumbleSettings: {fileID: 0}
+  clashedRightRumbleSettings: {fileID: 0}
+  pommeledLeftRumbleSettings: {fileID: 0}
+  pommeledRightRumbleSettings: {fileID: 0}
   cheatSettings: {fileID: 11400000, guid: d72c429276d518b498a1f4f96c7d4870, type: 2}
   debrisContainer: {fileID: 0}
 --- !u!1001 &5965827258354063208
@@ -886,6 +879,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5965827258354063208}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3001093015185262663 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8893736776239111983, guid: 3f5effdde23e47744a2f4942c91916c7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5965827258354063208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7517451924365831724 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4222611709924194628, guid: 3f5effdde23e47744a2f4942c91916c7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5965827258354063208}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2861893782268716039 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8466095992185287535, guid: 3f5effdde23e47744a2f4942c91916c7,
@@ -907,6 +912,18 @@ GameObject:
 --- !u!1 &3745652980613596163 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7003620522291499883, guid: 3f5effdde23e47744a2f4942c91916c7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5965827258354063208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8910985805251739338 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2981609628222794146, guid: 3f5effdde23e47744a2f4942c91916c7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5965827258354063208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &810614959817250509 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6482089758272979365, guid: 3f5effdde23e47744a2f4942c91916c7,
     type: 3}
   m_PrefabInstance: {fileID: 5965827258354063208}
   m_PrefabAsset: {fileID: 0}
@@ -976,15 +993,15 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5965827258354063208}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1221159008909981516 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4771719860450336804, guid: 3f5effdde23e47744a2f4942c91916c7,
-    type: 3}
-  m_PrefabInstance: {fileID: 5965827258354063208}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1727169578652363874 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4986263090600753930, guid: 3f5effdde23e47744a2f4942c91916c7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5965827258354063208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &868977099765023963 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6829104485914694579, guid: 3f5effdde23e47744a2f4942c91916c7,
     type: 3}
   m_PrefabInstance: {fileID: 5965827258354063208}
   m_PrefabAsset: {fileID: 0}
@@ -1078,9 +1095,9 @@ BoxCollider2D:
     type: 3}
   m_PrefabInstance: {fileID: 5965827258354063208}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &868977099765023963 stripped
+--- !u!1 &1221159008909981516 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 6829104485914694579, guid: 3f5effdde23e47744a2f4942c91916c7,
+  m_CorrespondingSourceObject: {fileID: 4771719860450336804, guid: 3f5effdde23e47744a2f4942c91916c7,
     type: 3}
   m_PrefabInstance: {fileID: 5965827258354063208}
   m_PrefabAsset: {fileID: 0}
