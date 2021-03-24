@@ -412,7 +412,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
-    
+
     [Header("STAGE DEPENDENT FX")]
     [SerializeField] ParticleSystem dashFXFront = null;
     [SerializeField] ParticleSystem dashFXBack = null;
@@ -920,7 +920,7 @@ public class Player : MonoBehaviourPunCallbacks
                     SetStaminaBarsOpacity(staminaBarsOpacity);
                     UpdateStaminaColor();
                     break;
-                        
+
                 case STATE.dashing:                                                           // DASHING
                     UpdateStaminaSlidersValue();
                     SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -1036,8 +1036,11 @@ public class Player : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    characterChanger.EnableVisuals(false);
-                    characterChanger.enabled = false;
+                    if (characterChanger != null)
+                    {
+                        characterChanger.EnableVisuals(false);
+                        characterChanger.enabled = false;
+                    }
                 }
 
                 if (playerNum == 0)

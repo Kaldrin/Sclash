@@ -51,7 +51,8 @@ public class PlayerControlCenter : MonoBehaviour
     {
         m_playerInput = GetComponent<PlayerInput>();
         m_playerIndex = m_playerInput.playerIndex;
-        attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
+        if (attachedPlayer == null)
+            attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
 
         UIcontrols.UI.Submit.started += (ctx) => OnSubmit(ctx);
         UIcontrols.UI.Submit.canceled += (ctx) => OnSubmit(ctx);
@@ -144,7 +145,7 @@ public class PlayerControlCenter : MonoBehaviour
     {
         if (ctx.canceled)
         {
-            
+
             attachedPlayer.DashInput(0f, false);
             return;
         }
@@ -260,9 +261,9 @@ public class PlayerControlCenter : MonoBehaviour
         if (InputManager.Instance)
             InputManager.Instance.RegainedDevice(input);
     }
-    
-    
-    
+
+
+
 
 
 

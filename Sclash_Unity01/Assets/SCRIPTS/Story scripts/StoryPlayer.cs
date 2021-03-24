@@ -20,8 +20,6 @@ public class StoryPlayer : Player
 
     new void Awake()
     {
-        base.Awake();
-
         if (debrisContainer == null)
             debrisContainer = GameObject.Find("DebrisContainer");
 
@@ -29,6 +27,7 @@ public class StoryPlayer : Player
 
         if (inputManager == null)
             inputManager = InputManager_Story.Instance;
+
     }
 
     public override void Start()
