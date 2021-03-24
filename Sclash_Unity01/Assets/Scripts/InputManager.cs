@@ -103,15 +103,15 @@ public class InputManager : MonoBehaviour
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-
-    protected void Awake()
+    protected void Awake()                                                                                                                                          // AWAKE
     {
         Instance = this;
 
         controls = GameManager.Instance.Controls;
     }
 
-    void Start()
+
+    void Start()                                                                                                                                                        // START
     {
         gamepads = new List<Gamepad>();
         GamepadCount = Gamepad.all.Count;
@@ -120,22 +120,19 @@ public class InputManager : MonoBehaviour
         {
             inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "Gamepad Scheme", gamepads[0]));
             if (GamepadCount >= 2)
-            {
                 inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "Gamepad Scheme", gamepads[1]));
-            }
             else
+                inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
+        }
+        else if (PlayerInputManager.instance)
             {
+                inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "WASDScheme", Keyboard.current));
                 inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
             }
-        }
-        else
-        {
-            inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "WASDScheme", Keyboard.current));
-            inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
-        }
     }
 
-    private void OnEnable()
+
+    private void OnEnable()                                                                                                                                                 // ON ENABLE
     {
         ConnectManager.PlayerDisconnected += DisconnectedPlayer;
         ConnectManager.PlayerConnected += OnConnectedPlayer;
@@ -148,16 +145,12 @@ public class InputManager : MonoBehaviour
                     Gamepad g = null;
                     g = (Gamepad)device;
                     if (g != null)
-                    {
                         foreach (PlayerInput pI in inputs)
-                        {
                             if (pI.devices[0] as Keyboard != null)
                             {
                                 pI.SwitchCurrentControlScheme("Gamepad Scheme", g);
                                 break;
                             }
-                        }
-                    }
                     break;
 
                 default:
@@ -166,24 +159,30 @@ public class InputManager : MonoBehaviour
         };
     }
 
-    private void OnDisable()
+
+    private void OnDisable()                                                                                                                                                    // ON DISABLE
     {
         ConnectManager.PlayerDisconnected -= DisconnectedPlayer;
         ConnectManager.PlayerConnected -= OnConnectedPlayer;
     }
 
-    // Update is called once per graphic frame
-    public virtual void Update()
+
+    public virtual void Update()                                                                                                                                                // UPDATE
     {
         GamepadCount = Gamepad.all.Count;
     }
     #endregion
+
+
+
+
 
     private void OnConnectedPlayer()
     {
         Destroy(inputs[1].gameObject);
         inputs.RemoveAt(1);
     }
+
 
     private void DisconnectedPlayer()
     {
@@ -194,11 +193,11 @@ public class InputManager : MonoBehaviour
             inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
     }
 
+
     private void NewController()
     {
         var Gamepads = Gamepad.all;
         foreach (Gamepad g in Gamepads)
-        {
             if (!gamepads.Contains(g))
             {
                 gamepads.Add(g);
@@ -213,8 +212,8 @@ public class InputManager : MonoBehaviour
                     if (controllerP2InMessageRef != null)
                         controllerP2InMessageRef.SetActive(true);
             }
-        }
     }
+
 
     public void LostDevice(PlayerInput input)
     {
@@ -232,6 +231,7 @@ public class InputManager : MonoBehaviour
                 break;
         }
     }
+
 
     public void RegainedDevice(PlayerInput input)
     {

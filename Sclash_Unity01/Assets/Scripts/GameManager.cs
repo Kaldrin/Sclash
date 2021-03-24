@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Rendering.PostProcessing;
 
 using Photon.Pun;
 using Photon.Realtime;
@@ -28,6 +30,7 @@ using Photon.Realtime;
 // TagsReferences scriptable object
 // CharactersDatabase scriptable object
 // MenuParameters scriptable object
+
 
 /// <summary>
 /// Global game manager for the duel mode, uses all the other scripts, very important
@@ -159,7 +162,13 @@ public class GameManager : MonoBehaviourPun
     # endregion
 
 
-
+    [Header("POST PROCESSING")]
+    [SerializeField] PostProcessVolume postProcessVolume = null;
+    float kuwaharaMaxXPow = 23f;
+    float kuwaharaMinXPow = 11f;
+    float kuwaharaXPowObjective = 0;
+    float currentKuwaharaXPow = 0;
+    Kuwahara kuwahara = null;
 
 
     # region FX
@@ -348,9 +357,25 @@ public class GameManager : MonoBehaviourPun
     // Update is called once per graphic frame
     public virtual void Update()                                                                                                        // UPDATE
     {
-        // IF CHEATS ON
-        /*
-        if (enabled && isActiveAndEnabled && cheatCodes)
+        if (enabled && isActiveAndEnabled)
+        {
+            // POST PROCESS
+            if (kuwahara != null && currentKuwaharaXPow != kuwaharaXPowObjective)
+            {
+                currentKuwaharaXPow = Mathf.Lerp(currentKuwaharaXPow, kuwaharaXPowObjective, Time.deltaTime * 1f);
+                kuwahara.powX.value = Mathf.FloorToInt(currentKuwaharaXPow);
+
+                if (Mathf.Abs(currentKuwaharaXPow - kuwaharaXPowObjective) < 0.2f)
+                {
+                    currentKuwaharaXPow = Mathf.FloorToInt(kuwaharaXPowObjective);
+                    kuwahara.powX.value = Mathf.FloorToInt(currentKuwaharaXPow);
+
+                }
+            }
+            
+
+            /*
+            // CHEATS
             if (Input.GetKeyUp(slowTimeKey))
             {
                 if (timeSlowDownSteps != null)
@@ -371,8 +396,8 @@ public class GameManager : MonoBehaviourPun
                     else
                         Time.timeScale = 1;
                 }
-            }
-            */
+                */
+        }        
     }
 
     // FixedUpdate is called 50 times per second
@@ -638,6 +663,13 @@ public class GameManager : MonoBehaviourPun
     {
         StopCoroutine(StartMatchCoroutine());
 
+        // POST PROCESSING
+        if (postProcessVolume != null)
+            postProcessVolume.profile.TryGetSettings<Kuwahara>(out kuwahara);
+        kuwaharaXPowObjective = kuwaharaMaxXPow;
+        currentKuwaharaXPow = kuwahara.powX.value;
+
+
 
         // FX
         hajimeFX.Play();
@@ -746,6 +778,13 @@ public class GameManager : MonoBehaviourPun
             {
                 //audioManager.ActivateBattleMusic();
                 AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
+
+                
+                // POST PROCESSING
+                if (postProcessVolume != null)
+                    postProcessVolume.profile.TryGetSettings<Kuwahara>(out kuwahara);
+                kuwaharaXPowObjective = kuwaharaMinXPow;
+                currentKuwaharaXPow = kuwahara.powX.value;
 
 
                 // IN GAME HELP
@@ -1847,5 +1886,4 @@ public class GameManager : MonoBehaviourPun
         timeSlowDownLevel += timeSlowDownLevel;
     }
     #endregion
-
 }

@@ -166,4 +166,15 @@ public class IAScript_Solo : IAScript
         playerAnimations.TriggerRealDeath();
         this.enabled = false;
     }
+
+
+
+
+
+
+
+    void RemoveWarnings()
+    {
+        canOrientTowardsEnemy = canOrientTowardsEnemy || canOrientTowardsEnemy;
+    }
 }

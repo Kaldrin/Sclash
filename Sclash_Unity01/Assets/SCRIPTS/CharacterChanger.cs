@@ -524,14 +524,19 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             currentMaskIndex = charactersDatabase.charactersList[currentCharacterIndex].defaultMask;
             currentWeaponIndex = charactersDatabase.charactersList[currentCharacterIndex].defaultWeapon;
         }
-        if (mask != null && masksDatabase != null)
-        mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
-        if (weaponsDatabase != null)
+        if (mask != null && masksDatabase != null) // Mask
+        {
+            mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
+            if (verticalElements[1] != null)
+                verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
+        }
+        if (weaponsDatabase != null) // WEAPONS
         {
             if (weapon != null)
                 weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
             if (sheath != null)
                 sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
+            verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
         }
 
 
@@ -704,6 +709,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         // SPRITE
         weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
+        sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
 
         SendCosmetics();
     }                                                                                                                       // APPLY WEAPON CHANGE
@@ -891,6 +897,4 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     #endregion
-
-
 }

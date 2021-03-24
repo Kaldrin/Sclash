@@ -2,10 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using TMPro;
 
-// Script used on environment transition objects for the campaign mode to load the next parts of the level and change the particles used by the player, when the player passes on it
+
+
+
+
+
+// HEADER
+// For Sclash
 // OPTIMIZED I THINK
 // CAMPAIGN ONLY
+
+// REQUIREMENTS
+// Player script
+// TextMeshPro package
+
+/// <summary>
+/// Script used on environment transition objects for the campaign mode to load the next parts of the level and change the particles used by the player, when the player passes on it
+/// </summary>
+
+// VERSION
+// Made for Unity 2019.4.14
 public class EnvironmentTransition01 : MonoBehaviour
 {
     [Header("DATA")]
@@ -28,8 +46,10 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
     [Header("EDITOR")]
+    [SerializeField] GameObject editorDisplayStuff = null;
     [SerializeField] Color volumeColor = Color.red;
     [SerializeField] bool wiredVolume = true;
+    [SerializeField] TextMeshPro particleIndexDisplay = null;
 
 
 
@@ -39,7 +59,17 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
 
-    private void Update()                                                                                   // UPDATE
+
+
+    private void Start()                                                                                                                                                // START
+    {
+        // Disable editor only stuff
+        if (editorDisplayStuff && editorDisplayStuff.activeInHierarchy)
+            editorDisplayStuff.SetActive(false);
+
+    }
+
+    private void Update()                                                                                                                                              // UPDATE
     {
         // Transition cooldown timer
         if (enabled && isActiveAndEnabled)
@@ -83,7 +113,7 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
         // LOAD / UNLOAD
-        if (environmentToUnload != null)
+        if (environmentToUnload)
         {
             if (environmentToUnload.GetComponent<EnvironmentStart01>())
                 environmentToUnload.GetComponent<EnvironmentStart01>().Disable();
@@ -91,7 +121,7 @@ public class EnvironmentTransition01 : MonoBehaviour
                 environmentToUnload.SetActive(false);
         }
 
-        if (environmentToLoad != null)
+        if (environmentToLoad)
         {
             if (environmentToLoad.GetComponent<EnvironmentStart01>())
                 environmentToLoad.GetComponent<EnvironmentStart01>().Enable();
@@ -124,5 +154,21 @@ public class EnvironmentTransition01 : MonoBehaviour
             Gizmos.DrawWireCube(transform.position, transform.localScale);
         else
             Gizmos.DrawCube(transform.position, transform.localScale);
+
+
+        // Link to environment to unload
+        Gizmos.color = Color.red;
+        if (environmentToUnload)
+            Gizmos.DrawLine(transform.position, environmentToUnload.transform.position);
+
+        // Link to environment to load
+        Gizmos.color = Color.green;
+        if (environmentToLoad)
+            Gizmos.DrawLine(transform.position, environmentToLoad.transform.position);
+
+
+        // Display particle set index
+        if (particleIndexDisplay)
+            particleIndexDisplay.text = newParticleSetIndex.ToString();
     }
 }

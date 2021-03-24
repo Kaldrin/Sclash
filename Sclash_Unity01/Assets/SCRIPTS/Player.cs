@@ -38,8 +38,8 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     #region VARIABLES
-    public StatsManager statsManager = null;
-    public InputManager inputManager = null;
+    [HideInInspector] public StatsManager statsManager = null;
+    [HideInInspector] public InputManager inputManager = null;
 
     #region PLAYER'S COMPONENTS
     [Header("PLAYER'S COMPONENTS")]

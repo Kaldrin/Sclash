@@ -4,7 +4,13 @@ using UnityEngine;
 
 
 
-// On an environment chunk, script that executes when an environment chunk loads and unloads in a campaign
+// HEADER
+// For Sclash
+// Campaign mode
+
+/// <summary>
+/// On an environment chunk, script that executes when an environment chunk loads and unloads in a campaign
+/// </summary>
 public class EnvironmentStart01 : MonoBehaviour
 {
     [SerializeField] float lightSmoothInSpeed = 0.2f;
@@ -27,7 +33,6 @@ public class EnvironmentStart01 : MonoBehaviour
     private void Update()                                                               // UPDATE
     {
         if (enabled && isActiveAndEnabled)
-        {
             if (!finished)
             {
                 finished = true;
@@ -69,7 +74,6 @@ public class EnvironmentStart01 : MonoBehaviour
                     }
                 }
             }
-        }
     }
 
 
