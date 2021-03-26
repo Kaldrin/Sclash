@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
+using System;
+using System.Collections;
 
 // This script allows for activating a designated button depending on an axis input, independently of any menu browser
 // OPTIMIZED
@@ -13,11 +16,8 @@ public class ActivateButtonOnInputDetect : MonoBehaviour
     [SerializeField] bool superiorOrInferior = false;
     bool hasBeenChecked = false;
 
-
-
-
     PlayerControls controls;
-    
+
     private void OnEnable()
     {
         action.Enable();

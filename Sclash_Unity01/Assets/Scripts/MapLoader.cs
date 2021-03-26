@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using Unity.RemoteConfig;
+using System.IO;
 
 
 
@@ -83,9 +84,17 @@ public class MapLoader : MonoBehaviour
 
 
 
-
-
-
+    const int BridgeDay = 0;
+    const int BridgeNight = 1;
+    const int VillageDay = 2;
+    const int VillageNight = 3;
+    const int BattlefieldDay = 4;
+    const int BattlefieldNight = 5;
+    const int SnowTempleDay = 6;
+    const int SnowTempleNight = 7;
+    const int TempleDay = 8;
+    const int TempleNight = 9;
+    List<AssetBundle> loadedMapBundles = new List<AssetBundle>();
 
 
 
@@ -116,7 +125,7 @@ public class MapLoader : MonoBehaviour
         else
             LoadMapOnStart();
     }
-    
+
 
     void Update()                                                                                                                                                                      // UPDATE
     {
@@ -285,7 +294,7 @@ public class MapLoader : MonoBehaviour
     /// </summary>
     /// <param name="mapIndex"></param>
     /// <param name="special"></param>
-    public void SetMap(int mapIndex, bool special)                                                                                                                      // SET MAP
+    public void SetMap(int mapIndex, bool special, AssetBundle bundle = null)                                                                                                                      // SET MAP
     {
         // IF THERE IS ALREADY A STAGE, DESTROY IT
         if (currentMap != null)
@@ -296,13 +305,21 @@ public class MapLoader : MonoBehaviour
 
 
         // STAGE LOAD
-        if (special) // IF SPECIAL MAP LIST (Halloween & stuff)
-            currentMap = Instantiate(specialMapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+        if (bundle == null)
+        {
+            if (special) // IF SPECIAL MAP LIST (Halloween & stuff)
+                currentMap = Instantiate(specialMapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+            else
+                currentMap = Instantiate(mapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+        }
         else
-            currentMap = Instantiate(mapsData.stagesLists[mapIndex].mapObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), mapContainer.transform);
+        {
+            Object map = bundle.LoadAsset(mapsData.stagesLists[mapIndex].mapObject.name);
+            currentMap = Instantiate((GameObject)map, Vector3.zero, Quaternion.identity, mapContainer.transform);
+            Debug.Log("Map Loaded from bundle");
+        }
         currentMapIndex = mapIndex;
 
-        
 
 
         // POST PROCESS
@@ -311,7 +328,7 @@ public class MapLoader : MonoBehaviour
         else
             // Starts post process volumes blend
             postProcessVolumeBlendState = 1;
-        
+
 
 
         // CHOOSE PLAYER'S STAGE PARTICLES & FOOT STEP TO ACTIVATE
@@ -395,7 +412,66 @@ public class MapLoader : MonoBehaviour
         StartCoroutine(LoadNewMapInGameCoroutine(newMapIndex, false));
     }
 
+    IEnumerator LoadMapbundle(int bundleIndex)
+    {
+        string bundle = null;
+        switch (bundleIndex)
+        {
+            case BridgeDay:
+            case BridgeNight:
+                bundle = "bridgeday";
+                Debug.Log("Loading Bridge bundle");
+                break;
 
+            case VillageDay:
+            case VillageNight:
+
+                Debug.Log("Loading Village bundle");
+                break;
+
+            case BattlefieldDay:
+            case BattlefieldNight:
+
+                Debug.Log("Loading Battlefield bundle");
+                break;
+
+            case SnowTempleDay:
+            case SnowTempleNight:
+
+                Debug.Log("Loading Snow temple bundle");
+                break;
+
+            case TempleDay:
+            case TempleNight:
+
+                Debug.Log("Loading Temple bundle");
+                break;
+
+            default:
+                break;
+        }
+
+        if (bundle == null)
+        {
+            Debug.LogWarning("Bundle doesn't exist, leaving");
+            yield break;
+        }
+
+        string path = Path.Combine(Application.streamingAssetsPath, "AssetBundles", bundle);
+        AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(path);
+        if (request.assetBundle != null)
+        {
+            loadedMapBundles.Add(request.assetBundle);
+        }
+        else
+        {
+            Debug.LogWarning("Bundle not found");
+            yield break;
+        }
+
+        Debug.Log(request.assetBundle == null ? "Asset not loaded" : "Asset successfully loaded");
+        yield return request;
+    }
 
     // Loads a new stage with the transition FX
     IEnumerator LoadNewMapInGameCoroutine(int newMapIndex, bool randomIndex)
@@ -416,18 +492,21 @@ public class MapLoader : MonoBehaviour
             // MUSIC
             audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[index].musicIndex);
 
-
-
+            yield return StartCoroutine("LoadMapbundle", newMapIndex);
             yield return new WaitForSeconds(1.5f);
 
             // LOAD STAGE
-            SetMap(index, false);
-
+            if (loadedMapBundles.Count > 0)
+                SetMap(index, false, loadedMapBundles[loadedMapBundles.Count - 1]);
+            else
+                SetMap(index, false);
 
             yield return new WaitForSeconds(2f);
 
+            canLoadNewMap = true;
 
-            canLoadNewMap = true; 
+            if (loadedMapBundles.Count > 0)
+                loadedMapBundles[loadedMapBundles.Count - 1].Unload(false);
         }
     }
 

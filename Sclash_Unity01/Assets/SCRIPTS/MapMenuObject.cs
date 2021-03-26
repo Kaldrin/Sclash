@@ -40,6 +40,7 @@ public class MapMenuObject : MonoBehaviour
 
     public void SwitchCustomList()                                                              // SWITCH CUSTOM LIST
     {
+        Debug.Log("SwitchCustomList()");
         Map newMap = mapLoader.mapsData.stagesLists[stageIndex];
 
         if (mapLoader.mapsData.stagesLists[stageIndex].inCustomList)
@@ -57,7 +58,7 @@ public class MapMenuObject : MonoBehaviour
             customListCheckBox.SetActive(true);
     }
 
-        
+
     public void ChangeMap()                                                                 // CHANGE MAP
     {
         mapLoader.LoadNewMapInGame(stageIndex);

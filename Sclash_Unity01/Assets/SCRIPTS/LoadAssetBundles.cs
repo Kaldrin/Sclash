@@ -19,11 +19,11 @@ public class LoadAssetBundles : MonoBehaviour
 
     void OnEnable()
     {
-        DontDestroyOnLoad(this.gameObject);
+        /*DontDestroyOnLoad(this.gameObject);
         bundles = AssetDatabase.GetAllAssetBundleNames();
         LoadedBundles = new AssetBundle[bundles.Length];
         //LoadAllAssets();
-        AlternateLoad();
+        AlternateLoad();*/
     }
 
     void LoadAllAssets()
