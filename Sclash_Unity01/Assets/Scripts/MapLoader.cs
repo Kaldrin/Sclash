@@ -289,6 +289,17 @@ public class MapLoader : MonoBehaviour
 
 
 
+    IEnumerator LoadMapPrefab(AssetBundle bundle, string assetName)
+    {
+        AssetBundleRequest request = bundle.LoadAssetAsync<GameObject>(assetName);
+        yield return request;
+
+        currentMap = Instantiate((GameObject)request.asset, Vector3.zero, Quaternion.identity, mapContainer.transform);
+        Debug.Log("Map Loaded from bundle");
+
+        bundle.Unload(false);
+    }
+
     /// <summary>
     /// Immediatly changes the stage, affects corresponding music and fx, and saves its index
     /// </summary>
@@ -314,9 +325,7 @@ public class MapLoader : MonoBehaviour
         }
         else
         {
-            Object map = bundle.LoadAsset(mapsData.stagesLists[mapIndex].mapObject.name);
-            currentMap = Instantiate((GameObject)map, Vector3.zero, Quaternion.identity, mapContainer.transform);
-            Debug.Log("Map Loaded from bundle");
+            StartCoroutine(LoadMapPrefab(bundle, mapsData.stagesLists[mapIndex].prefabName));
         }
         currentMapIndex = mapIndex;
 
@@ -504,9 +513,6 @@ public class MapLoader : MonoBehaviour
             yield return new WaitForSeconds(2f);
 
             canLoadNewMap = true;
-
-            if (loadedMapBundles.Count > 0)
-                loadedMapBundles[loadedMapBundles.Count - 1].Unload(false);
         }
     }
 

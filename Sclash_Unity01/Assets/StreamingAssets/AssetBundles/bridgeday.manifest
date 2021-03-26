@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3407812019
+CRC: 2474581361
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: d754154fbea9a14df332acb629bbcdcc
+    Hash: cb2efcc21b867265f7a855509e85d8ba
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 741bbbf641143b1061ea1e4012a8801b
+    Hash: f1f49f3adba1ecd7a17a5689fd3229b2
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -46,9 +46,21 @@ ClassTypes:
 - Class: 111
   Script: {instanceID: 0}
 - Class: 114
+  Script: {fileID: 11500000, guid: adb84e30e02715445aeb9959894e3b4d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9b77c5407dc277943b591ade9e6b18c5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 40b924e2dad56384a8df2a1e111bb675, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 4057fd23279fdf44ca54797c5641a62d, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 483b55c77c573e34a950e2065b200567, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8a990209243e82d4393cd4bfa4290b2a, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 35adce5aa710ee24694dccecd3d0e189, type: 3}
 - Class: 114
@@ -93,9 +105,11 @@ Assets:
 - Assets/MATERIALS/FX/Stages01/Bridge01/M_CherryFlowerBridgeDay01.mat
 - Assets/STATIC MESHES/Stages01/Bridge01/woodArchFull0101.fbx
 - Assets/SPRITES/OBJECTS & PROPS/spriteSheet01.png
+- Assets/PREFABS/STAGES/BridgeNight.prefab
 - Assets/SPRITES/STAGES/Bridge01/WoodElementDestroyable01.png
 - Assets/SPRITES/STAGES/Bridge01/farRocks02.png
 - Assets/SPRITES/STAGES/Bridge01/middleRocks02.png
+- Assets/PostProcess/Stages/BridgeNight.asset
 - Assets/SPRITES/STAGES/Bridge01/PetalsGround01_Brushy02.png
 - Assets/SPRITES/STAGES/Bridge01/SkyBGDay01.png
 Dependencies: []

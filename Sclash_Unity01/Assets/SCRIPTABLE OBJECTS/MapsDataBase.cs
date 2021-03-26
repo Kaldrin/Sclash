@@ -24,17 +24,20 @@ public class MapsDataBase : ScriptableObject
 }
 
 
-[System.Serializable] public enum STAGETYPE
+[System.Serializable]
+public enum STAGETYPE
 {
     day,
     night,
 }
 
-[System.Serializable] public struct Map
+[System.Serializable]
+public struct Map
 {
     public string stageName;
     public string stageNameKey;
     public GameObject mapObject;
+    public string prefabName;
     public Sprite mapImage;
     public int musicIndex;
     public STAGETYPE type;
