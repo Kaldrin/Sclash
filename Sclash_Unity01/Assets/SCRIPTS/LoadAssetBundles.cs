@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -17,12 +17,13 @@ public class LoadAssetBundles : MonoBehaviour
     const int mainSceneIndex = 9;
 
 
-    void Start()
+    void OnEnable()
     {
         DontDestroyOnLoad(this.gameObject);
         bundles = AssetDatabase.GetAllAssetBundleNames();
         LoadedBundles = new AssetBundle[bundles.Length];
-        LoadAllAssets();
+        //LoadAllAssets();
+        AlternateLoad();
     }
 
     void LoadAllAssets()
@@ -80,4 +81,23 @@ public class LoadAssetBundles : MonoBehaviour
         SceneManager.LoadSceneAsync(scenePath);
     }
 
+    void AlternateLoad()
+    {
+        // string[] dependencies = new string[] { "sound", "other", "characters01", "ui", "fx", "cosmetics", "bridge01", "voices01", "fonts", "assetbundle01", "jinmu" };
+
+        string path = Path.Combine(Application.streamingAssetsPath, "AssetBundles", "loading");
+        AssetBundle loaded = AssetBundle.LoadFromFile(path);
+        Debug.Log(loaded == null ? "Asset not loaded" : "Asset loaded");
+
+        /* foreach (string s in dependencies)
+         {
+             path = Path.Combine(Application.streamingAssetsPath, "AssetBundles", s);
+             AssetBundle.LoadFromFile(path);
+         }
+ */
+
+        string[] scenes = loaded.GetAllScenePaths();
+        string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenes[0]);
+        SceneManager.LoadSceneAsync(sceneName);
+    }
 }
