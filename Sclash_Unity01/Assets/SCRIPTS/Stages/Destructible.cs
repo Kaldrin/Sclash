@@ -2,8 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// This script is for a destructible element, placed on an element with a 2D collider on a stage
+
+
+
+
 // OPTIMIZED
+// For Sclash
+
+// REQUIREMENTS
+// DestructibleProfile scriptable object
+
+/// <summary>
+/// This script is for a destructible element, placed on an element with a 2D collider on a stage
+/// </summary>
+
+// Unity 2019.4.14
 public class Destructible : MonoBehaviour
 {
     [Header("COMPONENTS")]
@@ -30,15 +43,17 @@ public class Destructible : MonoBehaviour
     [SerializeField] AudioSource destroyedSFX1 = null;
 
 
+
+
     #region FUNCTIONS
-    private void Start()
+    private void Start()                                                                                                                                                    // START
     {
-        if (fallingPart.activeInHierarchy)
+        if (fallingPart && fallingPart.activeInHierarchy)
             fallingPart.SetActive(false);
     }
 
 
-    private void FixedUpdate()
+    private void FixedUpdate()                                                                                                                                                    // FIXED UPDATE
     {
         // Limit falling part velocity
         if (enabled && isActiveAndEnabled && destroyed && !destroyedFallingPart && fallingPart != null)
@@ -47,10 +62,14 @@ public class Destructible : MonoBehaviour
     }
 
 
-    public void Destroy()
+
+    public void Destroy()                                                                                                                                                                       // DESTROY
     {
         if (enabled && isActiveAndEnabled && !destroyed)
         {
+            // Set right sorting layer for renderers
+            SetLayer();
+
             destroyed = true;
 
 
@@ -94,13 +113,58 @@ public class Destructible : MonoBehaviour
         }
     }
 
-    void DestroyFallingPart()
+    void DestroyFallingPart()                                                                                                                                                   // DESTROY FALLING PART
     {
         if (fallingPart != null)
         {
             Destroy(fallingPart);
             destroyedFallingPart = true;
         }
+    }
+
+
+
+
+    void SetLayer()
+    {
+        // Get layer
+        int sortingLayerID = destroyableElementSpriteRenderer.sortingLayerID;
+        string sortingLayerName = destroyableElementSpriteRenderer.sortingLayerName;
+        int sortingOrder = destroyableElementSpriteRenderer.sortingOrder;
+
+
+        // Set layer
+        if (fallingPart && fallingPart.GetComponent<SpriteRenderer>())
+        {
+            SpriteRenderer spriteRenderer = fallingPart.GetComponent<SpriteRenderer>();
+            if (spriteRenderer.sortingLayerName != sortingLayerName)
+                spriteRenderer.sortingLayerName = sortingLayerName;
+            if (spriteRenderer.sortingOrder != sortingOrder)
+                spriteRenderer.sortingOrder = sortingOrder;
+        }
+
+        if (destroyedFX1)
+        {
+            if (destroyedFX1.GetComponent<ParticleSystemRenderer>().sortingOrder != sortingOrder + 1)
+                destroyedFX1.GetComponent<ParticleSystemRenderer>().sortingOrder = sortingOrder + 1;
+            if (destroyedFX1.GetComponent<ParticleSystemRenderer>().sortingLayerName != sortingLayerName)
+                destroyedFX1.GetComponent<ParticleSystemRenderer>().sortingLayerName = sortingLayerName;
+
+            ParticleSystem[] particleSystems = destroyedFX1.transform.GetComponentsInChildren<ParticleSystem>();
+
+            for (int i = 0; i < particleSystems.Length; i++)
+            {
+                if (particleSystems[i].GetComponent<ParticleSystemRenderer>().sortingOrder != sortingOrder + 1)
+                    particleSystems[i].GetComponent<ParticleSystemRenderer>().sortingOrder = sortingOrder + 1;
+                if (particleSystems[i].GetComponent<ParticleSystemRenderer>().sortingLayerName != sortingLayerName)
+                    particleSystems[i].GetComponent<ParticleSystemRenderer>().sortingLayerName = sortingLayerName;
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        SetLayer();
     }
     #endregion
 }

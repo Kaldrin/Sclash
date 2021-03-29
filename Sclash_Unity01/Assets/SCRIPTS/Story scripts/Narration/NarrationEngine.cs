@@ -4,7 +4,16 @@ using UnityEngine;
 
 
 
+// For Sclash
 
+// REQUIREMENTS
+// TextApparition script
+
+/// <summary>
+///  Manages the display of narration texts & dialogues with its canvas prefab & children, giving public methods to call with narration data structs
+/// </summary>
+
+// Unity 2019.4.14
 public class NarrationEngine : MonoBehaviour
 {
     // SINGLETON

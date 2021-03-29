@@ -11,6 +11,8 @@ using UnityEngine;
 /// <summary>
 /// On an environment chunk, script that executes when an environment chunk loads and unloads in a campaign
 /// </summary>
+
+// Unity 2019.4.14
 public class EnvironmentStart01 : MonoBehaviour
 {
     [SerializeField] float lightSmoothInSpeed = 0.2f;
@@ -19,8 +21,11 @@ public class EnvironmentStart01 : MonoBehaviour
 
     Light[] lights = null;
     List<float> lightsIntensities = new List<float>();
+    List<float> lightsBaseIntensities = new List<float>();
     bool finished = true;
     bool disable = false;
+    float skyOpacityObjective = 0;
+    float baseSkyOpacity = 0;
 
 
 
@@ -28,6 +33,13 @@ public class EnvironmentStart01 : MonoBehaviour
 
 
 
+
+    private void Awake()
+    {
+        // Get sky base opacity
+        if (sky)
+            baseSkyOpacity = sky.color.a;
+    }
 
 
     private void Update()                                                               // UPDATE
@@ -36,9 +48,8 @@ public class EnvironmentStart01 : MonoBehaviour
             if (!finished)
             {
                 finished = true;
-
-
-                if (lights != null && lights.Length > 0)
+                // FADE LIGHTS
+                if (lights != null && lights.Length > 0 && lightsIntensities != null)
                     for (int i = 0; i < lights.Length; i++)
                         if (lights[i] != null && lights[i].intensity != lightsIntensities[i])
                         {
@@ -51,21 +62,21 @@ public class EnvironmentStart01 : MonoBehaviour
                         }
 
 
+                // Fade sky
                 if (sky != null)
-                    if (sky.color.a != 0)
+                    if (sky.color.a != skyOpacityObjective)
                     {
                         Color newSkyColor = sky.color;
-                        newSkyColor = new Color(newSkyColor.r, newSkyColor.g, newSkyColor.b, Mathf.Lerp(newSkyColor.a, 0, Time.deltaTime * lightSmoothInSpeed));
+                        newSkyColor = new Color(newSkyColor.r, newSkyColor.g, newSkyColor.b, Mathf.Lerp(newSkyColor.a, skyOpacityObjective, Time.deltaTime * lightSmoothInSpeed));
                         sky.color = newSkyColor;
                     }
                         
 
                 if (finished)
                 {
-                    lights = null;
-                    lightsIntensities = null;
+                    //lights = null;
+                    //lightsIntensities = null;
                     Debug.Log("Finished");
-
 
                     if (disable)
                     {
@@ -86,45 +97,125 @@ public class EnvironmentStart01 : MonoBehaviour
 
 
 
-    public void Enable()
+    public void Enable()                                                                                                                                                            // ENABLE
     {
-        if (!gameObject.activeInHierarchy)
-            gameObject.SetActive(true);
-        finished = false;
+        // If it's already enabled, don't do anything
+        if (gameObject.activeInHierarchy && finished)
+        { }
+        else
+        {
+            // Check current state
+            if (gameObject.activeInHierarchy && !finished)
+            {
+                if (!disable)
+                    Debug.Log("Not finished enabling, don't do anything");
+                if (disable)
+                    Debug.Log("Not finished disabling, will do something");
+            }
 
+
+            // Was disabled before ?
+            bool wasDisabled = false;
+            if (!gameObject.activeInHierarchy)
+            {
+                wasDisabled = true;
+                gameObject.SetActive(true);
+            }
+
+            // LIGHTS
+            if (lights == null || lights.Length <= 0)
+                GetLights();
+
+
+            //lights = transform.GetComponentsInChildren<Light>(false);
+            /*
+            if (lightsIntensities != null)
+                lightsIntensities.Clear();
+                */
+
+            if (lights != null && lights.Length > 0 && lightsIntensities != null && lightsIntensities.Count == lights.Length && lightsBaseIntensities != null && lightsBaseIntensities.Count == lights.Length)
+                for (int i = 0; i < lights.Length; i++)
+                {
+                    lightsIntensities[i] = lightsBaseIntensities[i];
+
+                    if (wasDisabled)
+                        lights[i].intensity = 0;
+                }
+
+
+            // SKY
+            skyOpacityObjective = baseSkyOpacity;
+            if (wasDisabled)
+            {
+                Color newSkyColor = new Color(sky.color.r, sky.color.g, sky.color.b, 0);
+                sky.color = newSkyColor;
+            }
+
+            Debug.Log("Enable");
+            finished = false;
+            disable = false;
+        }
+    }
+
+
+    public void Disable()                                                                                                                                                       // DISABLE
+    {
+        // If it's already disabled, don't do anything
+        if (!gameObject.activeInHierarchy)
+        { }
+        else
+        {
+            // Check current state
+            if (gameObject.activeInHierarchy && !finished)
+            {
+                if (!disable)
+                    Debug.Log("Not finished enabling, will start to disable");
+                if (disable)
+                    Debug.Log("Not finished disabling, don't do anything");
+            }
+
+
+
+            // LIGHTS
+            if (lights == null || lights.Length <= 0)
+                GetLights();
+            /*
+            lights = transform.GetComponentsInChildren<Light>(false);
+            if (lightsIntensities != null && lightsIntensities.Count > 0)
+                lightsIntensities.Clear();
+                */
+            if (lights != null && lights.Length > 0 && lightsIntensities != null && lightsIntensities.Count == lights.Length && lightsBaseIntensities != null && lightsBaseIntensities.Count == lights.Length)
+                for (int i = 0; i < lights.Length; i++)
+                    lightsIntensities[i] = 0;
+
+
+            // SKY
+            skyOpacityObjective = 0;
+
+
+            finished = false;
+            disable = true;
+        }
+    }
+
+
+
+
+    void GetLights()
+    {
 
         lights = transform.GetComponentsInChildren<Light>(false);
         if (lightsIntensities != null)
             lightsIntensities.Clear();
-
+        if (lightsBaseIntensities != null)
+            lightsBaseIntensities.Clear();
 
         if (lights != null && lights.Length > 0)
             for (int i = 0; i < lights.Length; i++)
-            {
-                if (lightsIntensities != null)
+                if (lights[i] != null)
+                {
+                    lightsBaseIntensities.Add(lights[i].intensity);
                     lightsIntensities.Add(lights[i].intensity);
-
-
-                lights[i].intensity = 0;
-            }
-    }
-
-
-    public void Disable()
-    {
-        lights = transform.GetComponentsInChildren<Light>(false);
-
-
-        if (lightsIntensities != null && lightsIntensities.Count > 0)
-            lightsIntensities.Clear();
-
-
-        for (int i = 0; i < lights.Length; i++)
-            if (lightsIntensities != null)
-                lightsIntensities.Add(0);
-
-
-        finished = false;
-        disable = true;
+                }
     }
 }

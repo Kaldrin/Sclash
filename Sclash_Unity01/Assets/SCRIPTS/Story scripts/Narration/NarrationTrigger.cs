@@ -13,10 +13,16 @@ using TMPro;
 // For Sclash
 // Campaign only
 
+// REQUIREMENTS
+// Goes with the NarrationEngine script (Single instance)
+// TextMeshPro package
+
 /// <summary>
 /// When the player enters it, sends a narration event to the NarrationEngine to trigger the display and play of the sentences
 /// </summary>
 
+// VERSION
+// Unity 2019.4.14
 public class NarrationTrigger : MonoBehaviour
 {
     [Header("SETTINGS YOU SHOULD EDIT")]
@@ -24,10 +30,10 @@ public class NarrationTrigger : MonoBehaviour
     bool triggered = false;
 
     [Header("DATA")]
+    [Tooltip("Yeah we need the list of tags of the game to know which one is the player, who knows who you name your tags and if you want to rename them at least it's centralized")]
     [SerializeField] TagsReferences tagsReferences = null;
 
     [Header("EDITOR")]
-    [SerializeField] GameObject editorDisplayStuff = null;
     [SerializeField] bool wiredVolume = true;
     [SerializeField] TextMeshPro firstKeyDisplayText = null;
     [SerializeField] TextMeshPro numberOfSentencesDisplayText = null;
@@ -38,11 +44,6 @@ public class NarrationTrigger : MonoBehaviour
 
 
 
-    private void Start()                                                                                                                                                            // START
-    {
-        if (editorDisplayStuff)
-            editorDisplayStuff.SetActive(false);
-    }
 
     // DETECTS PLAYER
     private void OnTriggerEnter2D(Collider2D collision)                                                                                                                           // ON TRIGGER ENTER 2D
@@ -57,6 +58,7 @@ public class NarrationTrigger : MonoBehaviour
 
     void TriggerNarrationEvent()                                                                                                                                                    // TRIGGER NARRATION EVENT
     {
+        wiredVolume = true;
         triggered = true;
         if (NarrationEngine.Instance)
             NarrationEngine.Instance.NarrationEvent(narrationEventData);
@@ -66,10 +68,14 @@ public class NarrationTrigger : MonoBehaviour
 
 
 
-
-
-
     // EDITOR ONLY
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 10, 0));
+    }
+
+    
     private void OnDrawGizmos()                                                                                                                                                           // ON DRAW GIZMOS
     {
         Gizmos.color = Color.magenta;
@@ -106,10 +112,6 @@ public class NarrationTrigger : MonoBehaviour
             }
             else if (numberOfSentencesDisplayText.gameObject.activeInHierarchy)
                 numberOfSentencesDisplayText.gameObject.SetActive(false);
-
-
-
-
 
 
 #if UNITY_EDITOR

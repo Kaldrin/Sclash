@@ -16,7 +16,7 @@ MonoBehaviour:
   inputManager: {fileID: 0}
   rb: {fileID: 3745652980613596167}
   playerAnimations: {fileID: 4868823034912938903}
-  characterChanger: {fileID: 0}
+  characterChanger: {fileID: 1889683154005848853}
   iaScript: {fileID: 0}
   playerColliders:
   - {fileID: 5404860361385200751}
@@ -34,7 +34,7 @@ MonoBehaviour:
   hasFinishedAnim: 0
   waitingForNextAttack: 0
   hasAttackRecoveryAnimFinished: 0
-  characterType: 0
+  characterType: 1
   characterNameDisplay: {fileID: 6438496562793090023}
   characterIdentificationArrow: {fileID: 7585897267653555579}
   usePlayerColorsDifferenciation: 1
@@ -342,17 +342,17 @@ PrefabInstance:
     - target: {fileID: 7003620522291499886, guid: 3f5effdde23e47744a2f4942c91916c7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 30.5
       objectReference: {fileID: 0}
     - target: {fileID: 7003620522291499886, guid: 3f5effdde23e47744a2f4942c91916c7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 8.77
       objectReference: {fileID: 0}
     - target: {fileID: 7003620522291499886, guid: 3f5effdde23e47744a2f4942c91916c7,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.27
+      value: 1.059
       objectReference: {fileID: 0}
     - target: {fileID: 7003620522291499886, guid: 3f5effdde23e47744a2f4942c91916c7,
         type: 3}
@@ -415,6 +415,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 724d1309752846640bd23eb1ca3a28b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1889683154005848853 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5256651402214089853, guid: 3f5effdde23e47744a2f4942c91916c7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5965827258354063208}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3745652980613596163}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae60c098ca9262042ae8b8170e338bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &6257851826066702937 stripped

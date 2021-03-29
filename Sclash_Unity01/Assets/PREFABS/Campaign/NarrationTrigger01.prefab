@@ -18,7 +18,7 @@ GameObject:
   m_Layer: 0
   m_Name: NarrationTrigger01
   m_TagString: Untagged
-  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 2800000, guid: 436b1a82e45465741ba913112ff31ea1, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -151,7 +151,6 @@ MonoBehaviour:
   narrationEventData:
     sentences: []
   tagsReferences: {fileID: 11400000, guid: 7c25d02f15fe83e48baebbf32b2a66a6, type: 2}
-  editorDisplayStuff: {fileID: 3792425931661918204}
   wiredVolume: 0
   firstKeyDisplayText: {fileID: 3407691879440374027}
   numberOfSentencesDisplayText: {fileID: 2365058498560973352}
@@ -167,7 +166,7 @@ GameObject:
   - component: {fileID: 1139063290028089551}
   - component: {fileID: 5251091407696666012}
   - component: {fileID: 3407691879440374027}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: FirstKeyDisplay01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -340,7 +339,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1904353579443182724}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: EDITOR ONLY
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -375,7 +374,7 @@ GameObject:
   - component: {fileID: 6030396964164539795}
   - component: {fileID: 5335398081397725420}
   - component: {fileID: 2365058498560973352}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: NumberOfSentences01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

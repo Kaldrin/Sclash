@@ -47,7 +47,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 1
-  prewarm: 0
+  prewarm: 1
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -225,9 +225,9 @@ ParticleSystem:
       maxColor: {r: 0.28439835, g: 0.7264151, b: 0.63361704, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.16420436, g: 0.2830189, b: 0.2830189, a: 0.5176471}
-        key1: {r: 0.20776966, g: 0.2735849, b: 0.24557842, a: 0.25882354}
-        key2: {r: 0, g: 0, b: 0, a: 0}
+        key0: {r: 0.3241812, g: 0.4433962, b: 0.4433962, a: 1}
+        key1: {r: 0.15699537, g: 0.2264151, b: 0.19925086, a: 1}
+        key2: {r: 0, g: 0, b: 0, a: 0.61960787}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
@@ -241,9 +241,9 @@ ParticleSystem:
         ctime5: 0
         ctime6: 0
         ctime7: 0
-        atime0: 0
+        atime0: 578
         atime1: 65535
-        atime2: 0
+        atime2: 65535
         atime3: 0
         atime4: 0
         atime5: 0
@@ -746,7 +746,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1.12
+      value: 0.56
       mode: 0
       spread: 0
       speed:
@@ -990,7 +990,7 @@ ParticleSystem:
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
-          time: 0.45404232
+          time: 0.299786
           value: 1
           inSlope: 0.12972604
           outSlope: 0.12972604

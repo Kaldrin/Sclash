@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4933216048240651277}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: PlayerFXDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4003033254813683041}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: EDITOR ONLY
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,7 +80,7 @@ GameObject:
   - component: {fileID: 3027367025981658222}
   - component: {fileID: 7499815457308659688}
   - component: {fileID: 368255447136589769}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: SetIndexIndicator01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 5047223985627504137}
   - component: {fileID: 3449170388387406284}
   - component: {fileID: 363838426323977056}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: ParticleSetIndexDisplay01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -431,7 +431,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6403978381856349400}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: WalkSFXDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -473,7 +473,7 @@ GameObject:
   m_Layer: 0
   m_Name: EnvironmentTransition01
   m_TagString: Untagged
-  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 2800000, guid: 373125f7c4d066c40ada8eceaa11c90d, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -599,7 +599,6 @@ MonoBehaviour:
   changePlayerWalkSFXSet: 0
   newWalkSFXSetIndex: 0
   cooldown: 20
-  editorDisplayStuff: {fileID: 1819834398119996953}
   wiredVolume: 0
   FXIndexDisplayParent: {fileID: 136244693791973566}
   particleIndexDisplay: {fileID: 2182717042272622015}
@@ -635,7 +634,7 @@ GameObject:
   - component: {fileID: 5444507763860316550}
   - component: {fileID: 8364170727653331120}
   - component: {fileID: 1980339148409494798}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: LoadsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -809,7 +808,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4744128098800286343}
   - component: {fileID: 7400423942609512990}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: SFXSetIcon01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -890,7 +889,7 @@ GameObject:
   m_Component:
   - component: {fileID: 898392783380573757}
   - component: {fileID: 4031398597226031821}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Shadow01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -973,7 +972,7 @@ GameObject:
   - component: {fileID: 5180009387161270260}
   - component: {fileID: 5236173551396875524}
   - component: {fileID: 2182717042272622015}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: ParticleSetIndexDisplay01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1149,7 +1148,7 @@ GameObject:
   - component: {fileID: 4404780566473796260}
   - component: {fileID: 5450737231869874073}
   - component: {fileID: 3415863633480067426}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: UnloadsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1323,7 +1322,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3249241570859998188}
   - component: {fileID: 6500694315502349257}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: ParticleSetIcon01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1406,7 +1405,7 @@ GameObject:
   - component: {fileID: 2533054735874002367}
   - component: {fileID: 5141201371729114073}
   - component: {fileID: 1308696769262027464}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: SetIndexIndicator01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

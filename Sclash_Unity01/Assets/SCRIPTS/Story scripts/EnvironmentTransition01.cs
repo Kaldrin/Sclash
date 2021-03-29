@@ -10,7 +10,6 @@ using TMPro;
 
 
 
-// HEADER
 // For Sclash
 // OPTIMIZED I THINK
 // CAMPAIGN ONLY
@@ -22,11 +21,10 @@ using TMPro;
 // WalkSoundsLists scriptable object
 
 /// <summary>
-/// Script used on environment transition objects for the campaign mode to load the next parts of the level and change the particles used by the player, when the player passes on it
+/// Script used on environment transition objects for the campaign mode of Sclash to load the next parts of the level and change the particles used by the player, when the player passes on it
 /// </summary>
 
-// VERSION
-// Made for Unity 2019.4.14
+// Unity 2019.4.14
 public class EnvironmentTransition01 : MonoBehaviour
 {
     [Header("DATA")]
@@ -57,7 +55,6 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
     [Header("EDITOR")]
-    [SerializeField] GameObject editorDisplayStuff = null;
     [SerializeField] bool wiredVolume = true;
     [SerializeField] GameObject FXIndexDisplayParent = null;
     [SerializeField] TextMeshPro particleIndexDisplay = null;
@@ -79,28 +76,15 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
 
-    private void Start()                                                                                                                                                          // START
-    {
-        // Disable editor only stuff
-        if (editorDisplayStuff && editorDisplayStuff.activeInHierarchy)
-            editorDisplayStuff.SetActive(false);
-    }
-
-
-    private void OnEnable()                                                                                                                                                     // ON ENABLE
-    {
-        // Disable editor only stuff
-        if (editorDisplayStuff && editorDisplayStuff.activeInHierarchy)
-            editorDisplayStuff.SetActive(false);
-    }
-
-
     private void Update()                                                                                                                                                        // UPDATE
     {
         // Transition cooldown timer
         if (enabled && isActiveAndEnabled)
             if (transitoned && Time.time - cooldown > transitionStartTime)
+            {
+                wiredVolume = false;
                 transitoned = false;
+            }
     }
 
 
@@ -135,6 +119,7 @@ public class EnvironmentTransition01 : MonoBehaviour
     {
         transitionStartTime = Time.time;
         transitoned = true;
+        wiredVolume = true;
 
 
 
@@ -149,7 +134,10 @@ public class EnvironmentTransition01 : MonoBehaviour
         if (chunkToLoad)
         {
             if (chunkToLoad.GetComponent<EnvironmentStart01>())
+            {
+                Debug.Log("Load");
                 chunkToLoad.GetComponent<EnvironmentStart01>().Enable();
+            }
             else
                 chunkToLoad.SetActive(true);
         }
@@ -164,7 +152,6 @@ public class EnvironmentTransition01 : MonoBehaviour
             if (changePlayerWalkSFXSet)
                 player.SetWalkSFXSet(newWalkSFXSetIndex);
         }
-
     }
 
 
@@ -178,12 +165,15 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
     // EDITOR ONLY
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 10, 0));
+    }
     private void OnDrawGizmos()                                                                                                                                                           // ON DRAW GIZMOS
     {
         if (chunkToLoad != null || chunkToUnload != null && Color.red != null)
             Gizmos.color = Color.red;
-        else if (!changePlayerParticlesSet && changePlayerWalkSFXSet && Gizmos.color != Color.blue)
-            Gizmos.color = Color.blue;
         else if (Gizmos.color != Color.green)
             Gizmos.color = Color.green;
 
@@ -205,7 +195,8 @@ public class EnvironmentTransition01 : MonoBehaviour
             Gizmos.color = Color.red;
         if (chunkToUnload)
         {
-            Gizmos.DrawLine(transform.position, chunkToUnload.transform.position);
+            Gizmos.DrawLine(transform.position, chunkToUnload.transform.position + new Vector3(0, 10f, 0));
+            Gizmos.DrawSphere(chunkToUnload.transform.position + new Vector3(0, 10f, 0), 1);
             if (environmentToUnloadDisplay != null)
             {
                 if (!environmentToUnloadDisplay.gameObject.activeInHierarchy)
@@ -221,7 +212,8 @@ public class EnvironmentTransition01 : MonoBehaviour
             Gizmos.color = Color.green;
         if (chunkToLoad)
         {
-            Gizmos.DrawLine(transform.position, chunkToLoad.transform.position);
+            Gizmos.DrawLine(transform.position, chunkToLoad.transform.position + new Vector3(0, 15f, 0));
+            Gizmos.DrawSphere(chunkToLoad.transform.position + new Vector3(0, 15f, 0), 1);
             if (environmentToLoadDisplay != null)
             {
                 if (!environmentToLoadDisplay.gameObject.activeInHierarchy)
