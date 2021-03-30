@@ -268,7 +268,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] public bool cheatCodes = false;
     [Tooltip("The key to activate the slow motion cheat")]
     //[SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
-    [HideInInspector] float[] timeSlowDownSteps = { 2f, 0.2f, 0.05f};
+    [HideInInspector] float[] timeSlowDownSteps = { 2f, 0.2f, 0.05f };
     int timeSlowDownLevel = 0;
     #endregion
 
@@ -309,6 +309,13 @@ public class GameManager : MonoBehaviourPun
     #region BASE FUNCTIONS
     public virtual void Awake()                                        // AWAKE
     {
+        IEnumerable BundleList = AssetBundle.GetAllLoadedAssetBundles();
+        foreach (AssetBundle b in BundleList)
+        {
+            if (b.name == "player")
+                player = b.LoadAsset<GameObject>("PlayerNew");
+        }
+
         Instance = this;
         _controls = new PlayerControls();
 
@@ -1542,7 +1549,7 @@ public class GameManager : MonoBehaviourPun
                 for (int i = 0; i < spriteRenderers.Length; i++)
                     if (spriteRenderers[i] != null && !spriteRenderers[i].CompareTag("NonBlackFX"))
                     {
-                        
+
 
                         // If player sprite
                         if (spriteRenderers[i].tag == tagsReferences.playerTag || spriteRenderers[i].tag == tagsReferences.comesticsTag)

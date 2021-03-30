@@ -46,9 +46,15 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     [Header("DATA")]
-    [SerializeField] public CharactersDatabase charactersDatabase = null;
-    [SerializeField] public MasksDatabase masksDatabase = null;
-    [SerializeField] public WeaponsDatabase weaponsDatabase = null;
+    [SerializeField]
+    string characterPath = "CharactersData/CharactersDatabase01";
+    [HideInInspector] public CharactersDatabase charactersDatabase = null;
+    [SerializeField]
+    string maskPath = "MasksData/MasksDatabase01";
+    [HideInInspector] public MasksDatabase masksDatabase = null;
+    [SerializeField]
+    string weaponPath = "WeaponsData/WeaponsDatabase01";
+    [HideInInspector] public WeaponsDatabase weaponsDatabase = null;
     [SerializeField] public Player2ModesList player2ModesDatabase = null;
 
 
@@ -110,6 +116,17 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     #region FUNCTIONS
+    void Awake()
+    {
+        charactersDatabase = Resources.Load<CharactersDatabase>(characterPath);
+        Debug.Log(charactersDatabase == null ? "Database not found" : "Database found and loaded");
+        masksDatabase = Resources.Load<MasksDatabase>(maskPath);
+        Debug.Log(masksDatabase == null ? "Database not found" : "Database found and loaded");
+        weaponsDatabase = Resources.Load<WeaponsDatabase>(weaponPath);
+        Debug.Log(weaponsDatabase == null ? "Database not found" : "Database found and loaded");
+
+    }
+
     new void OnEnable()                                                                                                                                                          // ON ENABLE
     {
         ConnectManager.PlayerJoined += FetchChanger;
@@ -243,9 +260,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         // ACTIVATE ALL BUTTONS
         if (verticalElements != null && verticalElements.Count > 0)
-        for (int i = 0; i < verticalElements.Count; i++)
-            if (verticalElements[i] != null)
-                verticalElements[i].SetBool("Disabled", false);
+            for (int i = 0; i < verticalElements.Count; i++)
+                if (verticalElements[i] != null)
+                    verticalElements[i].SetBool("Disabled", false);
     }
 
 
@@ -525,7 +542,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             currentWeaponIndex = charactersDatabase.charactersList[currentCharacterIndex].defaultWeapon;
         }
         if (mask != null && masksDatabase != null)
-        mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
+            mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
         if (weaponsDatabase != null)
         {
             if (weapon != null)

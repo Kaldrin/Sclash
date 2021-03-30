@@ -54,7 +54,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae539ed6e2b439b478a43bbb8853a552, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
+  statsManager: {fileID: 0}
+  inputManager: {fileID: 0}
   rb: {fileID: 238869340270405451}
   playerAnimations: {fileID: 8302967749356714203}
   characterChanger: {fileID: 3067542047374774361}
@@ -87,7 +88,6 @@ MonoBehaviour:
   playerIsAI: 0
   playerNum: 0
   otherPlayerNum: 0
-  maxHealth: 1
   staminaSlider: {fileID: 7979104395878941853}
   staminaCostForMoves: 1
   maxStamina: 4
@@ -96,8 +96,6 @@ MonoBehaviour:
   idleStaminaGainOverTimeMultiplier: 0.8
   backWalkingStaminaGainOverTime: 1
   frontWalkingStaminaGainOverTime: 0.4
-  quickStaminaRegenGap: 1
-  lowStaminaGap: 1
   idleQuickStaminaGainOverTimeMultiplier: 1.6
   backWalkingQuickStaminaGainOverTime: 1.8
   frontWalkingQuickStaminaGainOverTime: 1.2
@@ -111,12 +109,7 @@ MonoBehaviour:
   staminaDeadColor: {r: 1, g: 0, b: 0, a: 1}
   staminaRecupColor: {r: 0, g: 0.95294124, b: 1, a: 1}
   staminaBreakColor: {r: 1, g: 0, b: 0, a: 1}
-  baseMovementsSpeed: 2.5
-  chargeMovementsSpeed: 1.2
-  sneathedMovementsSpeed: 1.8
-  attackingMovementsSpeed: 2.2
   actualMovementsSpeed: 1
-  orientationCooldown: 0.1
   canJump: 0
   canMaintainParry: 0
   canBriefParry: 1
@@ -129,7 +122,6 @@ MonoBehaviour:
   clashFrames: 0
   untouchableFrame: 0
   untouchableFrameOpacity: 0.55
-  jumpPower: 6.5
   maxChargeLevel: 5
   chargeLevel: 1
   durationToNextChargeLevel: 0.5
@@ -148,19 +140,11 @@ MonoBehaviour:
   allowanceDurationForDoubleTapDash: 0.3
   forwardAttackDashDistance: 2
   backwardsAttackDashDistance: 1.5
-  dashDeadZone: 0.5
-  shortcutDashDeadZone: 0.5
-  dashDirection: 0
-  temporaryDashDirectionForCalculation: 0
-  dashInitializationStartTime: 0
-  actualUsedDashDistance: 0
-  dashTime: 0
+  currentDashStep: 3
   kickFrame: 0
-  kickRange: 0.99
   canPommel: 1
   kickKnockbackDistance: 1.2
   canParry: 1
-  maintainParryStaminaCostOverTime: 0.03
   clashKnockback: 2
   clashKnockbackSpeed: 2
   clashFXPrefabRef: {fileID: 1503814533038380184}
@@ -171,12 +155,7 @@ MonoBehaviour:
   kickedFX: {fileID: 4141868148543406151}
   clashFX: {fileID: 1503814533038380165}
   slashFX: {fileID: 2749263753282483080}
-  attackSignDisjoint: 0.4
-  deathBloodFXRotationForDirectionChange: 240
   attackSlashFXParent: {fileID: 705372805878199537}
-  lightAttackSwordTrailScale: 0.95
-  heavyAttackSwordTrailScale: 1.44
-  minSpeedForWalkFX: 0.05
   chargeSlider: {fileID: 933411190549245253}
   chargeFlareFX: {fileID: 6520897863034834526}
   chargeFX: {fileID: 44681781079970110}
@@ -268,12 +247,14 @@ MonoBehaviour:
     - {fileID: 5717255281413945421}
     - {fileID: 8571152723903723128}
     - {fileID: 3511822793570255749}
+  walkSoundsList: {fileID: 0}
   staminaBarChargedAudioEffectSource: {fileID: 1826165713324042407}
   staminaBreakAudioFX: {fileID: 3546888197868281321}
   finalDeathAudioFX: {fileID: 2236635001156072369}
   notEnoughStaminaSFX: {fileID: 3667878060829907958}
   staminaEndSFX: {fileID: 7072917009498089339}
   staminaUseSFX: {fileID: 2656993126286992627}
+  walkSFX: {fileID: 0}
   deathRumbleSettings: {fileID: 0}
   finalDeathRumbleSettings: {fileID: 0}
   clashedLeftRumbleSettings: {fileID: 0}
@@ -409,6 +390,21 @@ PrefabInstance:
       propertyPath: playerScript
       value: 
       objectReference: {fileID: 6490631645670030080}
+    - target: {fileID: 1250708261086219519, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: defaultAnimator
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1250708261086219519, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: defaultLegsAnimator
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1250708261086219519, guid: 3f5effdde23e47744a2f4942c91916c7,
+        type: 3}
+      propertyPath: defaultMask
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1606183158023885115, guid: 3f5effdde23e47744a2f4942c91916c7,
         type: 3}
       propertyPath: m_AnchorMax.x

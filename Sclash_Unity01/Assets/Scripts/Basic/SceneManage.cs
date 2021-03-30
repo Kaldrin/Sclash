@@ -52,8 +52,6 @@ public class SceneManage : MonoBehaviour
 
 
 
-
-
     #region FUNCTIONS
     #region BASE FUNCTIONS
     void Awake()                                                                                                         // AWAKE
@@ -99,28 +97,46 @@ public class SceneManage : MonoBehaviour
             }
         }
     }
+
     #endregion
 
+    IEnumerator TestLoad()
+    {
+        yield return null;
 
+        AsyncOperation loading = SceneManager.LoadSceneAsync(sceneToAutoLoadIndex);
+        loading.allowSceneActivation = false;
+        while (!loading.isDone)
+        {
+            Debug.Log("Progress : " + (loading.progress * 100) + "%");
 
+            if (loading.progress >= .9f)
+            {
+                loading.allowSceneActivation = true;
+            }
+
+            yield return null;
+        }
+    }
 
     // SCENE LOADING
     // Automatically loads the indicated scene after the indicated duration, without transition animation
     void AutoLoadSceneAfterDuration()                                                                                                   // AUTO LOAD SCENE AFTER DURATION
     {
-        SceneManager.LoadSceneAsync(sceneToAutoLoadIndex);
+        //SceneManager.LoadSceneAsync(sceneToAutoLoadIndex, LoadSceneMode.Additive);
+        StartCoroutine(TestLoad());
     }
 
     void LoadScene(Scene scene)                                                                                                             // LOAD SCENE
     {
-        SceneManager.LoadSceneAsync(scene.name);
+        SceneManager.LoadSceneAsync(scene.name, LoadSceneMode.Additive);
     }
 
 
     // Proceeds to actually load the scene
     void LoadScene(int index)                                                                                                               // LOAD SCENE
     {
-        SceneManager.LoadScene(index);
+        SceneManager.LoadScene(index, LoadSceneMode.Additive);
     }
 
 

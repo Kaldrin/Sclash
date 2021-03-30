@@ -4,18 +4,44 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.InputSystem;
 
 public class LoadAssetBundles : MonoBehaviour
 {
     AssetBundle myLoadedAssetBundle;
-    string[] bundles;
+    public string[] bundles;
 
-    public AssetBundle[] LoadedBundles;
+    AssetBundle[] LoadedBundles;
 
     bool arrayFull;
     const int mainSceneIndex = 9;
 
+
+    void Awake()
+    {
+        LoadBundleList();
+    }
+
+    void Update()
+    {
+        if (Keyboard.current.lKey.wasPressedThisFrame)
+        {
+
+
+        }
+    }
+
+    void LoadBundleList()
+    {
+        foreach (string s in bundles)
+        {
+            string path = Path.Combine(Application.streamingAssetsPath, "AssetBundles", s);
+            AssetBundle bundle = AssetBundle.LoadFromFile(path);
+            Debug.Log(bundle == null ? "Bundle is not loaded" : "Bundle " + bundle.name + " is loaded");
+        }
+        Debug.Log("Starting load main scene");
+        SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+    }
 
     void OnEnable()
     {

@@ -297,6 +297,8 @@ public class MapLoader : MonoBehaviour
         currentMap = Instantiate((GameObject)request.asset, Vector3.zero, Quaternion.identity, mapContainer.transform);
         Debug.Log("Map Loaded from bundle");
 
+        yield return new WaitForEndOfFrame();
+
         bundle.Unload(false);
     }
 
@@ -435,24 +437,25 @@ public class MapLoader : MonoBehaviour
             case VillageDay:
             case VillageNight:
 
+                bundle = "village";
                 Debug.Log("Loading Village bundle");
                 break;
 
             case BattlefieldDay:
             case BattlefieldNight:
-
+                bundle = "battlefield";
                 Debug.Log("Loading Battlefield bundle");
                 break;
 
             case SnowTempleDay:
             case SnowTempleNight:
-
+                bundle = "snowtemple";
                 Debug.Log("Loading Snow temple bundle");
                 break;
 
             case TempleDay:
             case TempleNight:
-
+                bundle = "interior";
                 Debug.Log("Loading Temple bundle");
                 break;
 
