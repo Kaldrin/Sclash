@@ -34,17 +34,22 @@ public class LanguageManager : MonoBehaviour
 
 
     [Header("SETTINGS")]
-    [Tooltip("Currently selected language")]
+    [Tooltip("Currently selected text language")]
     [SerializeField] public string language = "ENGLISH";
+    [Tooltip("Currently selected voices language")]
+    [SerializeField] public string voicesLanguage = "ENGLISH";
     [Tooltip("Path to the json file starting from the STreamingAssets folder")]
     [SerializeField] public string filePath = "igtexts.json";
     [Tooltip("Write here the languages you want to be available to the players. Please make sure the strings are exactly the same as in the GetDialog function")]
     [SerializeField] public List<string> availableLanguages = new List<string>() { "ENGLISH", "FRANCAIS" };
+    [SerializeField] public List<string> availableVoicesLanguages = new List<string>() { "ENGLISH", "FRANCAIS" };
 
 
     [Header("DATA")]
     [Tooltip("Reference to the DiacriticsReplacementSettings object you want to use, the TextApparition component can be set to replace diacritics, and it will use these settings you can edit to do so")]
     [SerializeField] public DiacriticsReplacementSettings diacriticsReplacementSettings = null;
+    [Tooltip("List of voice acting entries")]
+    [SerializeField] VoiceClipsDataBase voiceClipsDataBase = null;
     [Tooltip("List of entries for the text in game")]
     [HideInInspector] public TextData textData;
     [Serializable] public class Entry
@@ -173,6 +178,55 @@ public class LanguageManager : MonoBehaviour
         return null;
     }
 
+
+    public AudioClip GetAudioClip(string key)
+    {
+        if (voiceClipsDataBase != null)
+            for (int i = 0; i < voiceClipsDataBase.voiceClips.Count; i++)
+                if (voiceClipsDataBase.voiceClips[i].key == key)
+                {
+                    // FRENCH
+                    if (voicesLanguage == "FRANCAIS" && voiceClipsDataBase.voiceClips[i].fr != null)
+                        return voiceClipsDataBase.voiceClips[i].fr;
+                    // GERMAN
+                    else if (voicesLanguage == "DEUTSCHE" && voiceClipsDataBase.voiceClips[i].ger != null)
+                        return voiceClipsDataBase.voiceClips[i].ger;
+                    // BRAZILIAN PORTUGUESE
+                    else if (voicesLanguage == "BRASILEIRO" && voiceClipsDataBase.voiceClips[i].braz != null)
+                        return voiceClipsDataBase.voiceClips[i].braz;
+                    // PORTUGUESE
+                    else if (voicesLanguage == "PORTUGUES" && voiceClipsDataBase.voiceClips[i].port != null)
+                        return voiceClipsDataBase.voiceClips[i].port;
+                    // SPANISH
+                    else if (voicesLanguage == "ESPANOL" && voiceClipsDataBase.voiceClips[i].spa != null)
+                        return voiceClipsDataBase.voiceClips[i].spa;
+                    // ITALIAN
+                    else if (voicesLanguage == "ITALIANO" && voiceClipsDataBase.voiceClips[i].ita != null)
+                        return voiceClipsDataBase.voiceClips[i].ita;
+                    // JAPANESE
+                    else if (voicesLanguage == "日本語" && voiceClipsDataBase.voiceClips[i].jap != null)
+                        return voiceClipsDataBase.voiceClips[i].jap;
+                    // CHINESE
+                    else if (voicesLanguage == "中国人" && voiceClipsDataBase.voiceClips[i].chi != null)
+                        return voiceClipsDataBase.voiceClips[i].chi;
+                    // KOREAN
+                    else if (voicesLanguage == "한국어" && voiceClipsDataBase.voiceClips[i].kor != null)
+                        return voiceClipsDataBase.voiceClips[i].kor;
+                    // TURKISH
+                    else if (voicesLanguage == "TURK" && voiceClipsDataBase.voiceClips[i].turk != null)
+                        return voiceClipsDataBase.voiceClips[i].turk;
+                    // RUSSIAN
+                    else if (voicesLanguage == "РУССКИЙ" && voiceClipsDataBase.voiceClips[i].rus != null)
+                        return voiceClipsDataBase.voiceClips[i].rus;
+                    // ENGLISH, default
+                    else
+                        return voiceClipsDataBase.voiceClips[i].en;
+                }
+
+
+        return null;
+    }
+
     /// <summary>
     /// // Returns the key of an entry through its index
     /// </summary>
@@ -195,6 +249,8 @@ public class LanguageManager : MonoBehaviour
             // Set up active language from scriptable object data
             if (MenuManager.Instance.menuParametersSaveScriptableObject.language != language)
                 language = MenuManager.Instance.menuParametersSaveScriptableObject.language;
+            if (MenuManager.Instance.menuParametersSaveScriptableObject.voicesLanguage != voicesLanguage)
+                voicesLanguage = MenuManager.Instance.menuParametersSaveScriptableObject.voicesLanguage;
         }
     }
     #endregion

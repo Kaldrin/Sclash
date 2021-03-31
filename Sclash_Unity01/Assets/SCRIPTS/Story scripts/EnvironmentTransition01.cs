@@ -55,7 +55,7 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
     [Header("EDITOR")]
-    [SerializeField] bool wiredVolume = true;
+    bool wiredVolume = false;
     [SerializeField] GameObject FXIndexDisplayParent = null;
     [SerializeField] TextMeshPro particleIndexDisplay = null;
     [SerializeField] SpriteRenderer particleSetIconDisplay = null;
@@ -114,7 +114,6 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
 
-    // Loads next environment and unloads previous environment
     void TriggerTransition(Player player)                                                                                                                                       // TRIGGER TRANSITION
     {
         transitionStartTime = Time.time;
@@ -134,10 +133,7 @@ public class EnvironmentTransition01 : MonoBehaviour
         if (chunkToLoad)
         {
             if (chunkToLoad.GetComponent<EnvironmentStart01>())
-            {
-                Debug.Log("Load");
                 chunkToLoad.GetComponent<EnvironmentStart01>().Enable();
-            }
             else
                 chunkToLoad.SetActive(true);
         }
@@ -167,8 +163,16 @@ public class EnvironmentTransition01 : MonoBehaviour
     // EDITOR ONLY
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 10, 0));
+        float distance = 5;
+
+        RaycastHit2D raycastHit2D = Physics2D.Raycast((Vector2)transform.position + (Vector2.up * distance), Vector2.down, distance * 2, LayerMask.GetMask("Level"));
+        if (raycastHit2D.collider != null && raycastHit2D.collider != GetComponent<Collider>())
+        {
+            Debug.DrawRay((Vector2)transform.position + (Vector2.up * distance), Vector2.down * distance * 2, Color.red);
+            transform.position = new Vector3(transform.position.x, raycastHit2D.point.y + transform.localScale.y / 2, transform.position.z);
+        }
+        else
+            Debug.DrawRay((Vector2)transform.position + (Vector2.up * distance), Vector2.down * distance * 2, Color.white);
     }
     private void OnDrawGizmos()                                                                                                                                                           // ON DRAW GIZMOS
     {

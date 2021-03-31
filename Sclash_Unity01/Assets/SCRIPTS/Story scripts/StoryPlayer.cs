@@ -208,10 +208,12 @@ public class StoryPlayer : Player
         //float v = ctx.ReadValue<float>();
         float v = InputManager.Instance.playerInputs[0].horizontal;
 
-        rb.simulated = true;
-
+        //rb.simulated = true;
         rb.velocity = new Vector2(v * actualMovementsSpeed, rb.velocity.y);
 
+
+
+        // FX
         if (Mathf.Abs(rb.velocity.x) > minSpeedForWalkFX && GameManager.Instance.gameState == GameManager.GAMESTATE.game && playerState == Player.STATE.normal)
         {
             if ((rb.velocity.x * -transform.localScale.x) < 0)

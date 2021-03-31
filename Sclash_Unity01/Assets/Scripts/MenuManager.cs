@@ -74,6 +74,7 @@ public class MenuManager : MonoBehaviour
     [Header("ERGONOMY SETTINGS")]
     [SerializeField] GameObject rumbleCheckBox = null;
     [SerializeField] TextMeshProUGUI languageText = null;
+    [SerializeField] TextMeshProUGUI voicesLanguageText = null;
     [SerializeField] GameObject pingCheckBox = null;
 
 
@@ -387,6 +388,7 @@ public class MenuManager : MonoBehaviour
 
         menuParametersSaveScriptableObject.enableRumbles = save.enableRumbles;
         menuParametersSaveScriptableObject.language = save.language;
+        menuParametersSaveScriptableObject.voicesLanguage = save.voicesLanguage;
         menuParametersSaveScriptableObject.displayPing = save.displayPing;
     }
     // AUDIO SETTINGS FROM SAVE TO SCRIPTABLE OBJECT
@@ -466,9 +468,14 @@ public class MenuManager : MonoBehaviour
         if (pingCheckBox != null)
             pingCheckBox.SetActive(menuParametersSaveScriptableObject.displayPing);
         if (LanguageManager.Instance != null)
+        {
             LanguageManager.Instance.language = menuParametersSaveScriptableObject.language;
+            LanguageManager.Instance.voicesLanguage = menuParametersSaveScriptableObject.voicesLanguage;
+        }
         if (languageText != null)
             languageText.text = menuParametersSaveScriptableObject.language;
+        if (voicesLanguageText != null)
+            voicesLanguageText.text = menuParametersSaveScriptableObject.voicesLanguage;
     }
     // SET UP AUDIO SETTINGS
     public void SetUpAudioSettingsFromScriptableObject()
@@ -505,12 +512,12 @@ public class MenuManager : MonoBehaviour
     {
         if (rumbleCheckBox != null)
             menuParametersSaveScriptableObject.enableRumbles = rumbleCheckBox.activeInHierarchy;
-
         if (pingCheckBox != null)
             menuParametersSaveScriptableObject.displayPing = pingCheckBox.activeInHierarchy;
-
         if (languageText != null)
             menuParametersSaveScriptableObject.language = languageText.text;
+        if (voicesLanguageText != null)
+            menuParametersSaveScriptableObject.voicesLanguage = voicesLanguageText.text;
     }
     // SAVE AUDIO SETTINGS
     public void SaveAudioSettingsInScriptableObject()
@@ -541,6 +548,7 @@ public class MenuManager : MonoBehaviour
 
         save.enableRumbles = menuParametersSaveScriptableObject.enableRumbles;
         save.language = menuParametersSaveScriptableObject.language;
+        save.voicesLanguage = menuParametersSaveScriptableObject.voicesLanguage;
         save.displayPing = menuParametersSaveScriptableObject.displayPing;
 
         SaveGameManager.Save();
@@ -562,5 +570,5 @@ public class MenuManager : MonoBehaviour
         SaveGameManager.Save();
     }
     #endregion
-    # endregion
+    #endregion
 }

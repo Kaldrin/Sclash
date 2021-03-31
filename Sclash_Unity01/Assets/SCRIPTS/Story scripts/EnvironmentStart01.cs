@@ -73,17 +73,11 @@ public class EnvironmentStart01 : MonoBehaviour
                         
 
                 if (finished)
-                {
-                    //lights = null;
-                    //lightsIntensities = null;
-                    Debug.Log("Finished");
-
                     if (disable)
                     {
                         disable = false;
                         gameObject.SetActive(false);
                     }
-                }
             }
     }
 
@@ -104,16 +98,6 @@ public class EnvironmentStart01 : MonoBehaviour
         { }
         else
         {
-            // Check current state
-            if (gameObject.activeInHierarchy && !finished)
-            {
-                if (!disable)
-                    Debug.Log("Not finished enabling, don't do anything");
-                if (disable)
-                    Debug.Log("Not finished disabling, will do something");
-            }
-
-
             // Was disabled before ?
             bool wasDisabled = false;
             if (!gameObject.activeInHierarchy)
@@ -151,7 +135,7 @@ public class EnvironmentStart01 : MonoBehaviour
                 sky.color = newSkyColor;
             }
 
-            Debug.Log("Enable");
+
             finished = false;
             disable = false;
         }
@@ -165,17 +149,6 @@ public class EnvironmentStart01 : MonoBehaviour
         { }
         else
         {
-            // Check current state
-            if (gameObject.activeInHierarchy && !finished)
-            {
-                if (!disable)
-                    Debug.Log("Not finished enabling, will start to disable");
-                if (disable)
-                    Debug.Log("Not finished disabling, don't do anything");
-            }
-
-
-
             // LIGHTS
             if (lights == null || lights.Length <= 0)
                 GetLights();

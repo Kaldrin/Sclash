@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-// This script is just to enable / disable the right menus on start because I'm too lazy to always disable the one I'm working on and enable the main menu back
-// To put on the MENUS game object
+
+
+// For Sclash
 // OPTIMIZED
+
+/// <summary>
+/// This script is just to enable / disable the right menus on start because I'm too lazy to always disable the one I'm working on and enable the main menu back. To put on the MENUS game object
+/// </summary>
+ 
+// UNITY 2019.1.14
 public class LazyMenuSetUp : MonoBehaviour
 {
+    [Tooltip("The menu that will be active on start")]
     [SerializeField] GameObject menuToActivateOnStart = null;
 
 
@@ -17,15 +25,12 @@ public class LazyMenuSetUp : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
-    void Awake()
+    void Awake()                                                                                                                                                                // AWAKE
     {
-        if (menuToActivateOnStart == null)
-            menuToActivateOnStart = transform.GetChild(0).gameObject;
+        GetMissingComponents();
 
 
         for (int i = 0; i < transform.childCount; i++)
-        {
             if (transform.GetChild(i).gameObject != null)
             {
                 GameObject menuScreen = transform.GetChild(i).gameObject;
@@ -36,7 +41,6 @@ public class LazyMenuSetUp : MonoBehaviour
             }
             else
                 Debug.Log("Problem with disabling the menu index " + " i");
-        }
 
 
         if (menuToActivateOnStart != null)
@@ -49,13 +53,16 @@ public class LazyMenuSetUp : MonoBehaviour
 
 
 
-
-
-
-    // EDITOR
-    private void OnDrawGizmosSelected()
+    void GetMissingComponents()
     {
         if (menuToActivateOnStart == null)
             menuToActivateOnStart = transform.GetChild(0).gameObject;
+    }
+
+
+    // EDITOR
+    private void OnDrawGizmosSelected()                                                                                                                                     // ON DRAW GIZMOS SELECTED
+    {
+        GetMissingComponents();
     }
 }

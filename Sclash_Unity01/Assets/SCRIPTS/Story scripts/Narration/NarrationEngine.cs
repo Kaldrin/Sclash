@@ -4,13 +4,14 @@ using UnityEngine;
 
 
 
-// For Sclash
+// For Sclash campaign mode
 
 // REQUIREMENTS
 // TextApparition script
+// Player script
 
 /// <summary>
-///  Manages the display of narration texts & dialogues with its canvas prefab & children, giving public methods to call with narration data structs
+///  Manages the display of narration texts, dialogues & cutscenes with its canvas prefab & children, giving public methods to call with narration data structs
 /// </summary>
 
 // Unity 2019.4.14
@@ -25,6 +26,19 @@ public class NarrationEngine : MonoBehaviour
     [SerializeField] Animation generalAnimator = null;
     [SerializeField] Animation textSubtitlesAnimator = null;
     [SerializeField] TextApparition textApparitionComponent = null;
+    Player player = null;
+
+
+
+    [Header("CUTSCENES")]
+    [SerializeField] Transform cutsceneParent = null;
+    float maxCutSceneDuration = 60f;
+    GameObject currentCutscene = null;
+    bool inCutscene = false;
+
+
+    [Header("VOICE ACTING")]
+    [SerializeField] AudioSource narratorAudioSource = null;
 
 
     // DATA
@@ -55,6 +69,12 @@ public class NarrationEngine : MonoBehaviour
 
 
 
+
+
+
+
+
+
     private void Awake()                                                                                                                                                        // AWAKE
     {
         Instance = this;
@@ -68,8 +88,8 @@ public class NarrationEngine : MonoBehaviour
     }
 
 
-
-    public void NarrationEvent(NarrationEventData narrationEventData, bool playStartAnim = true)                                                                                  // NARRATION EVENT
+    // NARRATION
+    public void NarrationEvent(NarrationEventData narrationEventData, bool playStartAnim = true)                                                                                // NARRATION EVENT
     {
         if (narrating)
             narrationEventsQueue.Add(narrationEventData);
@@ -95,18 +115,33 @@ public class NarrationEngine : MonoBehaviour
         // ANIMATION
         textSubtitlesAnimator.Play("FadeIn", PlayMode.StopAll);
 
+        float duration = 0f;
 
         if (currentNarrationEvent.sentences.Count > currentNarrationEventIndex)
+        {
+            duration = currentNarrationEvent.sentences[currentNarrationEventIndex].duration;
+
             if (currentNarrationEvent.sentences[currentNarrationEventIndex].textKey != null)
             {
                 textApparitionComponent.textKey = currentNarrationEvent.sentences[currentNarrationEventIndex].textKey;
                 textApparitionComponent.TransfersTrad();
             }
+            if (currentNarrationEvent.sentences[currentNarrationEventIndex].audioClipKey != null && currentNarrationEvent.sentences[currentNarrationEventIndex].audioClipKey != "")
+                if (LanguageManager.Instance && narratorAudioSource)
+                {
+                    narratorAudioSource.clip = LanguageManager.Instance.GetAudioClip(currentNarrationEvent.sentences[currentNarrationEventIndex].audioClipKey);
+                    narratorAudioSource.Play();
+                    // If there's a voice clip, the duration of the clip overrides the input sentence duration
+                    if (narratorAudioSource.clip)
+                        duration = narratorAudioSource.clip.length;
+                }
+        }
 
-        Invoke("EndSentence", currentNarrationEvent.sentences[currentNarrationEventIndex].duration);
+
+        Invoke("EndSentence", duration);
     }
 
-    void EndSentence()                                                                                                                                                              // END SENTENCE
+    void EndSentence()                                                                                                                                                          // END SENTENCE
     {
         // ANIMATION
         textSubtitlesAnimator.Play("FadeOut", PlayMode.StopAll);
@@ -120,26 +155,91 @@ public class NarrationEngine : MonoBehaviour
             Invoke("EndNarrationEvent", currentNarrationEvent.sentences[currentNarrationEventIndex].delay);
     }
 
-    void EndNarrationEvent()                                                                                                                                                        // END NARRATION EVENT
+    void EndNarrationEvent()                                                                                                                                                    // END NARRATION EVENT
     {
         // ANIMATION
         textSubtitlesAnimator.Play("FadeOut", PlayMode.StopAll);
 
 
-        narrating = false;
+        
         currentNarrationEventIndex = 0;
 
 
         if (narrationEventsQueue.Count > 0)
             Invoke("CallNextNarrationEvent", 1.5f);
         else
+        {
+            narrating = false;
             // ANIMATION
             generalAnimator.Play("FadeOut", PlayMode.StopAll);
+        }
     }
 
-    void CallNextNarrationEvent()                                                                                                                                                    // CALL NEXT NARRATION EVENT
+    void CallNextNarrationEvent()                                                                                                                                               // CALL NEXT NARRATION EVENT
     {
+        narrating = false;
         NarrationEvent(narrationEventsQueue[0], false);
         narrationEventsQueue.Remove(narrationEventsQueue[0]);
+    }
+
+
+
+
+
+
+    // CUTSCENE
+    public void TriggerCutScene(GameObject cutscenePrefab = null)
+    {
+        currentCutscene = Instantiate(cutscenePrefab, cutsceneParent);
+        inCutscene = true;
+        if (player == null)
+        {
+            if (FindObjectOfType<Player>())
+                player = FindObjectOfType<Player>();
+            else
+                Debug.LogWarning("Warning from NarrationEngine instance, there seems to be no player in the scene");
+        }
+
+        player.SwitchState(Player.STATE.cutscene);
+
+
+        // Fail safe
+        Invoke("EndCutscene", maxCutSceneDuration);
+    }
+
+    public void EndCutscene()
+    {
+        if (inCutscene)
+        {
+            if (currentCutscene)
+                Destroy(currentCutscene);
+            inCutscene = false;
+            player.SwitchState(Player.STATE.normal);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // EDITOR
+    private void OnDrawGizmos()
+    {
+        if (player == null)
+        {
+            if (FindObjectOfType<Player>())
+                player = FindObjectOfType<Player>();
+            else
+                Debug.LogWarning("Warning from NarrationEngine instance, there seems to be no player in the scene");
+        }
     }
 }

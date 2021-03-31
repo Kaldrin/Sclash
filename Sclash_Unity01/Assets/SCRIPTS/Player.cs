@@ -98,6 +98,7 @@ public class Player : MonoBehaviourPunCallbacks
         enemyKilled,
         enemyKilledEndMatch,
         dead,
+        cutscene
     }
 
 
@@ -962,7 +963,6 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
-    #region STATE SWITCH
     public virtual void SwitchState(STATE newState)
     {
         if (playerState != STATE.frozen)
@@ -1069,7 +1069,7 @@ public class Player : MonoBehaviourPunCallbacks
                 dashFXFront.Stop();
                 break;
 
-            case STATE.charging:                                                    // CHARGING
+            case STATE.charging:                                                                                      // CHARGING
                 isDashing = false;
                 chargeLevel = 1;
                 chargeStartTime = Time.time;
@@ -1081,7 +1081,7 @@ public class Player : MonoBehaviourPunCallbacks
                     col.isTrigger = false;
                 break;
 
-            case STATE.attacking:                                                       // ATTACKING
+            case STATE.attacking:                                                                                     // ATTACKING
                 isDashing = true;
                 canCharge = false;
                 chargeLevel = 1;
@@ -1095,7 +1095,7 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.canAttackAfterAttack:                                                // CAN ATTACK AFTER ATTACK
+            case STATE.canAttackAfterAttack:                                                                          // CAN ATTACK AFTER ATTACK
                 actualMovementsSpeed = baseMovementsSpeed;
                 dashTime = 0;
                 isDashing = false;
@@ -1108,7 +1108,7 @@ public class Player : MonoBehaviourPunCallbacks
                 dashFXFront.Stop();
                 break;
 
-            case STATE.pommeling:                                                       // POMMELING
+            case STATE.pommeling:                                                                                     // POMMELING
                 chargeLevel = 1;
                 rb.velocity = Vector3.zero;
                 PauseStaminaRegen();
@@ -1116,7 +1116,7 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.parrying:                                                                // PARRYING
+            case STATE.parrying:                                                                                      // PARRYING
                 chargeLevel = 1;
                 canParry = false;
                 PauseStaminaRegen();
@@ -1127,7 +1127,7 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.maintainParrying:                                                                // MAINTAIN PARRYING
+            case STATE.maintainParrying:                                                                              // MAINTAIN PARRYING
                 chargeLevel = 1;
                 rb.velocity = Vector3.zero;
                 PauseStaminaRegen();
@@ -1137,18 +1137,18 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.preparingToJump:                                                                     // PREPARING TO JUMP
+            case STATE.preparingToJump:                                                                                // PREPARING TO JUMP
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 walkFXBack.Stop();
                 walkFXFront.Stop();
                 break;
 
-            case STATE.jumping:                                                                             // JUMPING
+            case STATE.jumping:                                                                                       // JUMPING
                 PauseStaminaRegen();
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 break;
 
-            case STATE.dashing:                                                                                // DASHING
+            case STATE.dashing:                                                                                      // DASHING
                 canCharge = false;
                 currentDashStep = DASHSTEP.invalidated;
                 currentShortcutDashStep = DASHSTEP.invalidated;
@@ -1160,11 +1160,11 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.gameObject.SetActive(false);
                 break;
 
-            case STATE.recovering:                                                                          // RECOVERING
+            case STATE.recovering:                                                                                     // RECOVERING
                 rb.velocity = Vector3.zero;
                 break;
 
-            case STATE.clashed:                                                                             // CLASHED
+            case STATE.clashed:                                                                                        // CLASHED
                 chargeLevel = 1;
                 foreach (Collider2D col in playerColliders)
                     col.isTrigger = true;
@@ -1180,7 +1180,7 @@ public class Player : MonoBehaviourPunCallbacks
                 attackRangeFX.gameObject.SetActive(true);
                 break;
 
-            case STATE.enemyKilled:                                                                             // ENEMY KILLED
+            case STATE.enemyKilled:                                                                                   // ENEMY KILLED
                 SetStaminaBarsOpacity(0);
                 stamina = maxStamina;
                 attackDashFXFront.Stop();
@@ -1189,7 +1189,7 @@ public class Player : MonoBehaviourPunCallbacks
                 dashFXFront.Stop();
                 break;
 
-            case STATE.dead:                                                                            // DEAD
+            case STATE.dead:                                                                                          // DEAD
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 SetStaminaBarsOpacity(0);
                 foreach (Collider2D col in playerColliders)
@@ -1206,9 +1206,13 @@ public class Player : MonoBehaviourPunCallbacks
                 characterChanger.enabled = false;
                 characterChanger.EnableVisuals(false);
                 break;
+
+            case STATE.cutscene:
+                rb.velocity = new Vector2(0, rb.velocity.y);
+                break;
         }
     }
-    #endregion
+
 
 
 
@@ -1945,7 +1949,6 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     #region MOVEMENTS
-
     public virtual void ManageMovementsInputs()
     {
         /*  if (rb.simulated == false)

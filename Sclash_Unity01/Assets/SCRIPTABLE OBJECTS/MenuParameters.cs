@@ -47,7 +47,8 @@ public class MenuParameters : ScriptableObject
 
     [Header("ERGONOMY")]
     public bool enableRumbles = true;
-    public string language = "en";
+    public string language = "ENGLISH";
+    public string voicesLanguage = "ENGLISH";
     public bool displayPing = false;
 
 

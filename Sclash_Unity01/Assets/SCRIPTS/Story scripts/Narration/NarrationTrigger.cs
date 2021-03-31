@@ -34,9 +34,10 @@ public class NarrationTrigger : MonoBehaviour
     [SerializeField] TagsReferences tagsReferences = null;
 
     [Header("EDITOR")]
-    [SerializeField] bool wiredVolume = true;
+    bool wiredVolume = false;
     [SerializeField] TextMeshPro firstKeyDisplayText = null;
     [SerializeField] TextMeshPro numberOfSentencesDisplayText = null;
+    [SerializeField] GameObject warning = null;
 
 
 
@@ -71,47 +72,67 @@ public class NarrationTrigger : MonoBehaviour
     // EDITOR ONLY
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 10, 0));
+        float distance = 5;
+
+        RaycastHit2D raycastHit2D = Physics2D.Raycast((Vector2)transform.position + (Vector2.up * distance), Vector2.down, distance * 2, LayerMask.GetMask("Level"));
+        if (raycastHit2D.collider != null && raycastHit2D.collider != GetComponent<Collider>())
+        {
+            Debug.DrawRay((Vector2)transform.position + (Vector2.up * distance), Vector2.down * distance * 2, Color.red);
+            transform.position = new Vector3(transform.position.x, raycastHit2D.point.y + transform.localScale.y / 2, transform.position.z);
+        }
+        else
+            Debug.DrawRay((Vector2)transform.position + (Vector2.up * distance), Vector2.down * distance * 2, Color.white);
     }
 
     
     private void OnDrawGizmos()                                                                                                                                                           // ON DRAW GIZMOS
     {
-        Gizmos.color = Color.magenta;
+        if (FindObjectOfType<NarrationEngine>())
+        {
+            // Remove warning
+            if (warning && warning.activeInHierarchy)
+                warning.SetActive(false);
 
 
-        // Display the volume in editor
-        if (wiredVolume)
-            Gizmos.DrawWireCube(transform.position, transform.localScale);
-        else
-            Gizmos.DrawCube(transform.position, transform.localScale);
+            Gizmos.color = Color.magenta;
 
 
-        // Display key
-        if (narrationEventData.sentences != null && narrationEventData.sentences.Count > 0 && narrationEventData.sentences[0].textKey != "")
-            if (firstKeyDisplayText)
-            {
-                if (!firstKeyDisplayText.gameObject.activeInHierarchy)
-                    firstKeyDisplayText.gameObject.SetActive(true);
-
-                firstKeyDisplayText.text = narrationEventData.sentences[0].textKey;
-            }
-        else if (firstKeyDisplayText.gameObject.activeInHierarchy)
-                firstKeyDisplayText.gameObject.SetActive(false);
+            // Display the volume in editor
+            if (wiredVolume)
+                Gizmos.DrawWireCube(transform.position, transform.localScale);
+            else
+                Gizmos.DrawCube(transform.position, transform.localScale);
 
 
-        // Display number of sentences
-        if (narrationEventData.sentences != null && narrationEventData.sentences.Count > 0)
-            if (numberOfSentencesDisplayText)
-            {
-                if (!numberOfSentencesDisplayText.gameObject.activeInHierarchy)
-                    numberOfSentencesDisplayText.gameObject.SetActive(true);
+            // Display key
+            if (narrationEventData.sentences != null && narrationEventData.sentences.Count > 0 && narrationEventData.sentences[0].textKey != "")
+                if (firstKeyDisplayText)
+                {
+                    if (!firstKeyDisplayText.gameObject.activeInHierarchy)
+                        firstKeyDisplayText.gameObject.SetActive(true);
 
-                numberOfSentencesDisplayText.text = narrationEventData.sentences.Count.ToString();
-            }
-            else if (numberOfSentencesDisplayText.gameObject.activeInHierarchy)
-                numberOfSentencesDisplayText.gameObject.SetActive(false);
+                    firstKeyDisplayText.text = narrationEventData.sentences[0].textKey;
+                }
+                else if (firstKeyDisplayText.gameObject.activeInHierarchy)
+                    firstKeyDisplayText.gameObject.SetActive(false);
+
+
+            // Display number of sentences
+            if (narrationEventData.sentences != null && narrationEventData.sentences.Count > 0)
+                if (numberOfSentencesDisplayText)
+                {
+                    if (!numberOfSentencesDisplayText.gameObject.activeInHierarchy)
+                        numberOfSentencesDisplayText.gameObject.SetActive(true);
+
+                    numberOfSentencesDisplayText.text = narrationEventData.sentences.Count.ToString();
+                }
+                else if (numberOfSentencesDisplayText.gameObject.activeInHierarchy)
+                    numberOfSentencesDisplayText.gameObject.SetActive(false);
+        }
+        // Display warning if no NarrationCanvas
+        else if (warning && !warning.activeInHierarchy)
+            warning.SetActive(true);
+
 
 
 #if UNITY_EDITOR

@@ -19,7 +19,6 @@ using System;
 // Originally made for unity 2019.1.1f1
 public static class SaveGameManager
 {
-    #region VARIABLES
     public const int NB_SAVES = 1;
     private static readonly string SAVE_FILE_PATH = Path.Combine(Application.persistentDataPath, "save");
     private static ObjectSaved currentSaves = new ObjectSaved();
@@ -28,7 +27,7 @@ public static class SaveGameManager
     {
         Load();
     }
-    #endregion
+
 
 
 
@@ -186,7 +185,8 @@ public class JsonSave
 
     [Header("ERGONOMY")]
     [SerializeField] public bool enableRumbles = true;
-    [SerializeField] public string language = "en";
+    [SerializeField] public string language = "ENGLISH";
+    [SerializeField] public string voicesLanguage = "ENGLISH";
     [SerializeField] public bool displayPing = false;
 
 

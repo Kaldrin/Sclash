@@ -35,6 +35,7 @@ public class Selector : MonoBehaviour
 
     [Header("SETTINGS")]
     [SerializeField] bool isLanguageSelector = false;
+    [SerializeField] bool isVoicesLanguageSelector = false;
 
     [SerializeField] List<string> elements = new List<string>();
     int currentIndex = 0;
@@ -64,6 +65,8 @@ public class Selector : MonoBehaviour
     {
         if (isLanguageSelector && LanguageManager.Instance != null)
             elements = LanguageManager.Instance.availableLanguages;
+        if (isVoicesLanguageSelector && LanguageManager.Instance != null)
+            elements = LanguageManager.Instance.availableVoicesLanguages;
 
         Invoke("SetUpIndex", 0.2f);
     }
@@ -144,6 +147,11 @@ public class Selector : MonoBehaviour
             LanguageManager.Instance.language = elements[currentIndex];
             MenuManager.Instance.SaveErgonomySettingsInScriptableObject();
             LanguageManager.Instance.RefreshTexts();
+        }
+        if (isVoicesLanguageSelector && LanguageManager.Instance)
+        {
+            LanguageManager.Instance.voicesLanguage = elements[currentIndex];
+            MenuManager.Instance.SaveErgonomySettingsInScriptableObject();
         }
     }
 }
