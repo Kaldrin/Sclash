@@ -24,11 +24,6 @@ public class LoadAssetBundles : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.lKey.wasPressedThisFrame)
-        {
-
-
-        }
     }
 
     void LoadBundleList()

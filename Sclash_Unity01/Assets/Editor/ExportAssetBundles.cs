@@ -12,6 +12,6 @@ public class ExportAssetBundles
 
         BuildPipeline.BuildAssetBundles(filePath, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
 
-        AssetDatabase.Refresh();
+       // AssetDatabase.Refresh();
     }
 }
