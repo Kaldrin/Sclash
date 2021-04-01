@@ -83,7 +83,7 @@ public class InputManager : MonoBehaviour
     protected PlayerControls controls;
 
     [SerializeField]
-    List<Gamepad> gamepads = new List<Gamepad>();
+    protected List<Gamepad> gamepads = new List<Gamepad>();
     public int GamepadCount
     {
         get { return _gamepadCount; }
@@ -96,9 +96,9 @@ public class InputManager : MonoBehaviour
             }
         }
     }
-    private int _gamepadCount;
+    protected int _gamepadCount;
 
-    List<PlayerInput> inputs = new List<PlayerInput>();
+    protected List<PlayerInput> inputs = new List<PlayerInput>();
 
 
 
@@ -120,7 +120,7 @@ public class InputManager : MonoBehaviour
     }
 
 
-    void Start()                                                                                                                                                                   // START
+    protected virtual void Start()                                                                                                                                                                   // START
     {
         gamepads = new List<Gamepad>();
         GamepadCount = Gamepad.all.Count;

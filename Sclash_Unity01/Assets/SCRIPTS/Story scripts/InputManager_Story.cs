@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager_Story : InputManager
 {
@@ -36,6 +37,18 @@ public class InputManager_Story : InputManager
         base.ManageReallyAnyKeyInput(0);
         base.ManageScoreInput(0);
         base.ManagePauseInput(0);*/
+    }
+
+    protected override void Start()
+    {
+        gamepads = new List<Gamepad>();
+        GamepadCount = Gamepad.all.Count;
+
+
+        if (GamepadCount >= 1)
+            inputs.Add(PlayerInputManager.instance.JoinPlayer(0, -1, "Gamepad Scheme", gamepads[0]));
+        else
+            inputs.Add(PlayerInputManager.instance.JoinPlayer(0, -1, "WASDSCheme", Keyboard.current));
     }
 
     public void AddInputs(int newAmount)
