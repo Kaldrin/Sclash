@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.InputSystem;
+
 
 
 // For Sclash campaign mode
@@ -9,6 +11,7 @@ using UnityEngine;
 // REQUIREMENTS
 // TextApparition script
 // Player script
+// Input system package
 
 /// <summary>
 ///  Manages the display of narration texts, dialogues & cutscenes with its canvas prefab & children, giving public methods to call with narration data structs
@@ -35,6 +38,8 @@ public class NarrationEngine : MonoBehaviour
     float maxCutSceneDuration = 60f;
     GameObject currentCutscene = null;
     bool inCutscene = false;
+    [SerializeField] Animation skipCutSceneIndicatorAnimation = null;
+    [SerializeField] Animation cutsceneSkipAnimation = null;
 
 
     [Header("VOICE ACTING")]
@@ -63,6 +68,10 @@ public class NarrationEngine : MonoBehaviour
     int currentNarrationEventIndex = 0;
     NarrationEventData currentNarrationEvent;
     bool narrating = false;
+    [SerializeField] InputAction action = null;
+
+
+
 
 
 
@@ -85,6 +94,25 @@ public class NarrationEngine : MonoBehaviour
             generalCanvasGroup.alpha = 0;
         if (textSubtitlesCanvasGroup)
             textSubtitlesCanvasGroup.alpha = 0;
+        if (cutsceneSkipAnimation && cutsceneSkipAnimation.GetComponent<CanvasGroup>())
+            cutsceneSkipAnimation.GetComponent<CanvasGroup>().alpha = 0;
+        if (skipCutSceneIndicatorAnimation && skipCutSceneIndicatorAnimation.GetComponent<CanvasGroup>())
+            skipCutSceneIndicatorAnimation.GetComponent<CanvasGroup>().alpha = 0;
+
+
+        action.canceled += (ctx) =>
+        {
+            Debug.Log("Ended");
+        };
+
+        action.started += (ctx) =>
+        {
+            Debug.Log("Started");
+        };
+    }
+    private void Update()
+    {
+        
     }
 
 
@@ -216,6 +244,14 @@ public class NarrationEngine : MonoBehaviour
             inCutscene = false;
             player.SwitchState(Player.STATE.normal);
         }
+    }
+
+    public void SkipCutscene()
+    {
+        if (cutsceneSkipAnimation)
+            cutsceneSkipAnimation.Play("Skip", PlayMode.StopAll);
+
+        Invoke("EndCutscene", 1.5f);
     }
 
 

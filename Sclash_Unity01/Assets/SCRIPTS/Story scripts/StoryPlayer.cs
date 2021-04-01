@@ -325,7 +325,6 @@ public class StoryPlayer : Player
                 else if (g.CompareTag("Destructible"))
                 {
                     targetsHit.Add(g);
-                    Debug.Log(g);
                     if (g.GetComponent<Destructible>())
                         g.GetComponent<Destructible>().Destroy();
                     else if (g.GetComponent<MeshFilter>())

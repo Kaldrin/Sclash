@@ -1209,6 +1209,12 @@ public class Player : MonoBehaviourPunCallbacks
 
             case STATE.cutscene:
                 rb.velocity = new Vector2(0, rb.velocity.y);
+                attackDashFXFront.Stop();
+                attackDashFXBack.Stop();
+                walkFXBack.Stop();
+                walkFXFront.Stop();
+                dashFXBack.Stop();
+                dashFXFront.Stop();
                 break;
         }
     }

@@ -74,10 +74,7 @@ public class PressLongToCallButton : MonoBehaviour
     {
         if (enabled && isActiveAndEnabled)
             if (InputManager.Instance.submitInputUp)
-            {
-                
                 pressing = false;
-            }
     }
 
 

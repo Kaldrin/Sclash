@@ -248,6 +248,11 @@ public class PlayerControlCenter : MonoBehaviour
         Debug.Log("Restart");
     }
 
+    public void OnSkip(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started)
+            Debug.Log("Skip");
+    }
 
     public void OnDeviceLost(PlayerInput input)                                                                                                                 // ON DEVICE LOST
     {

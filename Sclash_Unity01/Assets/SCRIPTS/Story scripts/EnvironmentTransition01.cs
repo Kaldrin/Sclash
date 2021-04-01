@@ -161,7 +161,7 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
     // EDITOR ONLY
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()                                                                                                                                                 // ON DRAW GIZMOS SELECTED
     {
         float distance = 5;
 
