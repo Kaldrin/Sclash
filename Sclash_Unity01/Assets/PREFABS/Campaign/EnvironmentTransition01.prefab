@@ -23,14 +23,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 136244693791973566}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5252199603401647346}
   - {fileID: 806060221333256482}
   - {fileID: 3249241570859998188}
-  m_Father: {fileID: 4003033254813683041}
+  m_Father: {fileID: 1332289194219147994}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1819834398119996953
@@ -60,11 +60,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.031, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4096233618911514804}
-  - {fileID: 4165864185622498770}
-  - {fileID: 898392783380573757}
-  - {fileID: 4933216048240651277}
-  - {fileID: 6403978381856349400}
+  - {fileID: 1332289194219147994}
+  - {fileID: 8111550657037449271}
   m_Father: {fileID: 3627432101918924641}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -445,14 +442,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3588011903041224781}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.198, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2539619632105091322}
   - {fileID: 3172746396036472195}
   - {fileID: 4744128098800286343}
-  m_Father: {fileID: 4003033254813683041}
+  m_Father: {fileID: 1332289194219147994}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3627432101918924642
@@ -485,7 +482,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3627432101918924642}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.38, y: -2.8477798, z: 1}
+  m_LocalPosition: {x: -9.38, y: -1.2629399, z: 1}
   m_LocalScale: {x: 1, y: 2.2541199, z: 1}
   m_Children:
   - {fileID: 4003033254813683041}
@@ -599,7 +596,7 @@ MonoBehaviour:
   changePlayerWalkSFXSet: 0
   newWalkSFXSetIndex: 0
   cooldown: 20
-  wiredVolume: 0
+  editorStuffParent: {fileID: 9006229853594271475}
   FXIndexDisplayParent: {fileID: 136244693791973566}
   particleIndexDisplay: {fileID: 2182717042272622015}
   particleSetIconDisplay: {fileID: 6500694315502349257}
@@ -609,6 +606,7 @@ MonoBehaviour:
   environmentToLoadDisplay: {fileID: 1980339148409494798}
   environmentToUnloadDisplay: {fileID: 3415863633480067426}
   backgroundShadow: {fileID: 4791516301531157338}
+  warningObject: {fileID: 6201602793734534124}
   player: {fileID: 0}
 --- !u!114 &7621893189857872002
 MonoBehaviour:
@@ -648,11 +646,11 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4332301905844757106}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.124846846, y: 0.056751356, z: 0.0667773}
+  m_LocalScale: {x: 0.124846846, y: 0.05675135, z: 0.0667773}
   m_Children: []
-  m_Father: {fileID: 4003033254813683041}
+  m_Father: {fileID: 1332289194219147994}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -904,10 +902,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4791516301531157338}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.024000168, y: 0.8537, z: 0.538}
+  m_LocalPosition: {x: 0.024000168, y: 0.8537, z: 0.24}
   m_LocalScale: {x: 1.4653659, y: 0.357417, z: 1}
   m_Children: []
-  m_Father: {fileID: 4003033254813683041}
+  m_Father: {fileID: 1332289194219147994}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4031398597226031821
@@ -1162,11 +1160,11 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5199530856797648990}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.124846846, y: 0.056751356, z: 0.0667773}
+  m_LocalScale: {x: 0.124846846, y: 0.05675135, z: 0.0667773}
   m_Children: []
-  m_Father: {fileID: 4003033254813683041}
+  m_Father: {fileID: 1332289194219147994}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1312,6 +1310,80 @@ MonoBehaviour:
   _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
+--- !u!1 &6201602793734534124
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8111550657037449271}
+  - component: {fileID: 5775878651524644978}
+  - component: {fileID: 8769625381118436563}
+  - component: {fileID: 1996024497704877791}
+  m_Layer: 18
+  m_Name: Warning
+  m_TagString: Untagged
+  m_Icon: {fileID: 2800000, guid: 1d65085a3a26dff408beb0cd67428b1e, type: 3}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &8111550657037449271
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6201602793734534124}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.000000013038516, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4003033254813683041}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5775878651524644978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6201602793734534124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa5d109558615a3419a85868cff4748b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  note: Warning, if you see this object it's that there's no PlayerStory prefab in
+    the scene, this trigger will simply not work. Please add one
+--- !u!114 &8769625381118436563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6201602793734534124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff6cf6d647a0cdb4eb6e9c0de8f69ac2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1996024497704877791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6201602793734534124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 890c94f3e92668043a77190c603d376b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zToKeep: 1
+  checkOnStart: 1
+  checkInEditor: 1
 --- !u!1 &6213578861698263447
 GameObject:
   m_ObjectHideFlags: 0
@@ -1393,6 +1465,41 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &9006229853594271475
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1332289194219147994}
+  m_Layer: 18
+  m_Name: InfosDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1332289194219147994
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9006229853594271475}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4096233618911514804}
+  - {fileID: 4165864185622498770}
+  - {fileID: 898392783380573757}
+  - {fileID: 4933216048240651277}
+  - {fileID: 6403978381856349400}
+  m_Father: {fileID: 4003033254813683041}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9194387121623172809
 GameObject:
   m_ObjectHideFlags: 0

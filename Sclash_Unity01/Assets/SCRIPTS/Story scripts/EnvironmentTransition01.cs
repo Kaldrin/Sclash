@@ -56,6 +56,7 @@ public class EnvironmentTransition01 : MonoBehaviour
 
     [Header("EDITOR")]
     bool wiredVolume = false;
+    [SerializeField] GameObject editorStuffParent = null;
     [SerializeField] GameObject FXIndexDisplayParent = null;
     [SerializeField] TextMeshPro particleIndexDisplay = null;
     [SerializeField] SpriteRenderer particleSetIconDisplay = null;
@@ -65,7 +66,8 @@ public class EnvironmentTransition01 : MonoBehaviour
     [SerializeField] TextMeshPro environmentToLoadDisplay = null;
     [SerializeField] TextMeshPro environmentToUnloadDisplay = null;
     [SerializeField] GameObject backgroundShadow = null;
-    public Player player;
+    [SerializeField] GameObject warningObject = null;
+    [HideInInspector] public Player player;
 
 
 
@@ -231,7 +233,7 @@ public class EnvironmentTransition01 : MonoBehaviour
         // If nothing to display remove the shadow
         if (backgroundShadow)
         {
-            if (chunkToUnload == null && chunkToLoad == null && !changePlayerParticlesSet && !changePlayerWalkSFXSet)
+            if ((chunkToUnload == null && chunkToLoad == null && !changePlayerParticlesSet && !changePlayerWalkSFXSet))
             {
                 if (backgroundShadow.activeInHierarchy)
                     backgroundShadow.SetActive(false);
@@ -242,44 +244,67 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
 
-        // Get player to get data in it
+        // Get player to get data in it, disable display if no player
         if (player == null)
+        {
+            Debug.Log("null");
             player = FindObjectOfType<Player>();
+            if (editorStuffParent && editorStuffParent.activeInHierarchy)
+                editorStuffParent.SetActive(false);
+
+            if (warningObject && !warningObject.activeInHierarchy)
+                warningObject.SetActive(true);
+        }
+        else
+        {
+            if (editorStuffParent && !editorStuffParent.activeInHierarchy)
+                editorStuffParent.SetActive(true);
+
+            if (warningObject && warningObject.activeInHierarchy)
+                warningObject.SetActive(false);
+        }
+
 
 
 
         // Display particle set index
-        if (changePlayerParticlesSet)
+        if (editorStuffParent && editorStuffParent.activeInHierarchy)
         {
-            if (FXIndexDisplayParent && !FXIndexDisplayParent.activeInHierarchy)
-                FXIndexDisplayParent.SetActive(true);
-            if (particleIndexDisplay)
-                particleIndexDisplay.text = newParticleSetIndex.ToString();
-            if (particleSetIconDisplay && player && player.particlesSets != null && player.particlesSets.Count > newParticleSetIndex && newParticleSetIndex >= 0)
-                particleSetIconDisplay.sprite = player.particlesSets[newParticleSetIndex].icon;
+            if (changePlayerParticlesSet && editorStuffParent && editorStuffParent.activeInHierarchy)
+            {
+                if (FXIndexDisplayParent && !FXIndexDisplayParent.activeInHierarchy)
+                    FXIndexDisplayParent.SetActive(true);
+                if (particleIndexDisplay)
+                    particleIndexDisplay.text = newParticleSetIndex.ToString();
+                if (particleSetIconDisplay && player && player.particlesSets != null && player.particlesSets.Count > newParticleSetIndex && newParticleSetIndex >= 0)
+                    particleSetIconDisplay.sprite = player.particlesSets[newParticleSetIndex].icon;
+                else
+                    particleSetIconDisplay.sprite = null;
+            }
             else
-                particleSetIconDisplay.sprite = null;
+                if (FXIndexDisplayParent && FXIndexDisplayParent.activeInHierarchy)
+                    FXIndexDisplayParent.SetActive(false);
         }
-        else
-            if (FXIndexDisplayParent && FXIndexDisplayParent.activeInHierarchy)
-                FXIndexDisplayParent.SetActive(false);
 
 
         // Display walk SFX set index
-        if (changePlayerWalkSFXSet)
+        if (editorStuffParent && editorStuffParent.activeInHierarchy)
         {
-            if (walkSFXIndexDisplayParent && !walkSFXIndexDisplayParent.activeInHierarchy)
-                walkSFXIndexDisplayParent.SetActive(true);
-            if (walkSFXSetIndexDisplay)
-                walkSFXSetIndexDisplay.text = newWalkSFXSetIndex.ToString();
-            if (walkSFXSetIconDisplay && player && player.walkSoundsList != null && player.walkSoundsList.audioClipsLists != null && player.walkSoundsList.audioClipsLists.Count > newWalkSFXSetIndex && newWalkSFXSetIndex >= 0)
-                walkSFXSetIconDisplay.sprite = player.walkSoundsList.audioClipsLists[newWalkSFXSetIndex].icon;
+            if (changePlayerWalkSFXSet)
+            {
+                if (walkSFXIndexDisplayParent && !walkSFXIndexDisplayParent.activeInHierarchy)
+                    walkSFXIndexDisplayParent.SetActive(true);
+                if (walkSFXSetIndexDisplay)
+                    walkSFXSetIndexDisplay.text = newWalkSFXSetIndex.ToString();
+                if (walkSFXSetIconDisplay && player && player.walkSoundsList != null && player.walkSoundsList.audioClipsLists != null && player.walkSoundsList.audioClipsLists.Count > newWalkSFXSetIndex && newWalkSFXSetIndex >= 0)
+                    walkSFXSetIconDisplay.sprite = player.walkSoundsList.audioClipsLists[newWalkSFXSetIndex].icon;
+                else
+                    walkSFXSetIconDisplay.sprite = null;
+            }
             else
-                walkSFXSetIconDisplay.sprite = null;
+                if (walkSFXIndexDisplayParent && walkSFXIndexDisplayParent.activeInHierarchy)
+                    walkSFXIndexDisplayParent.SetActive(false);
         }
-        else
-            if (walkSFXIndexDisplayParent && walkSFXIndexDisplayParent.activeInHierarchy)
-                walkSFXIndexDisplayParent.SetActive(false);
 
         #if UNITY_EDITOR
             HandleUtility.Repaint();

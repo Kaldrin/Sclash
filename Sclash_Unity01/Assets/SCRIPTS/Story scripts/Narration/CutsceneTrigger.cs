@@ -33,6 +33,7 @@ public class CutsceneTrigger : MonoBehaviour
 
     [Header("EDITOR")]
     bool wiredVolume = false;
+    [SerializeField] GameObject infosDisplay = null;
     [SerializeField] TextMeshPro cutsceneNameText = null;
     [SerializeField] GameObject shadow = null;
     [SerializeField] GameObject warning = null;
@@ -98,18 +99,31 @@ public class CutsceneTrigger : MonoBehaviour
             if (warning && warning.activeInHierarchy)
                 warning.SetActive(false);
 
+            if (infosDisplay && !infosDisplay.activeInHierarchy)
+                infosDisplay.SetActive(true);
+        }
+        // WARNING IF NO NARRATION CANVAS
+        else
+        {
+            if (warning && !warning.activeInHierarchy)
+                warning.SetActive(true);
+
+            if (infosDisplay && infosDisplay.activeInHierarchy)
+                infosDisplay.SetActive(false);
+        }
+
+        Gizmos.color = Color.blue;
 
 
-            Gizmos.color = Color.blue;
+        // Display the volume in editor
+        if (wiredVolume)
+            Gizmos.DrawWireCube(transform.position, transform.localScale);
+        else
+            Gizmos.DrawCube(transform.position, transform.localScale);
 
 
-            // Display the volume in editor
-            if (wiredVolume)
-                Gizmos.DrawWireCube(transform.position, transform.localScale);
-            else
-                Gizmos.DrawCube(transform.position, transform.localScale);
-
-
+        if (infosDisplay && infosDisplay.activeInHierarchy)
+        {
             // Display name
             if (cutscenePrefab)
             {
@@ -131,11 +145,6 @@ public class CutsceneTrigger : MonoBehaviour
                     shadow.gameObject.SetActive(false);
             }
         }
-        // WARNING IF NO NARRATION CANVAS
-        else if (warning && !warning.activeInHierarchy)
-            warning.SetActive(true);
-
-
 
 
         // Forces repaint more often

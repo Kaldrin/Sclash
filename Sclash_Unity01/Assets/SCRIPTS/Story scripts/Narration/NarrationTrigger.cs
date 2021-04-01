@@ -35,6 +35,7 @@ public class NarrationTrigger : MonoBehaviour
 
     [Header("EDITOR")]
     bool wiredVolume = false;
+    [SerializeField] GameObject infosDisplay = null;
     [SerializeField] TextMeshPro firstKeyDisplayText = null;
     [SerializeField] TextMeshPro numberOfSentencesDisplayText = null;
     [SerializeField] GameObject warning = null;
@@ -94,16 +95,33 @@ public class NarrationTrigger : MonoBehaviour
                 warning.SetActive(false);
 
 
-            Gizmos.color = Color.magenta;
+            if (infosDisplay && !infosDisplay.activeInHierarchy)
+                infosDisplay.SetActive(true);
+        }
+        // Display warning if no NarrationCanvas
+        else
+        {
+            if (warning && !warning.activeInHierarchy)
+                warning.SetActive(true);
+
+            if (infosDisplay && infosDisplay.activeInHierarchy)
+                infosDisplay.SetActive(false);
+        }
 
 
-            // Display the volume in editor
-            if (wiredVolume)
-                Gizmos.DrawWireCube(transform.position, transform.localScale);
-            else
-                Gizmos.DrawCube(transform.position, transform.localScale);
 
 
+        Gizmos.color = Color.magenta;
+
+
+        // Display the volume in editor
+        if (wiredVolume)
+            Gizmos.DrawWireCube(transform.position, transform.localScale);
+        else
+            Gizmos.DrawCube(transform.position, transform.localScale);
+
+        if (infosDisplay && infosDisplay.activeInHierarchy)
+        {
             // Display key
             if (narrationEventData.sentences != null && narrationEventData.sentences.Count > 0 && narrationEventData.sentences[0].textKey != "")
                 if (firstKeyDisplayText)
@@ -129,10 +147,6 @@ public class NarrationTrigger : MonoBehaviour
                 else if (numberOfSentencesDisplayText.gameObject.activeInHierarchy)
                     numberOfSentencesDisplayText.gameObject.SetActive(false);
         }
-        // Display warning if no NarrationCanvas
-        else if (warning && !warning.activeInHierarchy)
-            warning.SetActive(true);
-
 
 
 #if UNITY_EDITOR
