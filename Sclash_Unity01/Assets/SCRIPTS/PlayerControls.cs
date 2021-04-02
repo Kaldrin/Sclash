@@ -113,6 +113,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Skip"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a025a8f-4ca3-4e08-ac1c-0c58d2461c54"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -718,6 +726,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad Scheme"",
                     ""action"": ""QuickDash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1b38660f-b5ab-4a48-a3ee-bfd9002ded7f"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""584befd4-265f-4283-90c1-d841b69b62e9"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1858,6 +1888,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Duel_Pause = m_Duel.FindAction("Pause", throwIfNotFound: true);
         m_Duel_SneathDraw = m_Duel.FindAction("Sneath/Draw", throwIfNotFound: true);
         m_Duel_QuickDash = m_Duel.FindAction("QuickDash", throwIfNotFound: true);
+        m_Duel_Skip = m_Duel.FindAction("Skip", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Submit = m_Menu.FindAction("Submit", throwIfNotFound: true);
@@ -1941,6 +1972,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Duel_Pause;
     private readonly InputAction m_Duel_SneathDraw;
     private readonly InputAction m_Duel_QuickDash;
+    private readonly InputAction m_Duel_Skip;
     public struct DuelActions
     {
         private @PlayerControls m_Wrapper;
@@ -1957,6 +1989,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Pause => m_Wrapper.m_Duel_Pause;
         public InputAction @SneathDraw => m_Wrapper.m_Duel_SneathDraw;
         public InputAction @QuickDash => m_Wrapper.m_Duel_QuickDash;
+        public InputAction @Skip => m_Wrapper.m_Duel_Skip;
         public InputActionMap Get() { return m_Wrapper.m_Duel; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2002,6 +2035,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @QuickDash.started -= m_Wrapper.m_DuelActionsCallbackInterface.OnQuickDash;
                 @QuickDash.performed -= m_Wrapper.m_DuelActionsCallbackInterface.OnQuickDash;
                 @QuickDash.canceled -= m_Wrapper.m_DuelActionsCallbackInterface.OnQuickDash;
+                @Skip.started -= m_Wrapper.m_DuelActionsCallbackInterface.OnSkip;
+                @Skip.performed -= m_Wrapper.m_DuelActionsCallbackInterface.OnSkip;
+                @Skip.canceled -= m_Wrapper.m_DuelActionsCallbackInterface.OnSkip;
             }
             m_Wrapper.m_DuelActionsCallbackInterface = instance;
             if (instance != null)
@@ -2042,6 +2078,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @QuickDash.started += instance.OnQuickDash;
                 @QuickDash.performed += instance.OnQuickDash;
                 @QuickDash.canceled += instance.OnQuickDash;
+                @Skip.started += instance.OnSkip;
+                @Skip.performed += instance.OnSkip;
+                @Skip.canceled += instance.OnSkip;
             }
         }
     }
@@ -2281,6 +2320,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnSneathDraw(InputAction.CallbackContext context);
         void OnQuickDash(InputAction.CallbackContext context);
+        void OnSkip(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

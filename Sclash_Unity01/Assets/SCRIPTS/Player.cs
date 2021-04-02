@@ -600,10 +600,10 @@ public class Player : MonoBehaviourPunCallbacks
 
                 case STATE.normal:                                          // NORMAL
                     ManageJumpInput();
+                    ManageParryInput();
                     ManageChargeInput();
                     ManageDashInput();
                     ManagePommel();
-                    ManageParryInput();
                     ManageMaintainParryInput();
                     ManageBattleSneath();
 
@@ -2208,6 +2208,7 @@ public class Player : MonoBehaviourPunCallbacks
             // Player presses attack button
             if (InputManager.Instance.playerInputs[0].attack && canCharge)
             {
+
                 if (stamina >= staminaCostForMoves)
                 {
                     SwitchState(STATE.charging);
@@ -2255,6 +2256,8 @@ public class Player : MonoBehaviourPunCallbacks
             //if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
             if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
             {
+
+                Debug.Log("Charge input");
                 // ANIMATION STAMINA
                 if (stamina <= staminaCostForMoves)
                     TriggerNotEnoughStaminaAnim(true);
@@ -2666,7 +2669,6 @@ public class Player : MonoBehaviourPunCallbacks
         // If online, only take inputs from player 1
         if (canBriefParry)
         {
-
             // Stamina animation
             if (InputManager.Instance.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
                 TriggerNotEnoughStaminaAnim(true);
@@ -2674,6 +2676,7 @@ public class Player : MonoBehaviourPunCallbacks
 
             if (InputManager.Instance.playerInputs[playerNum].parry && canParry)
             {
+            Debug.Log("ManageParry");
                 canParry = false;
 
 
