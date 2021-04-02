@@ -92,7 +92,10 @@ public class MeshCombineWizard : ScriptableWizard {
         else
             resultGO = combinedObjects[0];
 
-        Object prefab = PrefabUtility.CreateEmptyPrefab("Assets/CombinedMeshes/" + resultGO.name + ".prefab");
+        //Object prefab = PrefabUtility.CreateEmptyPrefab("Assets/CombinedMeshes/" + resultGO.name + ".prefab");
+        Object prefab = null;
+        GameObject empty = new GameObject();
+        prefab = PrefabUtility.SaveAsPrefabAsset(empty, "Assets/CombinedMeshes/" + resultGO.name + ".prefab");
         PrefabUtility.ReplacePrefab(resultGO, prefab, ReplacePrefabOptions.ConnectToPrefab);
 
         parentOfObjectsToCombine.SetActive(false);

@@ -39,14 +39,14 @@ public class InputManager : MonoBehaviour
 
 
     [Header("INPUT SETTINGS")]
-    [SerializeField]
-    public float
-        axisDeadZone = 0.1f,
+    [SerializeField] public float axisDeadZone = 0.1f,
         dashDeadZone = 0.5f;
     [SerializeField] public PlayerInputs[] playerInputs = new PlayerInputs[2];
     [HideInInspector] public bool scoreInput = false;
     [HideInInspector] public bool submitInput = false;
     [HideInInspector] public bool submitInputUp = false;
+    [HideInInspector] public bool skip = false;
+
 
 
     /*[Header("INPUT AXIS NAMES")]

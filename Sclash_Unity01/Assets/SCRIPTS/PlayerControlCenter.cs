@@ -251,7 +251,11 @@ public class PlayerControlCenter : MonoBehaviour
     public void OnSkip(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
-            Debug.Log("Skip");
+            if (InputManager.Instance)
+                InputManager.Instance.skip = true;
+        if (ctx.canceled)
+            if (InputManager.Instance)
+                InputManager.Instance.skip = false;
     }
 
     public void OnDeviceLost(PlayerInput input)                                                                                                                 // ON DEVICE LOST

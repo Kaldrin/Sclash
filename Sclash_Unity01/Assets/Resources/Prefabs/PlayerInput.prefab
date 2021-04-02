@@ -357,6 +357,21 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 7d919240-ecf5-460c-b46a-21e6169f6c17
     m_ActionName: Duel/QuickDash[/Keyboard/q,/Keyboard/e,/DualShock4GamepadHID/leftTrigger,/DualShock4GamepadHID/rightTrigger,/DualShock4GamepadHID/rightStick/x]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3053598135626648823}
+        m_MethodName: OnSkip
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: a26a349d-f207-4fcf-a124-47b52ca0189a
+    m_ActionName: Duel/Skip[/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Duel

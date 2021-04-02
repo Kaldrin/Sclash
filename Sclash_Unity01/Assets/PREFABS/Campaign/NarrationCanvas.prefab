@@ -115,9 +115,6 @@ GameObject:
   - component: {fileID: 316718516}
   - component: {fileID: 316718521}
   - component: {fileID: 316718520}
-  - component: {fileID: 316718519}
-  - component: {fileID: 316718518}
-  - component: {fileID: 316718517}
   m_Layer: 5
   m_Name: Text01
   m_TagString: Untagged
@@ -241,54 +238,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!225 &316718519
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 316718515}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
---- !u!111 &316718518
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 316718515}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  - {fileID: 7400000, guid: 2ac06497dd9de314f828f005538b055c, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
---- !u!114 &316718517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 316718515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9535e007ea18fdc4797cbd7b025ee066, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tmpToChange: {fileID: 316718520}
-  textToChange: {fileID: 0}
-  textKey: KEY
-  removeDiacritics: 0
-  onStart: 0
-  onEnable: 0
-  textMode: 2
 --- !u!1 &443211548
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,8 +324,6 @@ GameObject:
   - component: {fileID: 790607408}
   - component: {fileID: 790607407}
   - component: {fileID: 790607406}
-  - component: {fileID: 790607405}
-  - component: {fileID: 790607404}
   m_Layer: 5
   m_Name: Text01
   m_TagString: Untagged
@@ -512,42 +459,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!111 &790607405
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 790607402}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  - {fileID: 7400000, guid: 2ac06497dd9de314f828f005538b055c, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
---- !u!114 &790607404
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 790607402}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9535e007ea18fdc4797cbd7b025ee066, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tmpToChange: {fileID: 790607407}
-  textToChange: {fileID: 0}
-  textKey: KEY
-  removeDiacritics: 0
-  onStart: 0
-  onEnable: 0
-  textMode: 2
 --- !u!1 &805190825
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,11 +750,9 @@ GameObject:
   - component: {fileID: 941027633}
   - component: {fileID: 941027638}
   - component: {fileID: 941027637}
-  - component: {fileID: 941027636}
-  - component: {fileID: 941027635}
   - component: {fileID: 941027634}
   m_Layer: 5
-  m_Name: HoldTest01
+  m_Name: HoldText01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -965,35 +874,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!225 &941027636
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 941027632}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
---- !u!111 &941027635
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 941027632}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  - {fileID: 7400000, guid: 2ac06497dd9de314f828f005538b055c, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!114 &941027634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1008,10 +888,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmpToChange: {fileID: 941027637}
   textToChange: {fileID: 0}
-  textKey: KEY
+  textKey: SM_Skip01
   removeDiacritics: 0
-  onStart: 0
-  onEnable: 0
+  onStart: 1
+  onEnable: 1
   textMode: 2
 --- !u!1 &1073299943
 GameObject:
@@ -1281,9 +1161,6 @@ GameObject:
   - component: {fileID: 1744158854}
   - component: {fileID: 1744158859}
   - component: {fileID: 1744158858}
-  - component: {fileID: 1744158857}
-  - component: {fileID: 1744158856}
-  - component: {fileID: 1744158855}
   m_Layer: 5
   m_Name: Text01
   m_TagString: Untagged
@@ -1407,54 +1284,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!225 &1744158857
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744158853}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
---- !u!111 &1744158856
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744158853}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  - {fileID: 7400000, guid: 2ac06497dd9de314f828f005538b055c, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
---- !u!114 &1744158855
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744158853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9535e007ea18fdc4797cbd7b025ee066, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tmpToChange: {fileID: 1744158858}
-  textToChange: {fileID: 0}
-  textKey: KEY
-  removeDiacritics: 0
-  onStart: 0
-  onEnable: 0
-  textMode: 2
 --- !u!1 &1897516152
 GameObject:
   m_ObjectHideFlags: 0
@@ -1823,8 +1652,6 @@ GameObject:
   - component: {fileID: 2110608716}
   - component: {fileID: 2110608721}
   - component: {fileID: 2110608720}
-  - component: {fileID: 2110608719}
-  - component: {fileID: 2110608718}
   - component: {fileID: 2110608717}
   m_Layer: 5
   m_Name: Text01
@@ -1949,35 +1776,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!225 &2110608719
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2110608715}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
---- !u!111 &2110608718
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2110608715}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: fe48c5c3a2367e741b9ce3767b59f067, type: 2}
-  - {fileID: 7400000, guid: 2ac06497dd9de314f828f005538b055c, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!114 &2110608717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1992,10 +1790,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmpToChange: {fileID: 2110608720}
   textToChange: {fileID: 0}
-  textKey: KEY
+  textKey: SM_Skip02
   removeDiacritics: 0
-  onStart: 0
-  onEnable: 0
+  onStart: 1
+  onEnable: 1
   textMode: 2
 --- !u!1 &1727001452693154079
 GameObject:
@@ -2466,15 +2264,8 @@ MonoBehaviour:
   cutsceneParent: {fileID: 1073299944}
   skipCutSceneIndicatorAnimation: {fileID: 805190827}
   cutsceneSkipAnimation: {fileID: 1741204}
+  cutsceneSkipFillImage: {fileID: 837457355}
   narratorAudioSource: {fileID: 1897516154}
-  action:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 72029dea-7781-4e65-bb31-2a5b3b399ee3
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
 --- !u!1 &6388604082153343610
 GameObject:
   m_ObjectHideFlags: 0

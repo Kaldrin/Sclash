@@ -657,17 +657,17 @@ public class Player : MonoBehaviourPunCallbacks
                     UpdateStaminaColor();
                     break;
 
-                case STATE.maintainParrying:                                    // MAINTING PARYYING
+                case STATE.maintainParrying:                                             // MAINTING PARYYING
                     ManageMaintainParryInput();
                     break;
 
                 case STATE.preparingToJump:                                             // PREPARING TO JUMP
                     break;
 
-                case STATE.jumping:                                                 // JUMPING
+                case STATE.jumping:                                                       // JUMPING
                     break;
 
-                case STATE.dashing:                                                     // DASHING
+                case STATE.dashing:                                                       // DASHING
                     ManageDashInput();
                     ManageChargeInput();
                     ManagePommel();
@@ -675,7 +675,7 @@ public class Player : MonoBehaviourPunCallbacks
                     ManageMaintainParryInput();
                     break;
 
-                case STATE.clashed:                                             // CLASHED
+                case STATE.clashed:                                                         // CLASHED
                     RunDash();
                     break;
 
@@ -685,8 +685,9 @@ public class Player : MonoBehaviourPunCallbacks
                 case STATE.enemyKilledEndMatch:                                             // ENEMY KILLED END MATCH
                     break;
 
-                case STATE.dead:                                                // DEAD
+                case STATE.dead:                                                            // DEAD
                     break;
+
             }
 
 
@@ -1208,6 +1209,7 @@ public class Player : MonoBehaviourPunCallbacks
                 break;
 
             case STATE.cutscene:
+                stamina = maxStamina;
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
@@ -3490,6 +3492,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
+
     // To set which particles are active depending of the terrain
     public void SetParticleSets(int index)                                                                                                                                          // SET PARTICLE SETS
     {
@@ -3508,7 +3511,6 @@ public class Player : MonoBehaviourPunCallbacks
                 particlesSets[y].particleSystems[o].SetActive(state);
         }
     }
-
 
     // To set which footstep sounds to use
     public void SetWalkSFXSet(int walkSFXSetIndex = 0)                                                                                                                              // SET WALK SFX SET

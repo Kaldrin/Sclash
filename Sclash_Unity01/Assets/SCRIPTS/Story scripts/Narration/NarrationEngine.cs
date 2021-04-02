@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 
 
@@ -40,10 +41,18 @@ public class NarrationEngine : MonoBehaviour
     bool inCutscene = false;
     [SerializeField] Animation skipCutSceneIndicatorAnimation = null;
     [SerializeField] Animation cutsceneSkipAnimation = null;
+    float cutsceneSkipAmount = 0;
+    float cutsceneSkipFillSpeed = 0.5f;
+    [SerializeField] Image cutsceneSkipFillImage = null;
+    bool skipInfoAppeared = false;
+
+
 
 
     [Header("VOICE ACTING")]
     [SerializeField] AudioSource narratorAudioSource = null;
+
+
 
 
     // DATA
@@ -68,7 +77,6 @@ public class NarrationEngine : MonoBehaviour
     int currentNarrationEventIndex = 0;
     NarrationEventData currentNarrationEvent;
     bool narrating = false;
-    [SerializeField] InputAction action = null;
 
 
 
@@ -98,22 +106,17 @@ public class NarrationEngine : MonoBehaviour
             cutsceneSkipAnimation.GetComponent<CanvasGroup>().alpha = 0;
         if (skipCutSceneIndicatorAnimation && skipCutSceneIndicatorAnimation.GetComponent<CanvasGroup>())
             skipCutSceneIndicatorAnimation.GetComponent<CanvasGroup>().alpha = 0;
-
-
-        action.canceled += (ctx) =>
-        {
-            Debug.Log("Ended");
-        };
-
-        action.started += (ctx) =>
-        {
-            Debug.Log("Started");
-        };
+        if (cutsceneSkipFillImage)
+            cutsceneSkipFillImage.fillAmount = 0;
     }
     private void Update()
     {
-        
+        if (isActiveAndEnabled && enabled)
+            ManageCutscene();
     }
+
+
+
 
 
     // NARRATION
@@ -203,14 +206,21 @@ public class NarrationEngine : MonoBehaviour
         }
     }
 
-    void CallNextNarrationEvent()                                                                                                                                               // CALL NEXT NARRATION EVENT
+    void CallNextNarrationEvent()                                                                                                                                          // CALL NEXT NARRATION EVENT
     {
         narrating = false;
         NarrationEvent(narrationEventsQueue[0], false);
         narrationEventsQueue.Remove(narrationEventsQueue[0]);
     }
 
-
+    void ClearNarration()
+    {
+        narrationEventsQueue.Clear();
+        EndNarrationEvent();
+        CancelInvoke("EndSentence");
+        CancelInvoke("EndNarrationEvent");
+        CancelInvoke("NarrationEvent");
+    }
 
 
 
@@ -218,6 +228,8 @@ public class NarrationEngine : MonoBehaviour
     // CUTSCENE
     public void TriggerCutScene(GameObject cutscenePrefab = null)
     {
+        ClearNarration();
+
         currentCutscene = Instantiate(cutscenePrefab, cutsceneParent);
         inCutscene = true;
         if (player == null)
@@ -243,15 +255,54 @@ public class NarrationEngine : MonoBehaviour
                 Destroy(currentCutscene);
             inCutscene = false;
             player.SwitchState(Player.STATE.normal);
+
+            // Skip stuff
+            cutsceneSkipAmount = 0;
+            cutsceneSkipFillImage.fillAmount = 0;
+            skipInfoAppeared = false;
+            if (skipCutSceneIndicatorAnimation)
+                skipCutSceneIndicatorAnimation.Play("FadeOut", PlayMode.StopAll);
         }
     }
 
     public void SkipCutscene()
     {
+        // ANIMATION
         if (cutsceneSkipAnimation)
             cutsceneSkipAnimation.Play("Skip", PlayMode.StopAll);
+        if (skipCutSceneIndicatorAnimation)
+            skipCutSceneIndicatorAnimation.Play("FadeOut", PlayMode.StopAll);
 
-        Invoke("EndCutscene", 1.5f);
+        Invoke("EndCutscene", 0.9f);
+        ClearNarration();
+    }
+
+    public void ManageCutscene()
+    {
+        if (inCutscene)
+        {
+            if (skipInfoAppeared)
+            {
+                if (InputManager.Instance && InputManager.Instance.skip && cutsceneSkipAmount < 1)
+                    cutsceneSkipAmount += cutsceneSkipFillSpeed * Time.deltaTime;
+                else if (cutsceneSkipAmount > 0)
+                    cutsceneSkipAmount -= cutsceneSkipFillSpeed * Time.deltaTime;
+
+                if (cutsceneSkipAmount < 0)
+                    cutsceneSkipAmount = 0;
+
+                cutsceneSkipFillImage.fillAmount = cutsceneSkipAmount;
+
+                if (cutsceneSkipAmount >= 1)
+                    SkipCutscene();
+            }
+            else if (InputManager.Instance && InputManager.Instance.skip)
+            {
+                skipInfoAppeared = true;
+                if (skipCutSceneIndicatorAnimation)
+                    skipCutSceneIndicatorAnimation.Play("FadeIn", PlayMode.StopAll);
+            }
+        }
     }
 
 
