@@ -385,7 +385,7 @@
         "key": "SMS_B_Controls",
         "fr": "Contrôles",
         "en": "Controls",
-        "turk": "Yardım & kontroller",
+        "turk": "Kontroller",
         "rus": "Управление"
     },
     {
@@ -503,7 +503,8 @@
     {
         "key": "ES_S_VoicesLanguages01",
         "fr": "Langue des voix",
-        "en": "Voices language"
+        "en": "Voices language",
+        "turk": "Ses dili"
     },
     {
         "key": "ES_B_Ping01",
@@ -585,25 +586,28 @@
         "key": "SM_GameDuration01",
         "fr": "Durée moyenne d'un duel",
         "en": "Average finished game duration",
+        "turk": "Ortalama oyun tamamlama süresi",
         "rus": "Среднее время завершения игры"
     },
     {
         "key": "SM_RoundDuration01",
         "fr": "Durée moyenne d'une manche",
         "en": "Average round duration",
+        "turk": "Ortalama tur süresi",
         "rus": "Средняя длительность раунда"
     },
     {
         "key": "SM_Rounds02",
         "fr": "Nombre moyen de manches",
         "en": "Average number of rounds per finished games",
+        "turk": "Bitmiş oyun başına ortalama tur sayısı",
         "rus": "Количество раундов в среднем"
     },
     {
         "key": "SM_Title02",
         "fr": "Nombre d'actions",
         "en": "Total actions",
-        "turk": "Toplam aksiyonlar",
+        "turk": "Toplam eylemler",
         "rus": "Всего действий"
     },
     {
@@ -750,24 +754,28 @@
         "key": "Tip03",
         "fr": "Vous pouvez interrompre le chargement d'une attaque avec n'importe quel autre mouvement",
         "en": "You can cancel the charging of an attack with any other move",
+        "turk": "Bir saldırı yüklenmesini başka herhangi bir hareketle iptal edebilirsiniz",
         "rus": "Вы можете отменить зарядку атаки любым движением"
     },
     {
         "key": "Tip04",
         "fr": "Vous pouvez changer le nombre de manches gagnées requises pour remporter un duel dans les options (Par défaut c'est 5)",
         "en": "You can change the number of rounds needed to win the game in the options (The default number is 5)",
+        "turk": "Oyunu kazanmak için gereken tur sayısını seçeneklerden değiştirebilirsiniz (Varsayılan sayı 5'tir)",
         "rus": "Вы можете изменить количество раундов в настройках (5 по умолчанию)."
     },
     {
         "key": "Tip05",
         "fr": "Le coup de pommeau ne coûte pas d'énergie et interrompt tout action que votre opposant peut être en train de faire, pour peu que vous le touchiez.",
         "en": "The pommel move doesn't cost any stamina and interrupts any action your opponent might be doing by pushing them, given you're close enough to touch them.",
+        "turk": "Yumruk hareketi herhangi bir dayanıklılığa mal olmaz ve onlara dokunacak kadar yakın olduğunuzda rakibinizin yapabileceği herhangi bir eylemi onları iterek kesintiye uğratır.",
         "rus": "Удар навершием не расходует выносливость и прерывает любое действие противника, если Вы находитесь достаточно близко к нему."
     },
     {
         "key": "Tip06",
         "fr": "Si votre parade réussi à bloquer un coup, vous regagnez tout de suite 1 barre d'énergie ",
         "en": "If your guard successfully blocks a hit, you immediatly regain 1 stamina bar.",
+        "turk": "Bir saldırıyı başarıyla engellerseniz, anında 1 dayanıklılık çubuğu kazanırsınız.",
         "rus": "При успешном блокировании атаки Вы автоматически восстанавливаете одну полосу выносливости."
     },
     {
@@ -863,15 +871,20 @@
     },
     {
         "key": "CS_Text01",
-        "fr": "Appuyez sur n'importe quelle touche pour dégainer",
-        "en": "Press any key to draw",
+        "fr": "Appuyez sur",
+        "en": "Press",
         "rus": "Нажмите любую клавишу, чтобы обнажить клинок"
     },
     {
         "key": "CS_Text02",
-        "fr": "Appuyer sur J (J1) / 5 (J2) pour rengainer",
-        "en": "Press J (P1) / 5 (P2) to sheathe",
+        "fr": "pour dégaîner",
+        "en": "to draw",
         "rus": "Нажмите J (игрок 1) или 5 (игрок 2), чтобы убрать меч в ножны"
+    },
+    {
+        "key": "CS_Text03",
+        "fr": "pour rengaîner",
+        "en": "to sneath"
     },
     {
         "key": "WS_Title01",
@@ -954,78 +967,91 @@
         "key": "OM_IF_SearchBar01",
         "fr": "Nom ou adresse IP...",
         "en": "Enter text of IP address...",
+        "turk": "IP adresi metnini girin...",
         "rus": "Введите IP-адрес"
     },
     {
         "key": "OM_ServerBrowser01",
         "fr": "Liste de serveurs",
         "en": "Server browser",
+        "turk": "Sunucu tarayıcı",
         "rus": "Браузер серверов"
     },
     {
         "key": "OM_NotFound01",
         "fr": "Aucun serveur trouvé",
         "en": "No server found",
+        "turk": "Sunucu bulunamadı",
         "rus": "Серверы не найдены"
     },
     {
         "key": "OM_B_CreateRoom01",
         "fr": "Créer un serveur",
         "en": "Create room",
+        "turk": "Oda oluştur",
         "rus": "Создать комнату"
     },
     {
         "key": "OM_B_Matchmaking01",
         "fr": "Trouver une partie",
         "en": "Matchmaking",
+        "turk": "Eşleştirme",
         "rus": "Подбор игрока"
     },
     {
         "key": "OM_B_JoinRoom01",
         "fr": "Rejoindre",
         "en": "Join room",
+        "turk": "Oda'ya katıl",
         "rus": "Подключиться к комнате"
     },
     {
         "key": "OM_ServerInfos01",
         "fr": "Détails du serveur",
         "en": "Server infos",
+        "turk": "Sunucu bilgileri",
         "rus": "Информация о сервере"
     },
     {
         "key": "OM_RoomName01",
         "fr": "Nom du serveur",
         "en": "Room name",
+        "turk": "Oda ismi",
         "rus": "Название комнаты"
     },
     {
         "key": "OM_BestOf01",
         "fr": "Meilleur des",
         "en": "Best of",
+        "turk": "En iyiler",
         "rus": "Лимит раундов"
     },
     {
         "key": "OM_Connecting01",
         "fr": "Connection aux serveurs, merci de patienter...",
         "en": "Connecting to servers, please wait...",
+        "turk": "Sunuculara bağlanılıyor, lütfen bekleyin...",
         "rus": "Идёт подключение к серверу, ожидайте."
     },
     {
         "key": "RCM_IF_RoomName01",
         "fr": "Nom du serveur...",
         "en": "Enter room name...",
+        "turk": "Oda ismi girin...",
         "rus": "Введите название комнаты"
     },
     {
         "key": "RCM_PlayerCount01",
         "fr": "Nombre de joueurs",
         "en": "Player count",
+        "turk": "Oyuncu sayısı",
         "rus": "Количество игроков"
     },
     {
         "key": "RCM_RoundsCount01",
         "fr": "Nombre de manches",
         "en": "Rounds count",
+        "turk": "Tur sayısı",
         "rus": "Количество раундов"
     },
     {
@@ -1044,96 +1070,112 @@
         "key": "RCM_B_Create01",
         "fr": "Créer",
         "en": "Create",
+        "turk": "Oluştur",
         "rus": "Создать"
     },
     {
         "key": "SMM_Title01",
         "fr": "Histoire",
         "en": "Story",
+        "turk": "Hikaye",
         "rus": "Режим истории"
     },
     {
         "key": "PLS_Text01",
         "fr": "L'autre joueur s'est déconnecté, retournez au menu principal",
         "en": "The other player disconnected, go back to the main menu.",
+        "turk": "Diğer oyuncunun bağlantısı kesildi, ana menüye dönün.",
         "rus": "Другой игрок отключился, возврат в меню"
     },
     {
         "key": "PLS_B_Ok01",
         "fr": "Ok",
         "en": "Ok",
+        "turk": "Tamam",
         "rus": "Хорошо"
     },
     {
         "key": "SVS_Text01",
         "fr": "Il y a eu une erreur lors de l'accès aux serveurs, désolé de la gêne, essayez de nouveau ou redémarrez le jeu, et soyez sûr.e d'être connecté.e à internet.",
         "en": "There was an error while accessing the servers, sorry for the inconvenience, try again or restart the game, and make sure you are connected to internet.",
+        "turk": "Sunuculara erişirken bir hata oluştu, rahatsızlıktan dolayı özür dileriz, tekrar deneyin veya oyunu yeniden başlatın ve internete bağlı olduğunuzdan emin olun.",
         "rus": "При подключении к серверам произошла ошибка. Приносим извинения за неудобства. Попробуйте ещё раз или перезапустите игру. Убедитесь, что у Вас есть подключение к интернету."
     },
     {
         "key": "SVS_B_Ok01",
         "fr": "Ok",
         "en": "Ok",
+        "turk": "Tamam",
         "rus": "Хорошо"
     },
     {
         "key": "N_TimeOutTitle01",
         "fr": "Connexion trop longue, on réessaye...",
         "en": "Client timeout, trying again...",
+        "turk": "İstemci zaman aşımına uğradı, tekrar deneniyor...",
         "rus": "Время подключения истекло, попробуйте ещё раз."
     },
     {
         "key": "N_TimeOuttext01",
         "fr": "Soit votre connexion est trop lente, soit les serveurs ne sont pas totalement disponibles",
         "en": "Either your connexion is too slow or the servers are not fully available",
+        "turk": "Ya bağlantınız çok yavaş ya da sunucular tam olarak kullanılamıyor",
         "rus": "Слишком низкая скорость подключения либо серверы недоступны."
     },
     {
         "key": "N_WaitingTitle01",
         "fr": "En attente d'un adversaire...",
         "en": "Waiting for an opponent to join...",
+        "turk": "Bir rakibin katılması bekleniyor...",
         "rus": "Ожидание подключения противника."
     },
     {
         "key": "N_WaitingText01",
         "fr": "Vous avez créé un serveur, attendez qu'un joueur rejoigne...",
         "en": "You created a room, waiting for a player to join...",
+        "turk": "Bir oda oluşturdunuz, bir oyuncunun katılmasını bekliyorsunuz...",
         "rus": "Комната создана. Ожидание игрока."
     },
     {
         "key": "N_PlayerLeftTitle01",
         "fr": "Votre adversaire est parti",
         "en": "Your opponent has left",
+        "turk": "Rakibiniz ayrıldı",
         "rus": "Противник покинул игру."
     },
     {
         "key": "N_PlayerLeftText01",
         "fr": "L'autre joueur.se s'est déconnecté, peut-être a-t-iel eu un problème, ou ses parents l'ont appelé.e, ou iels ont abandonné",
         "en": "The other player disconnected, maybe they had a problem, or were called by their parents, or they gave up",
+        "turk": "Diğer oyuncunun bağlantısı kesildi, belki bir sorunu vardı veya ebeveynleri tarafından çağrıldı veya pes ettiler",
         "rus": "Другой игрок отключился. Возможно, у него проблема, или его позвали родители, или он просто сдался."
     },
     {
         "key": "N_RestartSentTitle01",
         "fr": "Vous voulez recommencer",
         "en": "You want to restart",
+        "turk": "Dövüşü yeniden başlatmak üzeresiniz",
         "rus": "Вы собираетесь перезапустить бой."
     },
     {
         "key": "N_RestartSentText01",
         "fr": "Vous avez informé votre adversaire vous vouliez recommencer, le duel, si iel accepte le duel recommencera",
         "en": "You told your opponent you wanted to restart the duel, if they accept the duel will restart",
+        "turk": "Rakibinize, dövüşü yeniden başlayacağını kabul ederse,dövüşü yeniden başlatmak istediğinizi söylediniz.",
         "rus": "Вы сообщили противнику, что хотите перезапустить бой. Если он согласится, произойдёт перезапуск."
     },
     {
         "key": "N_CantRestartTitle01",
         "fr": "Vous ne pouvez pas recommencer le duel",
         "en": "You can't restar the duel",
+        "turk": "Dövüşü yeniden başlatabilirsin",
         "rus": "Вы не сможете перезапустить дуэль."
     },
     {
         "key": "N_CantRestartText01",
         "fr": "Il n'a même pas commencé ! Attendez qu'un adversaire vous rejoigne",
         "en": "It hasn't even started! Wait for an opponent",
+        "turk": "Daha başlamadı bile! Hele bir rakip gelsin",
         "rus": "Она даже не началась. Подождите противника."
     },
     {
@@ -1238,11 +1280,13 @@
     {
         "key": "SM_Skip01",
         "fr": "Maintenez",
-        "en": "Hold"
+        "en": "Hold",
+        "turk": "Basılı tut"
     },
     {
         "key": "SM_Skip02",
         "fr": "pour passer",
-        "en": "to skip cutscene"
+        "en": "to skip cutscene",
+        "turk": "arasahne'yi atlamak için"
     }
 ]

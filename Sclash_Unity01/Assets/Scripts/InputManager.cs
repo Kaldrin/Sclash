@@ -21,6 +21,7 @@ public class InputManager : MonoBehaviour
         public bool pauseUp;
         public bool anyKey;
         public bool anyKeyDown;
+        public bool anyKeyUp;
         public bool reallyanykey;
         public bool battleSneathDraw;
         public float horizontal;
@@ -120,7 +121,7 @@ public class InputManager : MonoBehaviour
     }
 
 
-    protected virtual void Start()                                                                                                                                                                   // START
+    protected virtual void Start()                                                                                                                                                 // START
     {
         gamepads = new List<Gamepad>();
         GamepadCount = Gamepad.all.Count;
@@ -134,10 +135,10 @@ public class InputManager : MonoBehaviour
                 inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
         }
         else if (PlayerInputManager.instance)
-            {
-                inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "WASDScheme", Keyboard.current));
-                inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
-            }
+        {
+            inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "WASDScheme", Keyboard.current));
+            inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
+        }
     }
 
 

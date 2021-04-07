@@ -61,11 +61,24 @@ public class PlayerControlCenter : MonoBehaviour
 
     private void Update()                                                                                                                           // UPDATE
     {
-        InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
+        if (isActiveAndEnabled && enabled)
+        {
+            InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
 
-        if (attachedPlayer == null)
-            if (GameManager.Instance.playersList.Count != 0)
-                attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
+            if (attachedPlayer == null)
+                if (GameManager.Instance.playersList.Count != 0)
+                    attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
+
+            
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (isActiveAndEnabled && enabled)
+            if (InputManager.Instance)
+                if (InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown && InputManager.Instance.playerInputs[m_playerIndex].anyKey)
+                    InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = false;
     }
 
 
@@ -215,8 +228,9 @@ public class PlayerControlCenter : MonoBehaviour
         {
             if (InputManager.Instance)
             {
-                InputManager.Instance.playerInputs[m_playerIndex].anyKey = true;
                 InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = true;
+
+                InputManager.Instance.playerInputs[m_playerIndex].anyKey = true;
             }
         }
         else if (ctx.canceled)

@@ -760,7 +760,6 @@ public class GameManager : MonoBehaviourPun
     // A saber has been drawn, stores it and checks if both players have drawn
     public void SaberDrawn(int playerNum)                                                                                                                                                       // SABER DRAWN
     {
-
         if (AudioManager.Instance != null && AudioManager.Instance.audioState == AudioManager.AUDIOSTATE.beforeBattle || AudioManager.Instance.audioState == AudioManager.AUDIOSTATE.pause)
         {
             allPlayersHaveDrawn = true;

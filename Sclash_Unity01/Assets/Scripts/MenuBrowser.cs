@@ -26,9 +26,9 @@ public class MenuBrowser : MonoBehaviour
 
 
     [SerializeField] bool invertVerticalAxis = false;
-    [SerializeField] bool canBack = false,
-        swapAxis = false,
-        allowHorizontalJump = false;
+    [SerializeField] bool canBack = false;
+    [SerializeField] bool swapAxis = false;
+    [SerializeField] bool allowHorizontalJump = false;
     [SerializeField] int horizontalJumpAmount = 4;
     [SerializeField] bool autoEnableWhenHovered = false;
     #endregion
@@ -54,7 +54,7 @@ public class MenuBrowser : MonoBehaviour
     [SerializeField] string backButton = "Back";
     //[SerializeField] string submitButton = "Submit";
     bool vAxisInUse = false;
-    bool hAxisInUse = false;
+    bool hAxisInUse = true;
 
     [Tooltip("Dead zones for joystick browsing so that it's more comfortable")]
     [SerializeField] float verticalInputDetectionZone = 0.5f;

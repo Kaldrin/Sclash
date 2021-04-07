@@ -163,18 +163,19 @@ public class MenuManager : MonoBehaviour
     {
         if (enabled && isActiveAndEnabled)
         {
-            switch (GameManager.Instance.gameState)
-            {
-                case GameManager.GAMESTATE.game:                        // GAME
-                    if (canPauseOn)
-                        ManagePauseOnInput();
-                    ManageInfosDisplayInput();
-                    break;
+            if (GameManager.Instance)
+                switch (GameManager.Instance.gameState)
+                {
+                    case GameManager.GAMESTATE.game:                        // GAME
+                        if (canPauseOn)
+                            ManagePauseOnInput();
+                        ManageInfosDisplayInput();
+                        break;
 
-                case GameManager.GAMESTATE.paused:                      // PAUSED
-                    ManagePauseOutInput();
-                    break;
-            }
+                    case GameManager.GAMESTATE.paused:                      // PAUSED
+                        ManagePauseOutInput();
+                        break;
+                }
 
 
             if (pauseCooldownOn && Time.time - pauseCooldownStartTime > pauseCooldownDuration)
@@ -236,6 +237,7 @@ public class MenuManager : MonoBehaviour
     // Input to activate pause
     void ManagePauseOnInput()
     {
+        Debug.Log(pauseCooldownOn);
         if (!pauseCooldownOn)
             for (int i = 0; i < InputManager.Instance.playerInputs.Length; i++)
                 if (InputManager.Instance.playerInputs[i].pauseUp)

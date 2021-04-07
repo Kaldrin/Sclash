@@ -2070,14 +2070,11 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
         {
-            if (InputManager.Instance.playerInputs[0].anyKey)
+            if (photonView && InputManager.Instance && InputManager.Instance.playerInputs[0].anyKey)
                 photonView.RPC("TriggerDraw", RpcTarget.AllBufferedViaServer);
         }
-        else if (InputManager.Instance.playerInputs[playerNum].anyKey && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].locked)
-        {
+        else if (InputManager.Instance && InputManager.Instance.playerInputs[playerNum].anyKeyDown && !characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].locked)
             TriggerDraw();
-            Debug.Log("Draw");
-        }
     }
 
     // Triggers saber draw and informs the game manager
@@ -2132,8 +2129,6 @@ public class Player : MonoBehaviourPunCallbacks
 
     void TriggerBattleSneath()
     {
-        Debug.Log("Battle sneath");
-
         // If players haven't all drawn, go back to chara selec state
         if (!GameManager.Instance.allPlayersHaveDrawn)
             // STATE
@@ -2273,11 +2268,17 @@ public class Player : MonoBehaviourPunCallbacks
                 {
                     canCharge = false;
                     SwitchState(STATE.charging);
+                    Debug.Log("Charge");
 
 
                     // ANIMATION
-                    playerAnimations.CancelCharge(false);
-                    playerAnimations.TriggerCharge(true);
+                    if (playerState != STATE.parrying)
+                    {
+                        playerAnimations.CancelCharge(false);
+                        playerAnimations.TriggerCharge(true);
+
+                    }
+                    
 
 
                     chargeStartTime = Time.time;
@@ -2708,6 +2709,7 @@ public class Player : MonoBehaviourPunCallbacks
         playerAnimations.TriggerParry();
 
         SwitchState(STATE.parrying);
+        Debug.Log("Parry");
         StaminaCost(staminaCostForMoves, true);
 
         // STATS

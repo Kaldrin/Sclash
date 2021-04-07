@@ -17,7 +17,7 @@ public class LazyMenuSetUp : MonoBehaviour
 {
     [Tooltip("The menu that will be active on start")]
     [SerializeField] GameObject menuToActivateOnStart = null;
-
+    [SerializeField] GameObject blurPanel = null;
 
 
 
@@ -29,7 +29,7 @@ public class LazyMenuSetUp : MonoBehaviour
     {
         GetMissingComponents();
 
-
+        // Disable all menus
         for (int i = 0; i < transform.childCount; i++)
             if (transform.GetChild(i).gameObject != null)
             {
@@ -42,10 +42,14 @@ public class LazyMenuSetUp : MonoBehaviour
             else
                 Debug.Log("Problem with disabling the menu index " + " i");
 
-
+        // Activate required menu
         if (menuToActivateOnStart != null)
             if (menuToActivateOnStart.activeInHierarchy != true)
                 menuToActivateOnStart.SetActive(true);
+
+
+        if (blurPanel && !blurPanel.activeInHierarchy)
+            blurPanel.SetActive(true);
     }
 
 

@@ -144,40 +144,48 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
 
-        // Mask
-        if (verticalElements.Count > 1)
-        {
-            verticalIndex = 1;
-            StartCoroutine(ApplyMaskChange(0));
-        }
+
+        // Check if one has drawn
+        if (playerScript.playerState == Player.STATE.sneathed && playerScript.oldState == Player.STATE.sneathing)
+            Debug.Log("Don't change cosmetics");
         else
-            Debug.Log("Not enough vertical elements in character selection menu, index out of range");
-
-        // Weapon
-        if (verticalElements.Count > 2)
         {
-            verticalIndex = 2;
-            StartCoroutine(ApplyWeaponChange(0));
-        }
-        else
-            Debug.Log("Not enough vertical elements in character selection menu, index out of range");
-
-        // Player 2
-        if (playerScript.playerNum == 0)
-        {
-            verticalIndex = 3;
-            StartCoroutine(ApplyPlayerChange(0));
-
-            if (!ConnectManager.Instance.enableMultiplayer)
+            // Mask
+            if (verticalElements.Count > 1)
             {
-                verticalIndex = 4;
-                StartCoroutine(ApplyCharacter2Change(0));
+                verticalIndex = 1;
+                StartCoroutine(ApplyMaskChange(0));
             }
+
+
+            // Weapon
+            if (verticalElements.Count > 2)
+            {
+                verticalIndex = 2;
+                StartCoroutine(ApplyWeaponChange(0));
+            }
+
+
+            // Player 2
+            if (playerScript.playerNum == 0)
+            {
+                verticalIndex = 3;
+                StartCoroutine(ApplyPlayerChange(0));
+
+                if (!ConnectManager.Instance.enableMultiplayer)
+                {
+                    verticalIndex = 4;
+                    StartCoroutine(ApplyCharacter2Change(0));
+                }
+            }
+
+            // Character
+            verticalIndex = 0;
+            StartCoroutine(ApplyCharacterChange(0));
         }
 
-        // Character
-        verticalIndex = 0;
-        StartCoroutine(ApplyCharacterChange(0));
+
+
 
 
         // SET UP ALL ELEMENTS OF THE MENU
