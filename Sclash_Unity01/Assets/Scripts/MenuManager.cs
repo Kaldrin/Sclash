@@ -237,7 +237,6 @@ public class MenuManager : MonoBehaviour
     // Input to activate pause
     void ManagePauseOnInput()
     {
-        Debug.Log(pauseCooldownOn);
         if (!pauseCooldownOn)
             for (int i = 0; i < InputManager.Instance.playerInputs.Length; i++)
                 if (InputManager.Instance.playerInputs[i].pauseUp)

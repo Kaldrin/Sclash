@@ -212,7 +212,10 @@ public class InputManager : MonoBehaviour
             {
                 gamepads.Add(g);
                 Debug.Log("Controller plugged in");
-
+                /*
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                */
 
                 // MESSAGE
                 if (gamepads.Count == 1)

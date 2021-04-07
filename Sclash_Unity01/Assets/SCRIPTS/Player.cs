@@ -1179,6 +1179,12 @@ public class Player : MonoBehaviourPunCallbacks
 
                 attackRangeFX.gameObject.SetActive(false);
                 attackRangeFX.gameObject.SetActive(true);
+
+                if (characterChanger && oldState == STATE.sneathed)
+                {
+                    characterChanger.EnableVisuals(false);
+                    characterChanger.enabled = false;
+                }
                 break;
 
             case STATE.enemyKilled:                                                                                   // ENEMY KILLED
@@ -2268,16 +2274,12 @@ public class Player : MonoBehaviourPunCallbacks
                 {
                     canCharge = false;
                     SwitchState(STATE.charging);
-                    Debug.Log("Charge");
+
 
 
                     // ANIMATION
-                    if (playerState != STATE.parrying)
-                    {
-                        playerAnimations.CancelCharge(false);
-                        playerAnimations.TriggerCharge(true);
-
-                    }
+                    playerAnimations.CancelCharge(false);
+                    playerAnimations.TriggerCharge(true);
                     
 
 
@@ -2679,7 +2681,6 @@ public class Player : MonoBehaviourPunCallbacks
         // If online, only take inputs from player 1
         if (canBriefParry)
         {
-
             // Stamina animation
             if (InputManager.Instance.playerInputs[playerNum].parryDown && stamina <= staminaCostForMoves && canParry)
                 TriggerNotEnoughStaminaAnim(true);
@@ -2709,7 +2710,6 @@ public class Player : MonoBehaviourPunCallbacks
         playerAnimations.TriggerParry();
 
         SwitchState(STATE.parrying);
-        Debug.Log("Parry");
         StaminaCost(staminaCostForMoves, true);
 
         // STATS
@@ -2720,6 +2720,15 @@ public class Player : MonoBehaviourPunCallbacks
             else
                 Debug.Log("Couldn't access statsManager to record action, ignoring");
         }
+
+
+        // This seems to fix the "locked in charging mode" bug
+        Invoke("ParryAnim", 0.04f);
+    }
+
+    void ParryAnim()
+    {
+        playerAnimations.TriggerParry();
     }
     #endregion
 

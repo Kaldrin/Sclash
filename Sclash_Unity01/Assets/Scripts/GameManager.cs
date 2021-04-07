@@ -1466,13 +1466,21 @@ public class GameManager : MonoBehaviourPun
     {
         if (on)
         {
+            // Players particles set to none
+            if (playersList != null && playersList.Count > 0)
+                for (int i = 0; i < playersList.Count; i++)
+                    if (playersList[i] != null && playersList[i].GetComponent<Player>())
+                        playersList[i].GetComponent<Player>().SetParticleSets(1);
+
+
+
             // Deactivates background elements for only orange color
             /* DONT DELETE
             for (int i = 0; i < mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements.Length; i++)
                 mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
                 */
 
-            // STAGE ELEMENTS
+                    // STAGE ELEMENTS
             if (MapLoader.Instance.currentMap != null && MapLoader.Instance.currentMap != null && MapLoader.Instance.currentMap.GetComponent<MapPrefab>())
                 MapLoader.Instance.currentMap.GetComponent<MapPrefab>().TriggerDramaticScreen();
 

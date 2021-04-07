@@ -147,7 +147,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         // Check if one has drawn
         if (playerScript.playerState == Player.STATE.sneathed && playerScript.oldState == Player.STATE.sneathing)
-            Debug.Log("Don't change cosmetics");
+        { }
         else
         {
             // Mask
@@ -164,26 +164,31 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
                 verticalIndex = 2;
                 StartCoroutine(ApplyWeaponChange(0));
             }
+        }
 
+        // Player 2
+        if (playerScript.playerNum == 0)
+        {
+            verticalIndex = 3;
+            StartCoroutine(ApplyPlayerChange(0));
 
-            // Player 2
-            if (playerScript.playerNum == 0)
+            if (!ConnectManager.Instance.enableMultiplayer)
             {
-                verticalIndex = 3;
-                StartCoroutine(ApplyPlayerChange(0));
-
-                if (!ConnectManager.Instance.enableMultiplayer)
-                {
-                    verticalIndex = 4;
-                    StartCoroutine(ApplyCharacter2Change(0));
-                }
+                verticalIndex = 4;
+                StartCoroutine(ApplyCharacter2Change(0));
             }
+        }
 
+        if (playerScript.playerState == Player.STATE.sneathed && playerScript.oldState == Player.STATE.sneathing)
+        {
+            verticalIndex = 0;
+        }
+        else
+        {
             // Character
             verticalIndex = 0;
             StartCoroutine(ApplyCharacterChange(0));
         }
-
 
 
 

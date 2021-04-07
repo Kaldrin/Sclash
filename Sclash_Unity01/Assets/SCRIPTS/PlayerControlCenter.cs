@@ -188,6 +188,7 @@ public class PlayerControlCenter : MonoBehaviour
         if (ctx.started)
             if (InputManager.Instance)
             {
+                InputManager.Instance.playerInputs[m_playerIndex].score = true;
                 InputManager.Instance.playerInputs[m_playerIndex].scoreUp = true;
                 InputManager.Instance.scoreInput = true;
             }
@@ -195,6 +196,7 @@ public class PlayerControlCenter : MonoBehaviour
         if (ctx.canceled)
             if (InputManager.Instance)
             {
+                InputManager.Instance.playerInputs[m_playerIndex].score = false;
                 InputManager.Instance.playerInputs[m_playerIndex].scoreUp = false;
                 InputManager.Instance.scoreInput = false;
             }
