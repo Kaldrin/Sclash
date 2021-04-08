@@ -7,7 +7,7 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
-using Steamworks;
+//using Steamworks;
 
 
 
@@ -295,12 +295,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
                 pauseBrowser.enabled = false;
         }
 
-
+        // STEAM
+        /*
         if (SteamManager.Initialized)
             newPlayer.name = SteamFriends.GetPersonaName();
         else
             newPlayer.name = "Player" + PhotonNetwork.CurrentRoom.PlayerCount;
-
+        */
 
         CameraManager.Instance.FindPlayers();
 
@@ -488,13 +489,14 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         string randRoomName = "Matchmaking " + Time.time.ToString();
 
 
-
+        // STEAM
+        /*
         if (SteamManager.Initialized)
         {
             randRoomName = SteamFriends.GetPersonaName();
             randRoomName += "'s room";
         }
-
+        */
 
         RoomOptions options = new RoomOptions();
         options.CustomRoomPropertiesForLobby = newRoomParameters;
