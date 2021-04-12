@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEditor;
 
 using Photon.Pun;
 using Photon.Realtime;
@@ -1884,6 +1885,29 @@ public class GameManager : MonoBehaviourPun
 
 
 
+
+
+
+
+
+
+    // EDITOR STUFF
+    private void OnDrawGizmos()
+    {
+        // Display if it's the demo version
+        if (demoMark != null)
+        {
+            if (demo && !demoMark.activeInHierarchy)
+                demoMark.SetActive(true);
+            if (!demo && demoMark.activeInHierarchy)
+                demoMark.SetActive(false);
+        }
+
+
+#if UNITY_EDITOR
+        HandleUtility.Repaint();
+#endif
+    }
 
 
 

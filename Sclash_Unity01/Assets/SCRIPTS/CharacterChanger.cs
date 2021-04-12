@@ -593,7 +593,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         }
         else if (!hasScarf && scarfObj != null)
         {
-            Debug.Log("Destroy scarf");
             Destroy(scarfObj.gameObject);
             if (playerScript != null)
                 playerScript.scarfRenderer = null;

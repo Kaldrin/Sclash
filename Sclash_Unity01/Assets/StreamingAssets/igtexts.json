@@ -702,6 +702,111 @@
         "rus": "Уклонение"
     },
     {
+        "key": "SM_GS_Title01",
+        "fr": "Partie",
+        "en": "Game"
+    },
+    {
+        "key": "SM_GS_Local01",
+        "fr": "Local",
+        "en": "Local"
+    },
+    {
+        "key": "SM_GS_Score01",
+        "fr": "Score final",
+        "en": "Final score"
+    },
+    {
+        "key": "SM_GS_Finished01",
+        "fr": "Partie finie ?",
+        "en": "Game finished?"
+    },
+    {
+        "key": "SM_GS_Duration01",
+        "fr": "Durée",
+        "en": "Duration"
+    },
+    {
+        "key": "SM_GS_Rounds01",
+        "fr": "Manches jouées",
+        "en": "Rounds played"
+    },
+    {
+        "key": "SM_GS_WinScore01",
+        "fr": "Score pour gagner",
+        "en": "Score to win"
+    },
+    {
+        "key": "SM_RS_Title01",
+        "fr": "Manche",
+        "en": "Round"
+    },
+    {
+        "key": "SM_RS_Charge01",
+        "fr": "Charge",
+        "en": "Charge"
+    },
+    {
+        "key": "SM_RS_FA01",
+        "fr": "Attaque avant",
+        "en": "Forward attack"
+    },
+    {
+        "key": "SM_RS_BA01",
+        "fr": "Attaque arrière",
+        "en": "Backwards atttack"
+    },
+    {
+        "key": "SM_RS_NA01",
+        "fr": "Attaque neutre",
+        "en": "Neutral attack"
+    },
+    {
+        "key": "SM_RS_Death01",
+        "fr": "Mort",
+        "en": "Death"
+    },
+    {
+        "key": "SM_RS_FD01",
+        "fr": "Esquive avant",
+        "en": "Forward dash"
+    },
+    {
+        "key": "SM_RS_BD01",
+        "fr": "Esquive arrière",
+        "en": "Backwards dash"
+    },
+    {
+        "key": "SM_RS_Pommel01",
+        "fr": "Coup de pommeau",
+        "en": "Pommel"
+    },
+    {
+        "key": "SM_RS_SP01",
+        "fr": "Coup pom. réussi",
+        "en": "Success. pommel"
+    },
+    {
+        "key": "SM_RS_Parry01",
+        "fr": "Parade",
+        "en": "Parry"
+    },
+    {
+        "key": "SM_RS_SP02",
+        "fr": "Parade réussie",
+        "en": "Success. parry"
+    },
+    {
+        "key": "SM_RS_Clash01",
+        "fr": "Clash",
+        "en": "Clash"
+    },
+    {
+        "key": "SM_RS_Dodge01",
+        "fr": "Coup esquivé",
+        "en": "Dodge"
+    },
+    {
         "key": "CC_Title01",
         "fr": "Supprimer les données",
         "en": "Clear game data",
@@ -738,7 +843,7 @@
     },
     {
         "key": "Tip01",
-        "fr": "Si vous utilisez une manette, vous pouvez utiliser le stick droit ou les gachettes pour esquiver plus vite, c'est comme vous préférez !",
+        "fr": "Si vous utilisez une manette, vous pouvez utiliser le stick droit ou les gâchettes pour esquiver plus vite, c'est comme vous préférez !",
         "en": "If you're using a controller, you can use the right stick or the triggers to dash faster, play as you prefer!",
         "turk": "Bir kontrol cihazı kullanıyorsanız, daha hızlı atlamak için sağ çubuğu veya tetikleyicileri kullanabilirsiniz, tercih ettiğiniz gibi oynayın!",
         "rus": "Используя контроллер, Вы можете уклоняться быстрее с помощью правого стика или триггеров."
@@ -766,7 +871,7 @@
     },
     {
         "key": "Tip05",
-        "fr": "Le coup de pommeau ne coûte pas d'énergie et interrompt tout action que votre opposant peut être en train de faire, pour peu que vous le touchiez.",
+        "fr": "Le coup de pommeau ne coûte pas d'énergie et interrompt toute action que votre opposant peut être en train de faire, pour peu que vous le touchiez.",
         "en": "The pommel move doesn't cost any stamina and interrupts any action your opponent might be doing by pushing them, given you're close enough to touch them.",
         "turk": "Yumruk hareketi herhangi bir dayanıklılığa mal olmaz ve onlara dokunacak kadar yakın olduğunuzda rakibinizin yapabileceği herhangi bir eylemi onları iterek kesintiye uğratır.",
         "rus": "Удар навершием не расходует выносливость и прерывает любое действие противника, если Вы находитесь достаточно близко к нему."
@@ -834,8 +939,8 @@
     },
     {
         "key": "Tip16",
-        "fr": "Si votre personnages est en pose par défaut ou que votre stamina se rempli, c'est que vous pouvez agir !",
-        "en": "If your character is in idle pose or if your stamina is refilling, it means you can act!",
+        "fr": "Si votre personnage est en pose par défaut ou que votre stamina se rempli, c'est que vous pouvez attaquer à nouveau !",
+        "en": "If your character is in idle pose or if your stamina is refilling, it means you can attack again!",
         "rus": "Если Ваш персонаж спокоен, а выносливость восполняется, значит, Вы сможете атаковать."
     },
     {
@@ -911,7 +1016,7 @@
     },
     {
         "key": "D_Dash01",
-        "fr": "Dash",
+        "fr": "Esquive",
         "en": "Dash"
     },
     {
@@ -1004,7 +1109,7 @@
     {
         "key": "OM_IF_SearchBar01",
         "fr": "Nom ou adresse IP...",
-        "en": "Enter text of IP address...",
+        "en": "Name or IP address...",
         "turk": "IP adresi metnini girin...",
         "rus": "Введите IP-адрес"
     },
@@ -1066,7 +1171,7 @@
     },
     {
         "key": "OM_Connecting01",
-        "fr": "Connection aux serveurs, merci de patienter...",
+        "fr": "Connexion aux serveurs, merci de patienter...",
         "en": "Connecting to servers, please wait...",
         "turk": "Sunuculara bağlanılıyor, lütfen bekleyin...",
         "rus": "Идёт подключение к серверу, ожидайте."
