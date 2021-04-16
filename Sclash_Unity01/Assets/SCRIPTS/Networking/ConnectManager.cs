@@ -73,6 +73,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
+    [Header("PING")]
+    [SerializeField] GameObject pingDisplayObject = null;
+    [SerializeField] TextMeshProUGUI pingText = null;
+    [SerializeField] GameObject pingCheckBox = null;
+    internal bool shouldShowPing = false;
+    internal bool pingIsBeingDisplayed = false;
+
+
+
+
     [Header("ONLINE MENU")]
     [SerializeField] GameObject connectionWindow = null;
     [SerializeField] GameObject serverListBrowser = null;
@@ -104,13 +114,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject restartReceivedMessage = null;
     [SerializeField] GameObject cantRestartMessage = null;
     [SerializeField] GameObject restartAcceptedMessage = null;
-    [SerializeField] GameObject pingMessage = null;
-    [SerializeField] TextMeshProUGUI pingText = null;
+    
+    
 
     public static RpcTarget defaultTarget = RpcTarget.All;
 
-    internal bool shouldShowPing = false;
-    internal bool displayPing = false;
+    
 
     #region Events
     public delegate void Disconnected();
@@ -143,6 +152,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
         // SET UP MESSAGES
         SetUpMessages();
+        // PING
+        DisplayPing(false);
     }
 
     void Start()                                                                                // START
@@ -158,16 +169,16 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     void Update()                                                                               // UPDATE
     {
         if (enabled && isActiveAndEnabled)
+        {
+            // CONNECT
             if (enableMultiplayer && !PhotonNetwork.IsConnected && isConnecting)
                 Connect();
 
-        if (displayPing)
-        {
-            if (pingMessage)
-            {
-                pingText.text = "<cspace=-6>" + PhotonNetwork.GetPing() + "ms</cspace>";
-                //Debug.Log(PhotonNetwork.GetPing());
-            }
+
+            // PING
+            if (pingIsBeingDisplayed)
+                if (pingDisplayObject)
+                    pingText.text = PhotonNetwork.GetPing() + " ms";
         }
     }
     #endregion
@@ -412,11 +423,13 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.Log("PUN : OnJoinedRoom() called by PUN. Player is now in a room");
         Debug.LogFormat("Players in room : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 
-        if (shouldShowPing)
-        {
-            pingMessage.SetActive(true);
-            displayPing = true;
-        }
+
+
+        // PING
+        DisplayPing(true);
+
+
+
 
         if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && waitingForPlayerMessage != null)
             waitingForPlayerMessage.SetActive(true);
@@ -559,7 +572,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
         //twoPlayersInRoom = false;
-
         localPlayerSide = 1;
 
 
@@ -576,6 +588,10 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             waitingForPlayerMessage.SetActive(false);
         if (playerDisconnectedMessage != null)
             playerDisconnectedMessage.SetActive(false);
+
+
+        // PING
+        DisplayPing(false);
 
 
 
@@ -909,7 +925,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
 
-    // MENUS
+    #region MENUS
     void ConnexionWaitDisplay(bool state = false)
     {
         if (connectionWindow != null)
@@ -955,7 +971,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         if (restartAcceptedMessage != null)
             restartAcceptedMessage.SetActive(false);
     }
-
+    #endregion
 
 
 
@@ -1118,20 +1134,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
     }
 
-    public void TogglePing()
-    {
-        shouldShowPing = !shouldShowPing;
-        if (!shouldShowPing)
-        {
-            displayPing = false;
-            pingMessage.SetActive(false);
-        }
-        else if (PhotonNetwork.InRoom && shouldShowPing)
-        {
-            displayPing = true;
-            pingMessage.SetActive(true);
-        }
-    }
+   
 
     [PunRPC]
     void RestartSyncStage(int stageIndex)
@@ -1139,4 +1142,37 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         MapLoader.Instance.SetMap(stageIndex, false);
     }
     #endregion
+
+
+
+
+
+
+    // PING
+    // Displays / hide the ping
+    void DisplayPing(bool state = true)
+    {
+        if (state && shouldShowPing)
+        {
+            pingDisplayObject.SetActive(true);
+            pingIsBeingDisplayed = true;
+        }
+        else
+        {
+            pingDisplayObject.SetActive(false);
+            pingIsBeingDisplayed = false;
+        }
+    }
+
+    // Function called by the button to set if the ping should be seen online
+    public void TogglePing()
+    {
+        shouldShowPing = pingCheckBox.activeInHierarchy;
+
+
+        if (!shouldShowPing)
+            DisplayPing(false);
+        else if (PhotonNetwork.InRoom && shouldShowPing)
+            DisplayPing(true);
+    }
 }
