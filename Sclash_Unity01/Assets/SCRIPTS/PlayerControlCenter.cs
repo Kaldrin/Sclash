@@ -63,7 +63,7 @@ public class PlayerControlCenter : MonoBehaviour
     {
         if (isActiveAndEnabled && enabled)
         {
-            InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
+            
 
             if (attachedPlayer == null)
                 if (GameManager.Instance.playersList.Count != 0)
@@ -77,8 +77,12 @@ public class PlayerControlCenter : MonoBehaviour
     {
         if (isActiveAndEnabled && enabled)
             if (InputManager.Instance)
+            {
                 if (InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown && InputManager.Instance.playerInputs[m_playerIndex].anyKey)
                     InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = false;
+
+                InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
+            }
     }
 
 

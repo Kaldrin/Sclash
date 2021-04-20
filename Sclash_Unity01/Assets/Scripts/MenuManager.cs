@@ -96,8 +96,8 @@ public class MenuManager : MonoBehaviour
 
     int playerWhoPaused = 0;
 
-    [Tooltip("The duration during which the players can't input the pause again when they already input it")]
-    [SerializeField] float pauseCooldownDuration = 0.1f;
+    //[Tooltip("The duration during which the players can't input the pause again when they already input it")]
+    float pauseCooldownDuration = 0.1f;
     float pauseCooldownStartTime = 0f;
 
     bool pauseCooldownOn = false;
@@ -276,6 +276,11 @@ public class MenuManager : MonoBehaviour
     public void PauseOff()
     {
         TriggerPause(false);
+    }
+    public void PauseCooldown()
+    {
+        pauseCooldownStartTime = Time.time;
+        pauseCooldownOn = true;
     }
 
 

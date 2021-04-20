@@ -5,7 +5,13 @@ using UnityEngine.UI;
 
 
 
-// Script that manages button that you need to maintain pressed to activate, ergonomy stuff
+// Reusable asset
+
+/// <summary>
+/// Script that manages button that you need to maintain pressed to activate, ergonomy stuff
+/// </summary>
+
+// UNITY 2019.4
 public class PressLongToCallButton : MonoBehaviour
 {
     [SerializeField] Button buttonToCall = null;
@@ -22,17 +28,19 @@ public class PressLongToCallButton : MonoBehaviour
 
 
 
+
     #region FUNCTIONS
-    private void OnEnable()                                                         // ON ENABLE
+    private void OnEnable()                                                                                                                                 // ON ENABLE
     {
         sliderToSlide.value = sliderToSlide.minValue;
         pressing = false;
     }
 
-    void FixedUpdate()                                                              // FIXED UPDATE
+    void FixedUpdate()                                                                                                                                      // FIXED UPDATE
     {
         if (enabled && isActiveAndEnabled)
         {
+            Debug.Log(pressing);
             if (pressing)
             {
                 if (selected)
@@ -75,6 +83,11 @@ public class PressLongToCallButton : MonoBehaviour
         if (enabled && isActiveAndEnabled)
             if (InputManager.Instance.submitInputUp)
                 pressing = false;
+    }
+
+    private void OnDisable()
+    {
+        pressSoundAudioSource.loop = false;
     }
 
 
