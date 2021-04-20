@@ -1,0 +1,363 @@
+Using pre-set license
+Built from '2020.3/staging' branch; Version is '2020.3.4f1 (0abb6314276a) revision 703331'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10 Home; OS build 19041.928; Version 2004; 64bit' Language: 'fr' Physical Memory: 8120 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+ COMMAND LINE ARGUMENTS:
+F:\Programmes\2020.3.4f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+F:/Bureau/Sclash_Unity/Sclash_Unity01
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+57647
+Successfully changed project path to: F:/Bureau/Sclash_Unity/Sclash_Unity01
+F:/Bureau/Sclash_Unity/Sclash_Unity01
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 126.30 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2020.3.4f1 (0abb6314276a)
+[Subsystems] Discovering subsystems at path F:/Programmes/2020.3.4f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path F:/Bureau/Sclash_Unity/Sclash_Unity01/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce GTX 970 (ID=0x13c2)
+    Vendor:   
+    VRAM:     4043 MB
+    Driver:   27.21.14.6611
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Initialize mono
+Mono path[0] = 'F:/Programmes/2020.3.4f1/Editor/Data/Managed'
+Mono path[1] = 'F:/Programmes/2020.3.4f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'F:/Programmes/2020.3.4f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56740
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: F:/Programmes/2020.3.4f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.001115 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 109.98 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.229 seconds
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.005557 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 112.29 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.599 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.06 seconds
+Refreshing native plugins compatible for Editor in 3.46 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3781 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 240.6 MB.
+System memory in use after: 240.8 MB.
+
+Unloading 55 unused Assets to reduce memory usage. Loaded Objects now: 4201.
+Total: 4.312200 ms (FindLiveObjects: 0.490100 ms CreateObjectMapping: 0.345500 ms MarkObjects: 3.352800 ms  DeleteObjects: 0.122400 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/StreamingAssets/AssetBundles
+  artifactKey: Guid(5fb3debee72679040b29fd94ae152bd4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/StreamingAssets/AssetBundles using Guid(5fb3debee72679040b29fd94ae152bd4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd259222dfe2727ff07b2a8fc025cf0f2') in 0.022057 seconds
+  Import took 0.038343 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.923049 seconds.
+  path: Assets/StreamingAssets/AssetBundles/interior
+  artifactKey: Guid(0560da9bdedbd0b4395445793d08100e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/StreamingAssets/AssetBundles/interior using Guid(0560da9bdedbd0b4395445793d08100e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5f8b6a5b256101dbe33a94431b1aaafd') in 0.029199 seconds
+  Import took 0.040536 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 8.348249 seconds.
+  path: Assets/AudioMixer.mixer
+  artifactKey: Guid(275943a6e37692942bb40ae18900f60a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/AudioMixer.mixer using Guid(275943a6e37692942bb40ae18900f60a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '173cc0b072a34fc34edebbdad9460d2e') in 0.187862 seconds
+  Import took 0.210532 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.161833 seconds.
+  path: Assets/ForwardRenderer.asset
+  artifactKey: Guid(0312c344a9879dc4cae8e6eda0f653d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ForwardRenderer.asset using Guid(0312c344a9879dc4cae8e6eda0f653d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2c5747f2efc51ea7a5d120cd150828df') in 0.059855 seconds
+  Import took 0.075988 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000227 seconds.
+  path: Assets/LightweightRenderPipelineAsset.asset
+  artifactKey: Guid(934b75afc1ff9db4f94248ac3b1c8a30) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/LightweightRenderPipelineAsset.asset using Guid(934b75afc1ff9db4f94248ac3b1c8a30) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8a43aeb0ed669ca515e94ae91430a6db') in 0.054384 seconds
+  Import took 0.076447 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000307 seconds.
+  path: Assets/InputSystem.inputsettings.asset
+  artifactKey: Guid(d2ada14e0d562634490394b6e25c35b1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/InputSystem.inputsettings.asset using Guid(d2ada14e0d562634490394b6e25c35b1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4899ee91b7481064726ba98715bce710') in 0.014746 seconds
+  Import took 0.023671 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 395.908473 seconds.
+  path: Assets/SPRITES/Background_ConceptArt_Sclash.png
+  artifactKey: Guid(f68eede97b9c9f74ba7bcf194d950472) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SPRITES/Background_ConceptArt_Sclash.png using Guid(f68eede97b9c9f74ba7bcf194d950472) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '160d06811c95529911c07d27876aade4') in 0.273375 seconds
+  Import took 0.289202 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000186 seconds.
+  path: Assets/SPRITES/paperWoodPanel04.png
+  artifactKey: Guid(3896b9f9d53c4ef4eab20fe260478437) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SPRITES/paperWoodPanel04.png using Guid(3896b9f9d53c4ef4eab20fe260478437) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6ca742a247afbea38d7127cba26e2bbe') in 0.070391 seconds
+  Import took 0.082807 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000272 seconds.
+  path: Assets/SPRITES/Title04.png
+  artifactKey: Guid(41aafd9c9b80b784db633ba18475614b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SPRITES/Title04.png using Guid(41aafd9c9b80b784db633ba18475614b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '832f10c8ac9efaf9381165844e30b2db') in 0.030616 seconds
+  Import took 0.042824 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000718 seconds.
+  path: Assets/SPRITES/Logo02_Outline.png
+  artifactKey: Guid(58b4671267631cd41b7bbadaee136632) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SPRITES/Logo02_Outline.png using Guid(58b4671267631cd41b7bbadaee136632) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '166d84e6025fa0e1bce345d25645ba4f') in 0.035070 seconds
+  Import took 0.055401 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000203 seconds.
+  path: Assets/SPRITES/Shadow01.png
+  artifactKey: Guid(9b8b950816f76e444b903ca50b06122c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SPRITES/Shadow01.png using Guid(9b8b950816f76e444b903ca50b06122c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '13ae478310ab0fa14c3789112ce73499') in 0.041631 seconds
+  Import took 0.051817 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.553734 seconds.
+  path: Assets/Scenes/LoadingScene01.unity
+  artifactKey: Guid(d3d9126293023a244881688b36ee5b4b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/LoadingScene01.unity using Guid(d3d9126293023a244881688b36ee5b4b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '24f4c3d61eb596ab5fe5a030be94626c') in 0.015838 seconds
+  Import took 0.031473 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.508734 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.45 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in 10.150 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.77 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3657 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 232.2 MB.
+System memory in use after: 232.5 MB.
+
+Unloading 45 unused Assets to reduce memory usage. Loaded Objects now: 4218.
+Total: 39.742900 ms (FindLiveObjects: 0.835000 ms CreateObjectMapping: 0.237100 ms MarkObjects: 38.266400 ms  DeleteObjects: 0.400200 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.017735 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 4.46 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  2.172 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.25 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3657 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 232.3 MB.
+System memory in use after: 232.5 MB.
+
+Unloading 45 unused Assets to reduce memory usage. Loaded Objects now: 4221.
+Total: 10.264400 ms (FindLiveObjects: 0.704600 ms CreateObjectMapping: 4.336100 ms MarkObjects: 5.182800 ms  DeleteObjects: 0.038600 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.049870 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.64 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  2.074 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.35 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3657 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 232.3 MB.
+System memory in use after: 232.6 MB.
+
+Unloading 45 unused Assets to reduce memory usage. Loaded Objects now: 4224.
+Total: 4.010000 ms (FindLiveObjects: 0.609000 ms CreateObjectMapping: 0.505600 ms MarkObjects: 2.860300 ms  DeleteObjects: 0.033400 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.286527 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.71 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  7.452 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.27 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3657 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 232.4 MB.
+System memory in use after: 232.6 MB.
+
+Unloading 45 unused Assets to reduce memory usage. Loaded Objects now: 4227.
+Total: 5.549000 ms (FindLiveObjects: 0.463300 ms CreateObjectMapping: 0.163600 ms MarkObjects: 4.802200 ms  DeleteObjects: 0.105700 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 3026.299999 seconds.
+  path: Assets/Scenes/SclashMainScene01.unity
+  artifactKey: Guid(de272d000274c5c45822198b77e667ed) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/SclashMainScene01.unity using Guid(de272d000274c5c45822198b77e667ed) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c6c9121850bea420837d8d932e1c8de2') in 1.126626 seconds
+  Import took 1.180184 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.014362 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.33 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.439 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.36 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3657 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 232.4 MB.
+System memory in use after: 232.6 MB.
+
+Unloading 45 unused Assets to reduce memory usage. Loaded Objects now: 4230.
+Total: 5.490800 ms (FindLiveObjects: 0.388700 ms CreateObjectMapping: 0.212000 ms MarkObjects: 4.829000 ms  DeleteObjects: 0.059400 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.005395 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.85 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.662 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.77 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3657 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 232.4 MB.
+System memory in use after: 232.6 MB.
+
+Unloading 45 unused Assets to reduce memory usage. Loaded Objects now: 4233.
+Total: 3.736500 ms (FindLiveObjects: 0.446400 ms CreateObjectMapping: 0.501600 ms MarkObjects: 2.752000 ms  DeleteObjects: 0.034500 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.005835 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.29 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.312 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.32 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3657 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 232.4 MB.
+System memory in use after: 232.6 MB.
+
+Unloading 45 unused Assets to reduce memory usage. Loaded Objects now: 4236.
+Total: 3.038900 ms (FindLiveObjects: 0.348900 ms CreateObjectMapping: 0.161400 ms MarkObjects: 2.496400 ms  DeleteObjects: 0.030900 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.005506 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.29 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  2.222 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 1.62 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3657 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 232.4 MB.
+System memory in use after: 232.6 MB.
+
+Unloading 45 unused Assets to reduce memory usage. Loaded Objects now: 4239.
+Total: 8.547500 ms (FindLiveObjects: 0.372000 ms CreateObjectMapping: 0.186600 ms MarkObjects: 7.950100 ms  DeleteObjects: 0.037400 ms)
+
+========================================================================
+Received Prepare
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 29.04 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 42 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 161.0 MB.
+System memory in use after: 161.3 MB.
+
+Unloading 41 unused Assets to reduce memory usage. Loaded Objects now: 4239.
+Total: 4.740200 ms (FindLiveObjects: 0.432300 ms CreateObjectMapping: 0.196400 ms MarkObjects: 4.036500 ms  DeleteObjects: 0.072500 ms)
+

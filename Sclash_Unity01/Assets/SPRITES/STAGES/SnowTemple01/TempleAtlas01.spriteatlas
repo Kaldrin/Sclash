@@ -40,6 +40,7 @@ SpriteAtlas:
       allowAlphaSplitting: 0
       enableRotation: 1
       enableTightPacking: 1
+    secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
     - {fileID: 2800000, guid: fdc9b1a8048feb447bd6934b8f4e2fd4, type: 3}
@@ -67,7 +68,10 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 78dda65a5d849764282206db71dd0f86, type: 3}
     - {fileID: 2800000, guid: a625cd232ff67bb48aa778785d97bf41, type: 3}
     - {fileID: 2800000, guid: ed9d78860f4c91e47bef5b7825da285a, type: 3}
+    totalSpriteSurfaceArea: 56504687
     bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 9daae9b0d8157db41a357e7923aeb9ab, type: 3}
@@ -121,5 +125,6 @@ SpriteAtlas:
   - MainTowerBrushDay03
   - SnowGround01
   - StairsDayBrush03
+  m_RenderDataMap: {}
   m_Tag: TempleAtlas01
   m_IsVariant: 0

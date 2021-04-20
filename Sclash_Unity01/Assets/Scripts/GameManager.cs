@@ -309,14 +309,6 @@ public class GameManager : MonoBehaviourPun
     #region BASE FUNCTIONS
     public virtual void Awake()                                        // AWAKE
     {
-        if(player == null){
-        IEnumerable BundleList = AssetBundle.GetAllLoadedAssetBundles();
-        foreach (AssetBundle b in BundleList)
-        {
-            if (b.name == "player")
-                player = b.LoadAsset<GameObject>("PlayerNew");
-        }
-        }
 
         Instance = this;
         _controls = new PlayerControls();

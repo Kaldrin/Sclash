@@ -504,14 +504,10 @@ public class MapLoader : MonoBehaviour
             // MUSIC
             audioManager.ChangeSelectedMusicIndex(mapsData.stagesLists[index].musicIndex);
 
-            yield return StartCoroutine("LoadMapbundle", newMapIndex);
             yield return new WaitForSeconds(1.5f);
 
             // LOAD STAGE
-            if (loadedMapBundles.Count > 0)
-                SetMap(index, false, loadedMapBundles[loadedMapBundles.Count - 1]);
-            else
-                SetMap(index, false);
+            SetMap(index, false);
 
             yield return new WaitForSeconds(2f);
 

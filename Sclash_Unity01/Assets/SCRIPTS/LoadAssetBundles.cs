@@ -19,7 +19,7 @@ public class LoadAssetBundles : MonoBehaviour
 
     void Awake()
     {
-        LoadBundleList();
+        //LoadBundleList();
     }
 
     void Update()
