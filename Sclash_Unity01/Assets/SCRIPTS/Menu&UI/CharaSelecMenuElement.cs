@@ -3,14 +3,24 @@ using TMPro;
 using UnityEngine.UI;
 
 
+// For Sclas
 
+// REQUIREMENTS
+// TextMeshPro package
+// TextApparition script
+// CharacterChanger script
 
-// This script is for the character selection, it's put on every element of the menu
+/// <summary>
+/// This script is for the character selection, it's put on every element of the menu and facilitate the modification of the display
+/// </summary>
+
+// UNITY 2019.4
 public class CharaSelecMenuElement : MonoBehaviour
 {
     [SerializeField] public TextMeshProUGUI text1 = null;
     [SerializeField] public Image image1 = null;
     [SerializeField] public Image image2 = null;
+    [SerializeField] public TextApparition textApparitionComponent = null;
     [HideInInspector] public CharacterChanger characterChanger = null;
     [HideInInspector] public int index = 0;
 

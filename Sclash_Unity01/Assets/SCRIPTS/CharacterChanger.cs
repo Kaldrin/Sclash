@@ -511,8 +511,18 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // NAME
-        if (elementScript != null && elementScript.text1 != null && charactersDatabase != null)
-            elementScript.text1.text = charactersDatabase.charactersList[currentCharacterIndex].name;
+        if (elementScript && charactersDatabase)
+        {
+            if (elementScript.textApparitionComponent && charactersDatabase.charactersList[currentCharacterIndex].character)
+            {
+                elementScript.textApparitionComponent.textKey = charactersDatabase.charactersList[currentCharacterIndex].character.nameKey;
+                elementScript.textApparitionComponent.TransfersTrad();
+                Debug.Log("Name");
+            }
+            else if (elementScript.text1 != null)
+                elementScript.text1.text = charactersDatabase.charactersList[currentCharacterIndex].name;
+        }
+            
 
 
         // WAIT FOR CHANGE ANIM 2
@@ -541,7 +551,11 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         {
             mask.sprite = masksDatabase.masksList[currentMaskIndex].sprite;
             if (verticalElements[1] != null)
-                verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
+            {
+                //verticalElements[1].GetComponent<CharaSelecMenuElement>().text1.text = masksDatabase.masksList[currentMaskIndex].name;
+                verticalElements[1].GetComponent<CharaSelecMenuElement>().textApparitionComponent.textKey = masksDatabase.masksList[currentMaskIndex].maskScriptableObject.keyName;
+                verticalElements[1].GetComponent<CharaSelecMenuElement>().textApparitionComponent.TransfersTrad();
+            }
         }
         if (weaponsDatabase != null) // WEAPONS
         {
@@ -549,7 +563,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
                 weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
             if (sheath != null)
                 sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
-            verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
+            //verticalElements[2].GetComponent<CharaSelecMenuElement>().text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
+            verticalElements[2].GetComponent<CharaSelecMenuElement>().textApparitionComponent.textKey = weaponsDatabase.weaponsList[currentWeaponIndex].weaponScriptableObject.nameKey;
+            verticalElements[2].GetComponent<CharaSelecMenuElement>().textApparitionComponent.TransfersTrad();
         }
 
 
@@ -614,7 +630,11 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             if (illustrationsUIObjects != null && illustrationsUIObjects.Count > 0)
                 illustrationsUIObjects[playerScript.playerNum].sprite = charactersDatabase.charactersList[currentCharacterIndex].illustration;
             if (UICharacternames != null && UICharacternames.Count > 0)
-                UICharacternames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+            {
+                //UICharacternames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+                UICharacternames[playerScript.playerNum].GetComponent<TextApparition>().textKey = charactersDatabase.charactersList[currentCharacterIndex].character.nameKey;
+                UICharacternames[playerScript.playerNum].GetComponent<TextApparition>().TransfersTrad();
+            }
         }
 
 
@@ -669,8 +689,15 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(currentSwitchDelay);
 
 
+        
         // NAME
-        elementScript.text1.text = masksDatabase.masksList[currentMaskIndex].name;
+        if (elementScript.textApparitionComponent && masksDatabase.masksList[currentMaskIndex].maskScriptableObject)
+        {
+            elementScript.textApparitionComponent.textKey = masksDatabase.masksList[currentMaskIndex].maskScriptableObject.keyName;
+            elementScript.textApparitionComponent.TransfersTrad();
+        }
+        else
+            elementScript.text1.text = masksDatabase.masksList[currentMaskIndex].name;
 
 
         // SPRITE
@@ -716,7 +743,13 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // NAME
-        elementScript.text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
+        if (weaponsDatabase.weaponsList[currentWeaponIndex].weaponScriptableObject && elementScript.textApparitionComponent)
+        {
+            elementScript.textApparitionComponent.textKey = weaponsDatabase.weaponsList[currentWeaponIndex].weaponScriptableObject.nameKey;
+            elementScript.textApparitionComponent.TransfersTrad();
+        }
+        else
+            elementScript.text1.text = weaponsDatabase.weaponsList[currentWeaponIndex].name;
 
 
         // SPRITE
@@ -748,12 +781,27 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // WAIT FOR CHANGE ANIM
         yield return new WaitForSeconds(currentSwitchDelay);
 
+        
 
         // NAMES
         if (elementScript != null)
-            elementScript.text1.text = player2ModesDatabase.player2modes[currentAI_Index].name;
+        {
+            if (elementScript.textApparitionComponent)
+            {
+                elementScript.textApparitionComponent.textKey = player2ModesDatabase.player2modes[currentAI_Index].nameKey;
+                elementScript.textApparitionComponent.TransfersTrad();
+            }
+            else
+                elementScript.text1.text = player2ModesDatabase.player2modes[currentAI_Index].name;
+        }
         if (GameManager.Instance != null && verticalElements != null && verticalElements.Count > 0 && verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>())
-            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().text1.text = charactersDatabase.charactersList[GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.currentCharacterIndex].name;
+        {
+            //verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().text1.text = charactersDatabase.charactersList[GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.currentCharacterIndex].name;
+            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().textApparitionComponent.textKey = charactersDatabase.charactersList[GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.currentCharacterIndex].character.nameKey;
+            verticalElements[verticalElements.Count - 1].GetComponent<CharaSelecMenuElement>().textApparitionComponent.TransfersTrad();
+        }
+
+
 
         // ENABLE CHARACTER CHANGE
         if (verticalElements != null && verticalElements.Count > 0)
@@ -796,8 +844,17 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(currentSwitchDelay);
 
-        if (elementScript != null && elementScript.text1 != null)
-            elementScript.text1.text = charactersDatabase.charactersList[otherCharacterChanger.currentCharacterIndex].name;
+        // NAME
+        if (elementScript != null)
+        {
+            if (elementScript.textApparitionComponent && charactersDatabase.charactersList[otherCharacterChanger.currentCharacterIndex].character)
+            {
+                elementScript.textApparitionComponent.textKey = charactersDatabase.charactersList[otherCharacterChanger.currentCharacterIndex].character.nameKey;
+                elementScript.textApparitionComponent.TransfersTrad();
+            }
+            else if (elementScript.text1 != null)
+                elementScript.text1.text = charactersDatabase.charactersList[otherCharacterChanger.currentCharacterIndex].name;
+        }
     }
     #endregion
 
