@@ -68,8 +68,6 @@ public class PlayerControlCenter : MonoBehaviour
             if (attachedPlayer == null)
                 if (GameManager.Instance.playersList.Count != 0)
                     attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
-
-            
         }
     }
 

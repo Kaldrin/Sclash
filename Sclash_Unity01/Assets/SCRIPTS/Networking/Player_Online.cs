@@ -425,25 +425,21 @@ public class Player_Online : Player, IPunObservable
         }
     }
 
-    internal override void DashInput(float inDirection, bool quickDash)
+    internal virtual void DashInput(float inDirection, bool quickDash)
     {
         switch (playerState)
         {
             case STATE.normal:
-                break;
             case STATE.charging:
-                break;
             case STATE.canAttackAfterAttack:
-                break;
             case STATE.pommeling:
-                break;
             case STATE.dashing:
                 break;
-
             default:
                 return;
         }
 
+        // QUICK DASH
         if (quickDash)
         {
             if (Mathf.Abs(inDirection) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
@@ -457,18 +453,19 @@ public class Player_Online : Player, IPunObservable
                 currentShortcutDashStep = DASHSTEP.invalidated;
             }
         }
+        // NORMAL DASH
         else
         {
             switch (currentDashStep)
             {
                 case DASHSTEP.rest:
-                    temporaryDashDirectionForCalculation = inDirection;
+                    temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                     dashInitializationStartTime = Time.time;
                     currentDashStep = DASHSTEP.firstInput;
                     break;
 
                 case DASHSTEP.firstInput:
-                    if (inDirection == 0f)
+                    if (Mathf.Abs(inDirection) <= 0f)
                     {
                         currentDashStep = DASHSTEP.firstRelease;
                         break;
@@ -476,8 +473,8 @@ public class Player_Online : Player, IPunObservable
 
                     if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
                     {
-                        currentDashStep = DASHSTEP.invalidated;
-                        break;
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
                     }
                     break;
 
@@ -488,6 +485,12 @@ public class Player_Online : Player, IPunObservable
                         currentDashStep = DASHSTEP.invalidated;
                         TriggerBasicDash();
                     }
+                    else if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
+                    {
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
+                        currentDashStep = DASHSTEP.firstInput;
+                    }
                     else
                     {
                         currentDashStep = DASHSTEP.invalidated;
@@ -496,10 +499,13 @@ public class Player_Online : Player, IPunObservable
 
 
                 case DASHSTEP.invalidated:
-                    if (inDirection == 0f)
-                    {
-                        Debug.Log("Resetting values");
+                    if (Mathf.Abs(inDirection) <= 0f)
                         currentDashStep = DASHSTEP.rest;
+                    else if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
+                    {
+                        currentDashStep = DASHSTEP.firstInput;
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
                     }
                     break;
             }

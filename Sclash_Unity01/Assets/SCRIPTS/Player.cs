@@ -3076,13 +3076,9 @@ public class Player : MonoBehaviourPunCallbacks
         switch (playerState)
         {
             case STATE.normal:
-                break;
             case STATE.charging:
-                break;
             case STATE.canAttackAfterAttack:
-                break;
             case STATE.pommeling:
-                break;
             case STATE.dashing:
                 break;
             default:
