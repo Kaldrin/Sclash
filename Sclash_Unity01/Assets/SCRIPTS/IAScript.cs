@@ -88,7 +88,6 @@ public class IAScript : MonoBehaviour
     #endregion
 
     #region Built-in methods
-
     public Player GetPlayer()
     {
         Player[] entities = FindObjectsOfType<Player>();
@@ -97,31 +96,34 @@ public class IAScript : MonoBehaviour
             if (s.GetType() == typeof(StoryPlayer))
             {
                 if (!s.gameObject.GetComponent<IAScript>())
-                {
                     return s;
-                }
             }
             else if (!s.gameObject.GetComponent<IAScript>().enabled)
             {
+                Debug.Log("Found player");
                 return s;
             }
         }
         return null;
     }
 
-    void Awake()
+    void Awake()                                                                                                                                                        // AWAKE
     {
-        if (GameManager.Instance != null)
+        if (GameManager.Instance)
             GameManager.Instance.ResetGameEvent += OnDisable;
     }
 
-    void OnEnable()
+    void OnEnable()                                                                                                                                                     // ON ENABLE
     {
         ready = false;
-
         attachedPlayer = GetComponent<Player>();
 
+        Debug.Log("Enable AI");
+        // OPPONENT
+        if (opponent == null)
+            _opponent = GetPlayer();
         FindOpponent();
+
 
         if (attachedPlayer == null)
         {
@@ -132,22 +134,19 @@ public class IAScript : MonoBehaviour
         attachedPlayer.playerIsAI = true;
     }
 
-    void OnDisable()
+    void OnDisable()                                                                                                                                                    // ON DISABLE
     {
         if (attachedPlayer)
             attachedPlayer.playerIsAI = false;
     }
 
-    public void EnemyReady()
-    {
-        Debug.Log("Enemy is ready");
-        ready = true;
-    }
 
-    protected virtual void Update()
+    protected virtual void Update()                                                                                                                                     // UPDATE
     {
+        // OPPONENT
         if (opponent == null)
             _opponent = GetPlayer();
+
 
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.game && ready)
         {
@@ -232,8 +231,18 @@ public class IAScript : MonoBehaviour
             }
         }
     }
-
     #endregion
+
+
+
+
+
+    public void EnemyReady()
+    {
+        Debug.Log("Enemy is ready");
+        ready = true;
+    }
+
 
     protected void SelectAction()
     {

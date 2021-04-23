@@ -19,7 +19,7 @@ public class MenuBrowser : MonoBehaviour
 
 
     [Tooltip("The index of the selected menu element in the elements list")]
-    [SerializeField] public int browseIndex = 0;
+    [HideInInspector] public int browseIndex = 0;
     [SerializeField] bool applyDefaultIndexOnEnable = false;
     [SerializeField] int defaultIndex = 0;
     int sens = 1;
