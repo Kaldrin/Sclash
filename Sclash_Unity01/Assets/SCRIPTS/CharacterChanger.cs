@@ -517,7 +517,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             {
                 elementScript.textApparitionComponent.textKey = charactersDatabase.charactersList[currentCharacterIndex].character.nameKey;
                 elementScript.textApparitionComponent.TransfersTrad();
-                Debug.Log("Name");
+                //Debug.Log("Name");
             }
             else if (elementScript.text1 != null)
                 elementScript.text1.text = charactersDatabase.charactersList[currentCharacterIndex].name;

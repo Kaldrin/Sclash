@@ -472,6 +472,8 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] PlayerCheatsParameters cheatSettings = null;
     #endregion
 
+    public GameObject attachedPlayerInput;
+
 
 
 

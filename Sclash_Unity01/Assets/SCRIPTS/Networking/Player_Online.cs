@@ -425,7 +425,7 @@ public class Player_Online : Player, IPunObservable
         }
     }
 
-    internal virtual void DashInput(float inDirection, bool quickDash)
+    internal override void DashInput(float inDirection, bool quickDash)
     {
         switch (playerState)
         {
