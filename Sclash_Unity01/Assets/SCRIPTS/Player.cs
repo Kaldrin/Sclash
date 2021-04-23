@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.Animations;
@@ -13,7 +15,6 @@ using Photon.Realtime;
 
 
 
-// HEADER
 // A LITTLE MESSY ?
 // For Sclash
 
@@ -227,6 +228,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] protected bool quickRegen = false;
     [SerializeField] protected bool quickRegenOnlyWhenReachedLowStaminaGap = true;
     [SerializeField] protected bool canBattleSneath = false;
+    [SerializeField] protected bool maxChargeBreaksParry = false;
     #endregion
 
 
@@ -332,22 +334,14 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] public bool kickFrame = false;
     protected float kickRange = 0.99f;
     [HideInInspector] public bool canPommel = true;
-
-
-
-
-    [Header("POMMELED")]
     [Tooltip("The distance the player will be pushed on when pommeled")]
     [SerializeField] protected float kickKnockbackDistance = 1f;
 
 
 
     [Header("PARRY")]
-    public bool canParry = true;
+    [SerializeField] public bool canParry = true;
     protected int currentParryFramesPressed = 0;
-
-
-    [Header("MAINTAIN PARRY")]
     float maintainParryStaminaCostOverTime = 0.03f;
 
 
@@ -373,6 +367,7 @@ public class Player : MonoBehaviourPunCallbacks
     [Tooltip("The attack sign FX object reference, the one that spawns at the range distance before the attack hits")]
     [SerializeField] public ParticleSystem attackRangeFX = null;
     [SerializeField] protected ParticleSystem clashKanasFX = null;
+    [SerializeField] protected ParticleSystem breakKanasFX = null;
     [SerializeField] protected ParticleSystem kickKanasFX = null;
     [SerializeField] protected ParticleSystem kickedFX = null;
     [SerializeField] protected ParticleSystem clashFX = null;
@@ -399,6 +394,8 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] protected ParticleSystem chargeFlareFX = null;
     [SerializeField] protected ParticleSystem chargeFX = null;
     [SerializeField] protected ParticleSystem chargeFullFX = null;
+    [SerializeField] ParticleSystem chargeFullKatanaFX = null;
+    [SerializeField] ParticleSystem chargeKatanaFX = null;
     [SerializeField] GameObject rangeIndicatorShadow = null;
     [SerializeField] SpriteRenderer rangeIndicatorShadowSprite = null;
 
@@ -1085,7 +1082,7 @@ public class Player : MonoBehaviourPunCallbacks
             case STATE.attacking:                                                                                     // ATTACKING
                 isDashing = true;
                 canCharge = false;
-                chargeLevel = 1;
+                //chargeLevel = 1;
                 chargeSlider.value = 1;
                 actualMovementsSpeed = attackingMovementsSpeed;
                 foreach (Collider2D col in playerColliders)
@@ -1372,42 +1369,62 @@ public class Player : MonoBehaviourPunCallbacks
                 else
                     Debug.Log("Couldn't access statsManager to record action, ignoring");
             }
-            // PARRY
+            // PARRY                                                                                                        // PARRY
             else if (parryFrame)
             {
-                // STAMINA
-                //stamina += staminaCostForMoves;
-                if (ConnectManager.Instance.connectedToMaster)
-                    photonView.RPC("N_TriggerStaminaRecupAnim", RpcTarget.All);
-                else
-                    StartCoroutine(TriggerStaminaRecupAnim());
-
-
-                // CLASH
-                if (ConnectManager.Instance.connectedToMaster)
-                    instigator.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
-                else
-                    instigator.GetComponent<Player>().TriggerClash();
-
-
-                // ANIMATION
-                playerAnimations.TriggerPerfectParry();
-
-
-                // FX
-                clashFX.Play();
-
-                // SOUND
-                AudioManager.Instance.TriggerParriedAudio();
-
-
-                // STATS
-                if (characterType == CharacterType.duel)
+                // Break parry
+                if (maxChargeBreaksParry && instigator.GetComponent<Player>().chargeLevel >= instigator.GetComponent<Player>().maxChargeLevel)
                 {
-                    if (StatsManager.Instance != null)
-                        StatsManager.Instance.AddAction(ACTION.successfulParry, playerNum, 0);
+                    TriggerClash(false);
+
+                    // STAMINA
+                    InitStaminaBreak();
+
+
+                    // FX
+                    breakKanasFX.Play();
+                    clashFX.Play();
+
+                    // AUDIO
+                    AudioManager.Instance.TriggerBreakParryAudio();
+                }
+                // Parry
+                else
+                {
+                    // STAMINA
+                    //stamina += staminaCostForMoves;
+                    if (ConnectManager.Instance.connectedToMaster)
+                        photonView.RPC("N_TriggerStaminaRecupAnim", RpcTarget.All);
                     else
-                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                        StartCoroutine(TriggerStaminaRecupAnim());
+
+
+                    // CLASH
+                    if (ConnectManager.Instance.connectedToMaster)
+                        instigator.GetComponent<PhotonView>().RPC("TriggerClash", RpcTarget.AllViaServer);
+                    else
+                        instigator.GetComponent<Player>().TriggerClash();
+
+
+                    // ANIMATION
+                    playerAnimations.TriggerPerfectParry();
+
+
+                    // FX
+                    clashFX.Play();
+
+                    // SOUND
+                    AudioManager.Instance.TriggerParriedAudio();
+
+
+                    // STATS
+                    if (characterType == CharacterType.duel)
+                    {
+                        if (StatsManager.Instance != null)
+                            StatsManager.Instance.AddAction(ACTION.successfulParry, playerNum, 0);
+                        else
+                            Debug.Log("Couldn't access statsManager to record action, ignoring");
+                    }
                 }
             }
             // UNTOUCHABLE FRAMES
@@ -1512,6 +1529,12 @@ public class Player : MonoBehaviourPunCallbacks
                 GameManager.Instance.TriggerMatchEndFilterEffect(true);
                 GameManager.Instance.finalCameraShake.shakeDuration = GameManager.Instance.finalCameraShakeDuration;
             }
+            else
+            {
+                // CAMERA FX
+                GameManager.Instance.deathCameraShake.shakeDuration = GameManager.Instance.deathCameraShakeDuration;
+            }
+
 
 
             // ANIMATIONS
@@ -1577,7 +1600,6 @@ public class Player : MonoBehaviourPunCallbacks
 
 
         // CAMERA FX
-        GameManager.Instance.deathCameraShake.shakeDuration = GameManager.Instance.deathCameraShakeDuration;
         GameManager.Instance.TriggerSlowMoCoroutine(GameManager.Instance.roundEndSlowMoDuration, GameManager.Instance.roundEndSlowMoTimeScale, GameManager.Instance.roundEndTimeScaleFadeSpeed);
 
 
@@ -2298,6 +2320,7 @@ public class Player : MonoBehaviourPunCallbacks
 
                     // FX
                     chargeFlareFX.Play();
+                    chargeKatanaFX.Play();
                 }
             }
 
@@ -2348,7 +2371,14 @@ public class Player : MonoBehaviourPunCallbacks
 
 
                 // FX
-                chargeFullFX.Play();
+                //chargeFullFX.Play();
+                if (chargeKatanaFX)
+                {
+                    chargeKatanaFX.gameObject.SetActive(false);
+                    chargeKatanaFX.gameObject.SetActive(true);
+                }
+                if (chargeFullKatanaFX)
+                    chargeFullKatanaFX.Play();
                 chargeFlareFX.Stop();
 
 
@@ -2465,6 +2495,13 @@ public class Player : MonoBehaviourPunCallbacks
             attackRangeFX.Play();
         chargeFlareFX.gameObject.SetActive(false);
         chargeFlareFX.gameObject.SetActive(true);
+        if (chargeKatanaFX)
+        {
+            chargeKatanaFX.gameObject.SetActive(false);
+            chargeKatanaFX.gameObject.SetActive(true);
+        }
+
+
 
 
         // Dash direction & distance
@@ -2603,9 +2640,36 @@ public class Player : MonoBehaviourPunCallbacks
                 else if (g.transform.parent.gameObject.GetComponent<Destructible>())
                     g.transform.parent.gameObject.GetComponent<Destructible>().Destroy();
             }
+
+
+        //SliceParticles();
     }
     #endregion
 
+
+
+    // Too heavy in performance
+    void SliceParticles()
+    {
+        GameObject[] particleSystemObjects = GameObject.FindGameObjectsWithTag("Sliceable");
+        Debug.Log(particleSystemObjects.Length);
+        List<ParticleSystem> particleSystemsList = new List<ParticleSystem>();
+        for (int i = 0; i < particleSystemObjects.Length; i++)
+            if (particleSystemObjects[i].activeInHierarchy && particleSystemObjects[i].GetComponent<ParticleSystem>() && particleSystemObjects[i].GetComponent<ParticleSystem>().isEmitting)
+                particleSystemsList.Add(particleSystemObjects[i].GetComponent<ParticleSystem>());
+        for (int i = 0; i < particleSystemsList.Count; i++)
+        {
+            ParticleSystem.Particle[] m_Particles = new ParticleSystem.Particle[particleSystemsList[i].main.maxParticles];
+            int numParticlesAlive = particleSystemsList[i].GetParticles(m_Particles);
+            for (int y = 0; y < numParticlesAlive; y++)
+                if (Mathf.Abs(m_Particles[i].position.x - transform.position.x) < 5)
+                {
+                    Debug.Log(m_Particles[i].position.x);
+                    m_Particles[i].remainingLifetime = 0;
+                    m_Particles[i].velocity *= 100;
+                }
+        }
+    }
 
 
 
@@ -2976,7 +3040,7 @@ public class Player : MonoBehaviourPunCallbacks
     #region CLASHED
     // The player have been clashed / parried
     [PunRPC]
-    protected virtual void TriggerClash()
+    protected virtual void TriggerClash(bool playClashFX = true)
     {
         // STATE
         SwitchState(STATE.clashed);
@@ -3015,8 +3079,9 @@ public class Player : MonoBehaviourPunCallbacks
 
 
         // FX
-        if (GameManager.Instance.playersList.Count > 1 && !GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().clashKanasFX.isPlaying)
-            clashKanasFX.Play();
+        if (playClashFX)
+            if (GameManager.Instance.playersList.Count > 1 && !GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().clashKanasFX.isPlaying)
+                clashKanasFX.Play();
 
 
 

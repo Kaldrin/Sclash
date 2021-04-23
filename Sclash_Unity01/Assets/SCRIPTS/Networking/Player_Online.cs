@@ -621,7 +621,7 @@ public class Player_Online : Player, IPunObservable
     }
 
     [PunRPC]
-    protected override void TriggerClash()
+    protected override void TriggerClash(bool playClashFX = true)
     {
         base.TriggerClash();
     }
