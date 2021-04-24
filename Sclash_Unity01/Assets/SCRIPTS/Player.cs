@@ -229,6 +229,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] protected bool quickRegenOnlyWhenReachedLowStaminaGap = true;
     [SerializeField] protected bool canBattleSneath = false;
     [SerializeField] protected bool maxChargeBreaksParry = false;
+    [SerializeField] protected bool kickDuringChargeBreaksStamina = false;
     #endregion
 
 
@@ -394,8 +395,10 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] protected ParticleSystem chargeFlareFX = null;
     [SerializeField] protected ParticleSystem chargeFX = null;
     [SerializeField] protected ParticleSystem chargeFullFX = null;
-    [SerializeField] ParticleSystem chargeFullKatanaFX = null;
-    [SerializeField] ParticleSystem chargeKatanaFX = null;
+    [SerializeField] public ParticleSystem chargeFullKatanaFX = null;
+    [SerializeField] public ParticleSystem chargeBoomKatanaFX = null;
+    [SerializeField] public ParticleSystem chargeKatanaFX = null;
+    [SerializeField] ParticleSystem chargedKatanaStayFX = null;
     [SerializeField] GameObject rangeIndicatorShadow = null;
     [SerializeField] SpriteRenderer rangeIndicatorShadowSprite = null;
 
@@ -445,6 +448,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] PlayRandomSoundInList staminaEndSFX = null;
     [SerializeField] PlayRandomSoundInList staminaUseSFX = null;
     [SerializeField] PlayRandomSoundInList walkSFX = null;
+    [SerializeField] AudioSource chargeMaxSFX = null;
     #endregion
 
 
@@ -970,7 +974,7 @@ public class Player : MonoBehaviourPunCallbacks
 
         switch (newState)
         {
-            case STATE.onlinefrozen:                                                                    // ONLINE FROZEN
+            case STATE.onlinefrozen:                                                                           // ONLINE FROZEN
                 SetStaminaBarsOpacity(0);
 
                 // ONLINE
@@ -989,7 +993,7 @@ public class Player : MonoBehaviourPunCallbacks
                 }
                 break;
 
-            case STATE.frozen:                                                                            // FROZEN
+            case STATE.frozen:                                                                                   // FROZEN
                 SetStaminaBarsOpacity(0);
                 attackDashFXFront.Stop();
                 attackDashFXBack.Stop();
@@ -1025,7 +1029,7 @@ public class Player : MonoBehaviourPunCallbacks
                 }
                 break;
 
-            case STATE.drawing:                                                                                          // DRAWING
+            case STATE.drawing:                                                                                      // DRAWING
                 rb.velocity = Vector3.zero;
                 // ONLINE
                 if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
@@ -1046,13 +1050,13 @@ public class Player : MonoBehaviourPunCallbacks
                             GameManager.Instance.playersList[1].GetComponent<IAChanger>().enabled = false;
                 break;
 
-            case STATE.battleDrawing:                                                                                          // BATTLE DRAWING
+            case STATE.battleDrawing:                                                                                  // BATTLE DRAWING
                 break;
 
-            case STATE.battleSneathing:                                                                                  // BATTLE SNEATHING
+            case STATE.battleSneathing:                                                                                // BATTLE SNEATHING
                 break;
 
-            case STATE.battleSneathedNormal:                                                                              // BATTLE SNEATHED NORMAL
+            case STATE.battleSneathedNormal:                                                                           // BATTLE SNEATHED NORMAL
                 break;
 
             case STATE.normal:                                                                                         // NORMAL
@@ -1112,6 +1116,16 @@ public class Player : MonoBehaviourPunCallbacks
                 PauseStaminaRegen();
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
+                if (chargeKatanaFX)
+                {
+                    chargeKatanaFX.gameObject.SetActive(false);
+                    chargeKatanaFX.gameObject.SetActive(true);
+                }
+                if (chargedKatanaStayFX)
+                {
+                    chargedKatanaStayFX.gameObject.SetActive(false);
+                    chargedKatanaStayFX.gameObject.SetActive(true);
+                }
                 break;
 
             case STATE.parrying:                                                                                      // PARRYING
@@ -1119,10 +1133,22 @@ public class Player : MonoBehaviourPunCallbacks
                 canParry = false;
                 PauseStaminaRegen();
                 rb.velocity = Vector3.zero;
+
+                // FX
                 dashFXBack.Stop();
                 dashFXFront.Stop();
                 chargeFlareFX.gameObject.SetActive(false);
                 chargeFlareFX.gameObject.SetActive(true);
+                if (chargeKatanaFX)
+                {
+                    chargeKatanaFX.gameObject.SetActive(false);
+                    chargeKatanaFX.gameObject.SetActive(true);
+                }
+                if (chargedKatanaStayFX)
+                {
+                    chargedKatanaStayFX.gameObject.SetActive(false);
+                    chargedKatanaStayFX.gameObject.SetActive(true);
+                }
                 break;
 
             case STATE.maintainParrying:                                                                              // MAINTAIN PARRYING
@@ -1155,7 +1181,18 @@ public class Player : MonoBehaviourPunCallbacks
                 foreach (Collider2D col in playerColliders)
                     col.isTrigger = true;
                 PauseStaminaRegen();
+                // FX
                 chargeFlareFX.gameObject.SetActive(false);
+                if (chargeKatanaFX)
+                {
+                    chargeKatanaFX.gameObject.SetActive(false);
+                    chargeKatanaFX.gameObject.SetActive(true);
+                }
+                if (chargedKatanaStayFX)
+                {
+                    chargedKatanaStayFX.gameObject.SetActive(false);
+                    chargedKatanaStayFX.gameObject.SetActive(true);
+                }
                 break;
 
             case STATE.recovering:                                                                                     // RECOVERING
@@ -1182,6 +1219,17 @@ public class Player : MonoBehaviourPunCallbacks
                     characterChanger.EnableVisuals(false);
                     characterChanger.enabled = false;
                 }
+                // FX
+                if (chargeKatanaFX)
+                {
+                    chargeKatanaFX.gameObject.SetActive(false);
+                    chargeKatanaFX.gameObject.SetActive(true);
+                }
+                if (chargedKatanaStayFX)
+                {
+                    chargedKatanaStayFX.gameObject.SetActive(false);
+                    chargedKatanaStayFX.gameObject.SetActive(true);
+                }
                 break;
 
             case STATE.enemyKilled:                                                                                   // ENEMY KILLED
@@ -1191,6 +1239,7 @@ public class Player : MonoBehaviourPunCallbacks
                 attackDashFXBack.Stop();
                 dashFXBack.Stop();
                 dashFXFront.Stop();
+
                 break;
 
             case STATE.dead:                                                                                          // DEAD
@@ -1209,9 +1258,19 @@ public class Player : MonoBehaviourPunCallbacks
                 dashFXFront.Stop();
                 characterChanger.enabled = false;
                 characterChanger.EnableVisuals(false);
+                if (chargeKatanaFX)
+                {
+                    chargeKatanaFX.gameObject.SetActive(false);
+                    chargeKatanaFX.gameObject.SetActive(true);
+                }
+                if (chargedKatanaStayFX)
+                {
+                    chargedKatanaStayFX.gameObject.SetActive(false);
+                    chargedKatanaStayFX.gameObject.SetActive(true);
+                }
                 break;
 
-            case STATE.cutscene:
+            case STATE.cutscene:                                                                                        // CUTSCENE
                 stamina = maxStamina;
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 attackDashFXFront.Stop();
@@ -1959,7 +2018,7 @@ public class Player : MonoBehaviourPunCallbacks
     {
         TriggerNotEnoughStaminaAnim(false);
         TriggerNotEnoughStaminaAnim(true);
-        StaminaCost(staminaCostForMoves, false);
+        StaminaCost(staminaCostForMoves * 2, false);
         staminaBreakAudioFX.Play();
 
 
@@ -2371,7 +2430,6 @@ public class Player : MonoBehaviourPunCallbacks
 
 
                 // FX
-                //chargeFullFX.Play();
                 if (chargeKatanaFX)
                 {
                     chargeKatanaFX.gameObject.SetActive(false);
@@ -2380,6 +2438,18 @@ public class Player : MonoBehaviourPunCallbacks
                 if (chargeFullKatanaFX)
                     chargeFullKatanaFX.Play();
                 chargeFlareFX.Stop();
+                if (chargedKatanaStayFX)
+                    chargedKatanaStayFX.Play();
+
+
+
+                // AUDIO
+                if (chargeMaxSFX)
+                {
+                    chargeMaxSFX.gameObject.SetActive(false);
+                    chargeMaxSFX.gameObject.SetActive(true);
+                }
+
 
 
                 // ANIMATION
@@ -2601,6 +2671,15 @@ public class Player : MonoBehaviourPunCallbacks
     // Hits with a phantom collider to apply the attack's damage during active frames
     protected virtual void ApplyAttackHitbox()
     {
+        // FX
+        if (chargedKatanaStayFX && chargedKatanaStayFX.isPlaying)
+        {
+            chargedKatanaStayFX.gameObject.SetActive(false);
+            chargedKatanaStayFX.gameObject.SetActive(true);
+        }
+
+
+
         enemyDead = false;
 
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 0.2f), 0);
@@ -2920,8 +2999,9 @@ public class Player : MonoBehaviourPunCallbacks
             playerAnimations.TriggerPommeled();
 
 
-            // Stamina
-            if (playerState == STATE.parrying || playerState == STATE.attacking)
+
+            // Stamina break
+            if (playerState == STATE.parrying || playerState == STATE.attacking || (kickDuringChargeBreaksStamina && playerState == STATE.charging))
             {
                 if (ConnectManager.Instance.connectedToMaster)
                     photonView.RPC("InitStaminaBreak", RpcTarget.All);

@@ -18,4 +18,5 @@ public class CharacterSettings : ScriptableObject
     public float lightAttackSwordTrailScale = 0.95f;
     public float heavyAttackSwordTrailScale = 1.44f;
     public string nameKey = "";
+    public Gradient saberFXColor = new Gradient();
 }
