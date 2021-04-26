@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviourPun
     [Header("START")]
     [Tooltip("The delay before the battle camera values are entered in the camera parameters to make it reactive for battle once the game started, because the smooth camera values stay some time to smooth the zoom towards the scene")]
     [SerializeField] public float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
-    [SerializeField] Animator drawTextAnimator = null;
+    [SerializeField] public Animator drawTextAnimator = null;
     bool drawTextVisible = false;
     # endregion
 

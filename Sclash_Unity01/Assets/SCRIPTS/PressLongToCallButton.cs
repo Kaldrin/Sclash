@@ -40,7 +40,6 @@ public class PressLongToCallButton : MonoBehaviour
     {
         if (enabled && isActiveAndEnabled)
         {
-            Debug.Log(pressing);
             if (pressing)
             {
                 if (selected)
@@ -78,14 +77,14 @@ public class PressLongToCallButton : MonoBehaviour
     }
 
 
-    private void Update()                                                                       // UPDATE
+    private void Update()                                                                                                                                            // UPDATE
     {
         if (enabled && isActiveAndEnabled)
             if (InputManager.Instance.submitInputUp)
                 pressing = false;
     }
 
-    private void OnDisable()
+    private void OnDisable()                                                                                                                                        // ON DISABLE   
     {
         if (pressSoundAudioSource)
             pressSoundAudioSource.loop = false;
@@ -97,13 +96,13 @@ public class PressLongToCallButton : MonoBehaviour
 
 
 
-    public void Press(bool onOff)
+    public void Press(bool onOff)                                                                                                                                   // PRESS
     {
         lastPressState = pressing;
         pressing = onOff;
     }
 
-    public void Select(bool onOff)
+    public void Select(bool onOff)                                                                                                                                  
     {
         selected = onOff;
     }

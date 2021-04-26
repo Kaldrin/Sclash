@@ -82,6 +82,7 @@ public class PlayerControlCenter : MonoBehaviour
                     InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = false;
 
                 InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
+                InputManager.Instance.submitInputUp = false;
             }
     }
 
