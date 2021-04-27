@@ -69,7 +69,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     int lastWeaponIndex = 0;
     [HideInInspector] public int currentCharacterIndex = 0;
     int lastChosenCharacterIndex = 0;
-    int currentAI_Index = 0;
+    [HideInInspector] public int currentAI_Index = 0;
     int lastAI_Index = 0;
 
 
@@ -180,9 +180,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         }
 
         if (playerScript.playerState == Player.STATE.sneathed && playerScript.oldState == Player.STATE.sneathing)
-        {
             verticalIndex = 0;
-        }
         else
         {
             // Character
@@ -423,8 +421,11 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
         // CHARACTER
-        if (nameOfElement == characterElementName)
+        if (nameOfElement == characterElementName && GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<CharacterChanger>().currentAI_Index == 0)
+        {
+            Debug.Log(playerScript.iaScript.enabled);
             StartCoroutine(ApplyCharacterChange(changeDirection));
+        }
         else if (nameOfElement == maskElementName)
             StartCoroutine(ApplyMaskChange(changeDirection));
         else if (nameOfElement == weaponElementName)
@@ -459,6 +460,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     // CHARACTER
     public IEnumerator ApplyCharacterChange(int direction)                                                                                                                      // APPLY CHARACTER CHANGE
     {
+
         // Get the script with the references to the displays of this element
         CharaSelecMenuElement elementScript = null;
         if (verticalElements != null && verticalElements.Count > verticalIndex)
@@ -503,6 +505,24 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             verticalElements[1].SetTrigger("Left");
             verticalElements[2].SetTrigger("Left");
         }
+
+
+
+        // FX
+        //playerScript.chargeFullKatanaFX.main.startColor.mode = ParticleSystemGradientMode.RandomColor;
+        var randomColor = new ParticleSystem.MinMaxGradient(charactersDatabase.charactersList[currentCharacterIndex].character.saberFXColor);
+        randomColor.mode = ParticleSystemGradientMode.RandomColor;
+        ParticleSystem.MainModule mainModule;
+
+        mainModule = playerScript.chargeFullKatanaFX.main;
+        mainModule.startColor = randomColor;
+
+        mainModule = playerScript.chargeBoomKatanaFX.main;
+        mainModule.startColor = randomColor;
+
+        mainModule = playerScript.chargeKatanaFX.main;
+        mainModule.startColor = randomColor;
+
 
 
 

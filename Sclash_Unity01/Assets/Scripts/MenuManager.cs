@@ -466,6 +466,7 @@ public class MenuManager : MonoBehaviour
         {
             GameManager.Instance.inGameHelp[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
             GameManager.Instance.playerKeysIndicators[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
+            GameManager.Instance.drawTextAnimator.gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
         }
     }
     // SET UP ERGONOMY SETTINGS IN SCENE
@@ -512,7 +513,7 @@ public class MenuManager : MonoBehaviour
     public void SaveGameSettingsInScriptableObject()
     {
         menuParametersSaveScriptableObject.roundToWin = Mathf.FloorToInt(roundsToWinSlider.value);
-        menuParametersSaveScriptableObject.displayHelp = displayHelpCheckBox.activeInHierarchy;
+        menuParametersSaveScriptableObject.displayHelp = displayHelpCheckBox.activeSelf;
         menuParametersSaveScriptableObject.roundToWin = GameManager.Instance.scoreToWin;
     }
     // SAVE GAME SETTINGS
