@@ -15,11 +15,11 @@ F:/Bureau/Sclash_Unity/Sclash_Unity01
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-64351
+65389
 Successfully changed project path to: F:/Bureau/Sclash_Unity/Sclash_Unity01
 F:/Bureau/Sclash_Unity/Sclash_Unity01
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 140.35 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 114.36 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2020.3.3f1 (76626098c1c4)
 [Subsystems] Discovering subsystems at path F:/Programmes/2020.3.3f1/Editor/Data/Resources/UnitySubsystems
@@ -36,465 +36,199 @@ Initialize mono
 Mono path[0] = 'F:/Programmes/2020.3.3f1/Editor/Data/Managed'
 Mono path[1] = 'F:/Programmes/2020.3.3f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
 Mono config path = 'F:/Programmes/2020.3.3f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56832
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56436
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: F:/Programmes/2020.3.3f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.004662 seconds.
+Registered in 0.001236 seconds.
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 164.57 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 119.60 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  2.158 seconds
+- Completed reload, in  2.281 seconds
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.047216 seconds.
+Registered in 0.014940 seconds.
 Begin MonoManager ReloadAssembly
 Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 112.23 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 131.44 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.578 seconds
+- Completed reload, in  1.906 seconds
 Platform modules already initialized, skipping
 ========================================================================
 Worker process is ready to serve import requests
 Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.21 seconds
-Refreshing native plugins compatible for Editor in 1.24 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3782 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 241.9 MB.
-System memory in use after: 242.1 MB.
-
-Unloading 56 unused Assets to reduce memory usage. Loaded Objects now: 4203.
-Total: 3.647500 ms (FindLiveObjects: 0.493100 ms CreateObjectMapping: 0.450800 ms MarkObjects: 2.654700 ms  DeleteObjects: 0.048000 ms)
-
-========================================================================
-Received Import Request.
-  path: Assets/Resources
-  artifactKey: Guid(10b532b37a51d12458856c5a6f0daaaf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources using Guid(10b532b37a51d12458856c5a6f0daaaf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e9cce3494e5579efebf23d1ae34055fc') in 0.018414 seconds
-  Import took 0.033659 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000239 seconds.
-  path: Assets/Resources/Prefabs
-  artifactKey: Guid(78738c0d10a6d2d4982b4d35a3163c9c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources/Prefabs using Guid(78738c0d10a6d2d4982b4d35a3163c9c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1895066010695d8b5dcd63223b6c3ac1') in 0.054497 seconds
-  Import took 0.064282 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000223 seconds.
-  path: Assets/Resources/EventSystemControl.inputactions
-  artifactKey: Guid(d86de4d0556defd43882b3803ce69346) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources/EventSystemControl.inputactions using Guid(d86de4d0556defd43882b3803ce69346) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd1e8af864d84abe8201906640027c41e') in 0.144331 seconds
-  Import took 0.155917 seconds .
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.014549 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.42 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.236 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.61 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 230.6 MB.
-System memory in use after: 230.8 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4206.
-Total: 4.237200 ms (FindLiveObjects: 0.633000 ms CreateObjectMapping: 0.483400 ms MarkObjects: 3.055100 ms  DeleteObjects: 0.064400 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.023229 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.98 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.371 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.35 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 230.6 MB.
-System memory in use after: 230.9 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4209.
-Total: 4.413900 ms (FindLiveObjects: 0.507700 ms CreateObjectMapping: 0.417100 ms MarkObjects: 3.441700 ms  DeleteObjects: 0.045500 ms)
-
-========================================================================
-Received Import Request.
-  Time since last request: 364.242231 seconds.
-  path: Assets/Resources/Prefabs/PlayerNew.prefab
-  artifactKey: Guid(3f5effdde23e47744a2f4942c91916c7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources/Prefabs/PlayerNew.prefab using Guid(3f5effdde23e47744a2f4942c91916c7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2bd33e092abd9c865058e0c3e4a589a9') in 1.526093 seconds
-  Import took 1.570456 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000479 seconds.
-  path: Assets/Resources/Prefabs/PlayerStory.prefab
-  artifactKey: Guid(c845d0b4a1ebc0f448a78a0f1be457a5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources/Prefabs/PlayerStory.prefab using Guid(c845d0b4a1ebc0f448a78a0f1be457a5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '19e63eed67d4d15a2c137fda76980a8d') in 0.749293 seconds
-  Import took 0.798977 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000255 seconds.
-  path: Assets/Resources/Prefabs/PlayerStory_.prefab
-  artifactKey: Guid(9fe30c80a3295c849b5a21e7d2f37dc8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources/Prefabs/PlayerStory_.prefab using Guid(9fe30c80a3295c849b5a21e7d2f37dc8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e21612b0babca1248f8a712b3bdaedce') in 0.269503 seconds
-  Import took 0.295272 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000267 seconds.
-  path: Assets/Resources/Prefabs/PlayerAI.prefab
-  artifactKey: Guid(9a4ac4108c7244748a6a697bcfe45aad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources/Prefabs/PlayerAI.prefab using Guid(9a4ac4108c7244748a6a697bcfe45aad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd08e83c86372d7ab6e2d50c523e6e0f9') in 0.810656 seconds
-  Import took 0.865189 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000215 seconds.
-  path: Assets/Resources/Prefabs/Solo_PlayerAI.prefab
-  artifactKey: Guid(05c022bc71bb02e4cae660e01b5c388c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources/Prefabs/Solo_PlayerAI.prefab using Guid(05c022bc71bb02e4cae660e01b5c388c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '75abb5a50f61036a8bdfd0395a61db7d') in 0.885547 seconds
-  Import took 0.968293 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000274 seconds.
-  path: Assets/Resources/Prefabs/PlayerNetwork.prefab
-  artifactKey: Guid(d39ddee0bf24af64398c30ad7d6d654f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Resources/Prefabs/PlayerNetwork.prefab using Guid(d39ddee0bf24af64398c30ad7d6d654f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '15bc77f78c02565b96a2412a3fb431e2') in 0.753824 seconds
-  Import took 0.809530 seconds .
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.022483 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.20 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.126 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.80 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.8 MB.
-System memory in use after: 236.1 MB.
-
-Unloading 51 unused Assets to reduce memory usage. Loaded Objects now: 4221.
-Total: 3.366900 ms (FindLiveObjects: 0.368200 ms CreateObjectMapping: 0.184400 ms MarkObjects: 2.727700 ms  DeleteObjects: 0.084700 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.005758 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.21 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.124 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.27 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.8 MB.
-System memory in use after: 236.1 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4224.
-Total: 3.365900 ms (FindLiveObjects: 0.470200 ms CreateObjectMapping: 0.280700 ms MarkObjects: 2.577600 ms  DeleteObjects: 0.036400 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.005509 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.25 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.126 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.35 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.1 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4227.
-Total: 4.188200 ms (FindLiveObjects: 0.567600 ms CreateObjectMapping: 0.446100 ms MarkObjects: 3.127200 ms  DeleteObjects: 0.045700 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.006268 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.40 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.189 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 4.50 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.1 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4230.
-Total: 4.024200 ms (FindLiveObjects: 0.411100 ms CreateObjectMapping: 0.182500 ms MarkObjects: 3.382900 ms  DeleteObjects: 0.046000 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.005668 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.07 seconds
 Refreshing native plugins compatible for Editor in 1.30 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.135 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.27 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.1 MB.
+Unloading 3785 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 242.0 MB.
+System memory in use after: 242.3 MB.
 
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4233.
-Total: 3.503200 ms (FindLiveObjects: 0.483900 ms CreateObjectMapping: 0.441300 ms MarkObjects: 2.544200 ms  DeleteObjects: 0.032700 ms)
+Unloading 56 unused Assets to reduce memory usage. Loaded Objects now: 4206.
+Total: 3.419300 ms (FindLiveObjects: 0.498900 ms CreateObjectMapping: 0.365600 ms MarkObjects: 2.507600 ms  DeleteObjects: 0.045700 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/SCRIPTS/Networking/ConnectManager.cs
+  artifactKey: Guid(771ced34abd4a8d42927f77d28404da6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SCRIPTS/Networking/ConnectManager.cs using Guid(771ced34abd4a8d42927f77d28404da6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b03b93f0eacb987852e73cd459543582') in 0.058808 seconds
+  Import took 0.073385 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 145.510284 seconds.
+  path: Assets/SCRIPTS/Networking/ConnectManager.cs
+  artifactKey: Guid(771ced34abd4a8d42927f77d28404da6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SCRIPTS/Networking/ConnectManager.cs using Guid(771ced34abd4a8d42927f77d28404da6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5a48e931b1c32530eb1e431fd5305921') in 0.003222 seconds
+  Import took 0.015292 seconds .
 
 ========================================================================
 Received Prepare
 Registering precompiled user dll's ...
-Registered in 0.006249 seconds.
+Registered in 0.016221 seconds.
 Begin MonoManager ReloadAssembly
 Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.26 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 8.78 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.146 seconds
+- Completed reload, in  2.297 seconds
 Platform modules already initialized, skipping
 Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.40 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 2.58 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.1 MB.
+Unloading 3661 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 230.7 MB.
+System memory in use after: 231.0 MB.
 
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4236.
-Total: 3.951400 ms (FindLiveObjects: 0.508600 ms CreateObjectMapping: 0.481000 ms MarkObjects: 2.924100 ms  DeleteObjects: 0.036800 ms)
+Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4209.
+Total: 11.381100 ms (FindLiveObjects: 0.530500 ms CreateObjectMapping: 0.213600 ms MarkObjects: 10.404000 ms  DeleteObjects: 0.231300 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 644.277096 seconds.
+  path: Assets/SCRIPTS/Story scripts/InputManager_Story.cs
+  artifactKey: Guid(6a4c590e3f0b6e046a8a9c1c4ed02ddf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SCRIPTS/Story scripts/InputManager_Story.cs using Guid(6a4c590e3f0b6e046a8a9c1c4ed02ddf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8ebf8f1213468d8b26040ac791d9f852') in 0.024244 seconds
+  Import took 0.035791 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.761377 seconds.
+  path: Assets/SCRIPTS/InputManager.cs
+  artifactKey: Guid(24e8daa1556f8a345867da058880ffac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SCRIPTS/InputManager.cs using Guid(24e8daa1556f8a345867da058880ffac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '45f1e765537fe7b431ec7b96ffc63f8c') in 0.016320 seconds
+  Import took 0.025900 seconds .
 
 ========================================================================
 Received Prepare
 Registering precompiled user dll's ...
-Registered in 0.005520 seconds.
+Registered in 0.007352 seconds.
 Begin MonoManager ReloadAssembly
 Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.40 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 1.80 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.104 seconds
+- Completed reload, in  9.026 seconds
 Platform modules already initialized, skipping
 Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 3.59 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3661 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 230.8 MB.
+System memory in use after: 231.0 MB.
+
+Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4212.
+Total: 52.864400 ms (FindLiveObjects: 0.574700 ms CreateObjectMapping: 0.230800 ms MarkObjects: 51.941600 ms  DeleteObjects: 0.114700 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 460.929093 seconds.
+  path: Assets/SCRIPTS/InputManager.cs
+  artifactKey: Guid(24e8daa1556f8a345867da058880ffac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SCRIPTS/InputManager.cs using Guid(24e8daa1556f8a345867da058880ffac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b26c2302e4c2a26d8040bf2fc2dc993b') in 0.019868 seconds
+  Import took 0.029458 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.007007 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
+Native extension for WindowsStandalone target not found
 Refreshing native plugins compatible for Editor in 1.35 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.1 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4239.
-Total: 3.831200 ms (FindLiveObjects: 0.574400 ms CreateObjectMapping: 0.459900 ms MarkObjects: 2.761700 ms  DeleteObjects: 0.034100 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.005839 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.65 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.260 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.35 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.1 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4242.
-Total: 4.342400 ms (FindLiveObjects: 0.574700 ms CreateObjectMapping: 0.597700 ms MarkObjects: 3.132400 ms  DeleteObjects: 0.036200 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.007531 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.20 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.214 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.25 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.1 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4245.
-Total: 3.260200 ms (FindLiveObjects: 0.484400 ms CreateObjectMapping: 0.183100 ms MarkObjects: 2.552400 ms  DeleteObjects: 0.038600 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.005928 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.46 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.116 seconds
+- Completed reload, in  1.390 seconds
 Platform modules already initialized, skipping
 Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
 Refreshing native plugins compatible for Editor in 1.28 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.1 MB.
+Unloading 3661 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 230.8 MB.
+System memory in use after: 231.1 MB.
 
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4248.
-Total: 3.317200 ms (FindLiveObjects: 0.429000 ms CreateObjectMapping: 0.177800 ms MarkObjects: 2.665400 ms  DeleteObjects: 0.043400 ms)
+Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4215.
+Total: 3.171500 ms (FindLiveObjects: 0.383100 ms CreateObjectMapping: 0.189700 ms MarkObjects: 2.564800 ms  DeleteObjects: 0.032800 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 22.282622 seconds.
+  path: Assets/SCRIPTS/InputManager.cs
+  artifactKey: Guid(24e8daa1556f8a345867da058880ffac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SCRIPTS/InputManager.cs using Guid(24e8daa1556f8a345867da058880ffac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '81bba8dfe0d1eeec49151f356f7bb30e') in 0.009253 seconds
+  Import took 0.018051 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.037719 seconds.
+  path: Assets/SCRIPTS/InputManager.cs
+  artifactKey: Guid(24e8daa1556f8a345867da058880ffac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SCRIPTS/InputManager.cs using Guid(24e8daa1556f8a345867da058880ffac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '81bba8dfe0d1eeec49151f356f7bb30e') in 0.003921 seconds
+  Import took 0.011848 seconds .
 
 ========================================================================
 Received Prepare
 Registering precompiled user dll's ...
-Registered in 0.005641 seconds.
+Registered in 0.006054 seconds.
 Begin MonoManager ReloadAssembly
 Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.22 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 1.33 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.132 seconds
+- Completed reload, in  1.130 seconds
 Platform modules already initialized, skipping
 Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.46 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 1.35 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.2 MB.
+Unloading 3661 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 230.8 MB.
+System memory in use after: 231.1 MB.
 
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4251.
-Total: 3.375000 ms (FindLiveObjects: 0.508400 ms CreateObjectMapping: 0.185400 ms MarkObjects: 2.617700 ms  DeleteObjects: 0.062300 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.013168 seconds.
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image F:\Bureau\Sclash_Unity\Sclash_Unity01\Assets\Plugins\Photon\PhotonLibs\Photon3Unity3D.dll
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.41 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.201 seconds
-Platform modules already initialized, skipping
-Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
-Refreshing native plugins compatible for Editor in 1.42 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3658 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 235.9 MB.
-System memory in use after: 236.2 MB.
-
-Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4254.
-Total: 5.578100 ms (FindLiveObjects: 0.733700 ms CreateObjectMapping: 0.234800 ms MarkObjects: 4.558300 ms  DeleteObjects: 0.045300 ms)
+Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 4218.
+Total: 5.525600 ms (FindLiveObjects: 0.611500 ms CreateObjectMapping: 0.553200 ms MarkObjects: 4.314000 ms  DeleteObjects: 0.045700 ms)
 
 AssetImportWorkerClient::OnTransportError - code=2 error=End of file
