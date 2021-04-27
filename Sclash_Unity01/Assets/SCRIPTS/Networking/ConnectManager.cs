@@ -931,27 +931,27 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         if (connectionWindow != null)
             connectionWindow.SetActive(state);
         else
-            Debug.Log("Can't find connection window, ignoring");
+            Debug.LogWarning("Can't find connection window, ignoring");
 
         if (serverListBrowser != null)
             serverListBrowser.SetActive(!state);
         else
-            Debug.Log("Can't find server list browser, ignoring");
+            Debug.LogWarning("Can't find server list browser, ignoring");
 
         if (multiplayerBrowser != null)
             multiplayerBrowser.gameObject.SetActive(!state);
         else
-            Debug.Log("Can't find multiplayer browser, ignoring");
+            Debug.LogWarning("Can't find multiplayer browser, ignoring");
 
         if (backBrowser != null)
             backBrowser.SetActive(state);
         else
-            Debug.Log("Can't find multiplayer browser, ignoring");
+            Debug.LogWarning("Can't find multiplayer browser, ignoring");
 
         if (timeoutWindow != null)
             timeoutWindow.SetActive(false);
         else
-            Debug.Log("Can't find timeout window, ignoring");
+            Debug.LogWarning("Can't find timeout window, ignoring");
     }
 
     void SetUpMessages()

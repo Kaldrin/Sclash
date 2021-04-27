@@ -14,13 +14,11 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region MANAGERS
     [Header("MANAGERS")]
     [Tooltip("Name of the GameManager to find it in the scene")]
     [SerializeField] GameManager gameManager = null;
     [Tooltip("Name of the CameraManager to find it in the scene")]
     [SerializeField] CameraManager cameraManager = null;
-    #endregion
 
 
 
@@ -82,26 +80,26 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region SOURCES MAX VOLUMES
+    // SOURCES MAX VOLUMES
     float maxMenuVolume = 0;
     List<float> maxPhasesMainVolumes = new List<float>(3) { 0, 0, 0 };
     List<float> maxPhasesStrikesVolumes = new List<float>(3) { 0, 0, 0 };
     float maxWinVolume = 0;
     float maxWindVolume = 0;
-    #endregion
+
 
 
 
     #region SELECTED MUSIC, STEM, PHASE
     [Header("STEMS & PHASES")]
     [SerializeField] bool useRandomStemSelection = true;
-    [SerializeField] int maxPhase = 2,
-        scoreFromMaxScoreToAutoMaxPhase = 1;
+    [SerializeField] int maxPhase = 2;
+    [SerializeField] int scoreFromMaxScoreToAutoMaxPhase = 1;
     bool decrementCurrentPhaseAtNextLoop = false;
     [HideInInspector] public int currentlySelectedMusicIndex = 0;
-    [SerializeField] int currentMusicPhase = 0,
-        currentMusicStem = 0,
-        previousMusicStem = 0;
+    [SerializeField] int currentMusicPhase = 0;
+    [SerializeField] int currentMusicStem = 0;
+    [SerializeField] int previousMusicStem = 0;
     #endregion
 
 
@@ -122,6 +120,7 @@ public class AudioManager : MonoBehaviour
     #region SOUND FX
     [Header("SOUND FX")]
     [SerializeField] AudioSource parrySoundFXAudioSource = null;
+    [SerializeField] AudioSource breakParrySoundFXAudioSource = null;
     [SerializeField] AudioSource successfulAttackSoundFXAudioSource = null;
     [SerializeField] AudioSource deathSoundFXAudioSource = null;
     [SerializeField] AudioSource slowMoInAudioSource = null;
@@ -135,12 +134,11 @@ public class AudioManager : MonoBehaviour
 
 
 
-    #region CLASH FX
     [Header("CLASH FX")]
     [SerializeField] AudioSource clashImpactSoundFXAudioSOurce = null;
     [SerializeField] AudioSource clashReverbSoundFXAudioSource = null;
     [SerializeField] float clashReverbDelay = 0.3f;
-    #endregion
+
 
 
 
@@ -642,6 +640,15 @@ public class AudioManager : MonoBehaviour
     public void TriggerParriedAudio()
     {
         soundFunctions.PlaySoundFromSource(parrySoundFXAudioSource);
+    }
+
+    // BREAK PARRY
+    /// <summary>
+    /// Plays break parry sound FX
+    /// </summary>
+    public void TriggerBreakParryAudio()
+    {
+        soundFunctions.PlaySoundFromSource(breakParrySoundFXAudioSource);
     }
 
 

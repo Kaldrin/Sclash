@@ -96,8 +96,8 @@ public class MenuManager : MonoBehaviour
 
     int playerWhoPaused = 0;
 
-    [Tooltip("The duration during which the players can't input the pause again when they already input it")]
-    [SerializeField] float pauseCooldownDuration = 0.1f;
+    //[Tooltip("The duration during which the players can't input the pause again when they already input it")]
+    float pauseCooldownDuration = 0.1f;
     float pauseCooldownStartTime = 0f;
 
     bool pauseCooldownOn = false;
@@ -241,10 +241,12 @@ public class MenuManager : MonoBehaviour
             for (int i = 0; i < InputManager.Instance.playerInputs.Length; i++)
                 if (InputManager.Instance.playerInputs[i].pauseUp)
                 {
+                    //InputManager.Instance.playerInputs[i].pauseUp = false;
                     playerWhoPaused = i;
                     pauseCooldownOn = true;
                     pauseCooldownStartTime = Time.time;
                     TriggerPause(true);
+                    continue;
                 }
     }
     // PAUDE OFF INPUT
@@ -276,6 +278,11 @@ public class MenuManager : MonoBehaviour
     public void PauseOff()
     {
         TriggerPause(false);
+    }
+    public void PauseCooldown()
+    {
+        pauseCooldownStartTime = Time.time;
+        pauseCooldownOn = true;
     }
 
 
@@ -459,6 +466,7 @@ public class MenuManager : MonoBehaviour
         {
             GameManager.Instance.inGameHelp[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
             GameManager.Instance.playerKeysIndicators[i].gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
+            GameManager.Instance.drawTextAnimator.gameObject.SetActive(menuParametersSaveScriptableObject.displayHelp);
         }
     }
     // SET UP ERGONOMY SETTINGS IN SCENE
@@ -505,7 +513,7 @@ public class MenuManager : MonoBehaviour
     public void SaveGameSettingsInScriptableObject()
     {
         menuParametersSaveScriptableObject.roundToWin = Mathf.FloorToInt(roundsToWinSlider.value);
-        menuParametersSaveScriptableObject.displayHelp = displayHelpCheckBox.activeInHierarchy;
+        menuParametersSaveScriptableObject.displayHelp = displayHelpCheckBox.activeSelf;
         menuParametersSaveScriptableObject.roundToWin = GameManager.Instance.scoreToWin;
     }
     // SAVE GAME SETTINGS

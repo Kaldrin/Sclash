@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using TMPro;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEditor;
@@ -80,7 +81,7 @@ public class GameManager : MonoBehaviourPun
     [Header("START")]
     [Tooltip("The delay before the battle camera values are entered in the camera parameters to make it reactive for battle once the game started, because the smooth camera values stay some time to smooth the zoom towards the scene")]
     [SerializeField] public float timeBeforeBattleCameraActivationWhenGameStarts = 2f;
-    [SerializeField] Animator drawTextAnimator = null;
+    [SerializeField] public Animator drawTextAnimator = null;
     bool drawTextVisible = false;
     # endregion
 
@@ -278,7 +279,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] public bool cheatCodes = false;
     [Tooltip("The key to activate the slow motion cheat")]
     //[SerializeField] KeyCode slowTimeKey = KeyCode.Alpha5;
-    [HideInInspector] float[] timeSlowDownSteps = { 2f, 0.2f, 0.05f};
+    [HideInInspector] float[] timeSlowDownSteps = { 2f, 0.2f, 0.05f };
     int timeSlowDownLevel = 0;
     #endregion
 
@@ -292,6 +293,13 @@ public class GameManager : MonoBehaviourPun
     // EVENTS
     [HideInInspector] public delegate void OnResetGameEvent();
     [HideInInspector] public event OnResetGameEvent ResetGameEvent;
+
+    [HideInInspector] public delegate void OnPlayerWonEvent();
+    [HideInInspector] public event OnResetGameEvent PlayerWonEvent;
+
+    [HideInInspector] public delegate void OnEndGameEvent();
+    [HideInInspector] public event OnEndGameEvent EndGameEvent;
+
     #endregion
 
 
@@ -373,7 +381,7 @@ public class GameManager : MonoBehaviourPun
 
                 }
             }
-            
+
 
             /*
             // CHEATS
@@ -398,7 +406,7 @@ public class GameManager : MonoBehaviourPun
                         Time.timeScale = 1;
                 }
                 */
-        }        
+        }
     }
 
     // FixedUpdate is called 50 times per second
@@ -779,7 +787,7 @@ public class GameManager : MonoBehaviourPun
                 //audioManager.ActivateBattleMusic();
                 AudioManager.Instance.SwitchAudioState(AudioManager.AUDIOSTATE.battle);
 
-                
+
                 // POST PROCESSING
                 if (postProcessVolume != null)
                     postProcessVolume.profile.TryGetSettings<Kuwahara>(out kuwahara);
@@ -1368,6 +1376,10 @@ public class GameManager : MonoBehaviourPun
 
     void APlayerWon()                                                                                                                                                // A PLAYER WON
     {
+        if (PlayerWonEvent != null)
+            PlayerWonEvent();
+
+        Debug.Log("A player won !");
         // STATS
         try
         {
@@ -1388,6 +1400,7 @@ public class GameManager : MonoBehaviourPun
         // SCORE
         scoreObject.GetComponent<Animator>().SetBool("On", false);
         if (playersList != null && playersList.Count > 0)
+        {
             for (int i = 0; i < playersList.Count; i++)
             {
                 if (playersList[i] != null && playersList[i].GetComponent<PlayerAnimations>() && playersList[i].GetComponent<PlayerAnimations>().nameDisplayAnimator != null)
@@ -1397,6 +1410,10 @@ public class GameManager : MonoBehaviourPun
                 if (playerKeysIndicators != null && playerKeysIndicators.Count > i && playerKeysIndicators[i] != null)
                     playerKeysIndicators[i].SetBool("On", false);
             }
+        }
+
+        //Temporary solution to stop player from moving after win TO BE OPTIMIZED
+        playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().DeactivateInput();
 
         Invoke("EndGame", 4f);
     }
@@ -1408,6 +1425,12 @@ public class GameManager : MonoBehaviourPun
     // RENAME HERE IF WORKING
     void EndGame()                                                                                                                                                  // END GAME
     {
+        //Temporary solution to stop player from moving after win TO BE OPTIMIZED
+        playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().ActivateInput();
+        
+        if (EndGameEvent != null)
+            EndGameEvent();
+
         // GAME STATE
         SwitchState(GAMESTATE.finished);
 
@@ -1481,7 +1504,7 @@ public class GameManager : MonoBehaviourPun
                 mapLoader.currentMap.GetComponent<MapPrefab>().backgroundElements[i].SetActive(false);
                 */
 
-                    // STAGE ELEMENTS
+            // STAGE ELEMENTS
             if (MapLoader.Instance.currentMap != null && MapLoader.Instance.currentMap != null && MapLoader.Instance.currentMap.GetComponent<MapPrefab>())
                 MapLoader.Instance.currentMap.GetComponent<MapPrefab>().TriggerDramaticScreen();
 
@@ -1589,7 +1612,7 @@ public class GameManager : MonoBehaviourPun
                 for (int i = 0; i < spriteRenderers.Length; i++)
                     if (spriteRenderers[i] != null && !spriteRenderers[i].CompareTag("NonBlackFX"))
                     {
-                        
+
 
                         // If player sprite
                         if (spriteRenderers[i].tag == tagsReferences.playerTag || spriteRenderers[i].tag == tagsReferences.comesticsTag)
