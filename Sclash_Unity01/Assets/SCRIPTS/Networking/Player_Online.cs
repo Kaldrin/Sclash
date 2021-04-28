@@ -209,6 +209,7 @@ public class Player_Online : Player, IPunObservable
 
                     // FX
                     chargeFlareFX.Play();
+                    chargeKatanaFX.Play();
 
 
                     // ANIMATION
@@ -267,8 +268,25 @@ public class Player_Online : Player, IPunObservable
 
 
                 // FX
-                chargeFullFX.Play();
+                if (chargeKatanaFX)
+                {
+                    chargeKatanaFX.gameObject.SetActive(false);
+                    chargeKatanaFX.gameObject.SetActive(true);
+                }
+                if (chargeFullKatanaFX)
+                    chargeFullKatanaFX.Play();
                 chargeFlareFX.Stop();
+                if (chargedKatanaStayFX)
+                    chargedKatanaStayFX.Play();
+                chargeFlareFX.Stop();
+
+
+                // AUDIO
+                if (chargeMaxSFX)
+                {
+                    chargeMaxSFX.gameObject.SetActive(false);
+                    chargeMaxSFX.gameObject.SetActive(true);
+                }
 
 
                 // ANIMATION

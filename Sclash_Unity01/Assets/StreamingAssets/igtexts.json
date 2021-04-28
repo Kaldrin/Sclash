@@ -69,12 +69,21 @@
     {
         "key": "MM_Bug01",
         "fr": "Signaler un problème",
-        "en": "Report a problem"
+        "en": "Report a problem",
+        "turk": "Bir sorun bildir",
+        "rus": "Сообщить о проблеме"
+    },
+    {
+        "key": "MM_Feedback01",
+        "fr": "Faites-nous des retours",
+        "en": "Give us feedback"
     },
     {
         "key": "MM_Social01",
         "fr": "Réseaux sociaux",
-        "en": "Social networks"
+        "en": "Social networks",
+        "turk": "Sosyal ağlar",
+        "rus": "Социальные сети"
     },
     {
         "key": "QG_Title01",
@@ -675,14 +684,14 @@
         "key": "SM_Pommel01",
         "fr": "Coup de pommeau",
         "en": "Pommel",
-        "turk": "Yumruk",
+        "turk": "Topuz darbesi",
         "rus": "Удар навершием"
     },
     {
         "key": "SM_SPommel01",
         "fr": "Coup de pommeau réussi",
         "en": "Successful pommel",
-        "turk": "Başarılı yumruk",
+        "turk": "Başarılı topuz darbesi",
         "rus": "Успешный удар навершием"
     },
     {
@@ -717,126 +726,147 @@
         "key": "SM_GS_Title01",
         "fr": "Partie",
         "en": "Game",
+        "turk": "Yerel",
         "rus": "Удар"
     },
     {
         "key": "SM_GS_Local01",
         "fr": "Local",
         "en": "Local",
+        "turk": "Final skoru",
         "rus": "Локальная игра"
     },
     {
         "key": "SM_GS_Score01",
         "fr": "Score final",
         "en": "Final score",
+        "turk": "Oyun bitti mi?",
         "rus": "Счёт"
     },
     {
         "key": "SM_GS_Finished01",
         "fr": "Partie finie ?",
         "en": "Game finished?",
+        "turk": "Süre",
         "rus": "Игра завершена?"
     },
     {
         "key": "SM_GS_Duration01",
         "fr": "Durée",
         "en": "Duration",
+        "turk": "Oynana roundlar",
         "rus": "Длительность"
     },
     {
         "key": "SM_GS_Rounds01",
         "fr": "Manches jouées",
         "en": "Rounds played",
+        "turk": "Oynana roundlar",
         "rus": "Раундов сыграно"
     },
     {
         "key": "SM_GS_WinScore01",
         "fr": "Score pour gagner",
         "en": "Score to win",
+        "turk": "Kazanmak için skor",
         "rus": "Победный счёт"
     },
     {
         "key": "SM_RS_Title01",
         "fr": "Manche",
         "en": "Round",
+        "turk": "Round",
         "rus": "Раунд"
     },
     {
         "key": "SM_RS_Charge01",
         "fr": "Charge",
         "en": "Charge",
+        "turk": "Saldırı",
         "rus": "Зарядка"
     },
     {
         "key": "SM_RS_FA01",
         "fr": "Attaque avant",
         "en": "Forward attack",
+        "turk": "İleri saldırı",
         "rus": "Атака вперёд"
     },
     {
         "key": "SM_RS_BA01",
         "fr": "Attaque arrière",
         "en": "Backwards atttack",
+        "turk": "Geriye saldırı",
         "rus": "Атака назад"
     },
     {
         "key": "SM_RS_NA01",
         "fr": "Attaque neutre",
         "en": "Neutral attack",
+        "turk": "Belirsiz saldırı",
         "rus": "Нейтральная атака"
     },
     {
         "key": "SM_RS_Death01",
         "fr": "Mort",
         "en": "Death",
+        "turk": "Ölüm",
         "rus": "Смерть"
     },
     {
         "key": "SM_RS_FD01",
         "fr": "Esquive avant",
         "en": "Forward dash",
+        "turk": "İleri sıçrama",
         "rus": "Рывок вперёд"
     },
     {
         "key": "SM_RS_BD01",
         "fr": "Esquive arrière",
         "en": "Backwards dash",
+        "turk": "Geriye sıçrama",
         "rus": "Рывок назад"
     },
     {
         "key": "SM_RS_Pommel01",
         "fr": "Coup de pommeau",
         "en": "Pommel",
+        "turk": "Topuz darbesi",
         "rus": "Удар навершием"
     },
     {
         "key": "SM_RS_SP01",
         "fr": "Coup pom. réussi",
         "en": "Success. pommel",
+        "turk": "Başarılı topuz darbesi",
         "rus": "Успешный удар навершием"
     },
     {
         "key": "SM_RS_Parry01",
         "fr": "Parade",
         "en": "Parry",
+        "turk": "Savuşturma",
         "rus": "Парирование"
     },
     {
         "key": "SM_RS_SP02",
         "fr": "Parade réussie",
         "en": "Success. parry",
+        "turk": "Başarılı savuşturma",
         "rus": "Успешное парирование"
     },
     {
         "key": "SM_RS_Clash01",
         "fr": "Clash",
         "en": "Clash",
+        "turk": "Çarpışma",
         "rus": "Столкновение"
     },
     {
         "key": "SM_RS_Dodge01",
         "fr": "Coup esquivé",
         "en": "Dodge",
+        "turk": "Kaçınma",
         "rus": "Уворот"
     },
     {
@@ -906,7 +936,7 @@
         "key": "Tip05",
         "fr": "Le coup de pommeau ne coûte pas d'énergie et interrompt toute action que votre opposant peut être en train de faire, pour peu que vous le touchiez.",
         "en": "The pommel move doesn't cost any stamina and interrupts any action your opponent might be doing by pushing them, given you're close enough to touch them.",
-        "turk": "Yumruk hareketi herhangi bir dayanıklılığa mal olmaz ve onlara dokunacak kadar yakın olduğunuzda rakibinizin yapabileceği herhangi bir eylemi onları iterek kesintiye uğratır.",
+        "turk": "Topuz darbesi hareketi herhangi bir dayanıklılığa mal olmaz ve onlara dokunacak kadar yakın olduğunuzda rakibinizin yapabileceği herhangi bir eylemi onları iterek kesintiye uğratır.",
         "rus": "Удар навершием не расходует выносливость и прерывает любое действие противника, если Вы находитесь достаточно близко к нему."
     },
     {
@@ -920,61 +950,86 @@
         "key": "Tip07",
         "fr": "Vous pouvez interrompre un coup de pommeau avec une esquive (dash)",
         "en": "You can cancel a pommel with a dash.",
+        "turk": "Yumruğu kaçınma ile iptal edebilirsiniz.",
         "rus": "Вы можете отменить удар навершием рывком."
     },
     {
         "key": "Tip08",
         "fr": "Vous pouvez connecter l'esquive (dash) avec n'importe quel mouvement",
         "en": "You can connect the dash with any move.",
+        "turk": "Kaçınma'yı herhangi bir hareket ile devam ettirebilirsiniz.",
         "rus": "Вы можете выполнить любое действие сразу после рывка."
     },
     {
         "key": "Tip09",
-        "fr": "Un coup de pommeau réussi enlèvera une barre d'énergie à votre adversaire s'il est en train de parer ou d'attaquer, mais attention il faut être suffisemment proche pour toucher !",
-        "en": "A successful pommel removes 1 stamina bar to your opponent if they are attacking or parrying, but watch out: you must be very close to them in order to hit!\n",
+        "fr": "Un coup de pommeau réussi enlèvera 2 barres d'énergie à votre adversaire s'il est en train de faire quelque chose, mais attention il faut être suffisemment proche pour toucher !",
+        "en": "A successful pommel removes 2 stamina bar to your opponent if they are doing something, but watch out: you must be very close to them in order to hit!\n",
+        "turk": "Eğer düşmanlarınız saldırı ya da savuşturma yaparken yumruğumuz başarılı şekilde onlara vurursa kendilerinden 1 dayanıklılık çubuğu götürür: isabet etmek için çok yakın olmalısınız!",
         "rus": "Если противник атакует или парирует, успешный удар навершием отнимает у него одну полосу выносливости, однако для этого следует подобраться поближе."
     },
     {
         "key": "Tip10",
         "fr": "Vous pouvez esquiver (dash) en touchant deux fois de suite une direction",
         "en": "You can dash by double tapping the directional input.",
+        "turk": "Yön tuşuna iki kere basarak kaçınma yapabilirsiniz.",
         "rus": "Вы можете совершать рывок двойным нажатием клавиши направления."
     },
     {
         "key": "Tip11",
         "fr": "Quand vous voyez une astuce, lisez la ! Vous pourriez découvrir des mécaniques et éléments que vous aviez oublié ou ne connaissiez pas !",
         "en": "When you see a new tip, read it carefully! Tips may help you discover mechanics and elements you forgot, or didn't know about!\n",
+        "turk": "Yeni bir ipucu gördüğünüzde dikkatlice okuyun! İpuçları, unuttuğunuz veya bilmediğiniz mekaniği ve öğeleri keşfetmenize yardımcı olabilir!",
         "rus": "Внимательно читайте подсказки! Из них Вы можете узнать о забытых или ещё не известных механиках."
     },
     {
         "key": "Tip12",
         "fr": "Vous pouvez interrompre une esquive (dash) avec une attaque",
         "en": "You can cancel a dash with an attack.",
+        "turk": "Kaçınma'yı saldırı yaparak iptal edebilirsiniz.",
         "rus": "Вы можете отменить рывок атакой."
     },
     {
         "key": "Tip13",
         "fr": "Votre énergie se restaure plus vite si vous restez immobile, et encore plus vite si vous vous éloignez de votre adversaire !",
         "en": "Your stamina refills faster over time when you stand still, and even faster when you walk away from your opponent.",
+        "turk": "Dayanıklılığınız, hareketsiz durduğunuzda zaman içinde daha hızlı ve rakibinizden uzaklaştığınızda daha da hızlı yenilenir.",
         "rus": "Выносливость восстанавливается быстрее, если стоять на месте, и ещё быстрее, если отойти от противника."
     },
     {
         "key": "Tip14",
         "fr": "Pas satisfait du mixage du son ? Nous avons une solution, allez faire un tour dans les options audio !",
         "en": "Not satisfied by the sound mixing? We have a solution, just check the settings to change the different volumes!",
+        "turk": "Ses ayarından memnun değil misiniz? Bir çözümümüz var, farklı sesleri değiştirmek için ayarları kontrol etmeniz yeterli!",
         "rus": "Не нравится звучание эффектов? Есть решение: попробуйте разные параметры громоксти в настройках."
     },
     {
         "key": "Tip15",
         "fr": "Vous pouvez faire votre propre sélection d'arènes dans lesquelles piocher lors des chargements aléatoires, ajoutez celles que vous souhaitez en favoris !",
         "en": "You can make your own selection of stages to use when loading a random stage, just choose the ones you like in the stage selection screen!",
+        "turk": "Rastgele bir aşama yüklerken kullanmak için kendi aşama seçiminizi yapabilirsiniz, aşama seçim ekranından beğendiklerinizi seçmeniz yeterli!",
         "rus": "Вы можете составить свой список арен для случайного выбора. Просто зайдите в меню выбора арены и выберите те, которые больше нравятся."
     },
     {
         "key": "Tip16",
         "fr": "Si votre personnage est en pose par défaut ou que votre stamina se rempli, c'est que vous pouvez attaquer à nouveau !",
         "en": "If your character is in idle pose or if your stamina is refilling, it means you can attack again!",
+        "turk": "Karakteriniz boş duruyorsa veya dayanıklılığınız yeniden doluyorsa, bu tekrar saldırabileceğiniz anlamına gelir!",
         "rus": "Если Ваш персонаж спокоен, а выносливость восполняется, значит, Вы сможете атаковать."
+    },
+    {
+        "key": "Tip17",
+        "fr": "Vous avez une question ? Un problème ? Ou vous voulez juste dire bonjour ? N'hésitez pas à signaler un bug ou contacter les développeurs sur les réseaux sociaux !",
+        "en": "You have a question? A problem? Or just say hi? Don't hesitate to contact us on social medias or report the problem!"
+    },
+    {
+        "key": "Tip18",
+        "fr": "Une attaque chargée au maximum brisera la garde d'un adversaire",
+        "en": "A fully charged attack will break through an opponent's guard"
+    },
+    {
+        "key": "Tip19",
+        "fr": "Vous pouvez choisir de vous battre contre une IA de différents niveaux pendant la sélection de personnage",
+        "en": "You can choose to fight against an AI of different levels during the character selection"
     },
     {
         "key": "CS_Title01",
@@ -987,30 +1042,35 @@
         "key": "CS_Player2",
         "fr": "VS Joueur 2",
         "en": "VS Player 2",
+        "turk": "VS Oyuncu 2",
         "rus": "Против игрока 2"
     },
     {
         "key": "CS_Easy01",
         "fr": "VS IA Facile",
         "en": "VS AI Easy",
+        "turk": "VS Hepsi Kolay",
         "rus": "Против ИИ (лёгкий)"
     },
     {
         "key": "CS_Medium01",
         "fr": "VS IA Moyen",
         "en": "VS AI Medium",
+        "turk": "VS  Hepsi Orta",
         "rus": "Против ИИ (средний)"
     },
     {
         "key": "CS_Hard01",
         "fr": "VS IA Difficile",
         "en": "VS AI Hard",
+        "turk": "VS Hepsi Zor",
         "rus": "Против ИИ (сложный)"
     },
     {
         "key": "CS_Text01",
         "fr": "Appuyez sur",
         "en": "Press",
+        "turk": "Bas",
         "rus": "Нажмите"
     },
     {
@@ -1028,204 +1088,274 @@
     {
         "key": "C_Susanoo01",
         "fr": "Susanoo",
-        "en": "Susanoo"
+        "en": "Susanoo",
+        "turk": "Susanoo",
+        "rus": "Сусаноо"
     },
     {
         "key": "C_Jinmu01",
         "fr": "Jinmu",
-        "en": "Jinmu"
+        "en": "Jinmu",
+        "turk": "Jinmu",
+        "rus": "Джимму"
     },
     {
         "key": "C_Izanagi01",
         "fr": "Izanagi",
-        "en": "Izanagi"
+        "en": "Izanagi",
+        "turk": "Izanagi",
+        "rus": "Изанаги"
     },
     {
         "key": "C_Amaterasu01",
         "fr": "Amaterasu",
-        "en": "Amaterasu"
+        "en": "Amaterasu",
+        "turk": "Amaterasu",
+        "rus": "Аматерасу"
     },
     {
         "key": "C_MaskedRonin01",
         "fr": "Ronin masqué",
-        "en": "Masked ronin"
+        "en": "Masked ronin",
+        "turk": "Maskeli ronin",
+        "rus": "Ронин в маске"
     },
     {
         "key": "C_Akane01",
         "fr": "Akane",
-        "en": "Akane"
+        "en": "Akane",
+        "turk": "Akane",
+        "rus": "Акане"
     },
     {
         "key": "M_Kami01",
         "fr": "Masque de kami",
-        "en": "Kami mask"
+        "en": "Kami mask",
+        "turk": "Kami maskesi",
+        "rus": "Маска ками"
     },
     {
         "key": "M_Susanoo01",
         "fr": "Masque de Susanoo",
-        "en": "Susanoo's mask"
+        "en": "Susanoo's mask",
+        "turk": "Susanoo'nun maskesi",
+        "rus": "Маска Сусаноо"
     },
     {
         "key": "M_Locked01",
         "fr": "Masque verrouillé",
-        "en": "Locked mask"
+        "en": "Locked mask",
+        "turk": "Kilitli maske",
+        "rus": "Закрытая маска"
     },
     {
         "key": "M_Jinmu01",
         "fr": "Masque de Jinmu",
-        "en": "Jinmu"
+        "en": "Jinmu",
+        "turk": "Jinmu",
+        "rus": "Джимму"
     },
     {
         "key": "M_Izanagi01",
         "fr": "Men-yoroi de Izanagi",
-        "en": "Izanagi's men-yoroi"
+        "en": "Izanagi's men-yoroi",
+        "turk": "Izanagi'nin yüz-zırhı",
+        "rus": "Маска Изанаги"
     },
     {
         "key": "M_Amaterasu01",
         "fr": "Masque de Amaterasu",
-        "en": "Amaterasu's mask"
+        "en": "Amaterasu's mask",
+        "turk": "Amaterasu'nun maskesi",
+        "rus": "Маска Аматерасу"
     },
     {
         "key": "M_Halloween01",
         "fr": "Masque de Halloween",
-        "en": "Halloween mask"
+        "en": "Halloween mask",
+        "turk": "Cadılar bayramı maskesi",
+        "rus": "Хэллоуинская маска"
     },
     {
         "key": "M_NoFace01",
         "fr": "Sans visage",
-        "en": "No face"
+        "en": "No face",
+        "turk": "Suratsız",
+        "rus": "Безликий"
     },
     {
         "key": "M_Kitsune01",
         "fr": "Masque de Kistune",
-        "en": "Kitsune mask"
+        "en": "Kitsune mask",
+        "turk": "Kitsune maskesi",
+        "rus": "Маска Кицуне"
     },
     {
         "key": "M_Rabbit",
         "fr": "Masque de lapin",
-        "en": "Rabbit mask"
+        "en": "Rabbit mask",
+        "turk": "Tavşan maskesi",
+        "rus": "Маска кролика"
     },
     {
         "key": "M_Akane01",
         "fr": "Masque de Akane",
-        "en": "Akane's mask"
+        "en": "Akane's mask",
+        "turk": "Akane'nin maskesi",
+        "rus": "Маска Акане"
     },
     {
         "key": "M_Majora01",
         "fr": "Masque de Majora",
-        "en": "Majora's mask"
+        "en": "Majora's mask",
+        "turk": "Majora'nın maskesi",
+        "rus": "Маска Маджоры"
     },
     {
         "key": "M_Christmas01",
         "fr": "Masque de noël",
-        "en": "Christmas mask"
+        "en": "Christmas mask",
+        "turk": "Noel maskesi",
+        "rus": "Рождественская маска"
     },
     {
         "key": "W_Kami01",
         "fr": "Katana de kami",
-        "en": "Kami katana"
+        "en": "Kami katana",
+        "turk": "Kami katana",
+        "rus": "Катана ками"
     },
     {
         "key": "W_Halloween",
         "fr": "Sabre d'Halloween",
-        "en": "Halloween saber"
+        "en": "Halloween saber",
+        "turk": "Cadılar bayramı kılıcı",
+        "rus": "Хэллоуинская сабля"
     },
     {
         "key": "W_Red01",
         "fr": "Katana rouge",
-        "en": "Red katana"
+        "en": "Red katana",
+        "turk": "Kırmızı katana",
+        "rus": "Красная катана"
     },
     {
         "key": "W_Pink01",
         "fr": "Katana rose",
-        "en": "Pink katana"
+        "en": "Pink katana",
+        "turk": "Pembe katana",
+        "rus": "Розовая катана"
     },
     {
         "key": "W_Dove01",
         "fr": "Sabre de colombe",
-        "en": "Dove saber"
+        "en": "Dove saber",
+        "turk": "Kumru kılıcı",
+        "rus": "Голубиная катана"
     },
     {
         "key": "W_Crow01",
         "fr": "Sabre de corbeau",
-        "en": "Crow saber"
+        "en": "Crow saber",
+        "turk": "Karga kılıcı",
+        "rus": "Воронья катана"
     },
     {
         "key": "W_Ninja01",
         "fr": "Ninja",
-        "en": "Ninja"
+        "en": "Ninja",
+        "turk": "Ninja",
+        "rus": "Ниндзя"
     },
     {
         "key": "W_Christmas01",
         "fr": "Sabre de noël",
-        "en": "Christmas saber"
+        "en": "Christmas saber",
+        "turk": "Noel kılıcı",
+        "rus": "Рождественская сабля"
     },
     {
         "key": "W_Akane01",
         "fr": "Katana de Akane",
-        "en": "Akane's katana"
+        "en": "Akane's katana",
+        "turk": "Akane'nin katanası",
+        "rus": "Катана Акане"
     },
     {
         "key": "W_Jinmu01",
         "fr": "Sabre de Jinmu",
-        "en": "Jinmu's saber"
+        "en": "Jinmu's saber",
+        "turk": "Jinmu'nun kılıcı",
+        "rus": "Сабля Джимму"
     },
     {
         "key": "W_Locked01",
         "fr": "Katana verrouillé",
-        "en": "Locked katana"
+        "en": "Locked katana",
+        "turk": "Kilitli katana",
+        "rus": "Закрытая катана"
     },
     {
         "key": "W_Susanoo01",
         "fr": "Katana de Susanoo",
-        "en": "Susanoo's katana"
+        "en": "Susanoo's katana",
+        "turk": "Susanoo'nun katanası",
+        "rus": "Катана Сусаноо"
     },
     {
         "key": "D_Help01",
         "fr": "Afficher l'aide / le score",
         "en": "Display help / score",
+        "turk": "Yardım / Skor'u göster",
         "rus": "Показать помощь/счёт"
     },
     {
         "key": "D_J1",
         "fr": "Joueur 1",
         "en": "Player 1",
+        "turk": "Oyuncu 1",
         "rus": "Игрок 1"
     },
     {
         "key": "D_J2",
         "fr": "Joueur 2",
         "en": "Player 2",
+        "turk": "Oyuncu 2",
         "rus": "Игрок 2"
     },
     {
         "key": "D_Charge01",
         "fr": "Chargement -> Attaque",
         "en": "Charging -> Attack",
+        "turk": "Hücum -> Saldırı",
         "rus": "Зарядка -> атака"
     },
     {
         "key": "D_Parry01",
         "fr": "Parade",
         "en": "Parry",
+        "turk": "Savuşturma",
         "rus": "Парирование"
     },
     {
         "key": "D_Dash01",
         "fr": "Esquive",
         "en": "Dash",
+        "turk": "Kaçınma",
         "rus": "Рывок"
     },
     {
         "key": "D_Pommel01",
         "fr": "Coup de pommeau",
         "en": "Pommel",
+        "turk": "Topuz darbesi",
         "rus": "Удар навершием"
     },
     {
         "key": "D_Or01",
         "fr": "ou",
         "en": "or",
+        "turk": "ya da",
         "rus": "или"
     },
     {
@@ -1376,6 +1506,11 @@
         "rus": "Идёт подключение к серверу, ожидайте."
     },
     {
+        "key": "OM_BetaWarning01",
+        "fr": "Veuillez noter que ceci est une version beta, le jeu n'est pas sorti, s'il n'y a personne en ligne c'est normal",
+        "en": "Please be aware this is a beta version, the game is not released, it's normal if there isn't anyone online"
+    },
+    {
         "key": "RCM_IF_RoomName01",
         "fr": "Nom du serveur...",
         "en": "Enter room name...",
@@ -1503,7 +1638,7 @@
         "key": "N_RestartSentText01",
         "fr": "Vous avez informé votre adversaire vous vouliez recommencer, le duel, si iel accepte le duel recommencera",
         "en": "You told your opponent you wanted to restart the duel, if they accept the duel will restart",
-        "turk": "Rakibinize, dövüşü yeniden başlayacağını kabul ederse,dövüşü yeniden başlatmak istediğinizi söylediniz.",
+        "turk": "Rakibinize, dövüşü yeniden başlatmak istediğinizi, kabul ederse dövüşün yeniden başlayacağını söylediniz.",
         "rus": "Вы сообщили противнику, что хотите перезапустить бой. Если он согласится, произойдёт перезапуск."
     },
     {
@@ -1524,30 +1659,35 @@
         "key": "N_RReceivedTitle01",
         "fr": "Demande de recommencer le duel",
         "en": "Restart duel request",
+        "turk": "Dövüşün yeniden başlaması için talepte bulunun.",
         "rus": "Запрос на перезапуск дуэли."
     },
     {
         "key": "N_RReceivedText01",
         "fr": "Votre adversaire à demandé à ce que vous recommenciez le duel. Validez avec le bouton recommencer du menu pause",
         "en": "Your opponent has requested you restart the confrontation. Restart in the pause menu to accept",
+        "turk": "Rakibiniz dövüşü yeniden başlatmanızı istedi. Kabul etmek için duraklat menüsünde yeniden başlatın",
         "rus": "Противник запросил перезапуск дуэли. Если Вы согласны, перезапустите её в меню паузы."
     },
     {
         "key": "N_RestartOkTitle01",
         "fr": "Requête de recommencer le duel acceptée",
         "en": "Restart request accepted",
+        "turk": "Yeniden başlatma isteği kabul edildi",
         "rus": "Запрос на перезапуск принят."
     },
     {
         "key": "N_RestartOkText01",
         "fr": "Le duel va bientôt recommencer",
         "en": "The duel will restart soon",
+        "turk": "Dövüş yakında başlayacak",
         "rus": "Дуэль скоро перезапустится."
     },
     {
         "key": "N_Controller1Title01",
         "fr": "Manette 1 détectée",
         "en": "Controller 1 detected",
+        "turk": "Kontolcü 1 algılandı",
         "rus": "Контроллер 1 обнаружен."
     },
     {

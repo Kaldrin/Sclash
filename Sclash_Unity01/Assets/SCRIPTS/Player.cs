@@ -398,7 +398,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] public ParticleSystem chargeFullKatanaFX = null;
     [SerializeField] public ParticleSystem chargeBoomKatanaFX = null;
     [SerializeField] public ParticleSystem chargeKatanaFX = null;
-    [SerializeField] ParticleSystem chargedKatanaStayFX = null;
+    [SerializeField] public ParticleSystem chargedKatanaStayFX = null;
     [SerializeField] GameObject rangeIndicatorShadow = null;
     [SerializeField] SpriteRenderer rangeIndicatorShadowSprite = null;
 
@@ -448,7 +448,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] PlayRandomSoundInList staminaEndSFX = null;
     [SerializeField] PlayRandomSoundInList staminaUseSFX = null;
     [SerializeField] PlayRandomSoundInList walkSFX = null;
-    [SerializeField] AudioSource chargeMaxSFX = null;
+    [SerializeField] public AudioSource chargeMaxSFX = null;
     #endregion
 
 
@@ -2328,7 +2328,7 @@ public class Player : MonoBehaviourPunCallbacks
 
                     // FX
                     chargeFlareFX.Play();
-
+                    chargeKatanaFX.Play();
 
                     // ANIMATION
                     playerAnimations.CancelCharge(false);
