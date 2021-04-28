@@ -414,7 +414,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
-    
+
     [Header("STAGE DEPENDENT FX")]
     [SerializeField] ParticleSystem dashFXFront = null;
     [SerializeField] ParticleSystem dashFXBack = null;
@@ -927,7 +927,7 @@ public class Player : MonoBehaviourPunCallbacks
                     SetStaminaBarsOpacity(staminaBarsOpacity);
                     UpdateStaminaColor();
                     break;
-                        
+
                 case STATE.dashing:                                                           // DASHING
                     UpdateStaminaSlidersValue();
                     SetStaminaBarsOpacity(staminaBarsOpacity);
@@ -1042,8 +1042,8 @@ public class Player : MonoBehaviourPunCallbacks
                 }
                 else if (characterChanger)
                 {
-                     characterChanger.EnableVisuals(false);
-                     characterChanger.enabled = false;
+                    characterChanger.EnableVisuals(false);
+                    characterChanger.enabled = false;
                 }
 
                 if (playerNum == 0)
@@ -2363,7 +2363,7 @@ public class Player : MonoBehaviourPunCallbacks
                     // ANIMATION
                     playerAnimations.CancelCharge(false);
                     playerAnimations.TriggerCharge(true);
-                    
+
 
 
                     chargeStartTime = Time.time;
@@ -2888,31 +2888,14 @@ public class Player : MonoBehaviourPunCallbacks
     // Detect pommel inputs
     public virtual void ManagePommel()
     {
-        // ONLINE
-        if (ConnectManager.Instance != null && ConnectManager.Instance.connectedToMaster)
+        if (!InputManager.Instance.playerInputs[playerNum].kick)
+            canPommel = true;
+
+
+        if (InputManager.Instance.playerInputs[playerNum].kick && canPommel)
         {
-            if (!InputManager.Instance.playerInputs[0].kick)
-                canPommel = true;
-
-
-            if (InputManager.Instance.playerInputs[0].kick && canPommel)
-            {
-                canPommel = false;
-
-                photonView.RPC("TriggerPommel", RpcTarget.All);
-            }
-        }
-        else
-        {
-            if (!InputManager.Instance.playerInputs[playerNum].kick)
-                canPommel = true;
-
-
-            if (InputManager.Instance.playerInputs[playerNum].kick && canPommel)
-            {
-                canPommel = false;
-                TriggerPommel();
-            }
+            canPommel = false;
+            TriggerPommel();
         }
     }
 

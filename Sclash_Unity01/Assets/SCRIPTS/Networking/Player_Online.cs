@@ -427,6 +427,8 @@ public class Player_Online : Player, IPunObservable
 
     internal override void DashInput(float inDirection, bool quickDash)
     {
+        Debug.Log(gameObject.name+" receive DashInput");
+
         switch (playerState)
         {
             case STATE.normal:
@@ -514,7 +516,6 @@ public class Player_Online : Player, IPunObservable
 
     internal override void ManageDashInput()
     {
-
         if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
             if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
                 currentDashStep = DASHSTEP.rest;
@@ -623,6 +624,7 @@ public class Player_Online : Player, IPunObservable
     [PunRPC]
     protected override void TriggerPommel()
     {
+        Debug.Log(gameObject.name + " pommel", gameObject);
         base.TriggerPommel();
     }
 

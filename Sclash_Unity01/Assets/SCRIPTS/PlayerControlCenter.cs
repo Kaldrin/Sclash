@@ -51,6 +51,7 @@ public class PlayerControlCenter : MonoBehaviour
     {
         m_playerInput = GetComponent<PlayerInput>();
         m_playerIndex = m_playerInput.playerIndex;
+
         if (attachedPlayer == null)
         {
             attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
@@ -69,7 +70,6 @@ public class PlayerControlCenter : MonoBehaviour
             if (attachedPlayer == null)
                 if (GameManager.Instance.playersList.Count != 0)
                     attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
-
         }
     }
 
@@ -183,7 +183,6 @@ public class PlayerControlCenter : MonoBehaviour
     {
         if (ctx.canceled)
         {
-
             attachedPlayer.DashInput(0f, false);
             return;
         }
