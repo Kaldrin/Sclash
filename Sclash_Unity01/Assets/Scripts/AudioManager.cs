@@ -244,7 +244,8 @@ public class AudioManager : MonoBehaviour
             case AUDIOSTATE.menu:                                                   // MENU
                 windVolumeObjective = 0;
                 menuVolumeObjective = maxMenuVolume;
-                menuAudioSource.Play();
+                if (menuAudioSource)
+                    menuAudioSource.Play();
                 break;
 
 
