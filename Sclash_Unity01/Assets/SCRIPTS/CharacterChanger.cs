@@ -510,7 +510,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         // FX
         //playerScript.chargeFullKatanaFX.main.startColor.mode = ParticleSystemGradientMode.RandomColor;
-        var randomColor = new ParticleSystem.MinMaxGradient(charactersDatabase.charactersList[currentCharacterIndex].character.saberFXColor);
+       /* var randomColor = new ParticleSystem.MinMaxGradient(charactersDatabase.charactersList[currentCharacterIndex].character.saberFXColor);
         randomColor.mode = ParticleSystemGradientMode.RandomColor;
         ParticleSystem.MainModule mainModule;
 
@@ -522,7 +522,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         mainModule = playerScript.chargeKatanaFX.main;
         mainModule.startColor = randomColor;
-
+       */
 
 
 

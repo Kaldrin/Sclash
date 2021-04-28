@@ -1413,7 +1413,8 @@ public class GameManager : MonoBehaviourPun
         }
 
         //Temporary solution to stop player from moving after win TO BE OPTIMIZED
-        playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().DeactivateInput();
+        if (playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput != null)
+            playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().DeactivateInput();
 
         Invoke("EndGame", 4f);
     }
@@ -1427,7 +1428,7 @@ public class GameManager : MonoBehaviourPun
     {
         //Temporary solution to stop player from moving after win TO BE OPTIMIZED
         playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().ActivateInput();
-        
+
         if (EndGameEvent != null)
             EndGameEvent();
 

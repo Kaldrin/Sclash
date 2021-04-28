@@ -116,6 +116,8 @@ MonoBehaviour:
   quickRegen: 0
   quickRegenOnlyWhenReachedLowStaminaGap: 0
   canBattleSneath: 1
+  maxChargeBreaksParry: 0
+  kickDuringChargeBreaksStamina: 0
   parryFrame: 0
   perfectParryFrame: 0
   activeFrame: 0
@@ -151,6 +153,7 @@ MonoBehaviour:
   deathBloodFX: {fileID: 1852627805325084338}
   attackRangeFX: {fileID: 4575703249443189617}
   clashKanasFX: {fileID: 3281650762658235914}
+  breakKanasFX: {fileID: 0}
   kickKanasFX: {fileID: 3626454463149598940}
   kickedFX: {fileID: 4141868148543406151}
   clashFX: {fileID: 1503814533038380165}
@@ -160,6 +163,10 @@ MonoBehaviour:
   chargeFlareFX: {fileID: 6520897863034834526}
   chargeFX: {fileID: 44681781079970110}
   chargeFullFX: {fileID: 862336794379376949}
+  chargeFullKatanaFX: {fileID: 0}
+  chargeBoomKatanaFX: {fileID: 0}
+  chargeKatanaFX: {fileID: 0}
+  chargedKatanaStayFX: {fileID: 0}
   rangeIndicatorShadow: {fileID: 2209056139138701137}
   rangeIndicatorShadowSprite: {fileID: 7031835937388563775}
   staminaLossFX: {fileID: 4570153363479801419}
@@ -261,6 +268,7 @@ MonoBehaviour:
   staminaEndSFX: {fileID: 7072917009498089339}
   staminaUseSFX: {fileID: 2656993126286992627}
   walkSFX: {fileID: 0}
+  chargeMaxSFX: {fileID: 0}
   deathRumbleSettings: {fileID: 0}
   finalDeathRumbleSettings: {fileID: 0}
   clashedLeftRumbleSettings: {fileID: 0}
@@ -268,6 +276,7 @@ MonoBehaviour:
   pommeledLeftRumbleSettings: {fileID: 0}
   pommeledRightRumbleSettings: {fileID: 0}
   cheatSettings: {fileID: 11400000, guid: d72c429276d518b498a1f4f96c7d4870, type: 2}
+  attachedPlayerInput: {fileID: 0}
 --- !u!114 &8125919142218603236
 MonoBehaviour:
   m_ObjectHideFlags: 0

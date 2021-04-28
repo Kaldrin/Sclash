@@ -368,10 +368,11 @@ public class MenuBrowser : MonoBehaviour
         if (enabled && elements.Length > 0)
         {
             if (!state)
-                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
+                EventSystem.current.SetSelectedGameObject(null);
             else
             {
-                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements[browseIndex]);
+                if (EventSystem.current.currentSelectedGameObject != elements[browseIndex])
+                    EventSystem.current.SetSelectedGameObject(elements[browseIndex]);
 
 
                 if (elements[browseIndex].GetComponent<Button>())
