@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviourPun
         paused,
         roundFinished,
         finished,
+        cutscene,
     }
 
     [Header("GAME STATE")]
@@ -543,6 +544,7 @@ public class GameManager : MonoBehaviourPun
                                 }
                                 else
                                     playersList[i].GetComponent<Player>().SwitchState(playersList[i].GetComponent<Player>().oldState);
+
 
                                 playersList[i].GetComponent<PlayerAnimations>().animator.speed = 1;
                             }

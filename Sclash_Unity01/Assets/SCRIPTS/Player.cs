@@ -30,8 +30,8 @@ using Photon.Realtime;
 /// Main player script
 /// </summary>
 
-// HEADER
-// Made for Unity 2019.4.14
+
+// Unity 2019.4.14
 public class Player : MonoBehaviourPunCallbacks
 {
     public delegate void OnDrawnEvent();
@@ -230,6 +230,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] protected bool canBattleSneath = false;
     [SerializeField] protected bool maxChargeBreaksParry = false;
     [SerializeField] protected bool kickDuringChargeBreaksStamina = false;
+    [SerializeField] protected bool orientWhenActionDuringDash = true;
     #endregion
 
 
@@ -954,6 +955,11 @@ public class Player : MonoBehaviourPunCallbacks
                     break;
 
                 case STATE.dead:                                                               // DEAD
+                    break;
+
+
+                case STATE.cutscene:
+                    rb.velocity = Vector2.zero;
                     break;
             }
         }
@@ -2354,8 +2360,15 @@ public class Player : MonoBehaviourPunCallbacks
                 if (stamina >= staminaCostForMoves)
                 {
                     canCharge = false;
-                    SwitchState(STATE.charging);
 
+
+                    // ORIENTATION
+                    if (orientWhenActionDuringDash && playerState == STATE.dashing)
+                        ApplyOrientation(Mathf.Sign(transform.position.x - GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().transform.position.x));
+
+
+                    // STATE
+                    SwitchState(STATE.charging);
 
 
                     // ANIMATION
@@ -2378,8 +2391,10 @@ public class Player : MonoBehaviourPunCallbacks
 
 
                     // FX
-                    chargeFlareFX.Play();
-                    chargeKatanaFX.Play();
+                    if (chargeFlareFX)
+                        chargeFlareFX.Play();
+                    if (chargeKatanaFX)
+                        chargeKatanaFX.Play();
                 }
             }
 
@@ -2852,8 +2867,17 @@ public class Player : MonoBehaviourPunCallbacks
         // ANIMATION
         playerAnimations.TriggerParry();
 
+
+        // ORIENTATION
+        if (orientWhenActionDuringDash && playerState == STATE.dashing)
+            ApplyOrientation(Mathf.Sign(transform.position.x - GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().transform.position.x));
+        // STATE
         SwitchState(STATE.parrying);
+
+        // STAMINA
+
         StaminaCost(staminaCostForMoves, true);
+
 
         // STATS
         if (characterType == CharacterType.duel)
@@ -2920,6 +2944,11 @@ public class Player : MonoBehaviourPunCallbacks
     {
         // ANIMATION
         playerAnimations.TriggerPommel();
+
+
+        // ORIENTATION
+        if (orientWhenActionDuringDash && playerState == STATE.dashing)
+            ApplyOrientation(Mathf.Sign(transform.position.x - GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().transform.position.x));
 
 
         // STATE

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc32d6deac0686647b2375359aae7cca, type: 3}
   m_Name: MenuParametersSave01
   m_EditorClassIdentifier: 
-  defaultMasterVolume: 5
+  defaultMasterVolume: 3
   defaultMenuMusicVolume: -5
   defaultBattleMusicVolume: -3
   defaultMenuFXVolume: 7
@@ -24,18 +24,22 @@ MonoBehaviour:
   maxMenuFXVolume: 10
   maxFxVolume: 10
   maxVoiceVolume: 10
-  masterVolume: -3
+  masterVolume: 5
   menuMusicVolume: -5
   battleMusicVolume: -3
   menuFXVolume: 7
   fxVolume: 2
   voiceVolume: 0
   roundToWin: 5
-  displayHelp: 0
-  customList: 00010000000001000100
+  displayHelp: 1
+  enableRumbles: 1
+  language: ENGLISH
+  voicesLanguage: ENGLISH
+  displayPing: 0
+  customList: 01000000000100000100
   dayNightCycle: 0
   randomStage: 0
   useCustomListForRandom: 0
   keepLastLoadedStage: 1
   useCustomListForRandomStartStage: 1
-  lastLoadedStageIndex: 0
+  lastLoadedStageIndex: 5

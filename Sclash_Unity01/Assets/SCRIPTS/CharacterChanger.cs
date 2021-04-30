@@ -422,10 +422,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         // CHARACTER
         if (nameOfElement == characterElementName && GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<CharacterChanger>().currentAI_Index == 0)
-        {
-            Debug.Log(playerScript.iaScript.enabled);
             StartCoroutine(ApplyCharacterChange(changeDirection));
-        }
         else if (nameOfElement == maskElementName)
             StartCoroutine(ApplyMaskChange(changeDirection));
         else if (nameOfElement == weaponElementName)

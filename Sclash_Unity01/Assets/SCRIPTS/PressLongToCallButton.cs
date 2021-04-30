@@ -64,7 +64,8 @@ public class PressLongToCallButton : MonoBehaviour
             {
                 if (selected)
                 {
-                    pressSoundAudioSource.loop = false;
+                    if (pressSoundAudioSource)
+                        pressSoundAudioSource.loop = false;
                     hasStartedPlayingSound = false;
                 }
 

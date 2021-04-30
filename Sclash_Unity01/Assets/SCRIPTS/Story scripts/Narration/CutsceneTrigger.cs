@@ -15,6 +15,7 @@ using TMPro;
 // REQUIREMENTS
 // Goes with the NarrationEngine script (Single instance)
 // TextMeshPro package
+// GameManager script
 
 /// <summary>
 /// When the player enters it, sends an event to the NarrationEngine to trigger the referenced cutscene
@@ -44,7 +45,6 @@ public class CutsceneTrigger : MonoBehaviour
 
 
 
-
     // DETECTS PLAYER
     private void OnTriggerEnter2D(Collider2D collision)                                                                                                                           // ON TRIGGER ENTER 2D
     {
@@ -59,10 +59,14 @@ public class CutsceneTrigger : MonoBehaviour
 
     void TriggerCutsceneEvent()                                                                                                                                                    // TRIGGER NARRATION EVENT
     {
-        wiredVolume = true;
-        triggered = true;
-        if (NarrationEngine.Instance)
-            NarrationEngine.Instance.TriggerCutScene(cutscenePrefab);
+        // Check if you can enter a cutscene (State of the game, alreayd in a cutscene, etc...)
+        if (GameManager.Instance && GameManager.Instance.gameState != GameManager.GAMESTATE.paused && GameManager.Instance.gameState != GameManager.GAMESTATE.cutscene && !NarrationEngine.Instance.inCutscene)
+        {
+            wiredVolume = true;
+            triggered = true;
+            if (NarrationEngine.Instance)
+                NarrationEngine.Instance.TriggerCutScene(cutscenePrefab);
+        }
     }
 
 

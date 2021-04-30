@@ -34,11 +34,12 @@ public class NarrationEngine : MonoBehaviour
 
 
 
+
     [Header("CUTSCENES")]
     [SerializeField] Transform cutsceneParent = null;
     float maxCutSceneDuration = 60f;
     GameObject currentCutscene = null;
-    bool inCutscene = false;
+    [HideInInspector] public bool inCutscene = false;
     [SerializeField] Animation skipCutSceneIndicatorAnimation = null;
     [SerializeField] Animation cutsceneSkipAnimation = null;
     float cutsceneSkipAmount = 0;
@@ -61,7 +62,6 @@ public class NarrationEngine : MonoBehaviour
     {
         public string textKey;
         public float duration;
-        public string audioClipKey;
         public float delay;
     }
     [System.Serializable]
@@ -77,6 +77,8 @@ public class NarrationEngine : MonoBehaviour
     int currentNarrationEventIndex = 0;
     NarrationEventData currentNarrationEvent;
     bool narrating = false;
+    bool narrationPaused = false;
+    float currentSentenceDuration = 0f;
 
 
 
@@ -109,7 +111,7 @@ public class NarrationEngine : MonoBehaviour
         if (cutsceneSkipFillImage)
             cutsceneSkipFillImage.fillAmount = 0;
     }
-    private void Update()
+    private void Update()                                                                                                                                                        // UPDATE
     {
         if (isActiveAndEnabled && enabled)
             ManageCutscene();
@@ -143,53 +145,72 @@ public class NarrationEngine : MonoBehaviour
 
     void ReadSentence()                                                                                                                                                         // READ SENTENCE
     {
-        // ANIMATION
-        textSubtitlesAnimator.Play("FadeIn", PlayMode.StopAll);
-
-        float duration = 0f;
-
-        if (currentNarrationEvent.sentences.Count > currentNarrationEventIndex)
+        if (currentNarrationEvent.sentences != null && currentNarrationEvent.sentences.Count > 0 && currentNarrationEventIndex < currentNarrationEvent.sentences.Count)
         {
-            duration = currentNarrationEvent.sentences[currentNarrationEventIndex].duration;
+            // ANIMATION
+            if (textSubtitlesAnimator)
+                textSubtitlesAnimator.Play("FadeIn", PlayMode.StopAll);
 
-            if (currentNarrationEvent.sentences[currentNarrationEventIndex].textKey != null)
+            currentSentenceDuration = 0f;
+
+            if (currentNarrationEvent.sentences.Count > currentNarrationEventIndex)
             {
-                textApparitionComponent.textKey = currentNarrationEvent.sentences[currentNarrationEventIndex].textKey;
-                textApparitionComponent.TransfersTrad();
-            }
-            if (currentNarrationEvent.sentences[currentNarrationEventIndex].audioClipKey != null && currentNarrationEvent.sentences[currentNarrationEventIndex].audioClipKey != "")
-                if (LanguageManager.Instance && narratorAudioSource)
+                currentSentenceDuration = currentNarrationEvent.sentences[currentNarrationEventIndex].duration;
+
+                if (currentNarrationEvent.sentences[currentNarrationEventIndex].textKey != null)
                 {
-                    narratorAudioSource.clip = LanguageManager.Instance.GetAudioClip(currentNarrationEvent.sentences[currentNarrationEventIndex].audioClipKey);
-                    narratorAudioSource.Play();
-                    // If there's a voice clip, the duration of the clip overrides the input sentence duration
-                    if (narratorAudioSource.clip)
-                        duration = narratorAudioSource.clip.length;
+                    textApparitionComponent.textKey = currentNarrationEvent.sentences[currentNarrationEventIndex].textKey;
+                    textApparitionComponent.TransfersTrad();
                 }
+                if (currentNarrationEvent.sentences[currentNarrationEventIndex].textKey != null && currentNarrationEvent.sentences[currentNarrationEventIndex].textKey != "")
+                    if (LanguageManager.Instance && narratorAudioSource)
+                    {
+                        narratorAudioSource.clip = LanguageManager.Instance.GetAudioClip(currentNarrationEvent.sentences[currentNarrationEventIndex].textKey);
+                        narratorAudioSource.Play();
+
+                        // If narration paused pause clip
+                        if (narrationPaused)
+                            narratorAudioSource.Pause();
+
+                        // If there's a voice clip, the duration of the clip overrides the input sentence duration
+                        if (narratorAudioSource.clip)
+                            currentSentenceDuration = narratorAudioSource.clip.length;
+                    }
+            }
+
+
+            Invoke("EndSentence", currentSentenceDuration);
         }
-
-
-        Invoke("EndSentence", duration);
     }
 
     void EndSentence()                                                                                                                                                          // END SENTENCE
     {
-        // ANIMATION
-        textSubtitlesAnimator.Play("FadeOut", PlayMode.StopAll);
-
-        if (currentNarrationEvent.sentences.Count - 1 > currentNarrationEventIndex)
+        // Is paused ?
+        if (!narrationPaused)
         {
-            currentNarrationEventIndex++;
-            Invoke("ReadSentence", currentNarrationEvent.sentences[currentNarrationEventIndex - 1].delay);
+            // Is there an event to read ?
+            if (currentNarrationEvent.sentences != null && currentNarrationEvent.sentences.Count > 0 && currentNarrationEventIndex < currentNarrationEvent.sentences.Count)
+            {
+                // ANIMATION
+                if (textSubtitlesAnimator)
+                    textSubtitlesAnimator.Play("FadeOut", PlayMode.StopAll);
+
+                if (currentNarrationEvent.sentences.Count - 1 > currentNarrationEventIndex)
+                {
+                    currentNarrationEventIndex++;
+                    Invoke("ReadSentence", currentNarrationEvent.sentences[currentNarrationEventIndex - 1].delay);
+                }
+                else
+                    Invoke("EndNarrationEvent", currentNarrationEvent.sentences[currentNarrationEventIndex].delay);
+            }
         }
-        else
-            Invoke("EndNarrationEvent", currentNarrationEvent.sentences[currentNarrationEventIndex].delay);
     }
 
     void EndNarrationEvent()                                                                                                                                                    // END NARRATION EVENT
     {
         // ANIMATION
-        textSubtitlesAnimator.Play("FadeOut", PlayMode.StopAll);
+        if (textSubtitlesAnimator && narrating)
+            textSubtitlesAnimator.Play("FadeOut", PlayMode.StopAll);
 
 
         
@@ -200,9 +221,12 @@ public class NarrationEngine : MonoBehaviour
             Invoke("CallNextNarrationEvent", 1.5f);
         else
         {
-            narrating = false;
             // ANIMATION
-            generalAnimator.Play("FadeOut", PlayMode.StopAll);
+            if (generalAnimator && narrating)
+                generalAnimator.Play("FadeOut", PlayMode.StopAll);
+
+
+            narrating = false;
         }
     }
 
@@ -220,6 +244,23 @@ public class NarrationEngine : MonoBehaviour
         CancelInvoke("EndSentence");
         CancelInvoke("EndNarrationEvent");
         CancelInvoke("NarrationEvent");
+    }
+
+    public void PauseNarration(bool on)
+    {
+        narrationPaused = on;
+
+        if (on)
+            CancelInvoke("EndSentence");
+        else
+            Invoke("EndSentence", currentSentenceDuration);
+
+
+        // AUDIO
+        if (on)
+            narratorAudioSource.Pause();
+        else
+            narratorAudioSource.Play();
     }
 
 
@@ -240,7 +281,10 @@ public class NarrationEngine : MonoBehaviour
                 Debug.LogWarning("Warning from NarrationEngine instance, there seems to be no player in the scene");
         }
 
+
+        // STATE
         player.SwitchState(Player.STATE.cutscene);
+        GameManager.Instance.SwitchState(GameManager.GAMESTATE.cutscene);
 
 
         // Fail safe
@@ -256,12 +300,17 @@ public class NarrationEngine : MonoBehaviour
             inCutscene = false;
             player.SwitchState(Player.STATE.normal);
 
+
+            // STATE
+            GameManager.Instance.SwitchState(GameManager.Instance.oldState);
+
+
             // Skip stuff
             cutsceneSkipAmount = 0;
             cutsceneSkipFillImage.fillAmount = 0;
-            skipInfoAppeared = false;
-            if (skipCutSceneIndicatorAnimation)
+            if (skipCutSceneIndicatorAnimation && skipInfoAppeared)
                 skipCutSceneIndicatorAnimation.Play("FadeOut", PlayMode.StopAll);
+            skipInfoAppeared = false;
         }
     }
 

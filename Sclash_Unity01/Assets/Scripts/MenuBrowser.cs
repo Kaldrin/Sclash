@@ -10,6 +10,9 @@ using UnityEngine.EventSystems;
 public class MenuBrowser : MonoBehaviour
 {
     #region VARIABLES
+    [SerializeField] string eventSystemName = "EventSystem";
+
+
     #region BROWSING
     [Header("BROWSING")]
     [Tooltip("The list of elements to browse in this menu page")]
@@ -330,7 +333,8 @@ public class MenuBrowser : MonoBehaviour
         if (canBack && backElement != null)
             if (controls.UI.Cancel.triggered)
             {
-                backElement.GetComponent<Button>().onClick.Invoke();
+                if (backElement)
+                    backElement.GetComponent<Button>().onClick.Invoke();
 
 
                 // RUMBLE
@@ -368,10 +372,10 @@ public class MenuBrowser : MonoBehaviour
         if (enabled && elements.Length > 0)
         {
             if (!state)
-                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
+                GameObject.Find(eventSystemName).GetComponent<EventSystem>().SetSelectedGameObject(null);
             else
             {
-                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(elements[browseIndex]);
+                GameObject.Find(eventSystemName).GetComponent<EventSystem>().SetSelectedGameObject(elements[browseIndex]);
 
 
                 if (elements[browseIndex].GetComponent<Button>())

@@ -16,23 +16,29 @@ using UnityEngine;
 // UNITY 2020.3
 public class DisableIfNotBeta : MonoBehaviour
 {
-    private void Awake()
+    private void Awake()                                                                                                        // AWAKE
     {
         CheckVersion();
     }
 
-    private void Start()
+    private void Start()                                                                                                            // START
     {
         CheckVersion();
     }
 
-    private void OnEnable()
+    private void OnEnable()                                                                                                     // ON ENABLE
     {
         CheckVersion();
     }
 
-    void CheckVersion()
+
+
+
+
+
+    void CheckVersion()                                                                                                             // CHECK VERSION
     {
+        Debug.Log(Application.version.ToLower());
         if (!Application.version.ToLower().Contains("beta"))
             gameObject.SetActive(false);
     }

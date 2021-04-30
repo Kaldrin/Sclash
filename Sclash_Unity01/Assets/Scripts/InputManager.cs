@@ -8,9 +8,7 @@ using UnityEngine.InputSystem;
 // OPTIMIZED ?
 public class InputManager : MonoBehaviour
 {
-    #region Singleton
     [HideInInspector] public static InputManager Instance;
-    #endregion  
 
 
     #region VARIABLES

@@ -190,9 +190,11 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
                 // Walk anim speed depending on speed
                 if (playerScript.playerState == Player.STATE.normal && !playerScript.playerIsAI)
+
                     animator.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
                 else
                     animator.speed = animatorBaseSpeed;
+                
 
                 if (playerScript.playerState == Player.STATE.charging && !playerScript.playerIsAI)
                     legsAnimator2.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
@@ -205,6 +207,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         {
             animator.SetFloat(moving, 0);
 
+
+            // Duel
             if (!playerScript.playerIsAI)
                 animator.speed = 1;
         }
