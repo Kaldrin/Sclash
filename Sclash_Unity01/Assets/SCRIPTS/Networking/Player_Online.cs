@@ -26,6 +26,17 @@ public class Player_Online : Player, IPunObservable
         ConnectManager.PlayerJoined -= SendInfos;
     }
 
+    public override void Start()
+    {
+        base.Start();
+
+        if (photonView.IsMine)
+        {
+            attachedPlayerInput = FindObjectOfType<PlayerInput>().gameObject;
+            attachedPlayerInput.GetComponent<PlayerControlCenter>().attachedPlayer = this;
+        }
+    }
+
     public override void Update()
     {
         if (!photonView.IsMine)
@@ -445,7 +456,7 @@ public class Player_Online : Player, IPunObservable
 
     internal override void DashInput(float inDirection, bool quickDash)
     {
-        Debug.Log(gameObject.name+" receive DashInput");
+        Debug.Log(gameObject.name + " receive DashInput");
 
         switch (playerState)
         {

@@ -31,7 +31,7 @@ public class PlayerControlCenter : MonoBehaviour
     PlayerControls controls;
     EventSystemControl UIcontrols;
 
-    [SerializeField] Player attachedPlayer;
+    public Player attachedPlayer;
 
 
 
