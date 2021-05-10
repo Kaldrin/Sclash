@@ -202,19 +202,107 @@ public class StoryPlayer : Player
         if (playerIsAI)
         {
             base.ManageMovementsInputs(/*ctx*/);
-            return;
+            return; 
         }
 
-        //float v = ctx.ReadValue<float>();
-        float v = InputManager.Instance.playerInputs[0].horizontal;
 
+
+
+        //float v = ctx.ReadValue<float>();
         //rb.simulated = true;
-        rb.velocity = new Vector2(v * actualMovementsSpeed, rb.velocity.y);
+
+        // INPUT
+        float v = 0;
+
+        if (forcedRunMovement)
+        {
+            if (Time.time > forcedRunMovementStartTime + forcedRunMovementDuration)
+            {
+                forcedRunMovement = false;
+                forcedRunmovementEnded = true;
+            }
+
+            if (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) <= 0.05f || Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal) != forcedRunMovementDirection && !forcedStop)
+            {
+                releasedDuringForcedRun = true;
+                forcedStop = true;
+                forcedStopStartTime = Time.time;
+            }
+        }
+        else if (forcedStop && Time.time > forcedStopStartTime + forcedStopDuration)
+            forcedStop = false;
+
+
+        if (playerState == STATE.battleSneathedNormal)
+            if (forcedRunmovementEnded && (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) <= 0.05f || Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal) != forcedRunMovementDirection))
+            {
+                forcedRunmovementEnded = false;
+                forcedStop = true;
+                forcedStopStartTime = Time.time;
+            }
+
+
+
+        // Normal movements
+        if (playerState != STATE.battleSneathedNormal)
+            v = InputManager.Instance.playerInputs[0].horizontal;
+        // Run anims movements
+        else
+        {
+            if (!forcedRunMovement || forcedRunmovementEnded)
+            {
+                if (Mathf.Abs(InputManager.Instance.playerInputs[0].horizontal) < 0.05f)
+                {
+                    forcedRunmovementEnded = false;
+                    v = 0;
+                }
+                else
+                    v = Mathf.Sign(InputManager.Instance.playerInputs[0].horizontal);
+            }
+            else
+                v = forcedRunMovementDirection;
+
+            if (forcedStop && !forcedRunMovement)
+                v = 0;
+
+
+            if (Mathf.Abs(v) > 0 && !forcedRunMovement && !forcedRunmovementEnded)
+            {
+                forcedRunMovement = true;
+                forcedRunMovementDirection = v;
+                forcedRunMovementStartTime = Time.time;
+                soloOrientation = -v;
+                ApplyOrientation(soloOrientation);
+            }
+        }
+
+
+        // SPEED
+        if (playerState != STATE.battleSneathedNormal)
+            rb.velocity = new Vector2(v * actualMovementsSpeed, rb.velocity.y);
+        else
+        {
+            float newX = Mathf.Lerp(newSpeed.x, v * actualMovementsSpeed, Time.deltaTime * 2);
+
+            if (Mathf.Abs(newX) < 0.8f && Mathf.Abs(v) <= 0.05f)
+                newX = 0;
+
+            newSpeed = new Vector2(newX, rb.velocity.y);
+            //rb.velocity = new Vector2(newX, rb.velocity.y);
+            rb.velocity = newSpeed;
+        }
+
+
+
+        // ANIMATION
+        playerAnimations.animator.SetFloat("RunSpeed", Mathf.Abs(v));
+
+
 
 
 
         // FX
-        if (Mathf.Abs(rb.velocity.x) > minSpeedForWalkFX && GameManager.Instance.gameState == GameManager.GAMESTATE.game && playerState == Player.STATE.normal)
+        if (Mathf.Abs(rb.velocity.x) > minSpeedForWalkFX && GameManager.Instance.gameState == GameManager.GAMESTATE.game && (playerState == Player.STATE.normal || playerState == Player.STATE.battleSneathedNormal))
         {
             if ((rb.velocity.x * -transform.localScale.x) < 0)
             {
@@ -244,26 +332,29 @@ public class StoryPlayer : Player
 
     public override void ManageOrientation()
     {
-        if (playerIsAI)
+        if (!forcedRunMovement && !forcedStop)
         {
-            //Orient toward the Player
-            float sign = 1;
-            if (solo_iAScript && solo_iAScript.opponent)
-                sign = Mathf.Sign(transform.position.x - solo_iAScript.opponent.transform.position.x);
-            ApplyOrientation(sign);
+            if (playerIsAI)
+            {
+                //Orient toward the Player
+                float sign = 1;
+                if (solo_iAScript && solo_iAScript.opponent)
+                    sign = Mathf.Sign(transform.position.x - solo_iAScript.opponent.transform.position.x);
+                ApplyOrientation(sign);
 
-            //base.ManageOrientation();
-            return;
+                //base.ManageOrientation();
+                return;
+            }
+
+            if (InputManager.Instance.playerInputs[0].horizontal != 0)
+                soloOrientation = -InputManager.Instance.playerInputs[0].horizontal;
+
+            if (canOrientTowardsEnemy)
+                ApplyOrientation(Mathf.Sign(soloOrientation));
+
+            if (Time.time >= orientationCooldown + orientationCooldownStartTime)
+                orientationCooldownFinished = true;
         }
-
-        if (InputManager.Instance.playerInputs[0].horizontal != 0)
-            soloOrientation = -InputManager.Instance.playerInputs[0].horizontal;
-
-        if (canOrientTowardsEnemy)
-            ApplyOrientation(Mathf.Sign(soloOrientation));
-
-        if (Time.time >= orientationCooldown + orientationCooldownStartTime)
-            orientationCooldownFinished = true;
     }
 
 

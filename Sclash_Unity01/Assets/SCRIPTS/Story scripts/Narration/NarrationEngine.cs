@@ -298,7 +298,7 @@ public class NarrationEngine : MonoBehaviour
             if (currentCutscene)
                 Destroy(currentCutscene);
             inCutscene = false;
-            player.SwitchState(Player.STATE.normal);
+            player.SwitchState(player.oldState);
 
 
             // STATE

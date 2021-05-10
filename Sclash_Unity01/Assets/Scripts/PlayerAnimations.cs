@@ -121,7 +121,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     #region FUNCTIONS
     #region BASE FUNCTIONS
-    private void Start()                                                                                    // START
+    private void Start()                                                                                                                                             // START
     {
         animatorBaseSpeed = animator.speed;
 
@@ -134,7 +134,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
             playerScript.maskSpriteRenderer.sprite = defaultMask;
     }
 
-    void FixedUpdate()                                                                                      // FIXED UPDATE
+    void FixedUpdate()                                                                                                                                               // FIXED UPDATE
     {
         if (enabled && isActiveAndEnabled)
         {
@@ -161,7 +161,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     #region UPDATE VISUALS
     // Update the animator's parameters in Update
-    void UpdateAnims()
+    void UpdateAnims()                                                                                                                                                  // UPDATE ANIMS
     {
         if (playerScript.playerState == Player.STATE.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
@@ -178,6 +178,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
 
         // WALK ANIM
+        //animator.SetFloat("RunSpeed", Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal));
         // If the player is in fact moving fast enough
         if (Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
         {
@@ -190,11 +191,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
                 // Walk anim speed depending on speed
                 if (playerScript.playerState == Player.STATE.normal && !playerScript.playerIsAI)
-
                     animator.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);
                 else
                     animator.speed = animatorBaseSpeed;
-                
 
                 if (playerScript.playerState == Player.STATE.charging && !playerScript.playerIsAI)
                     legsAnimator2.speed = Mathf.Abs(InputManager.Instance.playerInputs[playerScript.playerNum].horizontal);

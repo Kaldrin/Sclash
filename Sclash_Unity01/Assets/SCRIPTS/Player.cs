@@ -198,12 +198,25 @@ public class Player : MonoBehaviourPunCallbacks
     [Tooltip("The default movement speed of the player")]
     protected float baseMovementsSpeed = 2.5f;
     float chargeMovementsSpeed = 1.2f;
+    float runMovementSpeed = 4.3f;
     float sneathedMovementsSpeed = 1.8f;
     float attackingMovementsSpeed = 2.2f;
     [HideInInspector] public float actualMovementsSpeed = 1;
 
     Vector3 oldPos = Vector3.zero;
     protected Vector2 netTargetPos = Vector2.zero;
+
+    // Run anim
+    [HideInInspector] internal bool forcedRunMovement = false;
+    [HideInInspector] internal bool forcedRunmovementEnded = false;
+    [HideInInspector] internal bool releasedDuringForcedRun = false;
+    [HideInInspector] internal bool forcedStop = false;
+    [HideInInspector] internal float forcedRunMovementDirection = 0;
+    [HideInInspector] internal float forcedRunMovementStartTime = 0;
+    [HideInInspector] internal float forcedRunMovementDuration = 0.4f;
+    [HideInInspector] internal float forcedStopStartTime = 0f;
+    [HideInInspector] internal float forcedStopDuration = 0.6f;
+    [HideInInspector] internal Vector2 newSpeed = new Vector2(0, 0);
     #endregion
 
 
@@ -795,7 +808,7 @@ public class Player : MonoBehaviourPunCallbacks
 
                 case STATE.battleDrawing:                                                     // BATTLE DRAWING
                     UpdateStaminaSlidersValue();
-                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    SetStaminaBarsOpacity(0);
                     UpdateStaminaColor();
                     rb.velocity = Vector2.zero;
                     if (hasFinishedAnim)
@@ -806,14 +819,14 @@ public class Player : MonoBehaviourPunCallbacks
                     if (hasFinishedAnim)
                         SwitchState(STATE.battleSneathedNormal);
                     UpdateStaminaSlidersValue();
-                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    SetStaminaBarsOpacity(0);
                     UpdateStaminaColor();
                     rb.velocity = Vector2.zero;
                     break;
 
                 case STATE.battleSneathedNormal:                                            // BATTLE SNEATHED NORMAL
                     UpdateStaminaSlidersValue();
-                    SetStaminaBarsOpacity(staminaBarsOpacity);
+                    SetStaminaBarsOpacity(0);
                     UpdateStaminaColor();
                     ManageMovementsInputs();
                     ManageOrientation();
@@ -1060,9 +1073,11 @@ public class Player : MonoBehaviourPunCallbacks
                 break;
 
             case STATE.battleSneathing:                                                                                // BATTLE SNEATHING
+                SetStaminaBarsOpacity(0);
                 break;
 
             case STATE.battleSneathedNormal:                                                                           // BATTLE SNEATHED NORMAL
+                actualMovementsSpeed = runMovementSpeed;
                 break;
 
             case STATE.normal:                                                                                         // NORMAL
@@ -2063,7 +2078,17 @@ public class Player : MonoBehaviourPunCallbacks
                     rb.velocity = new Vector2(InputManager.Instance.playerInputs[0].horizontal * actualMovementsSpeed, rb.velocity.y);
             }
             else
-                rb.velocity = new Vector2(InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+            {
+                Debug.Log("Movements");
+                if (playerState != STATE.battleSneathedNormal)
+                    rb.velocity = new Vector2(InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
+                else
+                {
+                    float newX = Mathf.Lerp(rb.velocity.x, InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, Time.deltaTime * 1);
+                    rb.velocity = new Vector2(newX, rb.velocity.y);
+                    Debug.Log("Run");
+                }
+            }
         }
 
 
@@ -2223,11 +2248,9 @@ public class Player : MonoBehaviourPunCallbacks
     void TriggerBattleSneath()
     {
         // If players haven't all drawn, go back to chara selec state
-        if (!GameManager.Instance.allPlayersHaveDrawn)
+        if (!GameManager.Instance.allPlayersHaveDrawn && characterType == CharacterType.duel)
             // STATE
-            SwitchState(STATE.sneathing);
-        /*
-           
+            SwitchState(STATE.sneathing);   
         else
         {
             // ANIMATION
@@ -2237,7 +2260,6 @@ public class Player : MonoBehaviourPunCallbacks
             // STATE
             SwitchState(STATE.battleSneathing);
         }
-        */
     }
 
     void TriggerBattleDraw()
