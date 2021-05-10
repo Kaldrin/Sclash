@@ -33,7 +33,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
     [Tooltip("The reference to the player's Animators components for the character and their legs")]
     [SerializeField] public Animator animator = null;
-    [SerializeField] Animator legsAnimator2 = null;
+    [SerializeField] internal Animator legsAnimator2 = null;
     [Tooltip("The reference to the animator component of the game object containing the text telling the player to draw")]
     [SerializeField] public Animator nameDisplayAnimator = null;
 
