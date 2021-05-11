@@ -38,7 +38,7 @@ public class InputManager : MonoBehaviour
 
 
     [Header("INPUT SETTINGS")]
-    [HideInInspector] public float axisDeadZone = 0.1f; 
+    [HideInInspector] public float axisDeadZone = 0.1f;
     [HideInInspector] public float dashDeadZone = 0.5f;
     [SerializeField] public PlayerInputs[] playerInputs = new PlayerInputs[2];
     [HideInInspector] public bool scoreInput = false;
@@ -142,7 +142,7 @@ public class InputManager : MonoBehaviour
 
     private void OnEnable()                                                                                                                                                       // ON ENABLE
     {
-        ConnectManager.PlayerDisconnected += DisconnectedPlayer;
+        ConnectManager.PlayerDisconnected += OnDisconnectedPlayer;
         ConnectManager.PlayerConnected += OnConnectedPlayer;
 
         InputSystem.onDeviceChange += (device, change) =>
@@ -170,7 +170,7 @@ public class InputManager : MonoBehaviour
 
     private void OnDisable()                                                                                                                                                    // ON DISABLE
     {
-        ConnectManager.PlayerDisconnected -= DisconnectedPlayer;
+        ConnectManager.PlayerDisconnected -= OnDisconnectedPlayer;
         ConnectManager.PlayerConnected -= OnConnectedPlayer;
     }
 
@@ -192,13 +192,16 @@ public class InputManager : MonoBehaviour
     }
 
 
-    private void DisconnectedPlayer()                                                                                                                                            // DISCONNECTED PLAYER
+    private void OnDisconnectedPlayer()                                                                                                                                            // DISCONNECTED PLAYER
     {
         Debug.Log("Player Disconnected, rebuilding input for P2");
-        if (gamepads.Count == 2)
-            inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "Gamepad Scheme", gamepads[1]));
-        else
-            inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
+        if (inputs.Count < 2)
+        {
+            if (gamepads.Count == 2)
+                inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "Gamepad Scheme", gamepads[1]));
+            else
+                inputs.Add(PlayerInputManager.instance.JoinPlayer(inputs.Count, -1, "ArrowScheme", Keyboard.current));
+        }
     }
 
 

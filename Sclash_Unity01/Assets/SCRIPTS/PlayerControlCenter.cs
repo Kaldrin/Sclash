@@ -31,7 +31,7 @@ public class PlayerControlCenter : MonoBehaviour
     PlayerControls controls;
     EventSystemControl UIcontrols;
 
-    [SerializeField] Player attachedPlayer;
+    public Player attachedPlayer;
 
 
 
@@ -51,8 +51,12 @@ public class PlayerControlCenter : MonoBehaviour
     {
         m_playerInput = GetComponent<PlayerInput>();
         m_playerIndex = m_playerInput.playerIndex;
+
         if (attachedPlayer == null)
+        {
             attachedPlayer = GameManager.Instance.playersList[m_playerIndex].GetComponent<Player>();
+            attachedPlayer.attachedPlayerInput = gameObject;
+        }
 
         UIcontrols.UI.Submit.started += (ctx) => OnSubmit(ctx);
         UIcontrols.UI.Submit.canceled += (ctx) => OnSubmit(ctx);
@@ -83,9 +87,29 @@ public class PlayerControlCenter : MonoBehaviour
     }
 
 
+    private void OnEnable()
+    {
+        //GameManager.Instance.PlayerWonEvent += DisableControls;
+        //GameManager.Instance.EndGameEvent += EnableControls;
+    }
 
+    private void OnDisable()
+    {
+        //GameManager.Instance.PlayerWonEvent -= DisableControls;
+        //GameManager.Instance.EndGameEvent -= EnableControls;
+    }
 
+    private void EnableControls()
+    {
+        Debug.Log("Enabling controls");
+        controls.Enable();
+    }
 
+    private void DisableControls()
+    {
+        Debug.Log("Disabling controls");
+        controls.Disable();
+    }
 
     public void OnHorizontal(InputAction.CallbackContext ctx)                                                                                       // ON HORIZONTAL
     {
@@ -159,7 +183,6 @@ public class PlayerControlCenter : MonoBehaviour
     {
         if (ctx.canceled)
         {
-            
             attachedPlayer.DashInput(0f, false);
             return;
         }
@@ -174,33 +197,40 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnPause(InputAction.CallbackContext ctx)                                                                                                // ON PAUSE
     {
-        if (ctx.started)
-            if (InputManager.Instance)
-                InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
-
-        if (ctx.canceled)
-            if (InputManager.Instance)
-                InputManager.Instance.playerInputs[m_playerIndex].pauseUp = true;
+        if (InputManager.Instance)
+        {
+            if (ctx.canceled)
+            {
+                StartCoroutine("EnableOneFrame");
+            }
+        }
     }
 
+    private IEnumerator EnableOneFrame()
+    {
+        InputManager.Instance.playerInputs[m_playerIndex].pauseUp = true;
+        yield return new WaitForEndOfFrame();
+        InputManager.Instance.playerInputs[m_playerIndex].pauseUp = false;
+    }
 
     public void OnScore(InputAction.CallbackContext ctx)                                                                                                // ON SCORE
     {
-        if (ctx.started)
-            if (InputManager.Instance)
+        if (InputManager.Instance)
+        {
+            if (ctx.started)
             {
                 InputManager.Instance.playerInputs[m_playerIndex].score = true;
                 InputManager.Instance.playerInputs[m_playerIndex].scoreUp = true;
                 InputManager.Instance.scoreInput = true;
             }
 
-        if (ctx.canceled)
-            if (InputManager.Instance)
+            if (ctx.canceled)
             {
                 InputManager.Instance.playerInputs[m_playerIndex].score = false;
                 InputManager.Instance.playerInputs[m_playerIndex].scoreUp = false;
                 InputManager.Instance.scoreInput = false;
             }
+        }
     }
 
 
@@ -213,12 +243,13 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnSneath(InputAction.CallbackContext ctx)                                                                                                   // ON SNEATH
     {
-        if (ctx.started)
-            if (InputManager.Instance)
+        if (InputManager.Instance)
+        {
+            if (ctx.started)
                 InputManager.Instance.playerInputs[m_playerIndex].battleSneathDraw = true;
-        if (ctx.canceled)
-            if (InputManager.Instance)
+            if (ctx.canceled)
                 InputManager.Instance.playerInputs[m_playerIndex].battleSneathDraw = false;
+        }
     }
 
 
@@ -227,21 +258,19 @@ public class PlayerControlCenter : MonoBehaviour
         if (GameManager.Instance.gameState == GameManager.GAMESTATE.paused)
             return;
 
-        if (ctx.started)
+        if (InputManager.Instance)
         {
-            if (InputManager.Instance)
+            if (ctx.started)
             {
                 InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = true;
-
                 InputManager.Instance.playerInputs[m_playerIndex].anyKey = true;
             }
-        }
-        else if (ctx.canceled)
-            if (InputManager.Instance)
+            else if (ctx.canceled)
             {
                 InputManager.Instance.playerInputs[m_playerIndex].anyKey = false;
                 InputManager.Instance.playerInputs[m_playerIndex].anyKeyDown = false;
             }
+        }
     }
 
 
@@ -267,12 +296,13 @@ public class PlayerControlCenter : MonoBehaviour
 
     public void OnSkip(InputAction.CallbackContext ctx)
     {
-        if (ctx.started)
-            if (InputManager.Instance)
+        if (InputManager.Instance)
+        {
+            if (ctx.started)
                 InputManager.Instance.skip = true;
-        if (ctx.canceled)
-            if (InputManager.Instance)
+            if (ctx.canceled)
                 InputManager.Instance.skip = false;
+        }
     }
 
     public void OnDeviceLost(PlayerInput input)                                                                                                                 // ON DEVICE LOST
@@ -287,9 +317,9 @@ public class PlayerControlCenter : MonoBehaviour
         if (InputManager.Instance)
             InputManager.Instance.RegainedDevice(input);
     }
-    
-    
-    
+
+
+
 
 
 

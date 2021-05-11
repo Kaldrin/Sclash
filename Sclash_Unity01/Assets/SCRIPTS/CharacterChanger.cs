@@ -521,7 +521,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         mainModule = playerScript.chargeKatanaFX.main;
         mainModule.startColor = randomColor;
-
+       
 
 
 

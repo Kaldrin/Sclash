@@ -249,10 +249,12 @@ public class MenuManager : MonoBehaviour
             for (int i = 0; i < InputManager.Instance.playerInputs.Length; i++)
                 if (InputManager.Instance.playerInputs[i].pauseUp)
                 {
+                    //InputManager.Instance.playerInputs[i].pauseUp = false;
                     playerWhoPaused = i;
                     pauseCooldownOn = true;
                     pauseCooldownStartTime = Time.time;
                     TriggerPause(true);
+                    continue;
                 }
     }
     // PAUDE OFF INPUT

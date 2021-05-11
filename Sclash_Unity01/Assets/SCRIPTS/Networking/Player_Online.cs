@@ -26,6 +26,17 @@ public class Player_Online : Player, IPunObservable
         ConnectManager.PlayerJoined -= SendInfos;
     }
 
+    public override void Start()
+    {
+        base.Start();
+
+        if (photonView.IsMine)
+        {
+            attachedPlayerInput = FindObjectOfType<PlayerInput>().gameObject;
+            attachedPlayerInput.GetComponent<PlayerControlCenter>().attachedPlayer = this;
+        }
+    }
+
     public override void Update()
     {
         if (!photonView.IsMine)
@@ -445,23 +456,21 @@ public class Player_Online : Player, IPunObservable
 
     internal override void DashInput(float inDirection, bool quickDash)
     {
+        Debug.Log(gameObject.name + " receive DashInput");
+
         switch (playerState)
         {
             case STATE.normal:
-                break;
             case STATE.charging:
-                break;
             case STATE.canAttackAfterAttack:
-                break;
             case STATE.pommeling:
-                break;
             case STATE.dashing:
                 break;
-
             default:
                 return;
         }
 
+        // QUICK DASH
         if (quickDash)
         {
             if (Mathf.Abs(inDirection) < shortcutDashDeadZone && currentShortcutDashStep == DASHSTEP.invalidated)
@@ -475,18 +484,19 @@ public class Player_Online : Player, IPunObservable
                 currentShortcutDashStep = DASHSTEP.invalidated;
             }
         }
+        // NORMAL DASH
         else
         {
             switch (currentDashStep)
             {
                 case DASHSTEP.rest:
-                    temporaryDashDirectionForCalculation = inDirection;
+                    temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
                     dashInitializationStartTime = Time.time;
                     currentDashStep = DASHSTEP.firstInput;
                     break;
 
                 case DASHSTEP.firstInput:
-                    if (inDirection == 0f)
+                    if (Mathf.Abs(inDirection) <= 0f)
                     {
                         currentDashStep = DASHSTEP.firstRelease;
                         break;
@@ -494,8 +504,8 @@ public class Player_Online : Player, IPunObservable
 
                     if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
                     {
-                        currentDashStep = DASHSTEP.invalidated;
-                        break;
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
                     }
                     break;
 
@@ -506,6 +516,12 @@ public class Player_Online : Player, IPunObservable
                         currentDashStep = DASHSTEP.invalidated;
                         TriggerBasicDash();
                     }
+                    else if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
+                    {
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
+                        currentDashStep = DASHSTEP.firstInput;
+                    }
                     else
                     {
                         currentDashStep = DASHSTEP.invalidated;
@@ -514,10 +530,13 @@ public class Player_Online : Player, IPunObservable
 
 
                 case DASHSTEP.invalidated:
-                    if (inDirection == 0f)
-                    {
-                        Debug.Log("Resetting values");
+                    if (Mathf.Abs(inDirection) <= 0f)
                         currentDashStep = DASHSTEP.rest;
+                    else if (Mathf.Sign(inDirection) != temporaryDashDirectionForCalculation)
+                    {
+                        currentDashStep = DASHSTEP.firstInput;
+                        temporaryDashDirectionForCalculation = Mathf.Sign(inDirection);
+                        dashInitializationStartTime = Time.time;
                     }
                     break;
             }
@@ -526,7 +545,6 @@ public class Player_Online : Player, IPunObservable
 
     internal override void ManageDashInput()
     {
-
         if (currentDashStep == DASHSTEP.firstInput || currentDashStep == DASHSTEP.firstRelease)
             if (Time.time - dashInitializationStartTime > allowanceDurationForDoubleTapDash)
                 currentDashStep = DASHSTEP.rest;
@@ -635,6 +653,7 @@ public class Player_Online : Player, IPunObservable
     [PunRPC]
     protected override void TriggerPommel()
     {
+        Debug.Log(gameObject.name + " pommel", gameObject);
         base.TriggerPommel();
     }
 
@@ -660,14 +679,15 @@ public class Player_Online : Player, IPunObservable
     private void SendInfos()
     {
         if (photonView.IsMine)
-            photonView.RPC("ReceiveInfos", RpcTarget.Others, playerNum, transform.name);
+            photonView.RPC("ReceiveInfos", RpcTarget.Others, playerNum, transform.name, playerAnimations.legsAnimator2.gameObject.activeInHierarchy);
     }
 
     [PunRPC]
-    private void ReceiveInfos(int num, string name)
+    private void ReceiveInfos(int num, string name, bool legs)
     {
         transform.name = name;
         playerNum = num;
+        playerAnimations.legsAnimator2.gameObject.SetActive(legs);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
