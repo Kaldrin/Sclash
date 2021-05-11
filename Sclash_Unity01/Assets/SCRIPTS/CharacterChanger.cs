@@ -67,7 +67,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     int lastChosenMaskIndex = 0;
     int currentWeaponIndex = 0;
     int lastWeaponIndex = 0;
-    [HideInInspector] public int currentCharacterIndex = 0;
+    [SerializeField] public int currentCharacterIndex = 0;
     int lastChosenCharacterIndex = 0;
     [HideInInspector] public int currentAI_Index = 0;
     int lastAI_Index = 0;

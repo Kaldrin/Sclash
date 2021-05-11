@@ -99,7 +99,7 @@ public class StoryPlayer : Player
         base.ManageChargeInput();
     }
 
-
+    /*
     internal override void ManageDashInput()
     {
         if (playerIsAI)
@@ -150,7 +150,7 @@ public class StoryPlayer : Player
             }
         }
     }
-
+    */
 
     public override void ManagePommel()
     {
@@ -380,6 +380,14 @@ public class StoryPlayer : Player
 
     protected override void ApplyAttackHitbox()
     {
+        // FX
+        if (chargedKatanaStayFX && chargedKatanaStayFX.isPlaying)
+        {
+            chargedKatanaStayFX.gameObject.SetActive(false);
+            chargedKatanaStayFX.gameObject.SetActive(true);
+        }
+
+
         Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
         Collider[] hitCols3D = Physics.OverlapBox(new Vector3(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y, transform.position.z), new Vector3(actualAttackRange + actualBackAttackRangeDisjoint, 1, 2.5f));
         List<GameObject> hits = new List<GameObject>();
