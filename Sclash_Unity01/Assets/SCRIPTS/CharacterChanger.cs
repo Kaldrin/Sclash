@@ -65,7 +65,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     bool canChangeHorizontal = true;
     int currentMaskIndex = 0;
     int lastChosenMaskIndex = 0;
-    int currentWeaponIndex = 0;
+    [SerializeField] int currentWeaponIndex = 0;
     int lastWeaponIndex = 0;
     [SerializeField] public int currentCharacterIndex = 0;
     int lastChosenCharacterIndex = 0;

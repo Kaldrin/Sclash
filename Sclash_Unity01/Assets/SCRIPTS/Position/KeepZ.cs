@@ -21,7 +21,6 @@ public class KeepZ : MonoBehaviour
     [SerializeField] float zToKeep = 0;
     [SerializeField] bool checkOnStart = true;
     [SerializeField] bool checkInEditor = true;
-    [SerializeField] bool takeNewZOnEnable = false;
 
 
 
@@ -35,13 +34,6 @@ public class KeepZ : MonoBehaviour
             if (checkOnStart)
                 Reposition();
     }
-
-    private void OnEnable()                                                                                                                     // ON ENABLE
-    {
-        if (takeNewZOnEnable)
-            zToKeep = transform.position.z;
-    }
-
 
 
 

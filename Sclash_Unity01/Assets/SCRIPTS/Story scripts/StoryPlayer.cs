@@ -360,20 +360,38 @@ public class StoryPlayer : Player
 
     protected override void ApplyPommelHitbox()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
+        float pommelRange = characterChanger.charactersDatabase.charactersList[characterIndex].character.pommelRange;
+
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -pommelRange / 2), transform.position.y), new Vector2(pommelRange, 0.2f), 0);
         List<GameObject> hits = new List<GameObject>();
 
         foreach (Collider2D c in hitsCol)
             if (c.CompareTag("Player"))
+            {
                 if (!hits.Contains(c.transform.parent.gameObject))
                     hits.Add(c.transform.parent.gameObject);
+            }
+            else if (c.CompareTag("Dummy") && !hits.Contains(c.gameObject))
+                hits.Add(c.gameObject);
 
         foreach (GameObject g in hits)
             if (g != gameObject)
             {
-                otherPlayerNum = GetTargetNum(g);
-                if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
-                    g.GetComponent<Player>().Pommeled();
+                if (g.CompareTag("Dummy"))
+                {
+                    if (g.GetComponent<DummyMain>())
+                        g.GetComponent<DummyMain>().Kicked();
+                    if (g.transform.parent.GetComponent<DummyMain>())
+                        g.transform.parent.GetComponent<DummyMain>().Kicked();
+                }
+                else
+                {
+                    if (g.CompareTag("Player"))
+                        otherPlayerNum = GetTargetNum(g);
+                    if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
+                        g.GetComponent<Player>().Pommeled();
+                    // DUMMY
+                }
             }
     }
 
@@ -397,6 +415,8 @@ public class StoryPlayer : Player
             if (c.CompareTag("Player") && !hits.Contains(c.transform.parent.gameObject))
                 hits.Add(c.transform.parent.gameObject);
             else if (c.CompareTag("Destructible") && !hits.Contains(c.gameObject))
+                hits.Add(c.gameObject);
+            else if (c.CompareTag("Dummy") && !hits.Contains(c.gameObject))
                 hits.Add(c.gameObject);
         }
 
@@ -464,6 +484,14 @@ public class StoryPlayer : Player
                     }
                     else if (g.transform.parent.gameObject.GetComponent<Destructible>())
                         g.transform.parent.gameObject.GetComponent<Destructible>().Destroy();
+                }
+                // DUMMY
+                else if (g.CompareTag("Dummy"))
+                {
+                    if (g.GetComponent<DummyMain>())
+                        g.GetComponent<DummyMain>().Hit();
+                    if (g.transform.parent.GetComponent<DummyMain>())
+                        g.transform.parent.GetComponent<DummyMain>().Hit();
                 }
             }
     }

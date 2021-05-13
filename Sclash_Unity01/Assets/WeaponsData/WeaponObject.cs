@@ -8,4 +8,5 @@ using UnityEngine;
 public class WeaponObject : ScriptableObject
 {
     public string nameKey;
+    public bool sharp = true;
 }
