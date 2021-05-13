@@ -141,8 +141,8 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         if (enabled && isActiveAndEnabled)
         {
             if (photonView != null)
-               if (!photonView.IsMine)
-                 return;
+                if (!photonView.IsMine)
+                    return;
 
 
             UpdateAnims();
@@ -212,16 +212,30 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
-    internal void EnableLegs()
+    private void EnableLegs()
     {
-        Debug.Log("Enable Legs");
+        legsAnimator2.gameObject.SetActive(true);
+        legsAnimator2.SetFloat("AttackState", nextAttackState);
+        if (photonView != null && photonView.IsMine)
+            photonView.RPC("EnableLegs_RPC", RpcTarget.Others);
+    }
+
+    private void DisableLegs()
+    {
+        legsAnimator2.gameObject.SetActive(false);
+        if (photonView != null && photonView.IsMine)
+            photonView.RPC("DisableLegs_RPC", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    internal void EnableLegs_RPC()
+    {
         legsAnimator2.gameObject.SetActive(true);
         legsAnimator2.SetFloat("AttackState", nextAttackState);
     }
 
     [PunRPC]
-    internal void DisableLegs()
+    internal void DisableLegs_RPC()
     {
         legsAnimator2.gameObject.SetActive(false);
     }
