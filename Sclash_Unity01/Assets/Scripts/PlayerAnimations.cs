@@ -61,9 +61,11 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     #region ANIMATOR PARAMETERS
     [Header("PLAYER ANIMATOR PARAMETERS")]
     //[SerializeField] string Walk = "Walk";
-    [SerializeField] string
+    [SerializeField]
+    string
         playerWalkDirection = "WalkDirection";
-    [SerializeField] string moving = "Moving",
+    [SerializeField]
+    string moving = "Moving",
         stamina = "Stamina",
         attackOn = "AttackOn",
         maxCharge = "MaxCharge",
@@ -138,9 +140,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     {
         if (enabled && isActiveAndEnabled)
         {
-            if (photonView != null)
-                if (!photonView.IsMine)
-                    return;
+            //if (photonView != null)
+            //   if (!photonView.IsMine)
+            //     return;
 
 
             UpdateAnims();
@@ -164,13 +166,10 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     void UpdateAnims()                                                                                                                                                  // UPDATE ANIMS
     {
         if (playerScript.playerState == Player.STATE.charging && Mathf.Abs(rigid.velocity.x) > minSpeedForWalkAnim)
-        {
-            legsAnimator2.gameObject.SetActive(true);
-            legsAnimator2.SetFloat("AttackState", nextAttackState);
-        }
+            EnableLegs();
         else
-            legsAnimator2.gameObject.SetActive(false);
-            
+            DisableLegs();
+
 
 
         // DASHING STATE
@@ -212,6 +211,22 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
                 animator.speed = 1;
         }
     }
+
+    [PunRPC]
+    internal void EnableLegs()
+    {
+        legsAnimator2.gameObject.SetActive(true);
+        legsAnimator2.SetFloat("AttackState", nextAttackState);
+    }
+
+    [PunRPC]
+    internal void DisableLegs()
+    {
+        legsAnimator2.gameObject.SetActive(false);
+    }
+
+
+
     # endregion
 
 
@@ -312,7 +327,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
                     legsAnimator2.SetFloat(legsWalkDirection, 1);
             }
         }
-        catch {}
+        catch { }
     }
 
 
@@ -327,7 +342,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
 
             animator.SetFloat(playerWalkDirection, 0f);
         }
-        catch {}
+        catch { }
     }
     #endregion
 

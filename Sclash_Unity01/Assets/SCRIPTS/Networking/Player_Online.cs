@@ -679,15 +679,14 @@ public class Player_Online : Player, IPunObservable
     private void SendInfos()
     {
         if (photonView.IsMine)
-            photonView.RPC("ReceiveInfos", RpcTarget.Others, playerNum, transform.name, playerAnimations.legsAnimator2.gameObject.activeInHierarchy);
+            photonView.RPC("ReceiveInfos", RpcTarget.Others, playerNum, transform.name);
     }
 
     [PunRPC]
-    private void ReceiveInfos(int num, string name, bool legs)
+    private void ReceiveInfos(int num, string name)
     {
         transform.name = name;
         playerNum = num;
-        playerAnimations.legsAnimator2.gameObject.SetActive(legs);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
