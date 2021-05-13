@@ -140,9 +140,9 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     {
         if (enabled && isActiveAndEnabled)
         {
-            //if (photonView != null)
-            //   if (!photonView.IsMine)
-            //     return;
+            if (photonView != null)
+               if (!photonView.IsMine)
+                 return;
 
 
             UpdateAnims();
@@ -215,6 +215,7 @@ public class PlayerAnimations : MonoBehaviourPunCallbacks
     [PunRPC]
     internal void EnableLegs()
     {
+        Debug.Log("Enable Legs");
         legsAnimator2.gameObject.SetActive(true);
         legsAnimator2.SetFloat("AttackState", nextAttackState);
     }

@@ -28,6 +28,8 @@ public class Player_Online : Player, IPunObservable
 
     public override void Start()
     {
+        photonView.RPC("EnableLegs", RpcTarget.Others);
+
         base.Start();
 
         if (photonView.IsMine)
