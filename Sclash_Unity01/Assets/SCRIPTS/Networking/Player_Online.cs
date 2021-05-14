@@ -28,8 +28,6 @@ public class Player_Online : Player, IPunObservable
 
     public override void Start()
     {
-        photonView.RPC("EnableLegs", RpcTarget.Others);
-
         base.Start();
 
         if (photonView.IsMine)
@@ -126,6 +124,7 @@ public class Player_Online : Player, IPunObservable
                 instigator.GetComponent<PhotonView>().RPC("TriggerClash", ConnectManager.defaultTarget);
 
                 playerAnimations.TriggerPerfectParry();
+                photonView.RPC("TriggerFX_RPC", RpcTarget.Others, clashFX);
                 clashFX.Play();
                 AudioManager.Instance.TriggerParriedAudio();
             }
@@ -144,8 +143,7 @@ public class Player_Online : Player, IPunObservable
 
         }
 
-        attackRangeFX.gameObject.SetActive(false);
-        attackRangeFX.gameObject.SetActive(true);
+        ToggleFX(attackRangeFX);
 
         return hit;
     }
@@ -162,13 +160,18 @@ public class Player_Online : Player, IPunObservable
 
 
                 if (!walkFXBack.isPlaying)
+                {
+                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, walkFXBack.isPlaying);
                     walkFXBack.Play();
+                }
             }
             else
             {
                 if (!walkFXFront.isPlaying)
+                {
+                    photonView.RPC("TriggerFX_RPC",RpcTarget.Others, walkFXFront.isPlaying);
                     walkFXFront.Play();
-
+                }
 
                 walkFXBack.Stop();
             }
@@ -201,7 +204,9 @@ public class Player_Online : Player, IPunObservable
                     chargeStartTime = Time.time;
 
                     // FX
+                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, chargeFlareFX);
                     chargeFlareFX.Play();
+
                     chargeSlider.value = 1;
 
 
@@ -221,6 +226,8 @@ public class Player_Online : Player, IPunObservable
 
 
                     // FX
+
+                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, chargeFlareFX, chargeKatanaFX);
                     chargeFlareFX.Play();
                     chargeKatanaFX.Play();
 
@@ -235,6 +242,13 @@ public class Player_Online : Player, IPunObservable
             if (!InputManager.Instance.playerInputs[0].attack)
                 canCharge = true;
         }
+    }
+
+    [PunRPC]
+    private void TriggerFX_RPC(ParticleSystem[] fxArray)
+    {
+        foreach (ParticleSystem fx in fxArray)
+            fx.Play();
     }
 
     protected override void ManageCharging()
@@ -269,6 +283,7 @@ public class Player_Online : Player, IPunObservable
 
 
                 // FX
+                photonView.RPC("TriggerFX_RPC", RpcTarget.Others, chargeFX);
                 chargeFX.Play();
             }
 
@@ -283,14 +298,21 @@ public class Player_Online : Player, IPunObservable
                 // FX
                 if (chargeKatanaFX)
                 {
-                    chargeKatanaFX.gameObject.SetActive(false);
-                    chargeKatanaFX.gameObject.SetActive(true);
+                    ToggleFX(chargeKatanaFX);
                 }
+
                 if (chargeFullKatanaFX)
+                {
+                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, chargeFullKatanaFX);
                     chargeFullKatanaFX.Play();
+                }
                 chargeFlareFX.Stop();
+
                 if (chargedKatanaStayFX)
+                {
+                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, chargedKatanaStayFX);
                     chargedKatanaStayFX.Play();
+                }
                 chargeFlareFX.Stop();
 
 
@@ -434,6 +456,7 @@ public class Player_Online : Player, IPunObservable
 
 
             // FX
+            photonView.RPC("TriggerFX_RPC", RpcTarget.Others, kickKanasFX, kickedFX);
             kickKanasFX.Play();
             kickedFX.Play();
             GameManager.Instance.pommelCameraShake.shakeDuration = GameManager.Instance.pommelCameraShakeDuration;

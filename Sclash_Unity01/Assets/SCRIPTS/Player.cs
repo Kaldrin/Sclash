@@ -1141,13 +1141,11 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.gameObject.SetActive(true);
                 if (chargeKatanaFX)
                 {
-                    chargeKatanaFX.gameObject.SetActive(false);
-                    chargeKatanaFX.gameObject.SetActive(true);
+                    ToggleFX(chargeKatanaFX);
                 }
                 if (chargedKatanaStayFX)
                 {
-                    chargedKatanaStayFX.gameObject.SetActive(false);
-                    chargedKatanaStayFX.gameObject.SetActive(true);
+                    ToggleFX(chargedKatanaStayFX);
                 }
                 break;
 
@@ -1164,13 +1162,11 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.gameObject.SetActive(true);
                 if (chargeKatanaFX)
                 {
-                    chargeKatanaFX.gameObject.SetActive(false);
-                    chargeKatanaFX.gameObject.SetActive(true);
+                    ToggleFX(chargeKatanaFX);
                 }
                 if (chargedKatanaStayFX)
                 {
-                    chargedKatanaStayFX.gameObject.SetActive(false);
-                    chargedKatanaStayFX.gameObject.SetActive(true);
+                    ToggleFX(chargedKatanaStayFX);
                 }
                 break;
 
@@ -1208,13 +1204,11 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.gameObject.SetActive(false);
                 if (chargeKatanaFX)
                 {
-                    chargeKatanaFX.gameObject.SetActive(false);
-                    chargeKatanaFX.gameObject.SetActive(true);
+                    ToggleFX(chargeKatanaFX);
                 }
                 if (chargedKatanaStayFX)
                 {
-                    chargedKatanaStayFX.gameObject.SetActive(false);
-                    chargedKatanaStayFX.gameObject.SetActive(true);
+                    ToggleFX(chargedKatanaStayFX);
                 }
                 break;
 
@@ -1245,13 +1239,11 @@ public class Player : MonoBehaviourPunCallbacks
                 // FX
                 if (chargeKatanaFX)
                 {
-                    chargeKatanaFX.gameObject.SetActive(false);
-                    chargeKatanaFX.gameObject.SetActive(true);
+                    ToggleFX(chargeKatanaFX);
                 }
                 if (chargedKatanaStayFX)
                 {
-                    chargedKatanaStayFX.gameObject.SetActive(false);
-                    chargedKatanaStayFX.gameObject.SetActive(true);
+                    ToggleFX(chargedKatanaStayFX);
                 }
                 break;
 
@@ -1283,13 +1275,11 @@ public class Player : MonoBehaviourPunCallbacks
                 characterChanger.EnableVisuals(false);
                 if (chargeKatanaFX)
                 {
-                    chargeKatanaFX.gameObject.SetActive(false);
-                    chargeKatanaFX.gameObject.SetActive(true);
+                    ToggleFX(chargeKatanaFX);
                 }
                 if (chargedKatanaStayFX)
                 {
-                    chargedKatanaStayFX.gameObject.SetActive(false);
-                    chargedKatanaStayFX.gameObject.SetActive(true);
+                    ToggleFX(chargedKatanaStayFX);
                 }
                 break;
 
@@ -2252,7 +2242,7 @@ public class Player : MonoBehaviourPunCallbacks
         // If players haven't all drawn, go back to chara selec state
         if (!GameManager.Instance.allPlayersHaveDrawn && characterType == CharacterType.duel)
             // STATE
-            SwitchState(STATE.sneathing);   
+            SwitchState(STATE.sneathing);
         else
         {
             // ANIMATION
@@ -2324,109 +2314,60 @@ public class Player : MonoBehaviourPunCallbacks
     // Manages the detection of attack charge inputs
     internal virtual void ManageChargeInput()
     {
-        // ONLINE
-        if (ConnectManager.Instance != null && ConnectManager.Instance.enableMultiplayer)
+        // Player presses attack button
+        //OLD_INPUT
+        //if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
+        if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
         {
-            // Player presses attack button
-            if (InputManager.Instance.playerInputs[0].attack && canCharge)
+            // ANIMATION STAMINA
+            if (stamina <= staminaCostForMoves)
+                TriggerNotEnoughStaminaAnim(true);
+
+            if (stamina >= staminaCostForMoves)
             {
-                if (stamina >= staminaCostForMoves)
+                canCharge = false;
+
+
+                // ORIENTATION
+                if (orientWhenActionDuringDash && playerState == STATE.dashing)
+                    ApplyOrientation(Mathf.Sign(transform.position.x - GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().transform.position.x));
+
+
+                // STATE
+                SwitchState(STATE.charging);
+
+
+                // ANIMATION
+                playerAnimations.CancelCharge(false);
+                playerAnimations.TriggerCharge(true);
+
+
+
+                chargeStartTime = Time.time;
+
+
+                // STATS
+                if (characterType == CharacterType.duel)
                 {
-                    SwitchState(STATE.charging);
-                    canCharge = false;
-                    chargeStartTime = Time.time;
+                    if (StatsManager.Instance != null)
+                        StatsManager.Instance.AddAction(ACTION.charge, playerNum, 0);
+                    else
+                        Debug.Log("Couldn't access statsManager to record action, ignoring");
+                }
 
-                    // FX
+
+                // FX
+                if (chargeFlareFX)
                     chargeFlareFX.Play();
-                    chargeSlider.value = 1;
-
-
-                    // ANIMATION
-                    playerAnimations.CancelCharge(false);
-                    playerAnimations.TriggerCharge(true);
-
-
-                    // STATS
-                    if (characterType == CharacterType.duel)
-                    {
-                        if (StatsManager.Instance != null)
-                            StatsManager.Instance.AddAction(ACTION.charge, playerNum, 0);
-                        else
-                            Debug.Log("Couldn't access statsManager to record action, ignoring");
-                    }
-
-
-                    // FX
-                    chargeFlareFX.Play();
+                if (chargeKatanaFX)
                     chargeKatanaFX.Play();
-
-                    // ANIMATION
-                    playerAnimations.CancelCharge(false);
-                    playerAnimations.TriggerCharge(true);
-                }
             }
-
-            // Player releases attack button
-            if (!InputManager.Instance.playerInputs[0].attack)
-                canCharge = true;
         }
-        else
-        {
-            // Player presses attack button
-            //OLD_INPUT
-            //if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
-            if (InputManager.Instance.playerInputs[playerNum].attack && canCharge)
-            {
-                // ANIMATION STAMINA
-                if (stamina <= staminaCostForMoves)
-                    TriggerNotEnoughStaminaAnim(true);
-
-                if (stamina >= staminaCostForMoves)
-                {
-                    canCharge = false;
-
-
-                    // ORIENTATION
-                    if (orientWhenActionDuringDash && playerState == STATE.dashing)
-                        ApplyOrientation(Mathf.Sign(transform.position.x - GameManager.Instance.playersList[otherPlayerNum].GetComponent<Player>().transform.position.x));
-
-
-                    // STATE
-                    SwitchState(STATE.charging);
-
-
-                    // ANIMATION
-                    playerAnimations.CancelCharge(false);
-                    playerAnimations.TriggerCharge(true);
 
 
 
-                    chargeStartTime = Time.time;
-
-
-                    // STATS
-                    if (characterType == CharacterType.duel)
-                    {
-                        if (StatsManager.Instance != null)
-                            StatsManager.Instance.AddAction(ACTION.charge, playerNum, 0);
-                        else
-                            Debug.Log("Couldn't access statsManager to record action, ignoring");
-                    }
-
-
-                    // FX
-                    if (chargeFlareFX)
-                        chargeFlareFX.Play();
-                    if (chargeKatanaFX)
-                        chargeKatanaFX.Play();
-                }
-            }
-
-
-
-            if (!InputManager.Instance.playerInputs[playerNum].attack)
-                canCharge = true;
-        }
+        if (!InputManager.Instance.playerInputs[playerNum].attack)
+            canCharge = true;
     }
 
     protected virtual void ManageCharging()
@@ -2713,8 +2654,7 @@ public class Player : MonoBehaviourPunCallbacks
         // FX
         if (chargedKatanaStayFX && chargedKatanaStayFX.isPlaying)
         {
-            chargedKatanaStayFX.gameObject.SetActive(false);
-            chargedKatanaStayFX.gameObject.SetActive(true);
+            ToggleFX(chargedKatanaStayFX);
         }
 
 
@@ -3779,5 +3719,12 @@ public class Player : MonoBehaviourPunCallbacks
         scarfObject.SetActive(true);
         Instantiate(scarfPrefab);
     }
+
+    protected void ToggleFX(ParticleSystem fx)
+    {
+        fx.gameObject.SetActive(false);
+        fx.gameObject.SetActive(true);
+    }
+
     #endregion
 }
