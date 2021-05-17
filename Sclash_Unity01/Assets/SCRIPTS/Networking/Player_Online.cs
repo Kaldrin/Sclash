@@ -261,9 +261,9 @@ public class Player_Online : Player, IPunObservable
     }
 
     [PunRPC]
-    private void TriggerFX_RPC(byte index)
+    private void TriggerFX_RPC(int index)
     {
-        fxArray[indexm].Play();
+        fxArray[index].Play();
     }
 
     protected override void ManageCharging()
