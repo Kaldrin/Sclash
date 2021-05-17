@@ -379,10 +379,16 @@ public class StoryPlayer : Player
             {
                 if (g.CompareTag("Dummy"))
                 {
+                    int side = 0;
+                    if (transform.localScale.x > 0)
+                        side = 1;
+                    else
+                        side = 0;
+
                     if (g.GetComponent<DummyMain>())
-                        g.GetComponent<DummyMain>().Kicked();
+                        g.GetComponent<DummyMain>().Kicked(side);
                     if (g.transform.parent.GetComponent<DummyMain>())
-                        g.transform.parent.GetComponent<DummyMain>().Kicked();
+                        g.transform.parent.GetComponent<DummyMain>().Kicked(side);
                 }
                 else
                 {
@@ -488,10 +494,16 @@ public class StoryPlayer : Player
                 // DUMMY
                 else if (g.CompareTag("Dummy"))
                 {
+                    int side = 0;
+                    if (transform.localScale.x > 0)
+                        side = 1;
+                    else
+                        side = 0;
+
                     if (g.GetComponent<DummyMain>())
-                        g.GetComponent<DummyMain>().Hit();
+                        g.GetComponent<DummyMain>().Hit(side);
                     if (g.transform.parent.GetComponent<DummyMain>())
-                        g.transform.parent.GetComponent<DummyMain>().Hit();
+                        g.transform.parent.GetComponent<DummyMain>().Hit(side);
                 }
             }
     }

@@ -55,6 +55,16 @@ public class PitchModulator : MonoBehaviour
 
 
 
+    public void Play()                                                                                          // PLAY
+    {
+        if (sourceToModulate)
+        {
+            sourceToModulate.pitch = Random.Range(basePitch * pitchModulationLimits.x, basePitch * pitchModulationLimits.y);
+            sourceToModulate.Play();
+        }
+    }
+
+
 
 
     // EDITOR ONLY
