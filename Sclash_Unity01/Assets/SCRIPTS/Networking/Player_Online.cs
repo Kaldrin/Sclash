@@ -242,7 +242,8 @@ public class Player_Online : Player, IPunObservable
 
                     // FX
 
-                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, 4, 5);
+                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, 4);
+                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, 5);
                     chargeFlareFX.Play();
                     chargeKatanaFX.Play();
 
@@ -260,17 +261,9 @@ public class Player_Online : Player, IPunObservable
     }
 
     [PunRPC]
-    private void TriggerFX_RPC(byte[] index)
+    private void TriggerFX_RPC(byte index)
     {
-        foreach(byte b in index)
-        {
-            fxArray[b].Play();
-        }
-
-        /*
-        foreach (ParticleSystem fx in fxArray)
-            fx.Play();
-   */
+        fxArray[indexm].Play();
     }
 
     protected override void ManageCharging()
@@ -478,7 +471,8 @@ public class Player_Online : Player, IPunObservable
 
 
             // FX
-            photonView.RPC("TriggerFX_RPC", RpcTarget.Others, 8, 9);
+            photonView.RPC("TriggerFX_RPC", RpcTarget.Others, 8);
+            photonView.RPC("TriggerFX_RPC", RpcTarget.Others, 9);
             kickKanasFX.Play();
             kickedFX.Play();
             GameManager.Instance.pommelCameraShake.shakeDuration = GameManager.Instance.pommelCameraShakeDuration;
