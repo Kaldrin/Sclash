@@ -12,6 +12,8 @@ public class Player_Online : Player, IPunObservable
 {
     private bool releasedAttack = false;
 
+    private ParticleSystem[] fxArray = new ParticleSystem[] { };
+
     #region PunAck
     private bool sentParry = false;
     #endregion
@@ -161,7 +163,7 @@ public class Player_Online : Player, IPunObservable
 
                 if (!walkFXBack.isPlaying)
                 {
-                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, walkFXBack.isPlaying);
+                    photonView.RPC("TriggerFX_RPC", RpcTarget.Others, walkFXBack);
                     walkFXBack.Play();
                 }
             }
@@ -169,7 +171,7 @@ public class Player_Online : Player, IPunObservable
             {
                 if (!walkFXFront.isPlaying)
                 {
-                    photonView.RPC("TriggerFX_RPC",RpcTarget.Others, walkFXFront.isPlaying);
+                    photonView.RPC("TriggerFX_RPC",RpcTarget.Others, walkFXFront);
                     walkFXFront.Play();
                 }
 
