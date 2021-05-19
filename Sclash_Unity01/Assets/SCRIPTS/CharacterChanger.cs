@@ -110,11 +110,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     #region FUNCTIONS
-    private void Start()
-    {
-        SendCosmetics();
-    }
-
     new void OnEnable()                                                                                                                                                          // ON ENABLE
     {
         ConnectManager.PlayerJoined += FetchChanger;
@@ -259,9 +254,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         // ACTIVATE ALL BUTTONS
         if (verticalElements != null && verticalElements.Count > 0)
-        for (int i = 0; i < verticalElements.Count; i++)
-            if (verticalElements[i] != null)
-                verticalElements[i].SetBool("Disabled", false);
+            for (int i = 0; i < verticalElements.Count; i++)
+                if (verticalElements[i] != null)
+                    verticalElements[i].SetBool("Disabled", false);
     }
 
 
@@ -526,7 +521,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         mainModule = playerScript.chargeKatanaFX.main;
         mainModule.startColor = randomColor;
-       
+
 
 
 
@@ -545,7 +540,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             else if (elementScript.text1 != null)
                 elementScript.text1.text = charactersDatabase.charactersList[currentCharacterIndex].name;
         }
-            
+
 
 
         // WAIT FOR CHANGE ANIM 2
@@ -712,7 +707,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(currentSwitchDelay);
 
 
-        
+
         // NAME
         if (elementScript.textApparitionComponent && masksDatabase.masksList[currentMaskIndex].maskScriptableObject)
         {
@@ -804,7 +799,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // WAIT FOR CHANGE ANIM
         yield return new WaitForSeconds(currentSwitchDelay);
 
-        
+
 
         // NAMES
         if (elementScript != null)
@@ -890,11 +885,12 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         int[] content = new int[] { currentMaskIndex, currentCharacterIndex, currentWeaponIndex };
 
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { CachingOption = EventCaching.AddToRoomCache, Receivers = ReceiverGroup.Others };
+        Debug.LogFormat("Sending : {0} {1} {2}", content[0], content[1], content[2]);
+        
+        // RaiseEventOptions raiseEventOptions = new RaiseEventOptions { CachingOption = EventCaching.AddToRoomCache, Receivers = ReceiverGroup.Others };
 
         if (photonView != null)
             photonView.RPC("ApplyCosmetics", RpcTarget.OthersBuffered, content);
-        // Debug.LogFormat("Sent {0} {1} {2}", content[0], content[1], content[2]);
     }
 
     private void FetchChanger()
@@ -908,8 +904,10 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
                 {
                     o_CharacterChanger = c;
                     Debug.Log("Character changer found!");
+                    SendCosmetics();
                     break;
                 }
+
         if (o_CharacterChanger == null)
         {
             Invoke("FetchChanger", 0.5f);
@@ -922,7 +920,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     {
         if (photonView != null && !photonView.IsMine)
         {
-            Debug.LogFormat("Received {0} {1} {2}", data[0], data[1], data[2]);
             ReceiveCosmetics(data[0], data[1], data[2]);
         }
     }
@@ -933,6 +930,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         currentCharacterIndex = c;
         currentWeaponIndex = w;
 
+        Debug.LogFormat("Received : {0} {1} {2}", m, c, w);
 
         if (playerAnimator != null)
             playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacterIndex].animator;
