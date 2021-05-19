@@ -56,8 +56,8 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
     [Header("EDITOR")]
-    bool wiredVolume = false;
     [SerializeField] GameObject editorStuffParent = null;
+    bool wiredVolume = false;
     [SerializeField] GameObject FXIndexDisplayParent = null;
     [SerializeField] TextMeshPro particleIndexDisplay = null;
     [SerializeField] SpriteRenderer particleSetIconDisplay = null;

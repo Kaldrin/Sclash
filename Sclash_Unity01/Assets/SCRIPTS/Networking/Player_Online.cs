@@ -373,7 +373,7 @@ public class Player_Online : Player, IPunObservable
     }
 
     [PunRPC]
-    public override void Pommeled()
+    public override void Pommeled(GameObject instigator = null)
     {
         if (!kickFrame)
         {

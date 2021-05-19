@@ -2243,11 +2243,19 @@ public class Player : MonoBehaviourPunCallbacks
 
     void ManageBattleDraw()
     {
-        if (InputManager.Instance.playerInputs[playerNum].battleSneathDraw)
-            TriggerBattleDraw();
+        if (playerState == STATE.battleSneathedNormal)
+        {
+            if (InputManager.Instance && InputManager.Instance.playerInputs[playerNum].anyKeyDown)
+                TriggerBattleDraw();
+        }
+        else
+        {
+            if (InputManager.Instance.playerInputs[playerNum].battleSneathDraw)
+                TriggerBattleDraw();
+        }
     }
 
-    void TriggerBattleSneath()
+    protected void TriggerBattleSneath()
     {
         // If players haven't all drawn, go back to chara selec state
         if (!GameManager.Instance.allPlayersHaveDrawn && characterType == CharacterType.duel)
@@ -3001,7 +3009,7 @@ public class Player : MonoBehaviourPunCallbacks
                     if (ConnectManager.Instance.connectedToMaster)
                         g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.All);
                     else
-                        g.GetComponent<Player>().Pommeled();
+                        g.GetComponent<Player>().Pommeled(null);
                 }
             }
     }
@@ -3017,9 +3025,35 @@ public class Player : MonoBehaviourPunCallbacks
     #region POMMELED
     // The player have been kicked
     [PunRPC]
-    public virtual void Pommeled()
+    public virtual void Pommeled(GameObject instigator)
     {
-        if (!kickFrame)
+        if (untouchableFrame && instigator.CompareTag("Dummy"))
+        {
+            // DODGE THE DUMMY ATTACK
+            if (instigator.GetComponent<DummyMain>())
+                instigator.GetComponent<DummyMain>().Dodged();
+        }
+        else if (parryFrame && instigator.CompareTag("Dummy"))
+        {
+            // PARRY THE DUMMY ATTACK
+            if (instigator.GetComponent<DummyMain>())
+                instigator.GetComponent<DummyMain>().Parried();
+
+
+            // ANIMATION
+            playerAnimations.TriggerPerfectParry();
+
+
+            // FX
+            clashFX.Play();
+
+            // SOUND
+            AudioManager.Instance.TriggerParriedAudio();
+
+            // STAMINA
+            StartCoroutine(TriggerStaminaRecupAnim());
+        }
+        else if (!kickFrame)
         {
             bool wasSneathed = false;
 
@@ -3039,7 +3073,7 @@ public class Player : MonoBehaviourPunCallbacks
             // Stamina break
             if (playerState == STATE.parrying || playerState == STATE.attacking || (kickDuringChargeBreaksStamina && playerState == STATE.charging))
             {
-                if (ConnectManager.Instance.connectedToMaster)
+                if (ConnectManager.Instance && ConnectManager.Instance.connectedToMaster)
                     photonView.RPC("InitStaminaBreak", RpcTarget.All);
                 else
                     InitStaminaBreak();
@@ -3049,7 +3083,10 @@ public class Player : MonoBehaviourPunCallbacks
             //NE PAS SUPPRIMER
             //StopAllCoroutines();
             SwitchState(STATE.clashed);
-            ApplyOrientation(-GameManager.Instance.playersList[otherPlayerNum].transform.localScale.x);
+            if (instigator)
+                ApplyOrientation(-instigator.transform.localScale.x);
+            else
+                ApplyOrientation(-GameManager.Instance.playersList[otherPlayerNum].transform.localScale.x);
 
 
             // STARTS MATCH IF PLAYER WAS SNEATHED
@@ -3064,7 +3101,12 @@ public class Player : MonoBehaviourPunCallbacks
 
 
             // If is behind opponent when parried / clashed adds additional distance to evade the position and not look weird like they're fused together
-            if (((transform.position.x - GameManager.Instance.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) <= 0.7f)
+            if (instigator)
+            {
+                if (((transform.position.x - instigator.transform.position.x) * Mathf.Sign(transform.localScale.x)) <= 0.7f)
+                    transform.position = new Vector3(instigator.transform.position.x + -Mathf.Sign(instigator.transform.localScale.x) * 0.7f, transform.position.y, transform.position.z);
+            }
+            else if (((transform.position.x - GameManager.Instance.playersList[otherPlayerNum].transform.position.x) * Mathf.Sign(transform.localScale.x)) <= 0.7f)
                 transform.position = new Vector3(GameManager.Instance.playersList[otherPlayerNum].transform.position.x + -Mathf.Sign(GameManager.Instance.playersList[otherPlayerNum].transform.localScale.x) * 0.7f, transform.position.y, transform.position.z);
 
 
@@ -3131,7 +3173,7 @@ public class Player : MonoBehaviourPunCallbacks
             else if (RumbleManager.Instance != null && deathRumbleSettings != null)
             {
                 // LOCAL
-                if (!ConnectManager.Instance.enableMultiplayer)
+                if (ConnectManager.Instance && !ConnectManager.Instance.enableMultiplayer)
                 {
                     if (playerNum == 0)
                         RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
@@ -3139,7 +3181,7 @@ public class Player : MonoBehaviourPunCallbacks
                         RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.Two);
                 }
                 // ONLINE
-                else if (ConnectManager.Instance.enableMultiplayer && GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
+                else if (ConnectManager.Instance && ConnectManager.Instance.enableMultiplayer && GetComponent<PhotonView>() && GetComponent<PhotonView>().IsMine)
                     RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
             }
         }

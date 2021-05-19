@@ -43,6 +43,7 @@ public class StoryPlayer : Player
         SetUpStaminaBars();
         stamina = maxStamina;
         TriggerDraw();
+        base.TriggerBattleSneath();
 
         GameManager_Story.Instance.playersList.Add(gameObject);
     }
@@ -379,6 +380,9 @@ public class StoryPlayer : Player
             {
                 if (g.CompareTag("Dummy"))
                 {
+                    targetsHit.Add(g);
+
+
                     int side = 0;
                     if (transform.localScale.x > 0)
                         side = 1;
@@ -392,10 +396,13 @@ public class StoryPlayer : Player
                 }
                 else
                 {
+                    targetsHit.Add(g);
+
+
                     if (g.CompareTag("Player"))
                         otherPlayerNum = GetTargetNum(g);
                     if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
-                        g.GetComponent<Player>().Pommeled();
+                        g.GetComponent<Player>().Pommeled(null);
                     // DUMMY
                 }
             }
@@ -440,6 +447,7 @@ public class StoryPlayer : Player
             {
                 if (g.CompareTag("Player"))
                 {
+                    targetsHit.Add(g);
                     otherPlayerNum = GetTargetNum(g);
 
                     g.GetComponent<StoryPlayer>().TakeDamage(gameObject, chargeLevel);
@@ -494,6 +502,7 @@ public class StoryPlayer : Player
                 // DUMMY
                 else if (g.CompareTag("Dummy"))
                 {
+                    targetsHit.Add(g);
                     int side = 0;
                     if (transform.localScale.x > 0)
                         side = 1;
@@ -501,9 +510,9 @@ public class StoryPlayer : Player
                         side = 0;
 
                     if (g.GetComponent<DummyMain>())
-                        g.GetComponent<DummyMain>().Hit(side);
+                        g.GetComponent<DummyMain>().Hit(side, chargeLevel == maxChargeLevel);
                     if (g.transform.parent.GetComponent<DummyMain>())
-                        g.transform.parent.GetComponent<DummyMain>().Hit(side);
+                        g.transform.parent.GetComponent<DummyMain>().Hit(side, chargeLevel == maxChargeLevel);
                 }
             }
     }
@@ -570,10 +579,10 @@ public class StoryPlayer : Player
     }
 
 
-    public override void Pommeled()
+    public override void Pommeled(GameObject instigator)
     {
         //otherPlayerNum = GetTargetNum();
-        base.Pommeled();
+        base.Pommeled(instigator);
     }
 
 
