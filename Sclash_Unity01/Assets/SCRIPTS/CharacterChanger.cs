@@ -110,6 +110,11 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
 
     #region FUNCTIONS
+    private void Start()
+    {
+        SendCosmetics();
+    }
+
     new void OnEnable()                                                                                                                                                          // ON ENABLE
     {
         ConnectManager.PlayerJoined += FetchChanger;
