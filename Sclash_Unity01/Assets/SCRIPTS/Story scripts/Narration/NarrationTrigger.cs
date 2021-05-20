@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 
 using TMPro;
 
@@ -34,11 +36,12 @@ public class NarrationTrigger : MonoBehaviour
     [SerializeField] TagsReferences tagsReferences = null;
 
     [Header("EDITOR")]
-    bool wiredVolume = false;
     [SerializeField] GameObject infosDisplay = null;
     [SerializeField] TextMeshPro firstKeyDisplayText = null;
     [SerializeField] TextMeshPro numberOfSentencesDisplayText = null;
     [SerializeField] GameObject warning = null;
+    bool wiredVolume = false;
+    string parentName = "NarrationTriggers";
 
 
 
@@ -148,9 +151,19 @@ public class NarrationTrigger : MonoBehaviour
                     numberOfSentencesDisplayText.gameObject.SetActive(false);
         }
 
+        // Set parent
+        if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+            transform.parent = GameObject.Find(parentName).transform;
 
-#if UNITY_EDITOR
-        HandleUtility.Repaint();
-#endif
+
+
+        #if UNITY_EDITOR
+            // Set parent
+            if (PrefabStageUtility.GetCurrentPrefabStage() == null)
+                if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+                    transform.parent = GameObject.Find(parentName).transform;
+            // For repaint in editor
+            HandleUtility.Repaint();
+        #endif
     }
 }

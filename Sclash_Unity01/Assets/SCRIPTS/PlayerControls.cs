@@ -1672,6 +1672,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""left"",
+                    ""id"": ""6c476944-106a-4047-bcab-e13baf66e35a"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Navigate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
                     ""id"": ""a6c8d549-d514-4b09-b816-b148da0bb062"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",

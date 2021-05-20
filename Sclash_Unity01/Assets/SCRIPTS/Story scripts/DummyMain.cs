@@ -671,8 +671,8 @@ public class DummyMain : MonoBehaviour
                 Debug.DrawRay((Vector3)transform.position + (Vector3.up * distance), Vector3.down * distance * 2, Color.white);
 
 
-#if UNITY_EDITOR
-            HandleUtility.Repaint();
+            #if UNITY_EDITOR
+                HandleUtility.Repaint();
             #endif
         }
     }

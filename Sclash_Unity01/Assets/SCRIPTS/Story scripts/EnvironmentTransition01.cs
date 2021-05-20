@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 
 using TMPro;
 
@@ -69,6 +70,7 @@ public class EnvironmentTransition01 : MonoBehaviour
     [SerializeField] GameObject backgroundShadow = null;
     [SerializeField] GameObject warningObject = null;
     [HideInInspector] public Player player;
+    string parentName = "EnvironmentTransitions";
 
 
 
@@ -307,7 +309,20 @@ public class EnvironmentTransition01 : MonoBehaviour
                     walkSFXIndexDisplayParent.SetActive(false);
         }
 
+
+
+
+        // SET PARENT
+        if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+            transform.parent = GameObject.Find(parentName).transform;
+
+
         #if UNITY_EDITOR
+            // Set parent
+            if (PrefabStageUtility.GetCurrentPrefabStage() == null)
+                if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+                    transform.parent = GameObject.Find(parentName).transform;
+            // For repaint in editor
             HandleUtility.Repaint();
         #endif
     }

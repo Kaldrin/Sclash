@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
+
 using TMPro;
 
 
@@ -38,6 +40,7 @@ public class CutsceneTrigger : MonoBehaviour
     [SerializeField] TextMeshPro cutsceneNameText = null;
     [SerializeField] GameObject shadow = null;
     [SerializeField] GameObject warning = null;
+    string parentName = "CutsceneTriggers";
 
 
 
@@ -151,9 +154,14 @@ public class CutsceneTrigger : MonoBehaviour
         }
 
 
-        // Forces repaint more often
-#if UNITY_EDITOR
-        HandleUtility.Repaint();
-#endif
+
+        #if UNITY_EDITOR
+            // Set parent
+            if (PrefabStageUtility.GetCurrentPrefabStage() == null)
+                if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+                    transform.parent = GameObject.Find(parentName).transform;
+            // For repaint in editor
+            HandleUtility.Repaint();
+        #endif
     }
 }
