@@ -774,6 +774,7 @@ public class GameManager : MonoBehaviourPun
     [PunRPC]
     protected void UpdateNameAndColors(int i)
     {
+        Debug.Log("Update name & color");
         scoresNames[i].name = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
         scoresNames[i].color = playersColors[i];
         scoresDisplays[i].color = playersColors[i];
@@ -1442,7 +1443,8 @@ public class GameManager : MonoBehaviourPun
     void EndGame()                                                                                                                                                  // END GAME
     {
         //Temporary solution to stop player from moving after win TO BE OPTIMIZED
-        playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().ActivateInput();
+        if (playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput != null)
+            playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().ActivateInput();
 
         if (EndGameEvent != null)
             EndGameEvent();
