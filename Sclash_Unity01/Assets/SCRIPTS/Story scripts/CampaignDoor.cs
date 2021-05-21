@@ -26,10 +26,19 @@ public class CampaignDoor : MonoBehaviour
     int dummiesDestroyed = 0;
     bool open = false;
 
-    
 
 
-    public void Close()
+    private void OnEnable()                                                                                                                // ON ENABLE
+    {
+        // If was open, reopen
+        if (open)
+        {
+            open = false;
+            Open();
+        }
+    }
+
+    public void Close()                                                                                                             // CLOSE
     {
         if (open)
         {
@@ -40,7 +49,7 @@ public class CampaignDoor : MonoBehaviour
         }
     }
     
-    public void Open()
+    public void Open()                                                                                                                  // OPEN
     {
         if (!open)
         {
@@ -50,7 +59,7 @@ public class CampaignDoor : MonoBehaviour
         }
     }
 
-    public void DummyDestroyed()
+    public void DummyDestroyed()                                                                                                                // DUMMY DESTROYED
     {
         if (activationMode == ActivationMode.dummies)
         {

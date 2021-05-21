@@ -112,10 +112,21 @@ public class TutorialTrigger : MonoBehaviour
 
         
         #if UNITY_EDITOR
-            // Set parent
+            // Set parent automatically
             if (PrefabStageUtility.GetCurrentPrefabStage() == null)
-                if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
-                    transform.parent = GameObject.Find(parentName).transform;
+            {
+                if (!transform.parent || transform.parent.gameObject.name != parentName)
+                {
+                    if (GameObject.Find(parentName))
+                        transform.parent = GameObject.Find(parentName).transform;
+                    else
+                    {
+                        GameObject newParent = new GameObject();
+                        newParent.name = parentName;
+                        Instantiate(newParent);
+                    }
+                } 
+            }
             // For repaint in editor
             HandleUtility.Repaint();
         #endif
