@@ -886,7 +886,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         int[] content = new int[] { currentMaskIndex, currentCharacterIndex, currentWeaponIndex };
 
         Debug.LogFormat("Sending : {0} {1} {2}", content[0], content[1], content[2]);
-        
+
         // RaiseEventOptions raiseEventOptions = new RaiseEventOptions { CachingOption = EventCaching.AddToRoomCache, Receivers = ReceiverGroup.Others };
 
         if (photonView != null)

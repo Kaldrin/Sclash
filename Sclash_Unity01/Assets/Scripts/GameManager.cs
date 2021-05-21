@@ -701,11 +701,14 @@ public class GameManager : MonoBehaviourPun
 
         for (int i = 0; i < playersList.Count; i++)
         {
-            scoresNames[i].name = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
-            scoresNames[i].color = playersColors[i];
-            scoresDisplays[i].color = playersColors[i];
-            playerHelpTextIdentifiers[i].color = playersColors[i];
-            playerHelpIconIdentifiers[i].color = playersColors[i];
+            if (ConnectManager.Instance.connectedToMaster)
+            {
+                photonView.RPC("UpdateNameAndColors", RpcTarget.All, i);
+            }
+            else
+            {
+                UpdateNameAndColors(i);
+            }
         }
 
 
@@ -766,6 +769,16 @@ public class GameManager : MonoBehaviourPun
             drawTextAnimator.SetTrigger("FadeIn");
             drawTextAnimator.ResetTrigger("FadeOut");
         }
+    }
+
+    [PunRPC]
+    protected void UpdateNameAndColors(int i)
+    {
+        scoresNames[i].name = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
+        scoresNames[i].color = playersColors[i];
+        scoresDisplays[i].color = playersColors[i];
+        playerHelpTextIdentifiers[i].color = playersColors[i];
+        playerHelpIconIdentifiers[i].color = playersColors[i];
     }
 
     // A saber has been drawn, stores it and checks if both players have drawn
