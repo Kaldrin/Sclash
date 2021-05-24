@@ -174,7 +174,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             if (enableMultiplayer && !PhotonNetwork.IsConnected && isConnecting)
                 Connect();
 
-
             // PING
             if (pingIsBeingDisplayed)
                 if (pingDisplayObject)
@@ -683,6 +682,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
                 Debug.Log("All players are here");
+                WaitPlayersDraw();
 
                 if (waitingForPlayerMessage != null)
                     waitingForPlayerMessage.SetActive(false);
@@ -1174,5 +1174,35 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             DisplayPing(false);
         else if (PhotonNetwork.InRoom && shouldShowPing)
             DisplayPing(true);
+    }
+
+    private void WaitPlayersDraw()
+    {
+        Debug.Log("WaitPlayersDraw");
+        int playerDrawn = 0;
+        for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+        {
+            Player.STATE s = GameManager.Instance.playersList[i].GetComponent<Player>().playerState;
+            if (s != Player.STATE.sneathed && s != Player.STATE.drawing)
+            {
+                playerDrawn++;
+            }
+        }
+
+        if (playerDrawn == 2)
+        {
+            PlayersReady();
+        }
+        else
+        {
+            Invoke("WaitPlayersDraw", 0.1f);
+        }
+    }
+
+    private void PlayersReady()
+    {
+        Debug.Log("Both players are ready !");
+        for (int i = 0; i < 2; i++)
+            photonView.RPC("UpdateNameAndColors", RpcTarget.All, i);
     }
 }
