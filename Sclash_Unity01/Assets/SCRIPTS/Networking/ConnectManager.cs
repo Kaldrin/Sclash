@@ -1180,12 +1180,15 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         Debug.Log("WaitPlayersDraw");
         int playerDrawn = 0;
-        for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+        if (GameManager.Instance.playersList.Count == 2)
         {
-            Player.STATE s = GameManager.Instance.playersList[i].GetComponent<Player>().playerState;
-            if (s != Player.STATE.sneathed && s != Player.STATE.drawing)
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
             {
-                playerDrawn++;
+                Player.STATE s = GameManager.Instance.playersList[i].GetComponent<Player>().playerState;
+                if (s != Player.STATE.sneathed && s != Player.STATE.drawing)
+                {
+                    playerDrawn++;
+                }
             }
         }
 
@@ -1202,7 +1205,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     private void PlayersReady()
     {
         Debug.Log("Both players are ready !");
+        //Update characters names. Use Steam name ?
         for (int i = 0; i < 2; i++)
-            photonView.RPC("UpdateNameAndColors", RpcTarget.All, i);
+            GameManager.Instance.scoresNames[i].name = "Test";
     }
 }
