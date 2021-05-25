@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
-
 using TMPro;
+
+#if UNITY_EDITOR
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
+
 
 
 

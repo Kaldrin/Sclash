@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
-
 using TMPro;
+
+#if UNITY_EDITOR
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
 
 
 
@@ -18,6 +21,8 @@ using TMPro;
 // REQUIREMENTS
 // Goes with the NarrationEngine script (Single instance)
 // TextMeshPro package
+// MenuManager script (Single instance)
+// MenuParameters scriptable object
 
 /// <summary>
 /// When the player enters it, sends a narration event to the NarrationEngine to trigger the display and play of the sentences
@@ -47,7 +52,12 @@ public class NarrationTrigger : MonoBehaviour
 
 
 
-
+    private void Start()                                                                                                                                                        // START    
+    {
+        // If relax mode destroy self
+        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
+            Destroy(gameObject);
+    }
 
 
     // DETECTS PLAYER
@@ -67,6 +77,8 @@ public class NarrationTrigger : MonoBehaviour
         triggered = true;
         if (NarrationEngine.Instance)
             NarrationEngine.Instance.NarrationEvent(narrationEventData);
+
+        Destroy(gameObject, 5f);
     }
 
 

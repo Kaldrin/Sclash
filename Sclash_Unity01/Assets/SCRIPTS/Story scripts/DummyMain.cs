@@ -13,6 +13,8 @@ using UnityEditor;
 // REQUIREMENTS
 // PitchModulator script
 // CampaignDoor script
+// MenuManager script (Single instance)
+// MenuParameters scriptable object
 
 /// <summary>
 /// Script for the training dummies
@@ -113,8 +115,12 @@ public class DummyMain : MonoBehaviour
 
 
     #region FUNCTIONS
-    private void Awake()                                                                                                                    // AWAKE
+    private void Start()                                                                                                                    // START
     {
+        // If relax mode destroy self
+        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
+            Destroy(gameObject);
+
         SetDummyType();
         dummyAnimator.SetInteger("Type", animatorType);
     }

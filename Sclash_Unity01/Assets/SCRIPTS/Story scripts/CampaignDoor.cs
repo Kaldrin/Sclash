@@ -8,6 +8,10 @@ using UnityEngine;
 // Bastien BERNAND
 // For Sclash
 
+// REQUIREMENTS
+// MenuManager script (Single instance)
+// MenuParameters scriptable object
+
 /// <summary>
 /// Script for the doors and overall points in the story mode than can close / open to let the player pass or block them before they complete a certain thing
 /// </summary>
@@ -30,6 +34,15 @@ public class CampaignDoor : MonoBehaviour
 
     private void OnEnable()                                                                                                                // ON ENABLE
     {
+        // If relax mode destroy self
+        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
+        {
+            open = false;
+            Open();
+        }
+
+
+
         // If was open, reopen
         if (open)
         {

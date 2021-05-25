@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
 using TMPro;
+
+#if UNITY_EDITOR
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
 
 
 
@@ -15,6 +19,8 @@ using TMPro;
 // REQUIREMENTS
 // TutorialManager script (Single instance)
 // TextMeshPro package
+// MenuManager script (Single instance)
+// MenuParameters scriptable object
 
 /// <summary>
 /// This script manages the triggering of tutorial messages using the TutorialManager
@@ -41,6 +47,14 @@ public class TutorialTrigger : MonoBehaviour
 
 
 
+    private void Start()                                                                                                                                                        // START    
+    {
+        // If relax mode destroy self
+        Debug.Log(MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax);
+        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
+            Destroy(gameObject);
+    }
+
     // DETECTS PLAYER
     private void OnTriggerEnter2D(Collider2D collision)                                                                                                                // ON TRIGGER ENTER 2D
     {
@@ -54,9 +68,15 @@ public class TutorialTrigger : MonoBehaviour
 
     void TriggerTutorial()                                                                                                                                         // TRIGGER NARRATION EVENT
     {
-        triggered = true;
+        
         if (TutorialManager.Instance && tutorialObject)
+        {
+            triggered = true;
             TutorialManager.Instance.TriggerTutorial(tutorialObject, tutoMessageDuration);
+
+
+            Destroy(gameObject, 5f);
+        }
     }
 
 

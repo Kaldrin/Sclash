@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
-
 using TMPro;
+using UnityEditor;
+
+#if UNITY_EDITOR
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
 
 
 
@@ -18,6 +21,8 @@ using TMPro;
 // Goes with the NarrationEngine script (Single instance)
 // TextMeshPro package
 // GameManager script
+// MenuManager script (Single instance)
+// MenuParameters scriptable object
 
 /// <summary>
 /// When the player enters it, sends an event to the NarrationEngine to trigger the referenced cutscene
@@ -48,6 +53,17 @@ public class CutsceneTrigger : MonoBehaviour
 
 
 
+
+    private void Start()                                                                                                                                                        // START    
+    {
+        // If relax mode destroy self
+        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
+            Destroy(gameObject);
+    }
+
+
+
+
     // DETECTS PLAYER
     private void OnTriggerEnter2D(Collider2D collision)                                                                                                                           // ON TRIGGER ENTER 2D
     {
@@ -69,6 +85,8 @@ public class CutsceneTrigger : MonoBehaviour
             triggered = true;
             if (NarrationEngine.Instance)
                 NarrationEngine.Instance.TriggerCutScene(cutscenePrefab);
+
+            Destroy(gameObject, 5f);
         }
     }
 
