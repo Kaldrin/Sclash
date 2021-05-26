@@ -182,4 +182,9 @@ public class CutsceneTrigger : MonoBehaviour
             HandleUtility.Repaint();
         #endif
     }
+
+    void RemoveWarnings()
+    {
+        parentName += parentName;
+    }
 }

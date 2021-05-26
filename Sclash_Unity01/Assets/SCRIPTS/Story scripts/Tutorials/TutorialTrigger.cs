@@ -151,4 +151,10 @@ public class TutorialTrigger : MonoBehaviour
             HandleUtility.Repaint();
         #endif
     }
+
+
+    void RemoveWarnings()
+    {
+        parentName += parentName;
+    }
 }

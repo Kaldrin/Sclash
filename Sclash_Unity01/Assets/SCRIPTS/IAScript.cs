@@ -91,10 +91,12 @@ public class IAScript : MonoBehaviour
     public Player GetPlayer()
     {
         Player[] entities = FindObjectsOfType<Player>();
+        Debug.Log(entities.Length);
         foreach (Player s in entities)
         {
             if (s.GetType() == typeof(StoryPlayer))
             {
+                
                 if (!s.gameObject.GetComponent<IAScript>())
                     return s;
             }
@@ -324,6 +326,8 @@ public class IAScript : MonoBehaviour
                         Attack();
                     break;
             }
+
+        Debug.Log(opponent);
 
         switch (opponent.playerState)
         {
