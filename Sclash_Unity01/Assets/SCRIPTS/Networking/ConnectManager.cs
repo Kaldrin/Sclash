@@ -45,7 +45,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
     bool isConnecting = false;
-    string gameVersion = "3.1.5";
+    string gameVersion = "3.3.2";
     public bool connectedToMaster = false;
     public bool enableMultiplayer;
     public GameObject localPlayer;
@@ -1185,7 +1185,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
             {
                 Player.STATE s = GameManager.Instance.playersList[i].GetComponent<Player>().playerState;
-                if (s != Player.STATE.sneathed && s != Player.STATE.drawing)
+                if (s != Player.STATE.sneathed && s != Player.STATE.drawing && s != Player.STATE.frozen)
                 {
                     playerDrawn++;
                 }
@@ -1207,6 +1207,8 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         Debug.Log("Both players are ready !");
         //Update characters names. Use Steam name ?
         for (int i = 0; i < 2; i++)
-            GameManager.Instance.scoresNames[i].name = "Test";
+            photonView.RPC("UpdateNameAndColors", RpcTarget.All, i);
+
+        //   GameManager.Instance.scoresNames[i].text = "Test";
     }
 }

@@ -930,7 +930,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         currentCharacterIndex = c;
         currentWeaponIndex = w;
 
-        Debug.LogFormat("Received : {0} {1} {2}", m, c, w);
+        Debug.LogFormat("Received : {0} {1} {2}", charactersDatabase.charactersList[m].name, c, w);
 
         if (playerAnimator != null)
             playerAnimator.runtimeAnimatorController = charactersDatabase.charactersList[currentCharacterIndex].animator;

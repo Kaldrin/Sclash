@@ -126,7 +126,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] bool usePlayerColorsDifferenciation = false;
     [SerializeField] Color secondPlayerMaskColor = new Color(0, 0, 0, 1);
     [SerializeField] Color secondPlayerSaberColor = new Color(0, 0, 0, 1);
-    [HideInInspector] public int characterIndex = 0;
+    public int characterIndex = 0;
     [HideInInspector] public int networkPlayerNum = 0;
     [HideInInspector] public bool playerIsAI;
     [HideInInspector] public int playerNum = 0;
