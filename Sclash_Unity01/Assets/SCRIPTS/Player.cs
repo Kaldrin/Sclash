@@ -1706,6 +1706,16 @@ public class Player : MonoBehaviourPunCallbacks
         }
         else if (RumbleManager.Instance != null && deathRumbleSettings != null)
         {
+            // SOLO
+            if (ConnectManager.Instance == null)
+            {
+                if (playerNum == 0)
+                    RumbleManager.Instance.Rumble(deathRumbleSettings, XInputDotNetPure.PlayerIndex.One);
+                else if (playerNum == 1)
+                    RumbleManager.Instance.Rumble(deathRumbleSettings, XInputDotNetPure.PlayerIndex.Two);
+                return;
+            }
+
             // LOCAL
             if (!ConnectManager.Instance.enableMultiplayer)
             {
@@ -2260,7 +2270,7 @@ public class Player : MonoBehaviourPunCallbacks
         // If players haven't all drawn, go back to chara selec state
         if (!GameManager.Instance.allPlayersHaveDrawn && characterType == CharacterType.duel)
             // STATE
-            SwitchState(STATE.sneathing);   
+            SwitchState(STATE.sneathing);
         else
         {
             // ANIMATION
@@ -3256,6 +3266,18 @@ public class Player : MonoBehaviourPunCallbacks
         {
             if (RumbleManager.Instance != null && finalDeathRumbleSettings != null)
             {
+                // SOLO
+                if (ConnectManager.Instance == null)
+                {
+
+                    if (playerNum == 0)
+                        RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.One);
+                    else if (playerNum == 1)
+                        RumbleManager.Instance.Rumble(clashedRumble, XInputDotNetPure.PlayerIndex.Two);
+
+                    return;
+                }
+
                 // LOCAL
                 if (!ConnectManager.Instance.enableMultiplayer)
                 {

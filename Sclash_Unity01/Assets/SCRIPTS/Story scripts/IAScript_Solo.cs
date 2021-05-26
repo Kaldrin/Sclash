@@ -22,20 +22,23 @@ public class IAScript_Solo : IAScript
 
     bool isDead;
 
-    void Awake()
+    new void Awake()
     {
+        base.Awake();
         isDead = false;
         playerScript = GetComponent<StoryPlayer>();
         playerAnimations = GetComponent<PlayerAnimations>();
     }
 
-    private void OnEnable()
+    new void OnEnable()
     {
+        base.OnEnable();
         playerScript.OnDeath += Die;
     }
 
-    private void OnDisable()
+    new void OnDisable()
     {
+        base.OnDisable();
         playerScript.OnDeath -= Die;
     }
 
@@ -135,11 +138,13 @@ public class IAScript_Solo : IAScript
 
     public void Die()
     {
-        OnIADeath(this);
+        if (OnIADeath != null)
+            OnIADeath(this);
+
         isDead = true;
 
         //playerScript.playerCollider.gameObject.SetActive(false);
-        foreach(Collider2D col in playerScript.playerColliders)
+        foreach (Collider2D col in playerScript.playerColliders)
             col.gameObject.SetActive(false);
 
         playerScript.rb.bodyType = RigidbodyType2D.Static;
