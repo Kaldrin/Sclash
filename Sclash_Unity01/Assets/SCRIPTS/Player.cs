@@ -2554,7 +2554,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
 
-
+        // Make that only once at the beginning // CHANGE
         // Get range of the character
         lightAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[0];
         heavyAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[1];
