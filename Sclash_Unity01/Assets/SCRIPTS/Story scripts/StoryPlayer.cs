@@ -198,12 +198,11 @@ public class StoryPlayer : Player
     }
 
 
-    public override void ManageMovementsInputs(/*InputAction.CallbackContext ctx*/)
+    public override void ManageMovementsInputs()
     {
         if (playerIsAI)
         {
-            base.ManageMovementsInputs(/*ctx*/);
-            return; 
+            return;
         }
 
 
