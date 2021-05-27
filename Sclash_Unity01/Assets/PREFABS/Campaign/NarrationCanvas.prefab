@@ -2205,7 +2205,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 31
+  m_AdditionalShaderChannelsFlag: 7
   m_SortingLayerID: 0
   m_SortingOrder: 10
   m_TargetDisplay: 0
@@ -2275,6 +2275,7 @@ MonoBehaviour:
   textSubtitlesAnimator: {fileID: 6388604080034181889}
   textApparitionComponent: {fileID: 6388604080034181884}
   cutsceneParent: {fileID: 1073299944}
+  inCutscene: 0
   skipCutSceneIndicatorAnimation: {fileID: 805190827}
   cutsceneSkipAnimation: {fileID: 1741204}
   cutsceneSkipFillImage: {fileID: 837457355}

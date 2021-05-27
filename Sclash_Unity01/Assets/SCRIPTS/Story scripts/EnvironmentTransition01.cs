@@ -1,9 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
+using UnityEditor;
 using TMPro;
+
+#if UNITY_EDITOR
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
+
 
 
 
@@ -55,8 +61,8 @@ public class EnvironmentTransition01 : MonoBehaviour
 
 
     [Header("EDITOR")]
-    bool wiredVolume = false;
     [SerializeField] GameObject editorStuffParent = null;
+    bool wiredVolume = false;
     [SerializeField] GameObject FXIndexDisplayParent = null;
     [SerializeField] TextMeshPro particleIndexDisplay = null;
     [SerializeField] SpriteRenderer particleSetIconDisplay = null;
@@ -68,6 +74,7 @@ public class EnvironmentTransition01 : MonoBehaviour
     [SerializeField] GameObject backgroundShadow = null;
     [SerializeField] GameObject warningObject = null;
     [HideInInspector] public Player player;
+    string parentName = "EnvironmentTransitions";
 
 
 
@@ -306,7 +313,20 @@ public class EnvironmentTransition01 : MonoBehaviour
                     walkSFXIndexDisplayParent.SetActive(false);
         }
 
+
+
+
+        // SET PARENT
+        if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+            transform.parent = GameObject.Find(parentName).transform;
+
+
         #if UNITY_EDITOR
+            // Set parent
+            if (PrefabStageUtility.GetCurrentPrefabStage() == null)
+                if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+                    transform.parent = GameObject.Find(parentName).transform;
+            // For repaint in editor
             HandleUtility.Repaint();
         #endif
     }

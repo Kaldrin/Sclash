@@ -43,6 +43,7 @@ public class StoryPlayer : Player
         SetUpStaminaBars();
         stamina = maxStamina;
         TriggerDraw();
+        base.TriggerBattleSneath();
 
         GameManager_Story.Instance.playersList.Add(gameObject);
     }
@@ -197,12 +198,11 @@ public class StoryPlayer : Player
     }
 
 
-    public override void ManageMovementsInputs(/*InputAction.CallbackContext ctx*/)
+    public override void ManageMovementsInputs()
     {
         if (playerIsAI)
         {
-            base.ManageMovementsInputs(/*ctx*/);
-            return; 
+            return;
         }
 
 
@@ -360,20 +360,50 @@ public class StoryPlayer : Player
 
     protected override void ApplyPommelHitbox()
     {
-        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * (-actualAttackRange + actualBackAttackRangeDisjoint) / 2), transform.position.y), new Vector2(actualAttackRange + actualBackAttackRangeDisjoint, 1), 0);
+        float pommelRange = characterChanger.charactersDatabase.charactersList[characterIndex].character.pommelRange;
+
+        Collider2D[] hitsCol = Physics2D.OverlapBoxAll(new Vector2(transform.position.x + (transform.localScale.x * -pommelRange / 2), transform.position.y), new Vector2(pommelRange, 0.2f), 0);
         List<GameObject> hits = new List<GameObject>();
 
         foreach (Collider2D c in hitsCol)
             if (c.CompareTag("Player"))
+            {
                 if (!hits.Contains(c.transform.parent.gameObject))
                     hits.Add(c.transform.parent.gameObject);
+            }
+            else if (c.CompareTag("Dummy") && !hits.Contains(c.gameObject))
+                hits.Add(c.gameObject);
 
         foreach (GameObject g in hits)
             if (g != gameObject)
             {
-                otherPlayerNum = GetTargetNum(g);
-                if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
-                    g.GetComponent<Player>().Pommeled();
+                if (g.CompareTag("Dummy"))
+                {
+                    targetsHit.Add(g);
+
+
+                    int side = 0;
+                    if (transform.localScale.x > 0)
+                        side = 1;
+                    else
+                        side = 0;
+
+                    if (g.GetComponent<DummyMain>())
+                        g.GetComponent<DummyMain>().Kicked(side);
+                    if (g.transform.parent.GetComponent<DummyMain>())
+                        g.transform.parent.GetComponent<DummyMain>().Kicked(side);
+                }
+                else
+                {
+                    targetsHit.Add(g);
+
+
+                    if (g.CompareTag("Player"))
+                        otherPlayerNum = GetTargetNum(g);
+                    if (g.GetComponent<Player>().playerState != Player.STATE.clashed)
+                        g.GetComponent<Player>().Pommeled(null);
+                    // DUMMY
+                }
             }
     }
 
@@ -398,6 +428,8 @@ public class StoryPlayer : Player
                 hits.Add(c.transform.parent.gameObject);
             else if (c.CompareTag("Destructible") && !hits.Contains(c.gameObject))
                 hits.Add(c.gameObject);
+            else if (c.CompareTag("Dummy") && !hits.Contains(c.gameObject))
+                hits.Add(c.gameObject);
         }
 
         foreach (Collider c in hitCols3D)
@@ -414,6 +446,7 @@ public class StoryPlayer : Player
             {
                 if (g.CompareTag("Player"))
                 {
+                    targetsHit.Add(g);
                     otherPlayerNum = GetTargetNum(g);
 
                     g.GetComponent<StoryPlayer>().TakeDamage(gameObject, chargeLevel);
@@ -464,6 +497,21 @@ public class StoryPlayer : Player
                     }
                     else if (g.transform.parent.gameObject.GetComponent<Destructible>())
                         g.transform.parent.gameObject.GetComponent<Destructible>().Destroy();
+                }
+                // DUMMY
+                else if (g.CompareTag("Dummy"))
+                {
+                    targetsHit.Add(g);
+                    int side = 0;
+                    if (transform.localScale.x > 0)
+                        side = 1;
+                    else
+                        side = 0;
+
+                    if (g.GetComponent<DummyMain>())
+                        g.GetComponent<DummyMain>().Hit(side, chargeLevel == maxChargeLevel);
+                    if (g.transform.parent.GetComponent<DummyMain>())
+                        g.transform.parent.GetComponent<DummyMain>().Hit(side, chargeLevel == maxChargeLevel);
                 }
             }
     }
@@ -530,10 +578,10 @@ public class StoryPlayer : Player
     }
 
 
-    public override void Pommeled()
+    public override void Pommeled(GameObject instigator)
     {
         //otherPlayerNum = GetTargetNum();
-        base.Pommeled();
+        base.Pommeled(instigator);
     }
 
 

@@ -40,6 +40,19 @@ public class PlayParticleSystem : MonoBehaviour
 
 
 
+    public void Play()                                                                                  // PLAY
+    {
+        if (particleSystemToPlay)
+            particleSystemToPlay.Play();
+    }
+
+    public void Stop()                                                                                  // STOP
+    {
+        if (particleSystemToPlay)
+            particleSystemToPlay.Stop();
+    }
+
+
 
 
 

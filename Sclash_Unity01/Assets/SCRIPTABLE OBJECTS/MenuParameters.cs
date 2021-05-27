@@ -44,6 +44,7 @@ public class MenuParameters : ScriptableObject
     [Header("GAME")]
     public int roundToWin = 5;
     public bool displayHelp = true;
+    public bool storyRelax = false;
 
     [Header("ERGONOMY")]
     public bool enableRumbles = true;

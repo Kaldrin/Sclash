@@ -130,10 +130,11 @@ public class EnvironmentStart01 : MonoBehaviour
             // SKY
             skyOpacityObjective = baseSkyOpacity;
             if (wasDisabled)
-            {
-                Color newSkyColor = new Color(sky.color.r, sky.color.g, sky.color.b, 0);
-                sky.color = newSkyColor;
-            }
+                if (sky)
+                {
+                    Color newSkyColor = new Color(sky.color.r, sky.color.g, sky.color.b, 0);
+                    sky.color = newSkyColor;
+                }
 
 
             finished = false;

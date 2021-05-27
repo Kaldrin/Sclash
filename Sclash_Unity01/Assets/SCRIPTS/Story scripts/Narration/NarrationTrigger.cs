@@ -1,9 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
+using UnityEditor;
 using TMPro;
+
+#if UNITY_EDITOR
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
 
 
 
@@ -16,6 +21,8 @@ using TMPro;
 // REQUIREMENTS
 // Goes with the NarrationEngine script (Single instance)
 // TextMeshPro package
+// MenuManager script (Single instance)
+// MenuParameters scriptable object
 
 /// <summary>
 /// When the player enters it, sends a narration event to the NarrationEngine to trigger the display and play of the sentences
@@ -34,17 +41,23 @@ public class NarrationTrigger : MonoBehaviour
     [SerializeField] TagsReferences tagsReferences = null;
 
     [Header("EDITOR")]
-    bool wiredVolume = false;
     [SerializeField] GameObject infosDisplay = null;
     [SerializeField] TextMeshPro firstKeyDisplayText = null;
     [SerializeField] TextMeshPro numberOfSentencesDisplayText = null;
     [SerializeField] GameObject warning = null;
+    bool wiredVolume = false;
+    string parentName = "NarrationTriggers";
 
 
 
 
 
-
+    private void Start()                                                                                                                                                        // START    
+    {
+        // If relax mode destroy self
+        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
+            Destroy(gameObject);
+    }
 
 
     // DETECTS PLAYER
@@ -64,6 +77,8 @@ public class NarrationTrigger : MonoBehaviour
         triggered = true;
         if (NarrationEngine.Instance)
             NarrationEngine.Instance.NarrationEvent(narrationEventData);
+
+        Destroy(gameObject, 5f);
     }
 
 
@@ -75,14 +90,14 @@ public class NarrationTrigger : MonoBehaviour
     {
         float distance = 5;
 
-        RaycastHit2D raycastHit2D = Physics2D.Raycast((Vector2)transform.position + (Vector2.up * distance), Vector2.down, distance * 2, LayerMask.GetMask("Level"));
+        RaycastHit2D raycastHit2D = Physics2D.Raycast((Vector3)transform.position + (Vector3.up * distance), Vector3.down, distance * 2, LayerMask.GetMask("Level"));
         if (raycastHit2D.collider != null && raycastHit2D.collider != GetComponent<Collider>())
         {
-            Debug.DrawRay((Vector2)transform.position + (Vector2.up * distance), Vector2.down * distance * 2, Color.red);
+            Debug.DrawRay((Vector3)transform.position + (Vector3.up * distance), Vector3.down * distance * 2, Color.red);
             transform.position = new Vector3(transform.position.x, raycastHit2D.point.y + transform.localScale.y / 2, transform.position.z);
         }
         else
-            Debug.DrawRay((Vector2)transform.position + (Vector2.up * distance), Vector2.down * distance * 2, Color.white);
+            Debug.DrawRay((Vector3)transform.position + (Vector3.up * distance), Vector3.down * distance * 2, Color.white);
     }
 
     
@@ -148,9 +163,19 @@ public class NarrationTrigger : MonoBehaviour
                     numberOfSentencesDisplayText.gameObject.SetActive(false);
         }
 
+        // Set parent
+        if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+            transform.parent = GameObject.Find(parentName).transform;
 
-#if UNITY_EDITOR
-        HandleUtility.Repaint();
-#endif
+
+
+        #if UNITY_EDITOR
+            // Set parent
+            if (PrefabStageUtility.GetCurrentPrefabStage() == null)
+                if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+                    transform.parent = GameObject.Find(parentName).transform;
+            // For repaint in editor
+            HandleUtility.Repaint();
+        #endif
     }
 }

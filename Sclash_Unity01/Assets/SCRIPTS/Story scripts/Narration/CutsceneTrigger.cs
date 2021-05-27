@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using UnityEditor;
 using TMPro;
+using UnityEditor;
+
+#if UNITY_EDITOR
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
 
 
 
@@ -16,6 +21,8 @@ using TMPro;
 // Goes with the NarrationEngine script (Single instance)
 // TextMeshPro package
 // GameManager script
+// MenuManager script (Single instance)
+// MenuParameters scriptable object
 
 /// <summary>
 /// When the player enters it, sends an event to the NarrationEngine to trigger the referenced cutscene
@@ -38,9 +45,21 @@ public class CutsceneTrigger : MonoBehaviour
     [SerializeField] TextMeshPro cutsceneNameText = null;
     [SerializeField] GameObject shadow = null;
     [SerializeField] GameObject warning = null;
+    string parentName = "CutsceneTriggers";
 
 
 
+
+
+
+
+
+    private void Start()                                                                                                                                                        // START    
+    {
+        // If relax mode destroy self
+        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
+            Destroy(gameObject);
+    }
 
 
 
@@ -66,6 +85,8 @@ public class CutsceneTrigger : MonoBehaviour
             triggered = true;
             if (NarrationEngine.Instance)
                 NarrationEngine.Instance.TriggerCutScene(cutscenePrefab);
+
+            Destroy(gameObject, 5f);
         }
     }
 
@@ -151,9 +172,19 @@ public class CutsceneTrigger : MonoBehaviour
         }
 
 
-        // Forces repaint more often
-#if UNITY_EDITOR
-        HandleUtility.Repaint();
-#endif
+
+        #if UNITY_EDITOR
+            // Set parent
+            if (PrefabStageUtility.GetCurrentPrefabStage() == null)
+                if ((!transform.parent || transform.parent.gameObject.name != parentName) && GameObject.Find(parentName))
+                    transform.parent = GameObject.Find(parentName).transform;
+            // For repaint in editor
+            HandleUtility.Repaint();
+        #endif
+    }
+
+    void RemoveWarnings()
+    {
+        parentName += parentName;
     }
 }

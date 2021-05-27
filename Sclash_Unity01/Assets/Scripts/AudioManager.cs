@@ -374,18 +374,23 @@ public class AudioManager : MonoBehaviour
 
     void UpdateMusicDependingOnBattleIntensity()
     {
-        int currentMaxScore = Mathf.FloorToInt(Mathf.Max(gameManager.score[0], gameManager.score[1]));
+        int currentMaxScore = 0;
+        if (GameManager.Instance && GameManager.Instance.score != null)
+            currentMaxScore = Mathf.FloorToInt(Mathf.Max(GameManager.Instance.score[0], GameManager.Instance.score[1]));
 
 
-        if (!(currentMaxScore >= gameManager.scoreToWin - scoreFromMaxScoreToAutoMaxPhase && gameManager.scoreToWin > scoreFromMaxScoreToAutoMaxPhase))
+        if (!(currentMaxScore >= GameManager.Instance.scoreToWin - scoreFromMaxScoreToAutoMaxPhase && GameManager.Instance.scoreToWin > scoreFromMaxScoreToAutoMaxPhase))
         {
             if (currentMusicPhase < phasesMainAudioSources.Count - 1)
             {
                 if (currentBattleIntensity >= battleIntensityLevelsForPhaseUp[currentMusicPhase] && lastBattleIntensityLevel < battleIntensityLevelsForPhaseUp[currentMusicPhase])
                 {
                     ImmediatelySwitchPhase(1, false, 0);
-                    phaseTransitionFXAudioSource.clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseUpFX;
-                    phaseTransitionFXAudioSource.Play();
+                    if (phaseTransitionFXAudioSource)
+                    {
+                        phaseTransitionFXAudioSource.clip = musicDataBase.musicsList[currentlySelectedMusicIndex].phases[currentMusicPhase].phaseUpFX;
+                        phaseTransitionFXAudioSource.Play();
+                    }
                 }
             }
             if (currentMusicPhase > 0)
@@ -525,11 +530,14 @@ public class AudioManager : MonoBehaviour
         maxWinVolume = winMusicAudioSource.volume;
         maxWindVolume = windAudioSource.volume;
 
-
-        for (int i = 0; i < maxPhasesMainVolumes.Count; i++)
-            maxPhasesMainVolumes[i] = phasesMainAudioSources[i].volume;
-        for (int i = 0; i < maxPhasesStrikesVolumes.Count; i++)
-            maxPhasesStrikesVolumes[i] = phasesStrikesAudioSources[i].volume;
+        if (maxPhasesMainVolumes != null && maxPhasesMainVolumes.Count > 0)
+            for (int i = 0; i < maxPhasesMainVolumes.Count; i++)
+                if (phasesMainAudioSources.Count > i && phasesMainAudioSources[i] != null)
+                    maxPhasesMainVolumes[i] = phasesMainAudioSources[i].volume;
+        if (maxPhasesStrikesVolumes != null && maxPhasesStrikesVolumes.Count > 0)
+            for (int i = 0; i < maxPhasesStrikesVolumes.Count; i++)
+                if (phasesStrikesAudioSources.Count > i && phasesStrikesAudioSources[i] != null)
+                    maxPhasesStrikesVolumes[i] = phasesStrikesAudioSources[i].volume;
     }
 
 

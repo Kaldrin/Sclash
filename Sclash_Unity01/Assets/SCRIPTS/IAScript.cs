@@ -95,6 +95,7 @@ public class IAScript : MonoBehaviour
         {
             if (s.GetType() == typeof(StoryPlayer))
             {
+
                 if (!s.gameObject.GetComponent<IAScript>())
                     return s;
             }
@@ -107,13 +108,19 @@ public class IAScript : MonoBehaviour
         return null;
     }
 
-    void Awake()                                                                                                                                                        // AWAKE
+    protected virtual void Awake()                                                                                                                                                        // AWAKE
     {
         if (GameManager.Instance)
             GameManager.Instance.ResetGameEvent += OnDisable;
+
+        if (attachedPlayer.playerNum == 0)
+        {
+            Debug.LogError("AI player num should never be 0");
+            attachedPlayer.playerNum++;
+        }
     }
 
-    void OnEnable()                                                                                                                                                     // ON ENABLE
+    protected void OnEnable()                                                                                                                                                     // ON ENABLE
     {
         ready = false;
         attachedPlayer = GetComponent<Player>();
@@ -134,7 +141,7 @@ public class IAScript : MonoBehaviour
         attachedPlayer.playerIsAI = true;
     }
 
-    void OnDisable()                                                                                                                                                    // ON DISABLE
+    protected void OnDisable()                                                                                                                                                    // ON DISABLE
     {
         if (attachedPlayer)
             attachedPlayer.playerIsAI = false;
@@ -517,6 +524,7 @@ public class IAScript : MonoBehaviour
 
     void DashToward()
     {
+        Debug.Log("Dash Towards");
         if (attachedPlayer.stamina >= attachedPlayer.staminaCostForMoves)
             InputManager.Instance.playerInputs[attachedPlayer.playerNum].dash = Mathf.Sign(opponent.transform.position.x - transform.position.x);
 
@@ -527,7 +535,7 @@ public class IAScript : MonoBehaviour
 
     void DashAway()
     {
-        //Debug.Log("DashBackward");
+        Debug.Log("Dash Away");
 
         if (attachedPlayer.stamina >= attachedPlayer.staminaCostForMoves)
             InputManager.Instance.playerInputs[attachedPlayer.playerNum].dash = Mathf.Sign(transform.position.x - opponent.transform.position.x);
@@ -655,7 +663,8 @@ public class IAScript : MonoBehaviour
 
     protected void ManageMovementsInputs(int direction = 0)
     {
-        attachedPlayer.rb.velocity = new Vector2(direction * attachedPlayer.actualMovementsSpeed, attachedPlayer.rb.velocity.y);
+        Debug.Log("Move");
+        GetComponent<Rigidbody2D>().velocity = new Vector2(direction * attachedPlayer.actualMovementsSpeed, GetComponent<Rigidbody2D>().velocity.y);
     }
     #endregion
 }

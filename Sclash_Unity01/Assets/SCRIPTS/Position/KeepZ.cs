@@ -4,8 +4,18 @@ using UnityEngine;
 
 
 
-// This script is for the object to stay at a specific Z position no matter what, so it's easier to move around without making mistakes
+
+
+
 // OPTIMIZED
+// Reusable asset
+// Bastien BERNAND
+
+/// <summary>
+/// This script is for the object to stay at a specific Z position no matter what, so it's easier to move around without making mistakes
+/// </summary>
+
+// UNITY 2019
 public class KeepZ : MonoBehaviour
 {
     [SerializeField] float zToKeep = 0;
@@ -16,16 +26,18 @@ public class KeepZ : MonoBehaviour
 
 
 
-    private void Start()                                                                // START
+
+
+    private void Start()                                                                                                               // START
     {
-        if (checkOnStart)
-            Reposition();
+        if (enabled)
+            if (checkOnStart)
+                Reposition();
     }
 
 
 
-
-    public void Reposition()
+    public void Reposition()                                                                                                                // REPOSITION
     {
         if (transform.position.z != zToKeep)
             transform.position = new Vector3(transform.position.x, transform.position.y, zToKeep);
@@ -33,9 +45,10 @@ public class KeepZ : MonoBehaviour
 
 
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmos()                                                                                                                     // ON DRAW GIzmos
     {
-        if (checkInEditor)
-            Reposition();
+        if (enabled)
+            if (checkInEditor)
+                Reposition();
     }
 }
