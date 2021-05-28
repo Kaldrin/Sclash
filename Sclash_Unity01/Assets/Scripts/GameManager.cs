@@ -765,7 +765,7 @@ public class GameManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    protected void UpdateNameAndColors(int i)
+    public void UpdateNameAndColors(int i)
     {
         Debug.Log("Update name & color");
         scoresNames[i].text = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;

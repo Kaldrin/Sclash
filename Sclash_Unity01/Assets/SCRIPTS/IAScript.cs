@@ -113,9 +113,9 @@ public class IAScript : MonoBehaviour
         if (GameManager.Instance)
             GameManager.Instance.ResetGameEvent += OnDisable;
 
-        if (attachedPlayer.playerNum == 0)
+        if (this.enabled)
         {
-            if (this.enabled)
+            if (attachedPlayer.playerNum == 0)
             {
                 Debug.LogError("AI player num should never be 0");
                 attachedPlayer.playerNum++;
