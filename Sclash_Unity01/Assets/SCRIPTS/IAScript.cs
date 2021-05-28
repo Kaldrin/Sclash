@@ -115,8 +115,11 @@ public class IAScript : MonoBehaviour
 
         if (attachedPlayer.playerNum == 0)
         {
-            Debug.LogError("AI player num should never be 0");
-            attachedPlayer.playerNum++;
+            if (this.enabled)
+            {
+                Debug.LogError("AI player num should never be 0");
+                attachedPlayer.playerNum++;
+            }
         }
     }
 
