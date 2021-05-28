@@ -497,8 +497,6 @@ public class Player_Online : Player, IPunObservable
 
     internal override void DashInput(float inDirection, bool quickDash)
     {
-        Debug.Log(gameObject.name + " receive DashInput");
-
         switch (playerState)
         {
             case STATE.normal:
