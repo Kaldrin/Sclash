@@ -526,9 +526,12 @@ public class AudioManager : MonoBehaviour
     #region MUSICS VOLUMES
     void GetSourcesDefaultVolume()
     {
-        maxMenuVolume = menuAudioSource.volume;
-        maxWinVolume = winMusicAudioSource.volume;
-        maxWindVolume = windAudioSource.volume;
+        if (menuAudioSource)
+            maxMenuVolume = menuAudioSource.volume;
+        if (winMusicAudioSource)
+            maxWinVolume = winMusicAudioSource.volume;
+        if (windAudioSource)
+            maxWindVolume = windAudioSource.volume;
 
         if (maxPhasesMainVolumes != null && maxPhasesMainVolumes.Count > 0)
             for (int i = 0; i < maxPhasesMainVolumes.Count; i++)
@@ -547,7 +550,7 @@ public class AudioManager : MonoBehaviour
 
 
         // WIND
-        if (windAudioSource.volume != windVolumeObjective)
+        if (windAudioSource && windAudioSource.volume != windVolumeObjective)
         {
             volumeFadeDirection = Mathf.Sign(windVolumeObjective - windAudioSource.volume);
 
@@ -561,7 +564,7 @@ public class AudioManager : MonoBehaviour
 
 
         // MENU
-        if (menuAudioSource.volume != menuVolumeObjective)
+        if (menuAudioSource && menuAudioSource.volume != menuVolumeObjective)
         {
             volumeFadeDirection = Mathf.Sign(menuVolumeObjective - menuAudioSource.volume);
 
@@ -575,18 +578,19 @@ public class AudioManager : MonoBehaviour
 
 
         // MAIN
-        for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
-            if (phasesMainAudioSources[i].volume != phasesMainVolumeObjectives[i])
-            {
-                volumeFadeDirection = Mathf.Sign(phasesMainVolumeObjectives[i] - phasesMainAudioSources[i].volume);
+        if (phasesMainAudioSources != null && phasesMainAudioSources.Count > 0 && phasesMainVolumeObjectives.Count > 0)
+            for (int i = 0; i < phasesMainVolumeObjectives.Count; i++)
+                if (phasesMainAudioSources[i] && phasesMainAudioSources[i].volume != phasesMainVolumeObjectives[i])
+                {
+                    volumeFadeDirection = Mathf.Sign(phasesMainVolumeObjectives[i] - phasesMainAudioSources[i].volume);
 
-                phasesMainAudioSources[i].volume += volumeFadeDirection * volumeFadeSpeed;
+                    phasesMainAudioSources[i].volume += volumeFadeDirection * volumeFadeSpeed;
 
-                if (volumeFadeDirection >= 0 && phasesMainAudioSources[i].volume >= phasesMainVolumeObjectives[i])
-                    phasesMainAudioSources[i].volume = phasesMainVolumeObjectives[i];
-                else if (volumeFadeDirection < 0 && phasesMainAudioSources[i].volume <= phasesMainVolumeObjectives[i])
-                    phasesMainAudioSources[i].volume = phasesMainVolumeObjectives[i];
-            }
+                    if (volumeFadeDirection >= 0 && phasesMainAudioSources[i].volume >= phasesMainVolumeObjectives[i])
+                        phasesMainAudioSources[i].volume = phasesMainVolumeObjectives[i];
+                    else if (volumeFadeDirection < 0 && phasesMainAudioSources[i].volume <= phasesMainVolumeObjectives[i])
+                        phasesMainAudioSources[i].volume = phasesMainVolumeObjectives[i];
+                }
 
 
         // STRIKES

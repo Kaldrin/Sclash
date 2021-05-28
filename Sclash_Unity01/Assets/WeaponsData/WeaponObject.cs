@@ -9,4 +9,5 @@ public class WeaponObject : ScriptableObject
 {
     public string nameKey;
     public bool sharp = true;
+    public bool metallic = true;
 }

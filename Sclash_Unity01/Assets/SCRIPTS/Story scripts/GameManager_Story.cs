@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameManager_Story : GameManager
 {
     private static GameManager_Story storyInstance = null;
+
     public static GameManager_Story StoryInstance
     {
         get
@@ -16,6 +17,13 @@ public class GameManager_Story : GameManager
             return storyInstance;
         }
     }
+
+
+
+
+
+
+
 
     public override void Awake()
     {
