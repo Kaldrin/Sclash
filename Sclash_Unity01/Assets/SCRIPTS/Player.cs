@@ -829,6 +829,7 @@ public class Player : MonoBehaviourPunCallbacks
                 case STATE.battleSneathedNormal:                                            // BATTLE SNEATHED NORMAL
                     UpdateStaminaSlidersValue();
                     SetStaminaBarsOpacity(0);
+                    ManageStaminaRegen();
                     UpdateStaminaColor();
                     ManageMovementsInputs();
                     ManageOrientation();
@@ -1867,15 +1868,19 @@ public class Player : MonoBehaviourPunCallbacks
             if (!staminaRecupAnimOn && !staminaBreakAnimOn)
                 if (!staminaRecupAnimOn && !staminaBreakAnimOn)
                 {
-                    // AUDIO
-                    staminaBarChargedAudioEffectSource.pitch = 0.4f + (stamina / maxStamina) * (staminaBarChargedSFXBasePitch - 0.4f);
-                    staminaBarChargedAudioEffectSource.Play();
+                    
 
                     // CHEAT
-                    if (cheatSettings.useExtraDiegeticFX)
+                    if (cheatSettings.useExtraDiegeticFX && playerState != STATE.battleSneathedNormal && playerState != STATE.battleSneathing && playerState != STATE.battleDrawing)
                     {
+                        //FX
                         staminaGainFX.Play();
                         staminaGainFX.GetComponent<ParticleSystem>().Play();
+
+
+                        // AUDIO
+                        staminaBarChargedAudioEffectSource.pitch = 0.4f + (stamina / maxStamina) * (staminaBarChargedSFXBasePitch - 0.4f);
+                        staminaBarChargedAudioEffectSource.Play();
                     }
                 }
 

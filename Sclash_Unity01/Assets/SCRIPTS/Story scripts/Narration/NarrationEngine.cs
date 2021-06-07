@@ -37,7 +37,7 @@ public class NarrationEngine : MonoBehaviour
 
     [Header("CUTSCENES")]
     [SerializeField] Transform cutsceneParent = null;
-    float maxCutSceneDuration = 60f;
+    float maxCutSceneDuration = 120f;
     GameObject currentCutscene = null;
     [HideInInspector] public bool inCutscene = false;
     [SerializeField] Animation skipCutSceneIndicatorAnimation = null;
@@ -110,6 +110,12 @@ public class NarrationEngine : MonoBehaviour
             skipCutSceneIndicatorAnimation.GetComponent<CanvasGroup>().alpha = 0;
         if (cutsceneSkipFillImage)
             cutsceneSkipFillImage.fillAmount = 0;
+
+        // Clean cutscene parent
+        if (cutsceneParent && cutsceneParent.childCount > 0)
+            for (int i = 0; i < cutsceneParent.childCount; i++)
+                if (cutsceneParent.GetChild(i))
+                    Destroy(cutsceneParent.GetChild(i).gameObject);
     }
     private void Update()                                                                                                                                                        // UPDATE
     {
@@ -122,7 +128,7 @@ public class NarrationEngine : MonoBehaviour
 
 
     // NARRATION
-    public void NarrationEvent(NarrationEventData narrationEventData, bool playStartAnim = true)                                                                                // NARRATION EVENT
+    public void NarrationEvent(NarrationEventData narrationEventData, bool playStartAnim = true)                                                                          // NARRATION EVENT
     {
         if (narrating)
             narrationEventsQueue.Add(narrationEventData);
@@ -143,7 +149,7 @@ public class NarrationEngine : MonoBehaviour
         }
     }
 
-    void ReadSentence()                                                                                                                                                         // READ SENTENCE
+    void ReadSentence()                                                                                                                                                    // READ SENTENCE
     {
         if (currentNarrationEvent.sentences != null && currentNarrationEvent.sentences.Count > 0 && currentNarrationEventIndex < currentNarrationEvent.sentences.Count)
         {
@@ -183,7 +189,7 @@ public class NarrationEngine : MonoBehaviour
         }
     }
 
-    void EndSentence()                                                                                                                                                          // END SENTENCE
+    void EndSentence()                                                                                                                                                     // END SENTENCE
     {
         // Is paused ?
         if (!narrationPaused)
@@ -206,7 +212,7 @@ public class NarrationEngine : MonoBehaviour
         }
     }
 
-    void EndNarrationEvent()                                                                                                                                                    // END NARRATION EVENT
+    void EndNarrationEvent()                                                                                                                                        // END NARRATION EVENT
     {
         // ANIMATION
         if (textSubtitlesAnimator && narrating)
@@ -230,7 +236,7 @@ public class NarrationEngine : MonoBehaviour
         }
     }
 
-    void CallNextNarrationEvent()                                                                                                                                          // CALL NEXT NARRATION EVENT
+    void CallNextNarrationEvent()                                                                                                                             // CALL NEXT NARRATION EVENT
     {
         narrating = false;
         NarrationEvent(narrationEventsQueue[0], false);
@@ -303,7 +309,7 @@ public class NarrationEngine : MonoBehaviour
 
             // STATE
             GameManager.Instance.SwitchState(GameManager.Instance.oldState);
-
+            AudioManager_Story.Instance.mainMusic.Play();
 
             // Skip stuff
             cutsceneSkipAmount = 0;
