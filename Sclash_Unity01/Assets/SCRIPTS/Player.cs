@@ -129,7 +129,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] public int characterIndex = 0;
     [HideInInspector] public int networkPlayerNum = 0;
     [HideInInspector] public bool playerIsAI;
-    [HideInInspector] public int playerNum = 0;
+    [SerializeField] public int playerNum = 0;
     [HideInInspector] public int otherPlayerNum = 0;
     Player opponent;
     #endregion
@@ -198,7 +198,7 @@ public class Player : MonoBehaviourPunCallbacks
     [Tooltip("The default movement speed of the player")]
     protected float baseMovementsSpeed = 2.5f;
     float chargeMovementsSpeed = 1.2f;
-    float runMovementSpeed = 4.3f;
+    float runMovementSpeed = 4.6f;
     float sneathedMovementsSpeed = 1.8f;
     float attackingMovementsSpeed = 2.2f;
     [HideInInspector] public float actualMovementsSpeed = 1;

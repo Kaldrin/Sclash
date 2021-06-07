@@ -16,7 +16,7 @@ MonoBehaviour:
   inputManager: {fileID: 0}
   rb: {fileID: 421221344336783824}
   playerAnimations: {fileID: 8481063011503797824}
-  characterChanger: {fileID: 0}
+  characterChanger: {fileID: 3178065585436368578}
   iaScript: {fileID: 3519355493229144653}
   playerColliders:
   - {fileID: 9016957154496520632}
@@ -40,10 +40,10 @@ MonoBehaviour:
   usePlayerColorsDifferenciation: 1
   secondPlayerMaskColor: {r: 1, g: 0.43921572, b: 0.3529412, a: 1}
   secondPlayerSaberColor: {r: 1, g: 0.33333334, b: 0.3529412, a: 1}
-  characterIndex: 0
+  characterIndex: 4
   networkPlayerNum: 0
   playerIsAI: 1
-  playerNum: 0
+  playerNum: 1
   otherPlayerNum: 0
   staminaSlider: {fileID: 7508522981859150342}
   staminaCostForMoves: 1
@@ -251,6 +251,21 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1392431214843449472, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1392431214843449472, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1392431214843449472, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1478078827075856855, guid: 9a4ac4108c7244748a6a697bcfe45aad,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -450,7 +465,7 @@ PrefabInstance:
         type: 3}
       propertyPath: playerScript
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: -216021300556530859}
     - target: {fileID: 8386356399496797933, guid: 9a4ac4108c7244748a6a697bcfe45aad,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -466,6 +481,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 8516977261758167624, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8516977261758167624, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8516977261758167624, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8516977261758167624, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8714567626244415176, guid: 9a4ac4108c7244748a6a697bcfe45aad,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -480,7 +515,6 @@ PrefabInstance:
     - {fileID: 5454985371685377168, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
     - {fileID: 2773012502423544874, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
     - {fileID: 8952588851698205473, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
-    - {fileID: 8184698509979975332, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
     - {fileID: -5519181324398716715, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9a4ac4108c7244748a6a697bcfe45aad, type: 3}
 --- !u!50 &421221344336783824 stripped
@@ -499,6 +533,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 724d1309752846640bd23eb1ca3a28b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3178065585436368578 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8184698509979975332, guid: 9a4ac4108c7244748a6a697bcfe45aad,
+    type: 3}
+  m_PrefabInstance: {fileID: 6741644696181956710}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421221344336783828}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae60c098ca9262042ae8b8170e338bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6772644662480066342 stripped

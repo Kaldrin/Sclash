@@ -32,14 +32,16 @@ public class CampaignDoor : MonoBehaviour
 
 
 
+    private void Start()
+    {
+        // If relax mode destroy self
+        CheckRelaxMode();
+    }
+
     private void OnEnable()                                                                                                                // ON ENABLE
     {
         // If relax mode destroy self
-        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
-        {
-            open = false;
-            Open();
-        }
+        CheckRelaxMode();
 
 
 
@@ -50,6 +52,18 @@ public class CampaignDoor : MonoBehaviour
             Open();
         }
     }
+
+
+    void CheckRelaxMode()
+    {
+        if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
+        {
+            open = false;
+            Open();
+        }
+    }
+
+
 
     public void Close()                                                                                                             // CLOSE
     {
