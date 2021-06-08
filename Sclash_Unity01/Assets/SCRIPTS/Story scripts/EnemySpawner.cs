@@ -5,9 +5,17 @@ using UnityEngine.InputSystem;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Range(1,100)]
     public int spawnBeforeExhaust;
 
     public GameObject enemyPrefab;
+    public bool spawnOnStart;
+
+    private void Start()
+    {
+        if (spawnOnStart)
+            SpawnEnemy();
+    }
 
     private void Update()
     {
@@ -34,13 +42,14 @@ public class EnemySpawner : MonoBehaviour
         {
             new IAScript.Actions("Wait",1),
             new IAScript.Actions("Parry", 1),
-            new IAScript.Actions("Attack",1)
+            new IAScript.Actions("Attack",1),
+            new IAScript.Actions("InterruptAttack", 1)
         };
         IAManager.Instance.EnemySpawned(enemySpawned);
     }
 
     private void DestroySpawner()
     {
-        Destroy(gameObject);
+        IAManager.Instance.DestroySpawnerAction(this);
     }
 }

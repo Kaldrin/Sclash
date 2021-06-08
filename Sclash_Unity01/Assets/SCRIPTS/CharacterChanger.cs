@@ -180,10 +180,13 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             verticalIndex = 3;
             StartCoroutine(ApplyPlayerChange(0));
 
-            if (!ConnectManager.Instance.enableMultiplayer)
+            if (ConnectManager.Instance != null)
             {
-                verticalIndex = 4;
-                StartCoroutine(ApplyCharacter2Change(0));
+                if (!ConnectManager.Instance.enableMultiplayer)
+                {
+                    verticalIndex = 4;
+                    StartCoroutine(ApplyCharacter2Change(0));
+                }
             }
         }
 
@@ -223,6 +226,10 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             verticalMenu.GetComponent<Animator>().SetBool("On", false);
     }
 
+    private void Awake()
+    {
+        playerScript = GetComponent<Player>();
+    }
 
     void Update()                                                                                                                                                               // UPDATE
     {
@@ -300,12 +307,16 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             }
 
 
-        // ONLINE
-        if (ConnectManager.Instance.enableMultiplayer && playerScript.playerNum == 0 && verticalMenu != null)
-            currentMaxVerticalIndex = verticalMenu.transform.childCount - 3;
-        // OFFLINE
-        else if (verticalMenu != null)
+        //SOLO
+        if (verticalMenu != null)
+        {
             currentMaxVerticalIndex = verticalMenu.transform.childCount - 1;
+            // ONLINE
+            if (ConnectManager.Instance != null)
+                if (ConnectManager.Instance.enableMultiplayer && playerScript.playerNum == 0)
+                    currentMaxVerticalIndex = verticalMenu.transform.childCount - 3;
+        }
+
     }
 
 
@@ -315,8 +326,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // Old input
         int inputPlayernUm = playerScript.playerNum;
 
-        if (ConnectManager.Instance.enableMultiplayer)
-            inputPlayernUm = 0;
+        if (ConnectManager.Instance != null)
+            if (ConnectManager.Instance.enableMultiplayer)
+                inputPlayernUm = 0;
 
 
         if (canChangeVertical && (Mathf.Abs(InputManager.Instance.playerInputs[inputPlayernUm].vertical) > 0.5f))
@@ -363,8 +375,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // Old input
         int inputPlayernUm = playerScript.playerNum;
 
-        if (ConnectManager.Instance.enableMultiplayer)
-            inputPlayernUm = 0;
+        if (ConnectManager.Instance != null)
+            if (ConnectManager.Instance.enableMultiplayer)
+                inputPlayernUm = 0;
 
 
         if (canChangeHorizontal && (Mathf.Abs(InputManager.Instance.playerInputs[inputPlayernUm].horizontal) > 0.5f))
@@ -836,7 +849,6 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         if (GameManager.Instance != null)
         {
             GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
-            GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
             GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().iaScript.enabled = player2ModesDatabase.player2modes[currentAI_Index].AI;
         }
         playerScript.iaScript.SetDifficulty(player2ModesDatabase.player2modes[currentAI_Index].difficulty);
@@ -889,6 +901,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     #region Photon
     private void SendCosmetics()
     {
+        if (ConnectManager.Instance == null)
+            return;
+
         if (ConnectManager.Instance != null && !ConnectManager.Instance.connectedToMaster)
             return;
 

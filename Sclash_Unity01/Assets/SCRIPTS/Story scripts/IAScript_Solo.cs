@@ -25,6 +25,13 @@ public class IAScript_Solo : IAScript
     new void Awake()
     {
         base.Awake();
+
+
+        if (IAManager.Instance)
+        {
+            IAManager.Instance.EnemySpawned(gameObject);
+        }
+
         isDead = false;
         playerScript = GetComponent<StoryPlayer>();
         playerAnimations = GetComponent<PlayerAnimations>();

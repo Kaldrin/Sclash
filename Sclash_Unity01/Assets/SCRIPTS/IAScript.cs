@@ -112,13 +112,16 @@ public class IAScript : MonoBehaviour
     {
         if (GameManager.Instance)
             GameManager.Instance.ResetGameEvent += OnDisable;
+    }
 
+    private void Start()
+    {
         if (this.enabled)
         {
             if (attachedPlayer.playerNum == 0)
             {
                 Debug.LogError("AI player num should never be 0");
-                attachedPlayer.playerNum++;
+                attachedPlayer.playerNum = 2;
             }
         }
     }
@@ -256,7 +259,6 @@ public class IAScript : MonoBehaviour
 
     protected void SelectAction()
     {
-        Debug.Log("Select Action");
         if (!isChoosing && attachedPlayer.playerState == Player.STATE.normal)
         {
             isChoosing = true;
@@ -268,7 +270,7 @@ public class IAScript : MonoBehaviour
                 calledAct = "Wait";
             }
 
-            Debug.Log("Calling " + calledAct);
+            // Debug.Log("Calling " + calledAct);
             Invoke(calledAct, timeToWait);
         }
     }
