@@ -55,8 +55,11 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
     [SerializeField] SpriteRenderer sheathSpriteRenderer = null;
     [SerializeField] GameObject scarfPrefab = null;
+    [SerializeField] GameObject amaterasuHairPrefab = null;
     GameObject scarfObject = null;
+    GameObject amaterasuHairObject = null;
     internal Renderer scarfRenderer = null;
+    internal Renderer hairRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
     public Light playerLight = null;
     [Tooltip("The animator controller that will be put on the sprite object of the player to enable nice looking character change animations")]

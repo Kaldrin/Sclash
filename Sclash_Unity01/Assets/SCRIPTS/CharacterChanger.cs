@@ -40,9 +40,13 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     [SerializeField] public SpriteRenderer sheath = null;
     [SerializeField] GameObject scarfPrefab = null;
     [SerializeField] Transform scarfFollowPoint = null;
+    [SerializeField] GameObject amaterasuHairPrefab = null;
+    [SerializeField] Transform amaterasuHairFollowPoint = null;
     GameObject scarfObj = null;
+    GameObject amaterasuHairObject = null;
     // [SerializeField] GameObject scarf = null;
     bool hasScarf = false;
+    bool hasHair = false;
 
 
     [Header("DATA")]
@@ -236,6 +240,14 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             Destroy(scarfObj.gameObject);
             if (playerScript != null)
                 playerScript.scarfRenderer = null;
+        }
+
+        // HAIR
+        if (amaterasuHairObject)
+        {
+            Destroy(amaterasuHairObject);
+            if (playerScript)
+                playerScript.hairRenderer = null;
         }
     }
 
@@ -596,6 +608,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         }
 
 
+
         // SCARF
         if (scarfObj != null)
         {
@@ -630,6 +643,48 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             Destroy(scarfObj.gameObject);
             if (playerScript != null)
                 playerScript.scarfRenderer = null;
+        }
+
+
+
+
+        // HAIR
+        if (amaterasuHairObject != null)
+        {
+            Destroy(amaterasuHairObject.gameObject);
+            if (playerScript != null)
+                playerScript.hairRenderer = null;
+        }
+
+        if (charactersDatabase != null)
+            hasHair = charactersDatabase.charactersList[currentCharacterIndex].character.amaterasuHair;
+        if (hasHair)
+        {
+            if (amaterasuHairPrefab != null)
+            {
+                if (amaterasuHairPrefab != null)
+                    amaterasuHairObject = Instantiate(amaterasuHairPrefab);
+
+                Debug.Log(amaterasuHairObject.transform.childCount);
+                if (playerScript != null)
+                    playerScript.hairRenderer = amaterasuHairObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
+
+
+                ConstraintSource src = new ConstraintSource();
+                src.sourceTransform = amaterasuHairFollowPoint;
+                src.weight = 1;
+
+                if (amaterasuHairObject != null && amaterasuHairObject.GetComponent<ParentConstraint>())
+                    amaterasuHairObject.GetComponent<ParentConstraint>().SetSource(0, src);
+            }
+            else
+                Debug.Log("Couldn't find character scarf, ignoring");
+        }
+        else if (!hasHair && amaterasuHairObject != null)
+        {
+            Destroy(amaterasuHairObject.gameObject);
+            if (playerScript != null)
+                playerScript.hairRenderer = null;
         }
 
         // SCARF
@@ -979,6 +1034,36 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         {
             Destroy(scarfObj);
             playerScript.scarfRenderer = null;
+        }
+
+
+        // HAIR
+        if (charactersDatabase != null)
+            hasHair = charactersDatabase.charactersList[currentCharacterIndex].character.amaterasuHair;
+        if (hasHair)
+        {
+            if (amaterasuHairPrefab != null)
+            {
+                if (amaterasuHairPrefab != null)
+                    amaterasuHairObject = Instantiate(amaterasuHairPrefab);
+                if (playerScript != null)
+                    playerScript.hairRenderer = amaterasuHairObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
+
+                ConstraintSource src = new ConstraintSource();
+                if (amaterasuHairFollowPoint != null)
+                    src.sourceTransform = amaterasuHairFollowPoint;
+                src.weight = 1;
+
+                if (amaterasuHairObject != null && amaterasuHairObject.GetComponent<ParentConstraint>())
+                    amaterasuHairObject.GetComponent<ParentConstraint>().SetSource(0, src);
+            }
+            else
+                Debug.Log("Couldn't find character scarf, ignoring");
+        }
+        else if (!hasHair && amaterasuHairObject != null)
+        {
+            Destroy(amaterasuHairObject);
+            playerScript.hairRenderer = null;
         }
     }
     #endregion

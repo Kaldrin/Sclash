@@ -19,4 +19,5 @@ public class CharacterSettings : ScriptableObject
     public float heavyAttackSwordTrailScale = 1.44f;
     public string nameKey = "";
     public Gradient saberFXColor = new Gradient();
+    public bool amaterasuHair = false;
 }
