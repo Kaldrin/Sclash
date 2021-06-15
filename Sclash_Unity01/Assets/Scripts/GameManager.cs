@@ -233,6 +233,7 @@ public class GameManager : MonoBehaviourPun
     List<Material> originalSpriteRenderersMaterials = new List<Material>();
     List<Color> originalMeshRenderersColors = new List<Color>();
     List<Color> skinnedMeshRenderesColors = new List<Color>();
+    List<Color> skinnedMeshRenderersEmissionColors = new List<Color>();
     List<Color> originalParticleSystemsColors = new List<Color>();
     List<Gradient> originalParticleSystemsGradients = new List<Gradient>();
     List<float> originalLightsIntensities = new List<float>();
@@ -1526,6 +1527,7 @@ public class GameManager : MonoBehaviourPun
             originalSpriteRenderersMaterials = new List<Material>();
             originalMeshRenderersColors = new List<Color>();
             skinnedMeshRenderesColors = new List<Color>();
+            skinnedMeshRenderersEmissionColors = new List<Color>();
             originalParticleSystemsColors = new List<Color>();
             originalLightsIntensities = new List<float>();
             originalParticleSystemsGradients = new List<Gradient>();
@@ -1571,8 +1573,10 @@ public class GameManager : MonoBehaviourPun
                         {
                             // Store original color
                             skinnedMeshRenderesColors.Add(skinnedMeshRenderers[i].material.color);
+                            skinnedMeshRenderersEmissionColors.Add(skinnedMeshRenderers[i].material.GetColor("_EmissionColor"));
                             // Set black
                             skinnedMeshRenderers[i].material.color = Color.black;
+                            skinnedMeshRenderers[i].material.SetColor("_EmissionColor", Color.black);
                         }
                         catch { }
                     }
@@ -1647,8 +1651,12 @@ public class GameManager : MonoBehaviourPun
             if (skinnedMeshRenderers != null && skinnedMeshRenderers.Length > 0)
                 for (int i = 0; i < skinnedMeshRenderers.Length; i++)
                     if (skinnedMeshRenderers[i] != null && !skinnedMeshRenderers[i].CompareTag("NonBlackFX") && skinnedMeshRenderers[i].gameObject.activeInHierarchy)
+                    {
                         if (skinnedMeshRenderesColors.Count > i && skinnedMeshRenderesColors[i] != null)
                             skinnedMeshRenderers[i].material.color = skinnedMeshRenderesColors[i];
+                        if (skinnedMeshRenderersEmissionColors.Count > i && skinnedMeshRenderersEmissionColors[i] != null)
+                            skinnedMeshRenderers[i].material.SetColor("_EmissionColor", skinnedMeshRenderersEmissionColors[i]);
+                    }
             // PARTICLES
             if (particleSystems != null && particleSystems.Length > 0)
                 for (int i = 0; i < particleSystems.Length; i++)
