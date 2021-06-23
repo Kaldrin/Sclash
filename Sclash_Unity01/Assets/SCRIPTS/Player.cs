@@ -203,8 +203,8 @@ public class Player : MonoBehaviourPunCallbacks
     float chargeMovementsSpeed = 1.2f;
     float runMovementSpeed = 4.6f;
     float sneathedMovementsSpeed = 1.8f;
-    float attackingMovementsSpeed = 2.2f;
-    [HideInInspector] public float actualMovementsSpeed = 1;
+    [HideInInspector] public float attackingMovementsSpeed = 2.2f;
+    [SerializeField] public float actualMovementsSpeed = 1;
 
     Vector3 oldPos = Vector3.zero;
     protected Vector2 netTargetPos = Vector2.zero;

@@ -720,6 +720,10 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             if (GameManager.Instance != null && GameManager.Instance.scoresNames != null && GameManager.Instance.scoresNames.Count > playerScript.playerNum)
                 if (GameManager.Instance.scoresNames[playerScript.playerNum] != null && charactersDatabase != null && charactersDatabase.charactersList.Count > currentCharacterIndex)
                     GameManager.Instance.scoresNames[playerScript.playerNum].text = charactersDatabase.charactersList[currentCharacterIndex].name;
+
+            // Attack movement speed
+            if (charactersDatabase && charactersDatabase.charactersList != null && charactersDatabase.charactersList.Count > 0 && charactersDatabase.charactersList[currentCharacterIndex].character)
+                playerScript.attackingMovementsSpeed = charactersDatabase.charactersList[currentCharacterIndex].character.attackingMovementsSpeed;
         }
 
         SendCosmetics();
