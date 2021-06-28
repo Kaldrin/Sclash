@@ -44,6 +44,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     [SerializeField] Transform amaterasuHairFollowPoint = null;
     GameObject scarfObj = null;
     GameObject amaterasuHairObject = null;
+    [SerializeField] SendEnabledState amaterasuHairConstraint = null;
     // [SerializeField] GameObject scarf = null;
     bool hasScarf = false;
     bool hasHair = false;
@@ -664,8 +665,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             {
                 if (amaterasuHairPrefab != null)
                     amaterasuHairObject = Instantiate(amaterasuHairPrefab);
-
-                Debug.Log(amaterasuHairObject.transform.childCount);
+                if (amaterasuHairConstraint)
+                    amaterasuHairConstraint.inheritingObject = amaterasuHairObject;
                 if (playerScript != null)
                     playerScript.hairRenderer = amaterasuHairObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
 
@@ -1050,6 +1051,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             {
                 if (amaterasuHairPrefab != null)
                     amaterasuHairObject = Instantiate(amaterasuHairPrefab);
+                if (amaterasuHairConstraint)
+                    amaterasuHairConstraint.inheritingObject = amaterasuHairObject;
                 if (playerScript != null)
                     playerScript.hairRenderer = amaterasuHairObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
 
