@@ -2279,7 +2279,7 @@ public class Player : MonoBehaviourPunCallbacks
         if (!GameManager.Instance.allPlayersHaveDrawn && characterType == CharacterType.duel)
             // STATE
             SwitchState(STATE.sneathing);
-        else
+        else if (characterType != CharacterType.duel)
         {
             // ANIMATION
             playerAnimations.TriggerBattleSneath();

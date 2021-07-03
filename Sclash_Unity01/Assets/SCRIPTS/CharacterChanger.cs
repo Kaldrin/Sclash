@@ -42,6 +42,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     [SerializeField] Transform scarfFollowPoint = null;
     [SerializeField] GameObject amaterasuHairPrefab = null;
     [SerializeField] Transform amaterasuHairFollowPoint = null;
+    [SerializeField] SpriteMask weaponChargeFXMask = null;
     GameObject scarfObj = null;
     GameObject amaterasuHairObject = null;
     [SerializeField] SendEnabledState amaterasuHairConstraint = null;
@@ -833,6 +834,11 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // SPRITE
         weapon.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sprite;
         sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
+
+
+        // MASK
+        weaponChargeFXMask.sprite = weapon.sprite;
+
 
         SendCosmetics();
     }                                                                                                                       // APPLY WEAPON CHANGE
