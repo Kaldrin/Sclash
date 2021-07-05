@@ -1,8 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
-
 
 public class IAScript : MonoBehaviour
 {
@@ -20,6 +19,7 @@ public class IAScript : MonoBehaviour
     protected float IAMultiplicator;
 
     #region Variables
+
     public class Actions
     {
         public string name;
@@ -83,11 +83,10 @@ public class IAScript : MonoBehaviour
     };
     [SerializeField]
     int actionWeightSum;
-
-
     #endregion
 
     #region Built-in methods
+    //Look for the other player in duel and solo mode
     public Player GetPlayer()
     {
         Player[] entities = FindObjectsOfType<Player>();
@@ -95,7 +94,6 @@ public class IAScript : MonoBehaviour
         {
             if (s.GetType() == typeof(StoryPlayer))
             {
-
                 if (!s.gameObject.GetComponent<IAScript>())
                     return s;
             }
@@ -152,7 +150,6 @@ public class IAScript : MonoBehaviour
         if (attachedPlayer)
             attachedPlayer.playerIsAI = false;
     }
-
 
     protected virtual void Update()                                                                                                                                     // UPDATE
     {
@@ -250,12 +247,11 @@ public class IAScript : MonoBehaviour
 
 
 
-    public void EnemyReady()
+    private void EnemyReady()
     {
         Debug.Log("Enemy is ready");
         ready = true;
     }
-
 
     protected void SelectAction()
     {
@@ -297,7 +293,7 @@ public class IAScript : MonoBehaviour
         }
     }
 
-    void FindOpponent()
+    private void FindOpponent()
     {
         Debug.Log("Looking for opponent");
         if (opponent != null)
@@ -457,7 +453,7 @@ public class IAScript : MonoBehaviour
         //Debug.Log("Interrupt");
         StopCoroutine("WaitABit");
 
-        float randCancel = Random.Range(0f, 1f);
+        float randCancel = UnityEngine.Random.Range(0f, 1f);
         if (randCancel >= 0.75f)
             ReleaseAttack();
         else
@@ -470,7 +466,7 @@ public class IAScript : MonoBehaviour
     {
         InputManager.Instance.playerInputs[attachedPlayer.playerNum].attack = true;
 
-        float chargeTime = Random.Range(0f, 3f);
+        float chargeTime = UnityEngine.Random.Range(0f, 3f);
         Invoke("ReleaseAttack", chargeTime);
         isChoosing = false;
     }
@@ -479,7 +475,7 @@ public class IAScript : MonoBehaviour
     {
         if (distBetweenPlayers <= hitDistance - 1)
         {
-            if (Random.Range(0f, 1f) > 0.5)
+            if (UnityEngine.Random.Range(0f, 1f) > 0.5)
                 InputManager.Instance.playerInputs[attachedPlayer.playerNum].horizontal = Mathf.Sign(transform.position.x - opponent.transform.position.x);
         }
         else
@@ -563,7 +559,7 @@ public class IAScript : MonoBehaviour
     string ChooseState()
     {
         //Select a random action by weight
-        int randomAction = Random.Range(1, actionWeightSum);
+        int randomAction = UnityEngine.Random.Range(1, actionWeightSum);
         string rState = null;
         foreach (Actions item in actionsList)
         {
@@ -672,4 +668,9 @@ public class IAScript : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = new Vector2(direction * attachedPlayer.actualMovementsSpeed, GetComponent<Rigidbody2D>().velocity.y);
     }
     #endregion
+
+    public enum state
+    {
+
+    }
 }

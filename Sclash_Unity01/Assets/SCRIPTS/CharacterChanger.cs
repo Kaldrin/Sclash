@@ -849,7 +849,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         if (GameManager.Instance != null)
         {
             GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().characterChanger.enabled = !player2ModesDatabase.player2modes[currentAI_Index].AI;
-            GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<Player>().iaScript.enabled = player2ModesDatabase.player2modes[currentAI_Index].AI;
+            GameManager.Instance.playersList[playerScript.otherPlayerNum].GetComponent<AIBehaviors>().enabled = player2ModesDatabase.player2modes[currentAI_Index].AI;
         }
         playerScript.iaScript.SetDifficulty(player2ModesDatabase.player2modes[currentAI_Index].difficulty);
 

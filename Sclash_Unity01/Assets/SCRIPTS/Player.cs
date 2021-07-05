@@ -37,7 +37,6 @@ public class Player : MonoBehaviourPunCallbacks
     public delegate void OnDrawnEvent();
     public event OnDrawnEvent DrawnEvent;
 
-
     #region VARIABLES
     [HideInInspector] public StatsManager statsManager = null;
     [HideInInspector] public InputManager inputManager = null;
@@ -1868,7 +1867,7 @@ public class Player : MonoBehaviourPunCallbacks
             if (!staminaRecupAnimOn && !staminaBreakAnimOn)
                 if (!staminaRecupAnimOn && !staminaBreakAnimOn)
                 {
-                    
+
 
                     // CHEAT
                     if (cheatSettings.useExtraDiegeticFX && playerState != STATE.battleSneathedNormal && playerState != STATE.battleSneathing && playerState != STATE.battleDrawing)
@@ -2086,7 +2085,6 @@ public class Player : MonoBehaviourPunCallbacks
             }
             else
             {
-                Debug.Log("Movements");
                 if (playerState != STATE.battleSneathedNormal)
                     rb.velocity = new Vector2(InputManager.Instance.playerInputs[playerNum].horizontal * actualMovementsSpeed, rb.velocity.y);
                 else
@@ -2209,8 +2207,8 @@ public class Player : MonoBehaviourPunCallbacks
         if (DrawnEvent != null)
         {
             DrawnEvent();
-            Debug.Log("Drawn");
         }
+
         SwitchState(STATE.drawing);
 
 
@@ -2221,7 +2219,6 @@ public class Player : MonoBehaviourPunCallbacks
             lightAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[0];
             heavyAttackRange = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.attack01RangeRange[1];
         }
-
 
 
         // ANIMATION
