@@ -535,7 +535,14 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
 
         mainModule = playerScript.chargeKatanaFX.main;
         mainModule.startColor = randomColor;
-       
+
+        // Slash color
+        playerScript.maxChargeSlashFXColor = charactersDatabase.charactersList[currentCharacterIndex].character.maxChargeTrailColor;
+        // Shadow FX color
+
+        mainModule = playerScript.shadowChargedFX.main;
+        mainModule.startColor = charactersDatabase.charactersList[currentCharacterIndex].character.maxChargeTrailColor;
+
 
 
 

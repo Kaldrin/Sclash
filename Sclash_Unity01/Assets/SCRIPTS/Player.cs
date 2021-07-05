@@ -390,12 +390,15 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] protected ParticleSystem kickedFX = null;
     [SerializeField] protected ParticleSystem clashFX = null;
     [SerializeField] protected ParticleSystem slashFX = null;
+    [SerializeField] protected ParticleSystem amaterasuLightBigFX = null;
+    [SerializeField] protected List<ParticleSystem> slashFXList = new List<ParticleSystem>();
 
 
     float attackSignDisjoint = 0.4f;
     [Tooltip("The amount to rotate the death blood FX's object because for some reason it takes another rotation when it plays :/")]
     float deathBloodFXRotationForDirectionChange = 240;
     [SerializeField] GameObject attackSlashFXParent = null;
+    [SerializeField] public Color maxChargeSlashFXColor = new Color();
     float lightAttackSwordTrailScale = 0.95f;
     float heavyAttackSwordTrailScale = 1.44f;
     [Tooltip("The minimum speed required for the walk fx to trigger")]
@@ -416,6 +419,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] public ParticleSystem chargeBoomKatanaFX = null;
     [SerializeField] public ParticleSystem chargeKatanaFX = null;
     [SerializeField] public ParticleSystem chargedKatanaStayFX = null;
+    [SerializeField] public ParticleSystem shadowChargedFX = null;
     [SerializeField] GameObject rangeIndicatorShadow = null;
     [SerializeField] SpriteRenderer rangeIndicatorShadowSprite = null;
 
@@ -2445,6 +2449,7 @@ public class Player : MonoBehaviourPunCallbacks
                         chargeFlareFX.Play();
                     if (chargeKatanaFX)
                         chargeKatanaFX.Play();
+                    ColorSlashFX(Color.white);
                 }
             }
 
@@ -2505,7 +2510,9 @@ public class Player : MonoBehaviourPunCallbacks
                 chargeFlareFX.Stop();
                 if (chargedKatanaStayFX)
                     chargedKatanaStayFX.Play();
-
+                ColorSlashFX(maxChargeSlashFXColor);
+                if (shadowChargedFX)
+                    shadowChargedFX.Play();
 
 
                 // AUDIO
@@ -2815,7 +2822,20 @@ public class Player : MonoBehaviourPunCallbacks
         }
     }
 
+    void ColorSlashFX(Color color)
+    {
+        for (int i = 0; i < slashFXList.Count; i++)
+        {
+            ParticleSystem.MinMaxGradient slashColor = color;
+            slashColor.mode = ParticleSystemGradientMode.RandomColor;
+            ParticleSystem.MainModule mainModule;
+            //ParticleSystem particleSystem;
 
+            //particleSystem = playerScript.chargeFullKatanaFX;
+            mainModule = slashFXList[i].main;
+            mainModule.startColor = color;
+        }
+    }
 
 
 
@@ -2988,8 +3008,13 @@ public class Player : MonoBehaviourPunCallbacks
         SwitchState(STATE.pommeling);
 
 
+        
+
 
         targetsHit.Clear();
+
+
+        
 
 
         // STATS
@@ -3028,6 +3053,11 @@ public class Player : MonoBehaviourPunCallbacks
                         g.GetComponent<PhotonView>().RPC("Pommeled", RpcTarget.All);
                     else
                         g.GetComponent<Player>().Pommeled(null);
+
+                    // FX
+                    if (characterChanger.currentCharacterIndex == 3)
+                        if (amaterasuLightBigFX)
+                            amaterasuLightBigFX.Play();
                 }
             }
     }
