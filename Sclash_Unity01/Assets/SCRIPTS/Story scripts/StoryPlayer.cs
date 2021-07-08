@@ -44,7 +44,13 @@ public class StoryPlayer : Player
         stamina = maxStamina;
         TriggerDraw();
         base.TriggerBattleSneath();
+        // ANIMATION
+        
 
+        // STATE
+        //SwitchState(STATE.battleSneathedNormal);
+        //playerAnimations.TriggerBattleSneath();
+        //playerAnimations.animator.SetBool("Test", true);
         GameManager_Story.Instance.playersList.Add(gameObject);
     }
 

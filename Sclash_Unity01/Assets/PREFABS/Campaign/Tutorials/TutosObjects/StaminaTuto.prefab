@@ -351,6 +351,7 @@ GameObject:
   - component: {fileID: 6921634076912649059}
   - component: {fileID: 6921634076912649057}
   - component: {fileID: 6921634076912649058}
+  - component: {fileID: 7385328200937214427}
   m_Layer: 5
   m_Name: TutoText01
   m_TagString: Untagged
@@ -475,3 +476,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7385328200937214427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6921634076912648988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9535e007ea18fdc4797cbd7b025ee066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tmpToChange: {fileID: 6921634076912649058}
+  textToChange: {fileID: 0}
+  textKey: T_Stamina01
+  removeDiacritics: 0
+  onStart: 1
+  onEnable: 1
+  textMode: 2

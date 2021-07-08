@@ -55,9 +55,9 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] SpriteRenderer weaponSpriteRenderer = null;
     [SerializeField] SpriteRenderer sheathSpriteRenderer = null;
     [SerializeField] GameObject scarfPrefab = null;
-    [SerializeField] GameObject amaterasuHairPrefab = null;
+    [SerializeField] GameObject amaterasuHairPrefab;
     GameObject scarfObject = null;
-    GameObject amaterasuHairObject = null;
+    GameObject amaterasuHairObject;
     internal Renderer scarfRenderer = null;
     internal Renderer hairRenderer = null;
     [Tooltip("The reference to the light component which lits the player with their color")]
@@ -420,6 +420,7 @@ public class Player : MonoBehaviourPunCallbacks
     [SerializeField] public ParticleSystem chargeKatanaFX = null;
     [SerializeField] public ParticleSystem chargedKatanaStayFX = null;
     [SerializeField] public ParticleSystem shadowChargedFX = null;
+    [SerializeField] public List<ParticleSystem> shadowChargedFXList = new List<ParticleSystem>();
     [SerializeField] GameObject rangeIndicatorShadow = null;
     [SerializeField] SpriteRenderer rangeIndicatorShadowSprite = null;
 
@@ -1156,6 +1157,11 @@ public class Player : MonoBehaviourPunCallbacks
                 {
                     chargedKatanaStayFX.gameObject.SetActive(false);
                     chargedKatanaStayFX.gameObject.SetActive(true);
+                }
+                if (chargeFX)
+                {
+                    chargeFX.gameObject.SetActive(false);
+                    chargeFX.gameObject.SetActive(true);
                 }
                 break;
 
@@ -2229,7 +2235,7 @@ public class Player : MonoBehaviourPunCallbacks
             Debug.Log("Drawn");
         }
         SwitchState(STATE.drawing);
-
+        Debug.Log("Draw");
 
         // RANGE
         // Get range of the character
@@ -2287,7 +2293,7 @@ public class Player : MonoBehaviourPunCallbacks
         {
             // ANIMATION
             playerAnimations.TriggerBattleSneath();
-
+            Debug.Log("Sneath");
 
             // STATE
             SwitchState(STATE.battleSneathing);
@@ -2597,7 +2603,7 @@ public class Player : MonoBehaviourPunCallbacks
         actualBackAttackRangeDisjoint = baseBackAttackRangeDisjoint;
 
 
-
+         
         // Get graphic range
         lightAttackSwordTrailScale = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.lightAttackSwordTrailScale;
         heavyAttackSwordTrailScale = characterChanger.charactersDatabase.charactersList[characterChanger.currentCharacterIndex].character.heavyAttackSwordTrailScale;
@@ -2617,7 +2623,20 @@ public class Player : MonoBehaviourPunCallbacks
                 attackSlashFXParent.transform.localScale.z
             );
         }
-
+        // Disable charge flare FX
+        if (chargeKatanaFX)
+            chargeKatanaFX.gameObject.SetActive(false);
+        if (chargeFlareFX)
+        {
+            chargeFlareFX.gameObject.SetActive(false);
+            chargeFlareFX.gameObject.SetActive(true);
+        }
+        if (chargeFX)
+        {
+            chargeFX.gameObject.SetActive(false);
+            chargeFX.gameObject.SetActive(true);
+        }
+            
 
 
 

@@ -46,6 +46,7 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
     GameObject scarfObj = null;
     GameObject amaterasuHairObject = null;
     [SerializeField] SendEnabledState amaterasuHairConstraint = null;
+    [SerializeField] SendEnabledState jinmuScarfConstraint = null;
     // [SerializeField] GameObject scarf = null;
     bool hasScarf = false;
     bool hasHair = false;
@@ -539,9 +540,14 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         // Slash color
         playerScript.maxChargeSlashFXColor = charactersDatabase.charactersList[currentCharacterIndex].character.maxChargeTrailColor;
         // Shadow FX color
+        for (int i = 0; i < playerScript.shadowChargedFXList.Count; i++)
+        {
+            mainModule = playerScript.shadowChargedFXList[i].main;
+            mainModule.startColor = charactersDatabase.charactersList[currentCharacterIndex].character.maxChargeTrailColor;
+        }
 
-        mainModule = playerScript.shadowChargedFX.main;
-        mainModule.startColor = charactersDatabase.charactersList[currentCharacterIndex].character.maxChargeTrailColor;
+        
+        
 
 
 
@@ -634,6 +640,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             {
                 if (scarfPrefab != null)
                     scarfObj = Instantiate(scarfPrefab);
+                if (jinmuScarfConstraint)
+                    jinmuScarfConstraint.inheritingObject = scarfObj;
                 if (playerScript != null)
                     playerScript.scarfRenderer = scarfObj.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
 
@@ -843,8 +851,9 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
         sheath.sprite = weaponsDatabase.weaponsList[currentWeaponIndex].sheathSprite;
 
 
-        // MASK
-        weaponChargeFXMask.sprite = weapon.sprite;
+        // Mask
+        if (weaponChargeFXMask)
+            weaponChargeFXMask.sprite = weapon.sprite;
 
 
         SendCosmetics();
@@ -1034,6 +1043,8 @@ public class CharacterChanger : MonoBehaviourPunCallbacks
             {
                 if (scarfPrefab != null)
                     scarfObj = Instantiate(scarfPrefab);
+                if (jinmuScarfConstraint)
+                    jinmuScarfConstraint.inheritingObject = scarfObj;
                 if (playerScript != null)
                     playerScript.scarfRenderer = scarfObj.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
 

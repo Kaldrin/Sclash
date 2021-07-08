@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 4400912738971178746}
   - component: {fileID: 4400912738971178744}
   - component: {fileID: 4400912738971178747}
+  - component: {fileID: 2637270536120689933}
   m_Layer: 5
   m_Name: TutoText01 (1)
   m_TagString: Untagged
@@ -270,6 +271,25 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2637270536120689933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4400912738971178749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9535e007ea18fdc4797cbd7b025ee066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tmpToChange: {fileID: 4400912738971178747}
+  textToChange: {fileID: 0}
+  textKey: T_Kick02
+  removeDiacritics: 0
+  onStart: 1
+  onEnable: 1
+  textMode: 2
 --- !u!1 &4400912739087167629
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,6 +627,7 @@ GameObject:
   - component: {fileID: 5527785952413792829}
   - component: {fileID: 5527785952413792831}
   - component: {fileID: 5527785952413792828}
+  - component: {fileID: 3146890108751153121}
   m_Layer: 5
   m_Name: TutoText01
   m_TagString: Untagged
@@ -731,3 +752,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3146890108751153121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5527785952413792834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9535e007ea18fdc4797cbd7b025ee066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tmpToChange: {fileID: 5527785952413792828}
+  textToChange: {fileID: 0}
+  textKey: T_Kick01
+  removeDiacritics: 0
+  onStart: 1
+  onEnable: 1
+  textMode: 2

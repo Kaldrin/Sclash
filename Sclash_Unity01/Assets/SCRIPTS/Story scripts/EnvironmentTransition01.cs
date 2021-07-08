@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using UnityEditor;
 using TMPro;
 
 #if UNITY_EDITOR
+using UnityEditor;
 using UnityEditor.Experimental.SceneManagement;
 #endif
 

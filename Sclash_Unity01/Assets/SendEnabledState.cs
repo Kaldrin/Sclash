@@ -16,7 +16,7 @@ using UnityEngine;
 public class SendEnabledState : MonoBehaviour
 {
     [SerializeField] string nameOfTheObjectToSendTo = "AmaterasuHair(Clone)";
-    [HideInInspector] public GameObject inheritingObject = null;
+    [SerializeField] public GameObject inheritingObject = null;
 
 
 
@@ -45,11 +45,17 @@ public class SendEnabledState : MonoBehaviour
     {
         GameObject objectToFind = null;
 
-
-        if (inheritingObject == null)
-            objectToFind = GameObject.Find(nameOfTheObject);
-        else
+        try
+        {
+            if (inheritingObject == null)
+                objectToFind = GameObject.Find(nameOfTheObject);
+            else
+                objectToFind = inheritingObject;
+        }
+        catch
+        {
             objectToFind = inheritingObject;
+        }
 
 
         return objectToFind;

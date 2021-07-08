@@ -239,8 +239,11 @@ public class NarrationEngine : MonoBehaviour
     void CallNextNarrationEvent()                                                                                                                             // CALL NEXT NARRATION EVENT
     {
         narrating = false;
-        NarrationEvent(narrationEventsQueue[0], false);
-        narrationEventsQueue.Remove(narrationEventsQueue[0]);
+        if (narrationEventsQueue.Count > 0)
+        {
+            NarrationEvent(narrationEventsQueue[0], false);
+            narrationEventsQueue.Remove(narrationEventsQueue[0]);
+        }
     }
 
     void ClearNarration()

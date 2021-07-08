@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using UnityEditor;
+
 using TMPro;
 
 #if UNITY_EDITOR
+using UnityEditor;
 using UnityEditor.Experimental.SceneManagement;
 #endif
 
@@ -50,7 +51,6 @@ public class TutorialTrigger : MonoBehaviour
     private void Start()                                                                                                                                                        // START    
     {
         // If relax mode destroy self
-        Debug.Log(MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax);
         if (MenuManager.Instance && MenuManager.Instance.menuParametersSaveScriptableObject.storyRelax)
             Destroy(gameObject);
     }
