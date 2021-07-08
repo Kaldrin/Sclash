@@ -11,8 +11,6 @@ public class GameManager_Story : GameManager
     {
         get
         {
-            if (storyInstance == null)
-                storyInstance = new GameManager_Story();
 
             return storyInstance;
         }
@@ -27,6 +25,9 @@ public class GameManager_Story : GameManager
 
     public override void Awake()
     {
+        if (storyInstance == null)
+            storyInstance = this;
+
         Instance = this;
         _controls = new PlayerControls();
     }

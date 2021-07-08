@@ -11,12 +11,19 @@ public class IAManager : MonoBehaviour
         get; set;
     }
 
-    public List<GameObject> enemyList = new List<GameObject>();
-    public List<EnemySpawner> IASpawner = new List<EnemySpawner>();
+    public List<GameObject> enemyList;
+    public List<EnemySpawner> IASpawner;
+
+    public Action<EnemySpawner> DestroySpawnerAction;
 
     void Awake()
     {
         Instance = this;
+
+        enemyList = new List<GameObject>();
+        IASpawner = new List<EnemySpawner>();
+
+        DestroySpawnerAction += DestroySpawner;
     }
 
     void Start()
@@ -31,6 +38,12 @@ public class IAManager : MonoBehaviour
         }
     }
 
+    private void DestroySpawner(EnemySpawner s)
+    {
+        IASpawner.Remove(s);
+        Destroy(s.gameObject);
+    }
+
     private void IADied(IAScript_Solo ia)
     {
         Debug.Log(ia + "died");
@@ -43,7 +56,8 @@ public class IAManager : MonoBehaviour
     public void EnemySpawned(GameObject enemy)
     {
         Debug.Log("An enemy has spawned");
-        enemyList.Add(enemy);
+        if (!enemyList.Contains(enemy))
+            enemyList.Add(enemy);
         enemy.GetComponent<IAScript_Solo>().OnIADeath += IADied;
     }
 }

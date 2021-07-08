@@ -702,11 +702,7 @@ public class GameManager : MonoBehaviourPun
 
         for (int i = 0; i < playersList.Count; i++)
         {
-            scoresNames[i].name = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
-            scoresNames[i].color = playersColors[i];
-            scoresDisplays[i].color = playersColors[i];
-            playerHelpTextIdentifiers[i].color = playersColors[i];
-            playerHelpIconIdentifiers[i].color = playersColors[i];
+            UpdateNameAndColors(i);
         }
 
 
@@ -767,6 +763,17 @@ public class GameManager : MonoBehaviourPun
             drawTextAnimator.SetTrigger("FadeIn");
             drawTextAnimator.ResetTrigger("FadeOut");
         }
+    }
+
+    [PunRPC]
+    public void UpdateNameAndColors(int i)
+    {
+        Debug.Log("Update name & color");
+        scoresNames[i].text = charactersData.charactersList[playersList[i].GetComponent<Player>().characterIndex].name;
+        scoresNames[i].color = playersColors[i];
+        scoresDisplays[i].color = playersColors[i];
+        playerHelpTextIdentifiers[i].color = playersColors[i];
+        playerHelpIconIdentifiers[i].color = playersColors[i];
     }
 
     // A saber has been drawn, stores it and checks if both players have drawn
@@ -1430,7 +1437,8 @@ public class GameManager : MonoBehaviourPun
     void EndGame()                                                                                                                                                  // END GAME
     {
         //Temporary solution to stop player from moving after win TO BE OPTIMIZED
-        playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().ActivateInput();
+        if (playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput != null)
+            playersList[winningPlayerIndex].GetComponent<Player>().attachedPlayerInput.GetComponent<PlayerInput>().ActivateInput();
 
         if (EndGameEvent != null)
             EndGameEvent();

@@ -45,7 +45,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
     bool isConnecting = false;
-    string gameVersion = "3.1.5";
+    string gameVersion = "3.3.2";
     public bool connectedToMaster = false;
     public bool enableMultiplayer;
     public GameObject localPlayer;
@@ -114,12 +114,12 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     [SerializeField] GameObject restartReceivedMessage = null;
     [SerializeField] GameObject cantRestartMessage = null;
     [SerializeField] GameObject restartAcceptedMessage = null;
-    
-    
+
+
 
     public static RpcTarget defaultTarget = RpcTarget.All;
 
-    
+
 
     #region Events
     public delegate void Disconnected();
@@ -173,7 +173,6 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             // CONNECT
             if (enableMultiplayer && !PhotonNetwork.IsConnected && isConnecting)
                 Connect();
-
 
             // PING
             if (pingIsBeingDisplayed)
@@ -683,6 +682,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
 
 
                 Debug.Log("All players are here");
+                WaitPlayersDraw();
 
                 if (waitingForPlayerMessage != null)
                     waitingForPlayerMessage.SetActive(false);
@@ -1134,7 +1134,7 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
         }
     }
 
-   
+
 
     [PunRPC]
     void RestartSyncStage(int stageIndex)
@@ -1174,5 +1174,41 @@ public class ConnectManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
             DisplayPing(false);
         else if (PhotonNetwork.InRoom && shouldShowPing)
             DisplayPing(true);
+    }
+
+    private void WaitPlayersDraw()
+    {
+        Debug.Log("WaitPlayersDraw");
+        int playerDrawn = 0;
+        if (GameManager.Instance.playersList.Count == 2)
+        {
+            for (int i = 0; i < GameManager.Instance.playersList.Count; i++)
+            {
+                Player.STATE s = GameManager.Instance.playersList[i].GetComponent<Player>().playerState;
+                if (s != Player.STATE.sneathed && s != Player.STATE.drawing && s != Player.STATE.frozen)
+                {
+                    playerDrawn++;
+                }
+            }
+        }
+
+        if (playerDrawn == 2)
+        {
+            PlayersReady();
+        }
+        else
+        {
+            Invoke("WaitPlayersDraw", 0.1f);
+        }
+    }
+
+    private void PlayersReady()
+    {
+        Debug.Log("Both players are ready !");
+        //Update characters names. Use Steam name ?
+        for (int i = 0; i < 2; i++)
+            photonView.RPC("UpdateNameAndColors", RpcTarget.All, i);
+
+        //   GameManager.Instance.scoresNames[i].text = "Test";
     }
 }
